@@ -178,9 +178,7 @@
                       " column " (:name tbl) "." (:name c))))))))
 
 (defn- apply-col-affinity [tbl ci val]
-  (let [c (nth (:cols tbl) ci)
-        val (v/apply-affinity val (:aff c))]
-    (if (:strict tbl) (strict-check tbl ci val) val)))
+  (v/apply-affinity val (:aff (nth (:cols tbl) ci))))
 
 (defn- key-has-null? [k] (some nil? k))
 
@@ -216,67 +214,92 @@
             c (e/cx ctx d)]
         ((:f c) (object-array 1))))))
 
-(defn- check-row
-  "Runs NOT NULL and CHECK constraints. Returns [row action] where action is :ok or :ignore."
+(defn- check-notnull
+  "NOT NULL constraints. Returns the row (possibly with REPLACE defaults) or nil for IGNORE."
   [db sql tbl row on-conflict]
-  (let [ncols (count (:cols tbl))
-        res (reduce (fn [row ci]
-                      (let [c (nth (:cols tbl) ci)]
-                        (if (and (:notnull c) (nil? (nth row ci)) (not= ci (:ipk tbl)))
-                          (case on-conflict
-                            :ignore (reduced nil)
-                            :replace (let [d (when (:default c) (apply-col-affinity tbl ci (default-value db sql tbl ci)))]
-                                       (if (nil? d)
-                                         (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c)))
-                                         (assoc row ci d)))
-                            (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c))))
-                          row)))
-                    row (range ncols))]
-    (if (nil? res)
-      [nil :ignore]
-      (let [bad (some (fn [ck] (let [x ((:f ck) res)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
-                      (:checks tbl))]
-        (if bad
-          (if (= on-conflict :ignore)
-            [nil :ignore]
-            (err (str "CHECK constraint failed: " (or (:name bad) (:text bad)))))
-          [res :ok])))))
+  (reduce (fn [row ci]
+            (let [c (nth (:cols tbl) ci)]
+              (if (and (:notnull c) (nil? (nth row ci)) (not= ci (:ipk tbl)))
+                (case on-conflict
+                  :ignore (reduced nil)
+                  :replace (let [d (when (:default c) (v/apply-affinity (default-value db sql tbl ci) (:aff c)))]
+                             (if (nil? d)
+                               (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c)))
+                               (assoc row ci d)))
+                  (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c))))
+                row)))
+          row (range (count (:cols tbl)))))
+
+(defn- check-strict [tbl row]
+  (when (:strict tbl)
+    (doseq [ci (range (count (:cols tbl)))]
+      (when (not= ci (:ipk tbl)) (strict-check tbl ci (nth row ci)))))
+  row)
+
+(defn- check-checks
+  "CHECK constraints. Returns row, or nil for IGNORE."
+  [tbl row on-conflict]
+  (let [bad (some (fn [ck] (let [x ((:f ck) row)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
+                  (:checks tbl))]
+    (if bad
+      (if (= on-conflict :ignore)
+        nil
+        (err (str "CHECK constraint failed: " (or (:name bad) (:text bad)))))
+      row)))
+
+(defn- check-row
+  "NOT NULL, STRICT types, CHECK. Returns [row action] where action is :ok or :ignore."
+  [db sql tbl row on-conflict]
+  (let [r (check-notnull db sql tbl row on-conflict)
+        r (when r (check-strict tbl r))
+        r (when r (check-checks tbl r on-conflict))]
+    (if r [r :ok] [nil :ignore])))
 
 (defn- put-row [tbl rid row]
   (assoc-in tbl [:rows rid] (assoc row (count (:cols tbl)) rid)))
 
 (defn- resolve-uniques
   "Checks rowid and unique-index conflicts for row (with rowid rid) excluding self.
+  mid-check runs after the rowid check and before the index checks (STRICT type checks).
+  With delay-ipk the rowid check runs last (an upsert whose first target is an index).
   Returns [tbl' action] where action :ok (tbl' has conflicting rows deleted for REPLACE), :ignore,
-  or [:upsert conflicting-rowid]."
-  [db tbl rid row self on-conflict upsert-target?]
-  (let [idxs (table-indexes db (:name tbl))
-        ;; rowid conflict
-        rid-conf (when (and (not= rid self) (contains? (:rows tbl) rid)) rid)]
-    (letfn [(handle [tbl conf msg what]
-              (cond
-                (upsert-target? what) [:upsert what]
-                (= on-conflict :ignore) :ignore
-                (= on-conflict :replace) (update tbl :rows dissoc conf)
-                :else (err msg)))]
-      (let [r (if rid-conf
-                (handle tbl rid-conf (str "UNIQUE constraint failed: " (:name tbl) "."
-                                          (if (:ipk tbl) (:name (nth (:cols tbl) (:ipk tbl))) "rowid"))
-                        :rowid)
-                tbl)]
-        (if (or (keyword? r) (vector? r))
-          [tbl r]
-          (loop [tbl r idxs (filter :unique idxs)]
-            (if (empty? idxs)
-              [tbl :ok]
-              (let [idx (first idxs)
-                    conf (find-conflict tbl idx row self)]
-                (if conf
-                  (let [r (handle tbl conf (unique-msg* tbl idx) idx)]
-                    (if (or (keyword? r) (vector? r))
-                      [tbl r]
-                      (recur r (rest idxs))))
-                  (recur tbl (rest idxs)))))))))))
+  or [:upsert target]."
+  ([db tbl rid row self on-conflict upsert-target?]
+   (resolve-uniques db tbl rid row self on-conflict upsert-target? nil false))
+  ([db tbl rid row self on-conflict upsert-target? mid-check delay-ipk]
+   (let [idxs (filter :unique (table-indexes db (:name tbl)))]
+     (letfn [(handle [tbl conf msg what]
+               (cond
+                 (upsert-target? what) [:upsert what]
+                 (= on-conflict :ignore) :ignore
+                 (= on-conflict :replace) (update tbl :rows dissoc conf)
+                 :else (err msg)))
+             (rowid-step [tbl]
+               (if (and (not= rid self) (contains? (:rows tbl) rid))
+                 (handle tbl rid (str "UNIQUE constraint failed: " (:name tbl) "."
+                                      (if (:ipk tbl) (:name (nth (:cols tbl) (:ipk tbl))) "rowid"))
+                         :rowid)
+                 tbl))
+             (index-steps [tbl]
+               (loop [tbl tbl idxs idxs]
+                 (if (empty? idxs)
+                   tbl
+                   (let [idx (first idxs)
+                         conf (find-conflict tbl idx row self)]
+                     (if conf
+                       (let [r (handle tbl conf (unique-msg* tbl idx) idx)]
+                         (if (map? r) (recur r (rest idxs)) r))
+                       (recur tbl (rest idxs)))))))]
+       (let [r (if delay-ipk tbl (rowid-step tbl))]
+         (if-not (map? r)
+           [tbl r]
+           (do (when mid-check (mid-check))
+               (let [r2 (index-steps r)]
+                 (if-not (map? r2)
+                   [tbl r2]
+                   (if delay-ipk
+                     (let [r3 (rowid-step r2)] (if (map? r3) [r3 :ok] [tbl r3]))
+                     [r2 :ok]))))))))))
 
 ;; ====================================================================== INSERT
 
@@ -402,14 +425,23 @@
                     (let [x (v/apply-affinity rid-val :integer)]
                       (if (instance? Long x) x (err "datatype mismatch"))))
               row (if ipk (assoc row ipk rid) row)
+              raw-row row
               row (reduce (fn [row ci] (if (= ci ipk) row (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
                           row (range ncols))
-              [row act] (check-row db sql tbl row on-conflict)]
-          (if (= act :ignore)
+              row (check-notnull db sql tbl row on-conflict)
+              has-checks (seq (:checks tbl))
+              row (when row (if has-checks (check-checks tbl (check-strict tbl row) on-conflict) row))
+              m-up (fn [what] (boolean (some #((:match %) what) up-compiled)))
+              first-up (first up-compiled)
+              delay-ipk (boolean (and first-up (:target first-up) (not ((:match first-up) :rowid))))
+              ipk-hit (when (and row (seq up-compiled) (not delay-ipk) (contains? (:rows tbl) rid) (m-up :rowid)) :rowid)]
+          (if (nil? row)
             (recur db (rest rs) changes)
-            (let [up (first up-compiled)
-                  [tbl2 res] (resolve-uniques db tbl rid row nil on-conflict
-                                              (fn [what] (boolean (and up ((:match up) what)))))]
+            (let [[tbl2 res] (if ipk-hit
+                               [tbl [:upsert ipk-hit]]
+                               (resolve-uniques db tbl rid row nil on-conflict m-up
+                                                (fn [] (when-not has-checks (check-strict tbl row)))
+                                                delay-ipk))]
               (cond
                 (= res :ignore) (recur db (rest rs) changes)
                 (vector? res)
@@ -422,7 +454,11 @@
                     (recur db (rest rs) changes)
                     (do
                       (aset env (long (:slot tsrc)) existing)
-                      (aset env (long (:slot xsrc)) (assoc row ncols rid))
+                      (aset env (long (:slot xsrc))
+                            (assoc (reduce (fn [r ci] (if (and (= :real (:aff (nth (:cols tbl) ci))) (instance? Long (nth r ci)))
+                                                        (assoc r ci (double (long (nth r ci)))) r))
+                                           raw-row (range ncols))
+                                   ncols rid))
                       (if (and (:where-c up) (let [w ((:where-c up) env)] (or (nil? w) (not (v/bool-value w)))))
                         (recur db (rest rs) changes)
                         (let [nrow (reduce (fn [r [ci f]] (assoc r ci (f env))) existing (:sets-c up))
@@ -501,10 +537,13 @@
                   row (reduce (fn [row ci] (if (or (= ci (:ipk tbl)) (not (changed ci))) row
                                                (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
                               row (range ncols))
-                  [row act] (check-row db sql tbl row on-conflict)]
-              (if (= act :ignore)
+                  has-checks (seq (:checks tbl))
+                  row (check-notnull db sql tbl row on-conflict)
+                  row (when row (if has-checks (check-checks tbl (check-strict tbl row) on-conflict) row))]
+              (if (nil? row)
                 (recur db (rest ts) changes)
-                (let [[tbl2 res] (resolve-uniques db tbl rid-new row rid on-conflict (constantly false))]
+                (let [[tbl2 res] (resolve-uniques db tbl rid-new row rid on-conflict (constantly false)
+                                                  (fn [] (when-not has-checks (check-strict tbl row))) false)]
                   (if (= res :ignore)
                     (recur db (rest ts) changes)
                     (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)

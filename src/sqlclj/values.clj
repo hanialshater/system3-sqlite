@@ -260,8 +260,9 @@
       (if (or (>= i na) (>= i nb))
         (Long/compare na nb)
         (let [ca (lower-ascii (long (int (.charAt a i)))) cb (lower-ascii (long (int (.charAt b i))))]
-          (if (= ca cb) (recur (inc i))
-              (binary-cmp (subs a i (min na (+ i 2))) (subs b i (min nb (+ i 2))))))))))
+          (cond (= ca cb) (recur (inc i))
+                (and (< ca 128) (< cb 128)) (Long/compare ca cb)
+                :else (binary-cmp (subs a i) (subs b i))))))))
 
 (defn- rtrim-sp ^String [^String s]
   (loop [k (.length s)] (if (and (> k 0) (= (.charAt s (dec k)) \space)) (recur (dec k)) (subs s 0 k))))

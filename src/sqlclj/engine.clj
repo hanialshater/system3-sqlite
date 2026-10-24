@@ -179,8 +179,20 @@
 
 (declare compile-function)
 
+(declare cx*)
+
 (defn cx
-  "Compiles expression AST e in ctx. Returns {:f (fn [env]) :aff :coll :ecoll ...}."
+  "Compiles expression AST e in ctx. Returns {:f (fn [env]) :aff :coll :ecoll ...}.
+  At the top of an expression, errors recorded during resolution are raised afterwards."
+  [ctx e]
+  (if (:pending ctx)
+    (cx* ctx e)
+    (let [pend (atom nil)
+          r (cx* (assoc ctx :pending pend) e)]
+      (when @pend (err @pend))
+      r)))
+
+(defn cx*
   [ctx e]
   (case (:op e)
     :lit (const-c (lit-value e))
@@ -621,55 +633,79 @@
       "sqlite_version" (do (ar (= n 0)) (fn [_] "3.53.4"))
       nil)))
 
-(defn compile-function [ctx e]
+(def ^:private known-unsupported
+  #{"random" "randomblob" "changes" "total_changes" "last_insert_rowid" "printf" "format"
+    "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
+
+(defn- function-level-error
+  "Errors SQLite reports for the function node itself (before resolving its arguments)."
+  [ctx e]
   (let [name (:name e) n (count (:args e))]
-    (if (agg-call? e)
-      (if-let [aggs (:aggs ctx)]
-        (do
-          (when (:in-agg ctx) (err (str "misuse of aggregate function " name "()")))
-          (let [actx (assoc ctx :in-agg true :aggs nil)
-                args (mapv #(cx actx %) (:args e))
-                idx (count @aggs)
-                slot (:agg-slot ctx)]
-            (when (and (:distinct e) (not= 1 n))
-              (err (str "DISTINCT aggregates must have exactly one argument")))
-            (when (and (#{"sum" "total" "avg"} name) (not= n 1)) (arity-err name))
-            (when (and (= name "group_concat") (not (#{1 2} n))) (arity-err name))
-            (when (and (= name "string_agg") (not= n 2)) (arity-err name))
-            (swap! aggs conj {:name name :args args :star (:star e) :distinct (:distinct e)
-                              :coll (or (:coll (first args)) "BINARY")})
-            (let [slot (long slot)]
-              (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
-                  :coll (when (#{"min" "max"} name) (:coll (first args)))
-                  :ecoll (when (#{"min" "max"} name) (:ecoll (first args)))))))
-        (err (str "misuse of aggregate: " name "()")))
+    (cond
+      (agg-call? e)
+      (cond (nil? (:aggs ctx)) (str "misuse of aggregate: " name "()")
+            (:in-agg ctx) (str "misuse of aggregate function " name "()")
+            (and (#{"sum" "total" "avg"} name) (not= n 1)) (str "wrong number of arguments to function " name "()")
+            (and (= name "group_concat") (not (#{1 2} n))) (str "wrong number of arguments to function " name "()")
+            (and (= name "string_agg") (not= n 2)) (str "wrong number of arguments to function " name "()")
+            (and (:distinct e) (not= 1 n)) "DISTINCT aggregates must have exactly one argument"
+            :else nil)
+      (#{"min" "max"} name) (when (< n 1) (str "wrong number of arguments to function " name "()"))
+      (#{"coalesce"} name) (when (< n 2) (str "wrong number of arguments to function " name "()"))
+      (#{"ifnull"} name) (when (not= n 2) (str "wrong number of arguments to function " name "()"))
+      (#{"iif" "if"} name) (when-not (#{2 3} n) (str "wrong number of arguments to function " name "()"))
+      :else
+      (try (if (compile-scalar-fn name n "BINARY")
+             (when (:distinct e) (str "DISTINCT aggregates must have exactly one argument"))
+             (if (known-unsupported name)
+               (str "unsupported function " name "()")
+               (str "no such function: " name)))
+           (catch clojure.lang.ExceptionInfo ex (:sql-error (ex-data ex)))))))
+
+(defn- compile-args
+  "Compiles function arguments; a resolution error inside them is recorded (not thrown) and stops the
+  remaining arguments, as SQLite's resolver does. Returns the compiled args or nil."
+  [ctx args]
+  (try (mapv #(cx ctx %) args)
+       (catch clojure.lang.ExceptionInfo ex
+         (if-let [m (:sql-error (ex-data ex))]
+           (do (when (:pending ctx) (reset! (:pending ctx) m)) nil)
+           (throw ex)))))
+
+(defn compile-function [ctx e]
+  (let [name (:name e) n (count (:args e))
+        ferr (function-level-error ctx e)
+        _ (when ferr (reset! (:pending ctx) ferr))
+        agg (and (agg-call? e) (:aggs ctx) (not (:in-agg ctx)))
+        actx (if agg (assoc ctx :in-agg true :aggs nil) ctx)
+        args (compile-args actx (:args e))]
+    (cond
+      (or ferr (nil? args)) (const-c nil)
+      agg
+      (let [aggs (:aggs ctx)
+            idx (count @aggs)
+            slot (long (:agg-slot ctx))]
+        (swap! aggs conj {:name name :args args :star (:star e) :distinct (:distinct e)
+                          :coll (or (:coll (first args)) "BINARY")})
+        (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
+            :coll (when (#{"min" "max"} name) (:coll (first args)))
+            :ecoll (when (#{"min" "max"} name) (:ecoll (first args)))))
+      :else
       (case name
         ("coalesce" "ifnull")
-        (let [args (mapv #(cx ctx %) (:args e))]
-          (when (or (and (= name "ifnull") (not= n 2)) (< n 2)) (arity-err name))
-          (let [fs (mapv :f args)]
-            (mk (fn [env] (loop [fs fs] (when (seq fs) (let [x ((first fs) env)] (if (nil? x) (recur (rest fs)) x)))))
-                :coll (coll-walk args) :ecoll (some has-collate? args))))
+        (let [fs (mapv :f args)]
+          (mk (fn [env] (loop [fs fs] (when (seq fs) (let [x ((first fs) env)] (if (nil? x) (recur (rest fs)) x)))))
+              :coll (coll-walk args) :ecoll (some has-collate? args)))
         ("iif" "if")
-        (let [args (mapv #(cx ctx %) (:args e))]
-          (when-not (#{2 3} n) (arity-err name))
-          (let [[fc ft fe] (mapv :f args)]
-            (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
-                :coll (coll-walk args) :ecoll (some has-collate? args))))
-        (let [args (mapv #(cx ctx %) (:args e))
-              coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
+        (let [[fc ft fe] (mapv :f args)]
+          (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
+              :coll (coll-walk args) :ecoll (some has-collate? args)))
+        (let [coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
               coll (or (coll-walk args) coll)
-              impl (compile-scalar-fn name n coll)]
-          (when (nil? impl)
-            (if (#{"random" "randomblob" "changes" "total_changes" "last_insert_rowid" "printf" "format"
-                   "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json" "current_date"
-                   "current_time" "current_timestamp"} name)
-              (err (str "unsupported function " name "()"))
-              (err (str "no such function: " name))))
-          (when (:distinct e) (err (str "DISTINCT aggregates must have exactly one argument")))
-          (let [fs (mapv :f args)]
-            (mk (fn [env] (let [r (impl (mapv #(% env) fs))] (if (instance? Integer r) (long r) r)))
-                :coll (coll-walk args) :ecoll (some has-collate? args))))))))
+              impl (compile-scalar-fn name n coll)
+              fs (mapv :f args)]
+          (mk (fn [env] (let [r (impl (mapv #(% env) fs))] (if (instance? Integer r) (long r) r)))
+              :coll (coll-walk args) :ecoll (some has-collate? args)))))))
 
 ;; ====================================================================== aggregates runtime
 
@@ -949,6 +985,7 @@
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
+  (let [ctx (assoc ctx :pending nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -980,6 +1017,38 @@
           scope {:sources sources :parent (:scope ctx)}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
+          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left} (:join item)))))
+          _ (when (some #{:right :full :natural-right :natural-full} (map :join from))
+              (err "RIGHT and FULL OUTER JOINs are not supported"))
+          rcols (expand-star ctx2 sources (:cols core))
+          names (mapv #(col-name ctx2 %) rcols)
+          aliases (mapv #(lc (:alias %)) rcols)
+          is-agg (or (seq (:group core)) (core-has-agg? core))
+          aggs (atom [])
+          agg-slot (new-slot! ctx)
+          actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
+          ;; result column compile
+          rcomp (mapv (fn [rc]
+                        (if-let [[s i] (:star-col rc)]
+                          (let [sl (long (:slot s)) i (long i)]
+                            {:f (fn [^objects env] (nth (aget env sl) i))
+                             :aff (nth (:affs s) i) :coll (or (nth (:colls s) i) "BINARY")
+                             :col {:slot (:slot s) :idx i :depth 0}})
+                          (cx actx (:e rc))))
+                      rcols)
+          ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
+          alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
+          subst (fn subst [e]
+                  (cond
+                    (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
+                    (try (resolve-column ctx2 nil (:name e) nil) e
+                         (catch clojure.lang.ExceptionInfo _ (get alias-map (lc (:name e)))))
+                    (map? e) (if (#{:subq :exists} (:op e)) e (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst x))]) e)))
+                    (vector? e) (mapv subst e)
+                    :else e))
+          where-c (when (:where core)
+                    (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
+          where-f (:f where-c)
           ;; join conditions
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
@@ -1001,37 +1070,6 @@
                                             (:f (make-compare :eq lcmp rcmp))))]
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil))))
-          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left} (:join item)))))
-          _ (when (some #{:right :full :natural-right :natural-full} (map :join from))
-              (err "RIGHT and FULL OUTER JOINs are not supported"))
-          where-c (when (:where core)
-                    (let [c (cx (assoc ctx2 :aggs nil) (:where core))] c))
-          where-f (:f where-c)
-          rcols (expand-star ctx2 sources (:cols core))
-          names (mapv #(col-name ctx2 %) rcols)
-          aliases (mapv #(lc (:alias %)) rcols)
-          is-agg (or (seq (:group core)) (core-has-agg? core))
-          aggs (atom [])
-          agg-slot (new-slot! ctx)
-          actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
-          ;; result column compile
-          rcomp (mapv (fn [rc]
-                        (if-let [[s i] (:star-col rc)]
-                          (let [sl (long (:slot s)) i (long i)]
-                            {:f (fn [^objects env] (nth (aget env sl) i))
-                             :aff (nth (:affs s) i) :coll (or (nth (:colls s) i) "BINARY")})
-                          (cx actx (:e rc))))
-                      rcols)
-          ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
-          alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
-          subst (fn subst [e]
-                  (cond
-                    (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
-                    (try (resolve-column ctx2 nil (:name e) nil) e
-                         (catch clojure.lang.ExceptionInfo _ (get alias-map (lc (:name e)))))
-                    (map? e) (if (#{:subq :exists} (:op e)) e (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst x))]) e)))
-                    (vector? e) (mapv subst e)
-                    :else e))
           nagg-before (count @aggs)
           group-c (mapv (fn [g]
                           (let [g (subst g)]
@@ -1054,11 +1092,21 @@
                           (fn [i term]
                             (let [ri (order-term-index ctx2 term names aliases (ordinal (inc i)))
                                   c (if ri (nth rcomp ri) (cx actx (:e term)))]
-                              {:f (:f c) :ri ri :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
+                              {:f (:f c) :ri ri :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
+                               :col (:col c)}))
                           order)))
           nsrc (count sources)
+          rowid-order (when (and order-c (= 1 nsrc) (:table (first sources)) (not is-agg) (not (:distinct core))
+                                 (nil? (:indexed-by (first sources))))
+                        (let [o (first order-c) col (:col o) s0 (first sources)]
+                          (when (and col (= (:slot col) (:slot s0)) (zero? (long (:depth col)))
+                                     (or (= (:idx col) (:ncols s0)) (= (:idx col) (:ipk (:table s0)))))
+                            (if (:desc o) :desc :asc))))
           null-rows (mapv (fn [s] (vec (repeat (inc (:ncols s)) nil))) sources)
-          scanners (mapv #(make-scanner ctx2 % (when (:where core) (split-and (:where core)))) sources)
+          scanners (if (= rowid-order :desc)
+                     (let [tname (lc (:tname (first sources)))]
+                       [(fn [_] (map val (rseq (:rows (get-in (:db ctx2) [:tables tname])))))])
+                     (mapv #(make-scanner ctx2 % (when (:where core) (split-and (:where core)))) sources))
           rfs (mapv :f rcomp)
           ofs (mapv :f order-c)
           agg-specs @aggs
@@ -1135,8 +1183,9 @@
        :ecolls (mapv :ecoll rcomp)
        :exprs rcomp
        :order-specs (mapv (fn [o] [(:coll o) (:desc o) (:nulls o)]) order-c)
+       :presorted (boolean rowid-order)
        :outer-refs outer-refs
-       :run run})))
+       :run run}))))
 
 (defn- compound-colls [l r]
   (mapv (fn [a b] (or a b "BINARY")) (:colls l) (:colls r)))
@@ -1216,7 +1265,7 @@
                                  rows)]
                       (apply-limit rows limit offset)))})
       (let [c (compile-core ctx body order limit offset)
-            cmp (when order (compare-keys-fn (:order-specs c)))]
+            cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
         {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
@@ -1272,7 +1321,17 @@
   "True if the WHERE terms imply the partial index's WHERE clause (approximation of sqlite3ExprImpliesExpr)."
   [ctx idx where-terms src]
   (let [iw (:where-ast idx)
-        terms (or where-terms [])
+        tbl (:table src)
+        always-true? (fn [t]
+                       (let [x (cond (= :notnull (:op t)) (:e t)
+                                     (and (= :is (:op t)) (:not t) (= :lit (:op (:r t))) (nil? (:kind (:r t))) (nil? (:v (:r t)))) (:l t)
+                                     :else nil)]
+                         (when (and x (= :col (:op x)) (or (nil? (:table x)) (= (lc (:table x)) (:alias src))))
+                           (let [ln (lc (:name x))
+                                 i (.indexOf ^java.util.List (:lcols src) ln)]
+                             (or (and (>= i 0) (or (= i (:ipk tbl)) (:notnull (nth (:cols tbl) i))))
+                                 (and (neg? i) (#{"rowid" "oid" "_rowid_"} ln)))))))
+        terms (remove always-true? (or where-terms []))
         strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table)
                                  (map? e) (into {} (for [[k x] e] [k (sq x)]))
                                  (vector? e) (mapv sq e)
