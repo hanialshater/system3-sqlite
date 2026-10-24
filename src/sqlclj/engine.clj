@@ -67,7 +67,7 @@
                        [s i])
                      (for [s srcs
                            :let [i (find-in-source s lname)]
-                           :when (and i (not (contains? (:hidden s) lname)))]
+                           :when (and i (not (:qualified-only s)) (not (contains? (:hidden s) lname)))]
                        [s i]))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
@@ -477,6 +477,8 @@
           p1 (v/int-value start)
           p2 (if has-len (v/int-value len) nil)]
       (if blob?
+        (if (zero? (alength (v/blob-bytes x)))
+          nil
         (let [^bytes b (v/blob-bytes x)
               n (alength b)
               [p1 p2] (let [p1 (long p1)
@@ -501,7 +503,7 @@
               p1 (long p1) p2 (long p2)
               p2 (if (> (+ p1 p2) n) (max 0 (- n p1)) p2)]
           (if (or (>= p1 n) (<= p2 0)) (Blob. (byte-array 0))
-              (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (+ p1 p2))))))
+              (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (+ p1 p2)))))))
         (let [^String s (v/text-of x)
               cps (.toArray (.codePoints s))
               n (alength cps)
@@ -614,10 +616,24 @@
 (defn- hex-impl [x]
   (if (nil? x) "" (v/hex-upper (v/bytes-of x))))
 
-(defn- unicode-impl [x]
+(defn- unicode-impl
+  "sqlite3Utf8Read on the first character of the UTF-8 bytes."
+  [x]
   (when-not (nil? x)
-    (let [^String s (v/text-of x)]
-      (when (pos? (count s)) (.codePointAt s 0)))))
+    (let [^bytes b (v/str->utf8 (v/text-of x))
+          n (alength b)]
+      (when (and (pos? n) (not= 0 (aget b 0)))
+        (let [c0 (bit-and (aget b 0) 0xff)]
+          (if (< c0 0xc0)
+            c0
+            (let [t1 (cond (< c0 0xe0) (bit-and c0 0x1f) (< c0 0xf0) (bit-and c0 0x0f) (< c0 0xf8) (bit-and c0 0x07) :else 0)
+                  c (loop [i 1 c t1]
+                      (if (and (< i n) (= 0x80 (bit-and (aget b i) 0xc0)))
+                        (recur (inc i) (+ (bit-shift-left c 6) (bit-and (aget b i) 0x3f)))
+                        c))]
+              (if (or (< c 0x80) (= 0xD800 (bit-and c 0xFFFFF800)) (= 0xFFFE (bit-and c 0xFFFFFFFE)))
+                0xFFFD
+                c))))))))
 
 (defn- minmax-scalar [args coll max?]
   (if (some nil? args)
@@ -939,9 +955,15 @@
         (and (:star rc) (nil? (:table rc)))
         (if (empty? sources)
           (err "no tables specified")
+          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (> (count ss) 1)
+                                          :let [d (second ss)
+                                                c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
+                                          :when c]
+                                      [d c]))]
+            (err (str "ambiguous column name: main." (:tname dup) "." col))
           (for [s sources, i (range (:ncols s))
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
-            {:star-col [s i] :name (nth (:cols s) i)}))
+            {:star-col [s i] :name (nth (:cols s) i)})))
         (:star rc)
         (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
           (when-not s (err (str "no such table: " (:table rc))))

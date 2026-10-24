@@ -350,13 +350,13 @@
                 (err (str "no such table: " tname)))
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
-        targets (if (:cols st)
+        targets (if (:default st) [] (if (:cols st)
                   (mapv (fn [c] (let [i (.indexOf ^java.util.List lnames (lc c))]
                                   (cond (>= i 0) i
                                         (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                                         :else (err (str "table " (:name tbl) " has no column named " c)))))
                         (:cols st))
-                  (vec (range ncols)))
+                  (vec (range ncols))))
         ctx (new-ctx db sql)
         on-conflict (or (:or st) :abort)
         ;; source rows
@@ -379,7 +379,7 @@
         ;; upsert compile: scope has the table (existing row) and "excluded"
         up-ctx (when (seq upserts) ctx)
         tsrc (when (seq upserts) (table-source ctx tbl nil))
-        xsrc (when (seq upserts) (assoc (table-source ctx tbl "excluded") :rowid? false))
+        xsrc (when (seq upserts) (assoc (table-source ctx tbl "excluded") :rowid? false :qualified-only true))
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
@@ -624,14 +624,19 @@
               (if (:if-exists st) db (err (str "no such view: " (:name st)))))
       :trigger (if (:if-exists st) db (err (str "no such trigger: " (:name st)))))))
 
-(defn- exec-reindex [db st]
-  (let [n (lc (:name st))]
-    (cond
-      (nil? n) db
-      (#{"binary" "nocase" "rtrim"} n) db
-      (get-in db [:tables n]) db
-      (get-in db [:indexes n]) db
-      :else (err "unable to identify the object to be reindexed"))))
+(defn- exec-reindex
+  "Returns db, or ::empty when there is nothing to rebuild (SQLite then prepares no statement)."
+  [db st]
+  (let [n (lc (:name st))
+        idxs (vals (:indexes db))
+        hit (cond
+              (nil? n) (seq idxs)
+              (#{"binary" "nocase" "rtrim"} n)
+              (some (fn [i] (some #(= (str/upper-case n) (:coll %)) (:cols i))) idxs)
+              (get-in db [:tables n]) (some #(= (:table %) n) idxs)
+              (get-in db [:indexes n]) true
+              :else (err "unable to identify the object to be reindexed"))]
+    (if hit db ::empty)))
 
 (defn- exec-alter [db sql st]
   (let [tname (lc (:table st))
@@ -725,9 +730,11 @@
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st)
                 (:begin :commit :rollback :noop :pragma) db)]
-      (when-not (readonly? st)
-        (emit-line out (str "changes: " (:changes db2))))
-      db2)))
+      (cond
+        (= db2 ::empty) db
+        :else (do (when-not (readonly? st)
+                    (emit-line out (str "changes: " (:changes db2))))
+                  db2)))))
 
 (defn run-line
   "Runs one input line; returns [db' output]."

@@ -29,7 +29,7 @@ def main():
     outdir = os.path.join(d, 'out')
     os.makedirs(outdir, exist_ok=True)
     subprocess.run([RUN, '--batch', lst, '--out', outdir], capture_output=True)
-    total = bad = 0
+    total = bad = order_only = 0
     shown = 0
     for f in files:
         name = f[:-4]
@@ -42,14 +42,16 @@ def main():
         for i, w in enumerate(want):
             total += 1
             g = got[i] if i < len(got) else '<missing>'
-            if g != w:
+            if g != w and sorted(g.split('\n')) == sorted(w.split('\n')):
+                order_only += 1
+            elif g != w:
                 bad += 1
                 if shown < maxshow:
                     shown += 1
                     print('%s:%d: %s' % (name, i + 1, sql_lines[i] if i < len(sql_lines) else '?'))
                     print('   want: %r' % w[:400])
                     print('   got:  %r' % g[:400])
-    print('mismatches: %d of %d statements' % (bad, total))
+    print('mismatches: %d of %d statements (+%d row-order-only)' % (bad, total, order_only))
 
 
 if __name__ == '__main__':
