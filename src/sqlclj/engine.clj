@@ -1498,7 +1498,7 @@
   [tbl]
   (vals (:rows tbl)))
 
-(declare index-order-rows check-indexed-by)
+(declare index-order-rows check-indexed-by expr-dtype aff-mask)
 
 (defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
   {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
@@ -1527,7 +1527,7 @@
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
     {:alias (lc alias) :tname tname :cols cols :lcols (mapv lc cols)
-     :affs (:affs sub) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
+     :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
 
 (defn- make-source [ctx item]
   (cond
@@ -1575,7 +1575,7 @@
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
-                :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
+                :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
         :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
     (:nested item)
@@ -1595,7 +1595,7 @@
           slot (new-slot! ctx)
           cols (dedup-names (:names sub))]
       {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
-       :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
+       :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
     :else (err "unsupported FROM item")))
 
 (defn- split-and [e]
@@ -1891,6 +1891,7 @@
       {:names (vec (for [i (range n)] (str "column" (inc i))))
        :affs (vec (repeat n nil)) :colls (vec (repeat n nil)) :ecolls (vec (repeat n nil))
        :exprs (first rows)
+       :dtypes (mapv #(expr-dtype % nil) (first (:rows core)))
        :outer-refs (atom false)
        :order-info [[] []]
        :run (fn [env emit]
@@ -2157,12 +2158,29 @@
        :order-specs (mapv (fn [o] [(:coll o) (:desc o) (:nulls o)]) order-c)
        :presorted (boolean rowid-order)
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
+       :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
                                     (cons [(:alias s) (nth (:lcols s) i)]
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
                          rcols)
        :outer-refs outer-refs
        :run run}))))
+
+(defn- aff-mask ^long [aff]
+  (case aff (:integer :real :numeric) 5 :text 6 7))
+
+(defn expr-dtype
+  "sqlite3ExprDataType: bit 1 numeric, 2 text, 4 blob."
+  ^long [e c]
+  (case (:op e)
+    :collate (expr-dtype (:e e) c)
+    :unary (if (= :pos (:o e)) (expr-dtype (:e e) c) 1)
+    :lit (cond (= :blob (:kind e)) 4 (#{:int :float :hex} (:kind e)) 1 (string? (:v e)) 2 (:param e) 7 :else 0)
+    :bin (if (= :concat (:o e)) 6 1)
+    :fn 7
+    (:col :subq :cast) (if c (aff-mask (:aff c)) 7)
+    :case (reduce bit-or (long (if (:else e) (expr-dtype (:else e) nil) 0)) (map #(expr-dtype (second %) nil) (:whens e)))
+    1))
 
 (defn- compound-colls [l r]
   (mapv (fn [a b] (or a b "BINARY")) (:colls l) (:colls r)))
@@ -2184,6 +2202,9 @@
       {:names (:names l) :affs (:affs l) :colls colls :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
        :order-infos (into (or (:order-infos l) [(:order-info l)]) (or (:order-infos r) [(:order-info r)]))
+       :lm-affs (or (:lm-affs l) (:affs l))
+       :dtypes (mapv bit-or (:dtypes l) (:dtypes r))
+       :rest-mask (if (:rest-mask l) (mapv bit-or (:rest-mask l) (:dtypes r)) (:dtypes r))
        :correlated (or (:correlated l) (:correlated r))
        :rows (fn [env]
                (let [lr ((:rows l) env) rr ((:rows r) env)]
@@ -2403,6 +2424,11 @@
                                     {:ri i :coll (or (nth (:colls b) i) "BINARY") :desc false :nulls nil}))))
             cmp (when specs (compare-keys-fn (map (fn [s] [(:coll s) (:desc s) (:nulls s)]) specs)))]
         {:names names :affs (:affs b) :colls (:colls b) :ecolls (:ecolls b) :correlated (:correlated b)
+         :src-affs (mapv (fn [a m] (let [m (long (or m 0))]
+                                     (cond (and (= a :text) (pos? (bit-and m 1))) :blob
+                                           (and (#{:numeric :integer :real} a) (pos? (bit-and m 2))) :blob
+                                           :else a)))
+                         (:lm-affs b) (or (:rest-mask b) (repeat nil)))
          :rows-fn (fn [env]
                     (let [rows ((:rows b) env)
                           rows (if cmp

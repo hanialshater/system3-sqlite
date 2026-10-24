@@ -87,7 +87,7 @@
             rows (e/run-select-rows sub (object-array (inc @(:slots ctx))))
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
-                       (:names sub) (:affs sub))
+                       (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt name cols)
                  :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
