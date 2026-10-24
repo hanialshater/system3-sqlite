@@ -72,7 +72,8 @@
   (let [s (inc (long (:index-seq db)))
         t (get-in db [:tables (:table idx)])
         idx (if (and (:db t) (:auto idx)) (assoc idx :name (str (:db t) "." (:name idx))) idx)
-        [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t)) true)]
+        wr-pk (and (:without-rowid t) (:pk-auto idx))
+        [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t) :no-master wr-pk) (not wr-pk))]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
 (defn- create-table [db sql st]
@@ -649,6 +650,63 @@
               (if (:if-exists st) db (err (str "no such view: " (:name st)))))
       :trigger (if (:if-exists st) db (err (str "no such trigger: " (:name st)))))))
 
+(defn- index-stat
+  "sqlite_stat1 stat text for index idx of tbl, or nil when the index is empty."
+  [tbl idx]
+  (let [rows (filter #(or (nil? (:wf idx)) ((:wf idx) %)) (e/table-rows tbl))
+        n (count rows)
+        k (count (:cols idx))
+        colls (mapv :coll (:cols idx))]
+    (when (pos? n)
+      (let [keys (sort (e/row-comparator colls) (map #(e/index-key tbl idx %) rows))
+            eqv (fn [a b c] (or (and (nil? a) (nil? b)) (and (some? a) (some? b) (zero? (v/sql-cmp a b c)))))
+            dist (long-array k)]
+        (reduce (fn [prev cur]
+                  (when prev
+                    (let [i (loop [i 0] (if (and (< i k) (eqv (nth prev i) (nth cur i) (nth colls i))) (recur (inc i)) i))]
+                      (loop [j i] (when (< j k) (aset dist j (inc (aget dist j))) (recur (inc j))))))
+                  cur)
+                nil keys)
+        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d)))))))))
+
+(defn- exec-analyze [db sql st]
+  (let [lname (lc (:name st)) lsch (lc (:schema st))
+        target (cond
+                 (nil? lname) :all
+                 (and (nil? lsch) (#{"main" "temp"} lname)) :all
+                 (and (nil? lsch) (#{"sqlite_master" "sqlite_schema"} lname)) [:table lname]
+                 (get-in db [:indexes lname]) [:index lname]
+                 (get-in db [:tables lname]) [:table lname]
+                 :else (err (str "no such table: " (:name st))))
+        db (if (get-in db [:tables "sqlite_stat1"])
+             db
+             (create-table db "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
+                           (assoc (p/next-statement (p/parse-statements "CREATE TABLE sqlite_stat1(tbl,idx,stat)")) :internal true)))
+        tnames (case target
+                 :all (->> (vals (:tables db)) (sort-by :mseq) (map (comp lc :name))
+                           (remove #(str/starts-with? % "sqlite_")))
+                 (if (= :table (first target)) [(second target)]
+                     (let [t (:table (get-in db [:indexes (second target)]))] (if (str/starts-with? t "sqlite_") [] [t]))))
+        only-idx (when (and (vector? target) (= :index (first target))) (second target))
+        stat-rows (vec (for [tn tnames
+                             :let [tbl (get-in db [:tables tn])
+                                   idxs (table-indexes db tn)
+                                   idxs (if only-idx (filter #(= (lc (:name %)) only-idx) idxs) idxs)
+                                   n (count (:rows tbl))]
+                             r (if (and (empty? idxs) (nil? only-idx))
+                                 (when (pos? n) [[(:name tbl) nil (str n)]])
+                                 (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
+                                   [(:name tbl) (if (and (:without-rowid tbl) (:pk-auto idx)) (:name tbl) (:name idx)) stat]))]
+                         r))
+        st1 (get-in db [:tables "sqlite_stat1"])
+        drop? (fn [row] (let [t (lc (nth row 0)) i (some-> (nth row 1) lc)]
+                          (if only-idx (= i only-idx) (some #{t} tnames))))
+        kept (vec (remove drop? (vals (:rows st1))))
+        start (if (seq kept) (inc (long (last (nth kept (dec (count kept))))))  1)
+        rows (into (sorted-map) (concat (map (fn [r] [(long (last r)) r]) kept)
+                                        (map-indexed (fn [i r] (let [rid (+ start i)] [rid (conj r rid)])) stat-rows)))]
+    (assoc-in db [:tables "sqlite_stat1" :rows] rows)))
+
 (defn- exec-reindex
   "Returns db, or ::empty when there is nothing to rebuild (SQLite then prepares no statement)."
   [db st]
@@ -917,6 +975,17 @@
   (after any rows already written)."
   [db sql st ^StringBuilder out]
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be modified")))
+  (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be indexed")))
+  (when (= :create-table (:kind st))
+    (doseq [d (:cols st)
+            k (:cons d) :when (= :default (:c k))]
+      (when-not (sch/constant-default? (:e k))
+        (err (str "default value of column [" (:name d) "] is not constant")))))
   (let [st (sch/qualify-stmt db st)]
   (case (:kind st)
     :attach
@@ -997,8 +1066,13 @@
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st out)
+                :analyze (exec-analyze db sql st)
                 (:begin :commit :rollback :savepoint :release) (exec-tx db st)
-                (:noop :pragma) db)]
+                (:noop :pragma) db
+                :vacuum (do (when-let [sc (lc (:schema st))]
+                              (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
+                                (err (str "unknown database " (:schema st)))))
+                            db))]
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
