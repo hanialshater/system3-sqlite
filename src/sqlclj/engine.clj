@@ -86,6 +86,7 @@
             (let [[s i] (first hits)]
               (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
               {:slot (:slot s) :idx i :depth depth :src s
+               :alt (when (and (nil? ltq) (< i (:ncols s))) (get (:coalesce s) lname))
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
@@ -306,10 +307,14 @@
     :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
-             (let [slot (long (:slot r)) idx (long (:idx r))]
+             (let [slot (long (:slot r)) idx (long (:idx r))
+                   [aslot aidx] (:alt r)]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
-               (mk (fn [^objects env] (nth (aget env slot) idx))
+               (mk (if aslot
+                     (let [aslot (long aslot) aidx (long aidx)]
+                       (fn [^objects env] (let [x (nth (aget env slot) idx)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+                     (fn [^objects env] (nth (aget env slot) idx)))
                    :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
     :unary
     (let [o (:o e) inner (:e e)]
@@ -1498,7 +1503,7 @@
             (err (str "ambiguous column name: main." (:tname dup) "." col))
           (for [s sources, i (range (:ncols s))
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
-            {:star-col [s i] :name (nth (:cols s) i)})))
+            {:star-col [s i] :name (nth (:cols s) i) :unq true})))
         (:star rc)
         (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
           (when-not s (err (str "no such table: " (:table rc))))
@@ -1765,18 +1770,28 @@
                     s (nth srcs i)
                     jt (:join item)
                     using (cond (:using item) (:using item)
-                                (#{:natural :natural-left} jt)
+                                (#{:natural :natural-left :natural-right :natural-full} jt)
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
                                   (filter #(prev-cols (lc %)) (:cols s)))
                                 :else nil)
-                    s (if using (update s :hidden into (map lc using)) s)]
-                (recur (inc i) (assoc srcs i s) (conj conds using)))))
+                    s (if using (update s :hidden into (map lc using)) s)
+                    srcs (assoc srcs i s)
+                    ;; RIGHT/FULL JOIN ... USING: the unqualified column is coalesce(left, right)
+                    srcs (if (and using (#{:right :full :natural-right :natural-full} jt))
+                           (reduce (fn [srcs u]
+                                     (let [lu (lc u)
+                                           li (first (filter #(find-in-source (nth srcs %) lu) (range i)))
+                                           ri (find-in-source s lu)]
+                                       (if (and li ri) (assoc-in srcs [li :coalesce lu] [(:slot s) ri]) srcs)))
+                                   srcs using)
+                           srcs)]
+                (recur (inc i) srcs (conj conds using)))))
           scope {:sources sources :parent (:scope ctx)}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
-          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left} (:join item)))))
-          _ (when (some #{:right :full :natural-right :natural-full} (map :join from))
-              (err "RIGHT and FULL OUTER JOINs are not supported"))
+          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
+          right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
+          any-rj (some true? right-join)
           rcols (expand-star ctx2 sources (:cols core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
@@ -1792,9 +1807,13 @@
           ;; result column compile
           rcomp (mapv (fn [rc]
                         (if-let [[s i] (:star-col rc)]
-                          (let [sl (long (:slot s)) i (long i)]
+                          (let [sl (long (:slot s)) i (long i)
+                                [aslot aidx] (when (:unq rc) (get (:coalesce s) (nth (:lcols s) i)))]
                             (when-let [refs (:refs ctx)] (swap! refs conj [sl i]))
-                            {:f (fn [^objects env] (nth (aget env sl) i))
+                            {:f (if aslot
+                                  (let [aslot (long aslot) aidx (long aidx)]
+                                    (fn [^objects env] (let [x (nth (aget env sl) i)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+                                  (fn [^objects env] (nth (aget env sl) i)))
                              :aff (nth (:affs s) i)
                              :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
                              :col {:slot (:slot s) :idx i :depth 0}})
@@ -1834,7 +1853,7 @@
                           (cond
                             (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (condf c))
                             (seq using)
-                            (let [preds (for [u using]
+                            (let [preds (doall (for [u using]
                                           (let [lu (lc u)
                                                 left (first (filter #(find-in-source % lu) (take i sources)))
                                                 _ (when (or (nil? left) (nil? (find-in-source s lu)))
@@ -1844,7 +1863,7 @@
                                                       :aff (nth (:affs left) li) :coll (or (nth (:colls left) li) "BINARY")}
                                                 rcmp {:f (let [sl (long (:slot s)) ri (long ri)] (fn [^objects env] (nth (aget env sl) ri)))
                                                       :aff (nth (:affs s) ri) :coll (or (nth (:colls s) ri) "BINARY")}]
-                                            (:f (make-compare :eq lcmp rcmp))))]
+                                            (:f (make-compare :eq lcmp rcmp)))))]
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil))))
           nagg-before (count @aggs)
@@ -1917,6 +1936,7 @@
                            (emit row (when (seq ofs) (mapv #(% env) ofs))))))))
           ;; nested loop over sources
           scan (fn scan [^objects env k]
+                 (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
                            (if (= i nsrc)
                              (when (or (nil? where-f)
@@ -1925,18 +1945,33 @@
                              (let [slot (long (nth slots i))
                                    onf (nth on-fns i)
                                    lj (nth left-join i)
-                                   matched (boolean-array 1)]
+                                   ^java.util.HashSet rset (when rsets (nth rsets i))
+                                   matched (boolean-array 1)
+                                   cnt (long-array 1)]
                                (doseq [row ((nth scanners i) env)]
                                  (aset env slot row)
                                  (when (or (nil? onf) (let [r (onf env)] (and (not (nil? r)) (v/bool-value r))))
                                    (aset matched 0 true)
-                                   (level (inc i))))
+                                   (when rset (.add rset (aget cnt 0)))
+                                   (level (inc i)))
+                                 (aset cnt 0 (inc (aget cnt 0))))
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
                                  (level (inc i))))))]
                    (when (or (nil? where-pre) (where-pre env))
                      (doseq [sub in-pre] (doall (run-select-rows sub env)))
-                     (level 0))))
+                     (level 0)
+                     ;; RIGHT/FULL JOIN fix-up: right rows never matched, with NULLs for every table to the left
+                     (when rsets
+                       (dotimes [i nsrc]
+                         (when (nth right-join i)
+                           (let [^java.util.HashSet rset (nth rsets i)
+                                 slot (long (nth slots i))]
+                             (doseq [[j row] (map-indexed vector ((nth scanners i) env))]
+                               (when-not (.contains rset (long j))
+                                 (dotimes [q i] (aset env (long (nth slots q)) (nth null-rows q)))
+                                 (aset env slot row)
+                                 (level (inc i))))))))))))
           run
           (if is-agg
             (fn [^objects env emit]
