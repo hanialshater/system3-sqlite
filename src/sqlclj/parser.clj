@@ -73,6 +73,7 @@
 ;; ------------------------------------------------------------------ expressions
 
 (declare parse-expr parse-select parse-expr-prec parse-window-def)
+(def ^:dynamic *in-trigger* false)
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
@@ -192,7 +193,17 @@
               (let [sel (parse-select p)]
                 (expect-op p ")")
                 (node {:op :exists :select sel} s (prev-end p))))
-          (= u "RAISE") (fail! p)
+          (and (= u "RAISE") (let [n (tok-at p 1)] (and (= :op (:t n)) (= "(" (:v n)))))
+          (do (advance! p) (advance! p)
+              (let [k (let [t (advance! p)]
+                        (case (:u t) "IGNORE" :ignore "ROLLBACK" :rollback "ABORT" :abort "FAIL" :fail (syntax-error p t)))
+                    msg (when (not= k :ignore)
+                          (expect-op p ",")
+                          (let [t (tok p)]
+                            (if (= :str (:t t)) (do (advance! p) (:v t)) (fail! p))))]
+                (expect-op p ")")
+                (when-not *in-trigger* (throw (lx/sql-error "RAISE() may only be used within a trigger-program")))
+                (node {:op :raise :kind k :msg msg} s (prev-end p))))
           (reserved u) (fail! p)
           :else
           (do (advance! p)
@@ -881,6 +892,40 @@
                       _ (expect-kw p "AS")
                       sel (parse-select p)]
                   {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :select sel})
+                (and (not unique) (accept-kw p "TRIGGER"))
+                (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+                      name-s (volatile! (:s (tok p)))
+                      n1 (parse-nm p)
+                      [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
+                      timing (cond (accept-kw p "BEFORE") :before
+                                   (accept-kw p "AFTER") :after
+                                   (at-kw? p "INSTEAD") (do (advance! p) (expect-kw p "OF") :instead)
+                                   :else :before)
+                      [event cols] (cond (accept-kw p "DELETE") [:delete nil]
+                                         (accept-kw p "INSERT") [:insert nil]
+                                         (accept-kw p "UPDATE")
+                                         (if (accept-kw p "OF")
+                                           [:update (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
+                                           [:update nil])
+                                         :else (fail! p))
+                      _ (expect-kw p "ON")
+                      t1 (parse-nm p)
+                      [tsch tname] (if (accept-op p ".") [t1 (parse-nm p)] [nil t1])
+                      _ (when (accept-kw p "FOR") (expect-kw p "EACH") (expect-kw p "ROW"))
+                      wh (when (accept-kw p "WHEN") (binding [*in-trigger* true] (parse-expr p)))
+                      _ (expect-kw p "BEGIN")
+                      body (binding [*in-trigger* true]
+                             (loop [acc []]
+                               (cond
+                                 (accept-kw p "END") acc
+                                 :else (let [t (tok p)
+                                             st (case (:u t)
+                                                  ("SELECT" "VALUES" "INSERT" "REPLACE" "UPDATE" "DELETE" "WITH") (parse-statement* p)
+                                                  (fail! p))]
+                                         (expect-op p ";")
+                                         (recur (conj acc st))))))]
+                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine
+                   :timing timing :event event :cols cols :table tname :table-schema tsch :when wh :body body})
                 :else (fail! p))))
         "DROP"
         (do (advance! p)
