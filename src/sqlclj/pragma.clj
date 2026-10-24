@@ -71,9 +71,10 @@
       (vec (keep-indexed
             (fn [i c]
               (let [pkpos (let [j (.indexOf ^java.util.List pks i)] (if (neg? j) 0 (inc j)))
-                    hidden (long (or (:hidden-kind c) 0))]
+                    hidden (long (or (:hidden-kind c) 0))
+                    cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long i) (:name c) (or (:type c) "") (if (:notnull c) 1 0)
+                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (:notnull c) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))

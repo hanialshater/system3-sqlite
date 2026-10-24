@@ -18,6 +18,8 @@
 
 (defn lc ^String [s] (when s (str/lower-case s)))
 
+(def ^:dynamic *in-trigger* false)
+
 ;; ====================================================================== compile context
 
 (defrecord Ctx [db sql scope slots aggs alias-cols agg-ok])
@@ -1581,7 +1583,7 @@
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
-        :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
+        :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name) *in-trigger* (str "main." name) :else name)))))
     (:nested item)
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))

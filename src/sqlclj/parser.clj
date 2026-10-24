@@ -86,7 +86,7 @@
         names (loop [acc []]
                 (let [t (tok p)]
                   (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (reserved (:u t)))))
+                           (or (= :qid (:t t)) (not (or (reserved (:u t)) (= "GENERATED" (:u t))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
     (when (seq names)
@@ -674,8 +674,13 @@
                    (kw? t "REFERENCES")
                    (do (advance! p)
                        (recur (conj acc (assoc (parse-fk-tail p) :c :fk :from [name]))))
-                   (kw? t "GENERATED") (fail! p)
-                   (kw? t "AS") (fail! p)
+                   (or (kw? t "GENERATED") (kw? t "AS"))
+                   (do (when (accept-kw p "GENERATED") (expect-kw p "ALWAYS"))
+                       (expect-kw p "AS") (expect-op p "(")
+                       (let [e (parse-expr p)]
+                         (expect-op p ")")
+                         (let [stored (cond (accept-kw p "STORED") true (accept-kw p "VIRTUAL") false :else false)]
+                           (recur (conj acc {:c :generated :e e :stored stored})))))
                    :else (do (when cname (fail! p)) acc))))]
     {:name name :type type :cons cons :s cs :e (prev-end p)}))
 
@@ -683,6 +688,7 @@
   (expect-op p "(")
   (let [cols (loop [acc []]
                (let [e (parse-expr p)
+                     e (if (and (= :lit (:op e)) (string? (:v e)) (nil? (:kind e))) (assoc e :op :col :name (:v e)) e)
                      [e coll] (if (= :collate (:op e)) [(:e e) (:coll e)] [e nil])
                      desc (cond (accept-kw p "DESC") true (accept-kw p "ASC") false :else false)
                      acc (conj acc {:e e :coll coll :desc desc})]

@@ -77,6 +77,48 @@
         [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t) :no-master wr-pk) (not wr-pk))]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
+(def ^:private nondeterministic-fns #{"random" "randomblob" "changes" "last_insert_rowid" "total_changes"
+                                       "current_time" "current_date" "current_timestamp"})
+
+(defn- check-gen-expr [ast]
+  (doseq [x (tree-seq coll? seq ast) :when (map? x)]
+    (case (:op x)
+      :fn (when (nondeterministic-fns (lc (:name x)))
+            (err "non-deterministic functions prohibited in generated columns"))
+      (:subq :exists) (err "subqueries prohibited in generated columns")
+      nil)))
+
+(defn- check-gen-loops [cols]
+  (let [names (mapv (comp lc :name) cols)
+        refs (fn [c] (set (for [x (tree-seq coll? seq (:e (:gen c))) :when (and (map? x) (= :col (:op x)) (nil? (:table x)))] (lc (:name x)))))
+        state (volatile! {})]
+    (letfn [(visit [i]
+              (let [st (get @state i)]
+                (cond (= st :done) nil
+                      (= st :busy) true
+                      :else (do (vswap! state assoc i :busy)
+                                (let [c (nth cols i)
+                                      loop? (when (:gen c)
+                                              (some (fn [n] (let [j (.indexOf ^java.util.List names n)]
+                                                              (when (and (>= j 0) (visit j))
+                                                                (err (str "generated column loop on \"" (:name c) "\"")))))
+                                                    (refs c)))]
+                                  (vswap! state assoc i :done)
+                                  nil)))))]
+      (dotimes [i (count cols)] (visit i)))))
+
+(defn- fill-generated
+  "Computes the generated columns of row (rowid last) in column order."
+  [tbl row]
+  (if (:has-gen tbl)
+    (reduce (fn [row ci]
+              (let [c (nth (:cols tbl) ci)]
+                (if-let [f (:f (:gen c))]
+                  (assoc row ci (v/apply-affinity (f row) (:aff c)))
+                  row)))
+            row (range (count (:cols tbl))))
+    row))
+
 (defn- create-table [db sql st]
   (let [name (:name st) lname (lc name)]
     (cond
@@ -119,8 +161,18 @@
                                             (when (:ps de) (subs sql (:ps de) (:pe de))))
                             :coll (when-let [c (:coll (last (filter #(= :collate (:c %)) cons)))] (e/check-coll c))
                             :pk (first (filter #(= :pk (:c %)) cons))
-                            :unique (filter #(= :unique (:c %)) cons)}))
+                            :unique (filter #(= :unique (:c %)) cons)
+                            :gen (when-let [g (last (filter #(= :generated (:c %)) cons))]
+                                   {:e (:e g) :stored (:stored g)})
+                            :hidden-kind (when-let [g (last (filter #(= :generated (:c %)) cons))]
+                                           (if (:stored g) 3 2))}))
                        defs)
+            _ (doseq [c cols :when (:gen c)]
+                (when (:default c) (err "cannot use DEFAULT on a generated column"))
+                (when (:pk c) (err "generated columns cannot be part of the PRIMARY KEY")))
+            _ (when (and (seq cols) (every? :gen cols)) (err "must have at least one non-generated column"))
+            _ (doseq [c cols :when (:gen c)]
+                (check-gen-expr (:e (:gen c))))
             col-pks (keep-indexed (fn [i c] (when (:pk c) i)) cols)
             tpks (filter #(= :pk (:c %)) (:tcons st))
             _ (when (> (+ (count col-pks) (count tpks)) 1)
@@ -132,6 +184,8 @@
                           (seq tpks) (mapv (fn [ic]
                                              (when-not (= :col (:op (:e ic)))
                                                (err "expressions prohibited in PRIMARY KEY and UNIQUE constraints"))
+                                             (when (:gen (nth cols (col-idx (:name (:e ic)))))
+                                               (err "generated columns cannot be part of the PRIMARY KEY"))
                                              {:i (col-idx (:name (:e ic))) :desc (:desc ic) :coll (:coll ic)})
                                            (:cols (first tpks)))
                           :else nil)
@@ -156,6 +210,11 @@
             db (assoc-in db [:tables lname] tbl)
             ;; compile checks against the table
             tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck) :check)))) checks))
+            tbl (if (some :gen cols)
+                  (do (check-gen-loops cols)
+                      (assoc tbl :has-gen true
+                             :cols (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) cols)))
+                  tbl)
             db (assoc-in db [:tables lname] tbl)
             ;; autoindexes: PK (non-ipk) and UNIQUE in declaration order
             uniq-defs (concat
@@ -388,7 +447,7 @@
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
-        (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) tname))))))
+        (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
 (defn- end-target [db tkey tbl] (if (:view tbl) (update db :tables dissoc tkey) db))
@@ -408,13 +467,16 @@
         vw (:view tbl)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
+        ngen (count (filter :gen (:cols tbl)))
         targets (if (:default st) [] (if (:cols st)
                   (mapv (fn [c] (let [i (.indexOf ^java.util.List lnames (lc c))]
+                                  (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                                    (err (str "cannot INSERT into generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                   (cond (>= i 0) i
                                         (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                                         :else (err (str "table " (:name tbl) " has no column named " c)))))
                         (:cols st))
-                  (vec (range ncols))))
+                  (vec (remove #(:gen (nth (:cols tbl) %)) (range ncols)))))
         ctx (new-ctx db sql)
         on-conflict (or (:or st) :abort)
         ;; source rows
@@ -425,13 +487,13 @@
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
                                   (err (str (count r) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " ncols " columns but " (count r) " values were supplied")))))
+                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count r) " values were supplied")))))
                             (mapv (fn [r] (mapv #(:f (e/cx ctx %)) r)) rs))
                (:select st) (let [sub (e/compile-select ctx (:select st))]
                               (when (not= (count (:names sub)) (count targets))
                                 (if (:cols st)
                                   (err (str (count (:names sub)) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " ncols " columns but " (count (:names sub)) " values were supplied"))))
+                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
                               sub))
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
@@ -448,6 +510,8 @@
                                        :sets-c (when (= :update (:do u))
                                                  (vec (for [[cols ex] (:sets u), c cols]
                                                         [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                           (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                                                             (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                                            (if (neg? i) (err (str "no such column: " c)) i))
                                                          (:f (e/cx uctx ex))])))
                                        :where-c (when (:where u) (:f (e/cx uctx (:where u))))
@@ -485,6 +549,7 @@
               raw-row row
               row (reduce (fn [row ci] (if (= ci ipk) row (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
                           row (range ncols))
+              row (fill-generated tbl (assoc row ncols rid))
               bts (trg/matching db (:vkey tbl tkey) :before :insert nil)
               bres (if (seq bts) (try-fire db bts tbl nil (assoc row ncols rid)) db)
               ignored (= bres ::ignore)
@@ -530,6 +595,7 @@
                                              (if (instance? Long x) x (err "datatype mismatch")))
                                        crid)
                               nrow (if ipk (assoc nrow ipk nrid) nrow)
+                              nrow (fill-generated tbl (assoc nrow ncols nrid))
                               nrow (reduce (fn [r ci] (if (= ci ipk) r (assoc r ci (apply-col-affinity tbl ci (nth r ci)))))
                                            nrow (map first (:sets-c up)))
                               [nrow _] (check-row db sql tbl nrow :abort)
@@ -575,6 +641,8 @@
                         :let [f (:f (e/cx sctx ex))]
                         c cols]
                     [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                       (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                         (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                        (cond (>= i 0) i
                              (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                              :else (err (str "no such column: " c))))
@@ -609,6 +677,7 @@
                                    (let [x (v/apply-affinity rv :integer)]
                                      (if (instance? Long x) x (err "datatype mismatch")))))
                        row (if (:ipk tbl) (assoc row (:ipk tbl) rid-new) row)
+                       row (fill-generated tbl (assoc row ncols rid-new))
                        changed (set (map first newvals))
                        row (reduce (fn [row ci] (if (or (= ci (:ipk tbl)) (not (changed ci))) row
                                                     (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
@@ -889,7 +958,9 @@
                         db (sch/free-page db (sch/schema-of cur) (:rootpage cur))]
                     (assoc-in db [objs-key key] (assoc cur :mseq (:mseq o) :rootpage (:rootpage o)))))
         db1 (restore db1 :tables tname old)
-        db1 (assoc-in db1 [:tables tname :rows] (into (sorted-map) (map (fn [[rid r]] [rid (row-fn r)]) (:rows old))))
+        db1 (let [nt (get-in db1 [:tables tname])]
+              (assoc-in db1 [:tables tname :rows]
+                        (into (sorted-map) (map (fn [[rid r]] [rid (fill-generated nt (row-fn r))]) (:rows old)))))
         db1 (reduce (fn [db [k i]]
                       (if-let [o (by-name (lc (:name i)))] (restore db :indexes k o) db))
                     db1 (filter (fn [[_ i]] (= (:table i) tname)) (:indexes db1)))]
@@ -966,6 +1037,9 @@
             cons (:cons d)
             _ (when (some #(= :pk (:c %)) cons) (err "Cannot add a PRIMARY KEY column"))
             _ (when (some #(= :unique (:c %)) cons) (err "Cannot add a UNIQUE column"))
+            _ (when (some #(and (= :generated (:c %)) (:stored %)) cons)
+                (.append out "# raise(ABORT,'cannot add a STORED column')\n")
+                (err "cannot add a STORED column"))
             dflt (:e (first (filter #(= :default (:c %)) cons)))
             notnull (some #(= :notnull (:c %)) cons)
             has-check (some #(= :check (:c %)) cons)
@@ -1024,9 +1098,14 @@
           (when (or (some #(= (:col %) i) (:cols ix))
                     (and (:where-ast ix) (some #(and (map? %) (= :col (:op %)) (= (lc (:name %)) (lc (:name c)))) (tree-seq coll? seq (:where-ast ix)))))
             (err (str "error in index " (:name ix) " after drop column: no such column: " (:name c)))))
-        (rebuild-table db tname new-sql
-                       (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
-                       (fn [ix] (:sql ix)))))))
+        (try
+          (rebuild-table db tname new-sql
+                         (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
+                         (fn [ix] (:sql ix)))
+          (catch clojure.lang.ExceptionInfo ex
+            (if-let [m (:sql-error (ex-data ex))]
+              (err (str "error in table " (:name tbl) " after drop column: " m))
+              (throw ex))))))))
 
 ;; ====================================================================== driver
 
@@ -1196,7 +1275,7 @@
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 
-(reset! trg/exec-fn exec-statement)
+(reset! trg/exec-fn (fn [db sql st out] (binding [*prepared* (volatile! false)] (exec-statement db sql st out))))
 
 (defn run-line
   "Runs one input line; returns [db' output]."

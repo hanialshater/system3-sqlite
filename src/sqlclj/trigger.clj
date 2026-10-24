@@ -62,7 +62,8 @@
              true)]
     (if-not ok
       db
-      (binding [*active* (conj *active* (lc (:name trig)))
+      (binding [e/*in-trigger* true
+                *active* (conj *active* (lc (:name trig)))
                 *depth* (inc *depth*)]
         (when (> *depth* 1000) (err "too many levels of trigger recursion"))
         (when (and *budget* (> (swap! *budget* inc) 3000)) (err "too many levels of trigger recursion"))
