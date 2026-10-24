@@ -1,0 +1,40 @@
+changes: 0
+changes: 0
+changes: 1
+# c0|c1
+NULL|row
+~~~
+# c0|c1
+NULL|row
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# 1
+1
+~~~
+# 1
+1
+~~~
+# 1
+1
+~~~
+# 1
+1
+~~~
+# 1
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# c1 <= c0|c0 >= c1
+1|0
+~~~
+# 2
+~~~
+# 3
+3
+~~~

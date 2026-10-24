@@ -1,0 +1,271 @@
+changes: 0
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 4
+changes: 4
+changes: 5
+changes: 5
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+# table|rowid|parent|fkid
+~~~
+changes: 3
+# table|rowid|parent|fkid
+c1|87|p1|0
+c1|90|p1|0
+~~~
+# table|rowid|parent|fkid
+c1|87|p1|0
+c1|90|p1|0
+~~~
+# table|rowid|parent|fkid
+~~~
+# table|rowid|parent|fkid
+c1|87|p1|0
+c1|90|p1|0
+~~~
+# table|rowid|parent|fkid
+~~~
+# table|rowid|parent|fkid
+~~~
+error: no such table: temp.c2
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c5|1|p1|0
+c5|3|p1|0
+~~~
+# table|rowid|parent|fkid
+c5|1|p1|0
+c5|3|p1|0
+~~~
+# table|rowid|parent|fkid
+~~~
+# id|seq|table|from|to|on_update|on_delete|match
+0|0|p1|x|NULL|NO ACTION|NO ACTION|NONE
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c9|1|p1|0
+c9|3|p1|0
+~~~
+# table|rowid|parent|fkid
+c9|1|p1|0
+c9|3|p1|0
+~~~
+# table|rowid|parent|fkid
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c2|76|p2|0
+c2|79|p2|0
+~~~
+# table|rowid|parent|fkid
+c2|76|p2|0
+c2|79|p2|0
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c6|1|p2|0
+c6|3|p2|0
+~~~
+# table|rowid|parent|fkid
+c6|1|p2|0
+c6|3|p2|0
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c10|1|p2|0
+c10|3|p2|0
+~~~
+# table|rowid|parent|fkid
+c10|1|p2|0
+c10|3|p2|0
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c3|65|p3|0
+c3|68|p3|0
+~~~
+# table|rowid|parent|fkid
+c3|65|p3|0
+c3|68|p3|0
+~~~
+changes: 3
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c7|1|p3|0
+c7|3|p3|0
+c7|4|p3|0
+c7|6|p3|0
+~~~
+# table|rowid|parent|fkid
+c7|1|p3|0
+c7|3|p3|0
+c7|4|p3|0
+c7|6|p3|0
+~~~
+changes: 6
+changes: 6
+# table|rowid|parent|fkid
+c11|1|p3|0
+c11|3|p3|0
+c11|4|p3|0
+c11|6|p3|0
+~~~
+# table|rowid|parent|fkid
+c11|1|p3|0
+c11|3|p3|0
+c11|4|p3|0
+c11|6|p3|0
+~~~
+changes: 6
+changes: 3
+# table|rowid|parent|fkid
+c4|54|p4|0
+c4|56|p4|0
+~~~
+# table|rowid|parent|fkid
+c4|54|p4|0
+c4|56|p4|0
+~~~
+changes: 3
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+c8|1|p4|0
+c8|3|p4|0
+c8|6|p4|0
+~~~
+# table|rowid|parent|fkid
+c8|1|p4|0
+c8|3|p4|0
+c8|6|p4|0
+~~~
+changes: 6
+changes: 6
+# table|rowid|parent|fkid
+c12|1|p4|0
+c12|3|p4|0
+c12|6|p4|0
+~~~
+# table|rowid|parent|fkid
+c12|1|p4|0
+c12|3|p4|0
+c12|6|p4|0
+~~~
+changes: 6
+changes: 6
+changes: 6
+# table|rowid|parent|fkid
+c14|1|p4|0
+c14|3|p4|0
+c14|6|p4|0
+c13|1|p3|0
+c13|2|p3|0
+c13|3|p3|0
+c13|4|p3|0
+c13|5|p3|0
+c13|6|p3|0
+~~~
+# table|rowid|parent|fkid
+c14|1|p4|0
+c14|3|p4|0
+c14|6|p4|0
+~~~
+# table|rowid|parent|fkid
+c13|1|p3|0
+c13|2|p3|0
+c13|3|p3|0
+c13|4|p3|0
+c13|5|p3|0
+c13|6|p3|0
+~~~
+changes: 6
+changes: 6
+changes: 1
+# table|rowid|parent|fkid
+c19|1|p5|0
+~~~
+changes: 1
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+c20|1|p5|0
+~~~
+changes: 1
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+c22|1|p6|0
+~~~
+changes: 1
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+k1|2|s1|0
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+k2|3|s1|0
+~~~

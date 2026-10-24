@@ -1,0 +1,33 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+# page_count
+12
+~~~
+changes: 1
+# freelist_count
+9
+# page_count
+12
+~~~
+~~~
+# freelist_count
+0
+# page_count
+3
+~~~
+# integrity_check
+ok
+~~~
+changes: 1
+# freelist_count
+0
+~~~
+changes: 1
+changes: 1
+# freelist_count
+9
+# freelist_count
+0
+~~~

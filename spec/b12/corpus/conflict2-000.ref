@@ -1,0 +1,661 @@
+changes: 0
+changes: 0
+# c
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+3
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+# c
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+3
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+# c
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+3
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+3
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+4
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+3
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+5
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+5
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+5
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 0
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~
+# c
+5
+~~~
+# x
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+~~~
+# c
+~~~
+# x
+1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+error: NOT NULL constraint failed: t1.c
+~~~
+error: cannot commit - no transaction is active
+~~~
+# c
+~~~
+# x
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# c
+1
+2
+1
+4
+changes: 1
+changes: 1
+~~~

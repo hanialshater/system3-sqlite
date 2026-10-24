@@ -1,0 +1,15 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 3
+changes: 3
+changes: 2
+~~~
+# table|rowid|parent|fkid|'|'
+t1|9|t2|0||
+t3|2|t1|0||
+~~~
+# table|rowid|parent|fkid|'|'
+t1|9|t2|0||
+t3|2|t1|0||
+~~~

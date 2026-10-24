@@ -1,0 +1,17 @@
+~~~
+changes: 0
+changes: 3
+changes: 3
+# x|y
+1|abc
+2|ABC
+3|Abc
+~~~
+# x|y
+1|abc
+2|ABC
+3|Abc
+~~~
+# x|y
+1|abc
+~~~

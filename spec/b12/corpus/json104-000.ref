@@ -1,0 +1,93 @@
+# json_patch('[1,2,3]','{"x":null}')
+{}
+~~~
+# json_patch('[1,2,3]','{"x":null,"y":1,"z":null}')
+{"y":1}
+~~~
+# json_patch('{}','{"a":{"bb":{"ccc":null}}}')
+{"a":{"bb":{}}}
+~~~
+# json_patch('{}','{"a":{"bb":{"ccc":[1,null,3]}}}')
+{"a":{"bb":{"ccc":[1,null,3]}}}
+~~~
+# json_patch('{}','{"a":{"bb":{"ccc":[1,{"dddd":null},3]}}}')
+{"a":{"bb":{"ccc":[1,{"dddd":null},3]}}}
+~~~
+# json_patch('{"a":"b"}','{"a":"c"}')
+{"a":"c"}
+~~~
+# coalesce(json_patch(null,'{"a":"c"}'), 'real-null')
+real-null
+~~~
+# json_patch('{"a":"b"}','{"b":"c"}')
+{"a":"b","b":"c"}
+~~~
+# json_patch('{"a":"b"}','{"a":null}')
+{}
+~~~
+# json_patch('{"a":"b","b":"c"}','{"a":null}')
+{"b":"c"}
+~~~
+# json_patch('{"a":["b"]}','{"a":"c"}')
+{"a":"c"}
+~~~
+# json_patch('{"a":"c"}','{"a":["b"]}')
+{"a":["b"]}
+~~~
+# json_patch('{"a":{"b":"c"}}','{"a":{"b":"d","c":null}}')
+{"a":{"b":"d"}}
+~~~
+# json_patch('{"a":[{"b":"c"}]}','{"a":[1]}')
+{"a":[1]}
+~~~
+# json_patch('["a","b"]','["c","d"]')
+["c","d"]
+~~~
+# json_patch('{"a":"b"}','["c"]')
+["c"]
+~~~
+# json_patch('{"a":"foo"}','null')
+null
+~~~
+# coalesce(json_patch('{"a":"foo"}',null), 'real-null')
+real-null
+~~~
+# json_patch('{"a":"foo"}','"bar"')
+"bar"
+~~~
+# json_patch('{"e":null}','{"a":1}')
+{"e":null,"a":1}
+~~~
+# json_patch('[1,2]','{"a":"b","c":null}')
+{"a":"b"}
+~~~
+# json_patch('{}','{"a":{"bb":{"ccc":null}}}')
+{"a":{"bb":{}}}
+~~~
+# json_patch('{"x":{"one":1}}','{"x":{"two":2},"x":"three"}')
+{"x":"three"}
+~~~
+changes: 0
+changes: 1
+# x
+{"a":1,"b":2}
+~~~
+changes: 1
+# x
+{"a":1,"b":2,"c":3}
+~~~
+# json_extract(x, '$.b')
+2
+# json_extract(x, '$."b"')
+2
+~~~
+changes: 1
+# json_extract(x, '$.b')
+555
+# json_extract(x, '$."b"')
+555
+~~~
+changes: 1
+# json_extract(x, '$."d"')
+4
+~~~

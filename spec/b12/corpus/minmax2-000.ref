@@ -1,0 +1,232 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# y
+1
+2
+3
+4
+5
+~~~
+# min(x)
+1
+~~~
+# max(x)
+20
+~~~
+changes: 1
+~~~
+# min(x)
+1
+~~~
+# max(x)
+20
+~~~
+# max(y)
+5
+~~~
+changes: 1
+changes: 20
+~~~
+# min(a)
+1
+~~~
+# max(a)
+20
+~~~
+changes: 1
+~~~
+# max(a)
+21
+~~~
+changes: 1
+~~~
+# b
+999
+~~~
+# coalesce(min(x+0),-1)|coalesce(max(x+0),-1)
+1|20
+~~~
+# y|coalesce(sum(x),0)
+1|1
+2|5
+3|22
+4|92
+5|90
+6|0
+~~~
+# y|count(x)|count(*)
+1|1|1
+2|2|3
+3|4|5
+4|8|9
+5|5|6
+6|0|1
+~~~
+changes: 1
+# coalesce(min(x),999)
+999
+~~~
+# coalesce(min(rowid),999)
+999
+~~~
+# coalesce(max(x),999)
+999
+~~~
+# coalesce(max(rowid),999)
+999
+~~~
+# coalesce(max(rowid),999)
+999
+~~~
+# min(a)
+1
+~~~
+# max(a)
+22
+~~~
+# min(a)
+1
+~~~
+# max(a)
+~~~
+# min(x)
+NULL
+~~~
+# max(x)
+~~~
+# max(a)
+~~~
+# max(x)
+20
+~~~
+# max(x)
+20
+~~~
+# min(x)
+1
+~~~
+# min(x)
+1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# min(a)|max(a)
+1234|34
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# min(a)|max(a)
+34|1234
+~~~
+# max(rowid)
+3
+~~~
+# max(yy)
+3
+~~~
+# max(yy)
+NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# coalesce(min(x),-1)
+1
+~~~
+# max(x)
+2
+~~~
+changes: 1
+# coalesce(min(x),-1)
+1
+~~~
+# max(x)
+2
+~~~
+changes: 2
+# count(*)
+1
+~~~
+# count(x)
+0
+~~~
+# (SELECT min(x) FROM t6)|(SELECT max(x) FROM t6)
+NULL|NULL
+~~~
+# min(x)|max(x)
+NULL|NULL
+~~~
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+changes: 64
+changes: 128
+changes: 256
+changes: 512
+# count(*)
+1024
+~~~
+# count(x)
+0
+~~~
+# (SELECT min(x) FROM t6)|(SELECT max(x) FROM t6)
+NULL|NULL
+~~~
+# min(x)|max(x)
+NULL|NULL
+~~~
+changes: 512
+changes: 5
+changes: 5
+# max(b+c)
+21
+~~~
+# a|max(b+c)
+4|21
+~~~
+# max(b+c)
+21
+~~~
+# max(c+b)
+21
+~~~
+# a|min(b+c)
+3|5
+~~~
+# min(b+c)
+5
+~~~
+# min(c+b)
+5
+~~~
+changes: 2
+# a|min(b+c)
+3|5
+~~~

@@ -1,0 +1,24 @@
+# journal_mode
+memory
+changes: 0
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+~~~
+# integrity_check
+ok
+# count(*)
+64
+~~~
+# journal_mode
+memory
+~~~
+# integrity_check
+ok
+# count(*)
+64
+~~~

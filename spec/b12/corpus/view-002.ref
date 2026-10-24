@@ -1,0 +1,92 @@
+error: no such table: v1
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|x|INTEGER|0|NULL|0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|x|INTEGER|0|NULL|0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|x|INTEGER|0|NULL|0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|x|INTEGER|0|NULL|0
+~~~
+changes: 0
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: main.t1
+~~~
+error: syntax error after column name "y"
+~~~
+changes: 0
+changes: 0
+error: no such table: main.t1
+~~~
+changes: 0
+changes: 0
+error: no such table: main.t1
+~~~
+error: no such view: t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: v1
+~~~
+error: no such table: v1
+~~~
+error: no such table: main.v1
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# y|a
+22|2
+33|3
+44|4
+55|5
+~~~
+changes: 1
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# id|a|b
+1|2|3
+~~~

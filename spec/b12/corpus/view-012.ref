@@ -1,0 +1,13 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|a|INT|0|NULL|0
+1|b|BLOB|0|NULL|0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|a|INT|0|NULL|0
+1|b|BLOB|0|NULL|0
+~~~

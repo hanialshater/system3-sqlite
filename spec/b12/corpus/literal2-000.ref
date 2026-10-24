@@ -1,0 +1,28 @@
+# 123_456
+123456
+~~~
+error: unrecognized token: "123__456"
+~~~
+# 1.0e1_2
+1000000000000.0
+~~~
+# 0xFF_FF
+65535
+~~~
+# 0xFF_EF
+65519
+~~~
+error: unrecognized token: "0xFF__EF"
+~~~
+error: unrecognized token: "0xFFEF_"
+~~~
+# 0XFF_FF
+65535
+~~~
+# 0XFF_EF
+65519
+~~~
+error: unrecognized token: "0XFF__EF"
+~~~
+error: unrecognized token: "0XFFEF_"
+~~~

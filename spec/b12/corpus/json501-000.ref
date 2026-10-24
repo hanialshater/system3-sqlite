@@ -1,0 +1,177 @@
+# x->>'a'|json(x)|json_valid(x)|NOT json_error_position(x)
+5|{"a":5,"b":6}|0|1
+~~~
+# '[7,null,{a:5,b:6},[8,9]]'->>'$[2].b'
+6
+~~~
+# '{ $123 : 789 }'->>'$."$123"'
+789
+~~~
+# '{ _123$xyz : 789 }'->>'$."_123$xyz"'
+789
+~~~
+# '{ MNO_123$xyz : 789 }'->>'$."MNO_123$xyz"'
+789
+~~~
+# json('{ MNO_123$xyz : 789 }')
+{"MNO_123$xyz":789}
+~~~
+# json('{ MNO_123/xyz : 789 }')
+error: malformed JSON
+~~~
+# '{ MNO_123æxyz : 789 }'->>'MNO_123æxyz'
+789
+~~~
+# x->>'b'|json(x)|json_valid(x)|NOT json_error_position(x)
+6|{"a":5,"b":6}|0|1
+~~~
+# '{a:5, b:6 , }'->>'b'
+6
+~~~
+# '{a:5, b:6 ,, }'->>'b'
+error: malformed JSON
+~~~
+# '{a:5, b:6, ,}'->>'b'
+error: malformed JSON
+~~~
+# x->>1|json(x)|json_valid(x)|NOT json_error_position(x)
+6|[5,6]|0|1
+~~~
+# '[5, 6 , ]'->>1
+6
+~~~
+# '[5, 6,,]'->>1
+error: malformed JSON
+~~~
+# '[5, 6 , , ]'->>1
+error: malformed JSON
+~~~
+# x->>'a'|json(x)|json_valid(x)|NOT json_error_position(x)
+abcd|{"a":"abcd"}|0|1
+~~~
+# '{b: 123, ''a'': ''ab\''cd''}'->>'a'
+ab'cd
+~~~
+# x->>'a'|json(x)|json_valid(x)|NOT json_error_position(x)
+abcxyz|{"a":"abcxyz"}|0|1
+~~~
+# ('{a: "abc'||char(0x5c,0x0d)||'xyz"}')->>'a'
+abcxyz
+~~~
+# ('{a: "abc'||char(0x5c,0x0d,0x0a)||'xyz"}')->>'a'
+abcxyz
+~~~
+# ('{a: "abc'||char(0x5c,0x2028)||'xyz"}')->>'a'
+abcxyz
+~~~
+# ('{a: "abc'||char(0x5c,0x2029)||'xyz"}')->>'a'
+abcxyz
+~~~
+# ('{a: "abc'||char(0x5c,0x27)||'xyz"}')->>'a'
+abc'xyz
+~~~
+# ('{a: "abc'||char(0x5c,0x22)||'xyz"}')->>'a'
+abc"xyz
+~~~
+# ('{a: "abc'||char(0x5c,0x5c)||'xyz"}')->>'a'
+abc\xyz
+~~~
+# hex(('{a: "abc\bxyz"}')->>'a')
+6162630878797A
+~~~
+# hex(('{a: "abc\f\n\r\t\vxyz"}')->>'a')
+6162630C0A0D090B78797A
+~~~
+# hex(('{a: "abc\0xyz"}')->>'a')
+6162630078797A
+~~~
+# '{a: "abc\x35\x4f\x6Exyz"}'->>'a'
+abc5Onxyz
+~~~
+# '{a: "\x6a\x6A\x6b\x6B\x6c\x6C\x6d\x6D\x6e\x6E\x6f\x6F"}'->>'a'
+jjkkllmmnnoo
+~~~
+# '{a: 0x0}'->>'a'
+0
+~~~
+# '{a: -0x0}'->>'a'
+0
+~~~
+# '{a: +0x0}'->>'a'
+0
+~~~
+# '{a: 0xabcdef}'->>'a'
+11259375
+~~~
+# '{a: -0xaBcDeF}'->>'a'
+-11259375
+~~~
+# '{a: +0xABCDEF}'->>'a'
+11259375
+~~~
+# x->>'x'|json(x)
+4.0|{"x":4.0}
+~~~
+# x->>'x'|json(x)
+4.0|{"x":4.0}
+~~~
+# x->>'x'|json(x)
+-4.0|{"x":-4.0}
+~~~
+# x->>'x'|json(x)
+0.5|{"x":0.5}
+~~~
+# x->>'x'|json(x)
+-0.5|{"x":-0.5}
+~~~
+# x->>'x'|json(x)
+0.5|{"x":0.5}
+~~~
+# x->>'x'|json(x)
+4.0|{"x":4.0e0}
+~~~
+# x->>'x'|json(x)
+40.0|{"x":4.0e1}
+~~~
+# x->>'x'|json(x)
+-400.0|{"x":-4.0e2}
+~~~
+# x->>'x'|json(x)
+500.0|{"x":0.5e3}
+~~~
+# x->>'x'|json(x)
+-0.05|{"x":-0.5e-1}
+~~~
+# x->>'x'|json(x)
+0.005|{"x":0.5e-2}
+~~~
+# x->>'x'|json(x)
+Inf|{"x":9e999}
+~~~
+# x->>'x'|json(x)
+-Inf|{"x":-9e999}
+~~~
+# x->>'x'|json(x)
+Inf|{"x":9e999}
+~~~
+# x->>'x'|json(x)
+NULL|{"x":null}
+~~~
+# '{a: +123}'->'a'
+123
+~~~
+# (char(0x09,0x0a,0x0b,0x0c,0x0d,0x20,0xa0,0x2028,0x2029) || '{a: "xyz"}')->>'a'
+xyz
+~~~
+# ('{a:' || char(0x09,0x0a,0x0b,0x0c,0x0d,0x20,0xa0,0x2028,0x2029) || '"xyz"}')->>'a'
+xyz
+~~~
+# (char(0x1680,0x2000,0x2001,0x2002,0x2003,0x2004,0x2005, 0x2006,0x2007,0x2008,0x2009,0x200a,0x3000,0xfeff) || '{a: "xyz"}')->>'a'
+xyz
+~~~
+# ('{a: ' ||char(0x1680,0x2000,0x2001,0x2002,0x2003,0x2004,0x2005, 0x2006,0x2007,0x2008,0x2009,0x200a,0x3000,0xfeff) || ' "xyz"}')->>'a'
+xyz
+~~~
+# json('{x:''a "b" c''}')
+{"x":"a \"b\" c"}
+~~~

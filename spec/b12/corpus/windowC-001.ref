@@ -1,0 +1,6 @@
+# group_concat(y,x) OVER (ORDER BY x ROWS BETWEEN 1 PRECEDING AND 1 PRECEDING)
+NULL
+1
+蕕郐䔓硑ᇍ䫎
+1
+~~~

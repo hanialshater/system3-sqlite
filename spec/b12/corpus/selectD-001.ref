@@ -1,0 +1,73 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b|a|b|a|b|a|b
+111|x1|222|x2|333|x3|444|x4
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|333|x3|444|x4
+~~~
+# a:1
+333
+~~~
+# a:1|b:1
+333|x3
+~~~
+# a:1|b:1|a|b
+333|x3|222|x2
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|444|x4|555|x5
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|444|x4|555|x5
+~~~
+error: no such table: aux.t4
+~~~
+# a:1|b:2
+444|x5
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a|b|b|b:1|b:2
+111|x1|x2|x3|x4
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a|b|b|b:1|b:2
+111|x1|x2|x3|x4
+~~~
+changes: 1
+changes: 1
+# a|b|b|a|b|b:1
+111|x1|x2|222|x3|x4
+~~~
+changes: 1
+# a|b|b|a|b|b:1
+111|x1|x2|222|x3|NULL
+~~~
+# a|b|a|b|a:1|b|b:1
+111|x1|111|x2|222|x3|NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|0|MATERIALIZE x2
+11|3|216|SCAN t43
+13|3|45|SEARCH t42 USING INTEGER PRIMARY KEY (rowid=?)
+18|3|0|USE TEMP B-TREE FOR GROUP BY
+56|0|216|SCAN t41
+62|0|0|BLOOM FILTER ON x2 (d=?)
+72|0|47|SEARCH x2 USING AUTOMATIC COVERING INDEX (d=?) LEFT-JOIN
+~~~

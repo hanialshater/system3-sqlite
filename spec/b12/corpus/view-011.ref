@@ -1,0 +1,8 @@
+changes: 0
+error: malformed database schema (IF) - near "AS": syntax error
+~~~
+changes: 0
+# name
+t1
+t2
+~~~

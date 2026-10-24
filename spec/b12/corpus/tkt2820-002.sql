@@ -1,0 +1,3 @@
+CREATE TABLE t1(a); CREATE INDEX i1 ON t1(a);
+DROP INDEX i1
+SELECT name FROM sqlite_master ORDER BY 1

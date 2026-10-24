@@ -1,0 +1,476 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
+changes: 0
+changes: 0
+changes: 1
+~~~
+error: CHECK constraint failed: b>a
+~~~
+# a|b
+~~~
+changes: 0
+changes: 1
+# a|b
+4|8
+~~~
+changes: 1
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+9|1
+~~~
+changes: 1
+error: CHECK constraint failed: b>a
+~~~
+changes: 1
+changes: 2
+# a|b
+9|1
+1|9
+~~~
+changes: 0
+error: CHECK constraint failed: b>a
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+# a|b
+1|9
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: no such table: nosuchtable
+~~~
+changes: 1
+error: table t4 has 2 columns but 3 values were supplied
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 2
+~~~
+changes: 2
+changes: 2
+~~~
+changes: 2
+changes: 2
+changes: 2
+~~~
+changes: 2
+changes: 2
+changes: 2
+~~~
+changes: 2
+changes: 1
+# x
+ABC
+~~~
+changes: 1
+~~~
+error: CHECK constraint failed: x<>'abc' COLLATE nocase
+~~~
+changes: 0
+changes: 0
+~~~
+error: CHECK constraint failed: x COLLATE nocase <>'abc'
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# y
+234
+~~~
+changes: 1
+~~~
+error: FOREIGN KEY constraint failed
+~~~
+# y
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# y
+123
+~~~
+changes: 1
+changes: 1
+# y
+123
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+# a|b
+1|2
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 0
+# a|b
+1|2
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|2
+~~~
+error: UNIQUE constraint failed: t1.a
+~~~
+# a|b
+-99|100
+1|2
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|2
+~~~
+error: UNIQUE constraint failed: t1.a
+~~~
+# a|b
+1|2
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|2
+~~~
+changes: 1
+error: UNIQUE constraint failed: t1.a
+~~~
+error: cannot commit - no transaction is active
+~~~
+# a|b
+1|2
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|3
+~~~
+changes: 1
+changes: 1
+error: no such collation sequence: xyzzy
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 0
+~~~
+# integrity_check
+ok
+~~~
+changes: 0
+~~~
+# integrity_check
+ok
+~~~
+# rid|pid|mid|px
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 3
+# a|b|c
+1|1|1
+2|2|2
+3|3|3
+# integrity_check
+ok
+~~~

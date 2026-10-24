@@ -1,0 +1,8 @@
+error: table p1 already exists
+~~~
+error: there is already another table or index with this name: ppp
+~~~
+changes: 1
+# sql
+CREATE TABLE c1(x INTEGER PRIMARY KEY, y REFERENCES "ppp"(a))
+~~~

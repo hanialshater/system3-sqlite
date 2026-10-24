@@ -1,0 +1,10 @@
+changes: 0
+changes: 0
+changes: 1
+~~~
+# min(b)|( SELECT x FROM t2 WHERE a=2 GROUP BY y HAVING 0 )
+b|NULL
+~~~
+# EXISTS ( SELECT * FROM ( SELECT * FROM ( SELECT 1 ) WHERE Col0 = 1 GROUP BY 1 ) WHERE 0 )
+0
+~~~

@@ -1,0 +1,32 @@
+changes: 0
+changes: 3
+changes: 3
+changes: 2
+changes: 2
+changes: 2
+# a
+def
+ghi
+~~~
+# a
+abc
+DEF
+~~~
+# a
+DEF
+abc
+~~~
+# a
+DEF
+abc
+~~~
+changes: 2
+changes: 2
+changes: 4
+changes: 4
+# a COLLATE nocase
+~~~
+# a
+~~~
+error: ORDER BY clause should come after EXCEPT not before
+~~~

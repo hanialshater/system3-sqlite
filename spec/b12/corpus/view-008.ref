@@ -1,0 +1,30 @@
+changes: 0
+# |:1|:2
+123|234|345
+~~~
+# |:1|:2
+123|234|345
+~~~
+changes: 0
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# mx|mn|mx|mn
+1|1|1|1
+1|1|2|2
+1|1|3|3
+~~~
+# x|y|x|y
+1|1|1|1
+1|1|2|2
+1|1|3|3
+~~~

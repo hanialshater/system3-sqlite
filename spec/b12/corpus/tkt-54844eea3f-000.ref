@@ -1,0 +1,31 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 16
+changes: 1
+changes: 1
+changes: 1
+~~~
+# 'test-2'|c|( SELECT count(*) FROM t1 JOIN (SELECT DISTINCT t3.c AS p FROM t2) AS x ON t1.a=x.p )
+test-2|1|1
+test-2|2|0
+test-2|3|0
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# ( SELECT c FROM ( SELECT * FROM t4 WHERE a=out.a ORDER BY b LIMIT 10 OFFSET 1 ) WHERE b=out.b )
+NULL
+two
+NULL
+four
+~~~

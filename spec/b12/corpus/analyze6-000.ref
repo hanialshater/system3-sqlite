@@ -1,0 +1,65 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 8
+changes: 8
+changes: 16
+changes: 16
+changes: 32
+changes: 64
+changes: 128
+changes: 256
+changes: 256
+# count(*)
+16
+# count(*)
+512
+~~~
+# id|parent|notused|detail
+4|0|50|SCAN cat USING COVERING INDEX catx
+6|0|67|SEARCH ev USING COVERING INDEX evy (y=?)
+~~~
+changes: 256
+changes: 256
+changes: 256
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t201 USING INDEX t201z (z=?)
+~~~
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+~~~
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+~~~
+changes: 3
+changes: 3
+~~~
+# id|parent|notused|detail
+3|0|28|SEARCH t201 USING INDEX t201z (z=?)
+~~~
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+~~~
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+~~~
+changes: 1
+changes: 4
+changes: 8
+changes: 16
+changes: 16
+~~~
+# id|parent|notused|detail
+3|0|34|SEARCH t201 USING INDEX t201z (z=?)
+~~~
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+~~~
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+~~~

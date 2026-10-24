@@ -1,0 +1,36 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# ( SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v OR FALSE) )
+NULL
+~~~
+# ( SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v) )
+NULL
+~~~
+# ( SELECT 1 FROM t2 LEFT JOIN (SELECT x AS v FROM t3) ON 500=v WHERE (v OR FALSE) )
+NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 3
+changes: 3
+changes: 2
+changes: 2
+# x|y|z|w
+NULL|-2|-2|3
+NULL|1|NULL|NULL
+0|2|2|3
+~~~
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 100
+changes: 100
+~~~

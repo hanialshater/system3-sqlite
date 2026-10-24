@@ -1,0 +1,19 @@
+error: no such table: v1
+~~~
+changes: 0
+error: no such table: v1
+~~~
+changes: 0
+error: no such table: main.t1
+~~~
+error: no such table: t1
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# a|b
+2|3
+5|6
+8|9
+~~~

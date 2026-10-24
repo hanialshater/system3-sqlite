@@ -1,0 +1,27 @@
+changes: 0
+changes: 0
+changes: 0
+~~~
+# sql
+CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))
+CREATE TABLE t2(a, b)
+CREATE INDEX t2expr ON t2(a) WHERE t2.b>0
+~~~
+error: error in table t1new after rename: no such column: t1.a
+~~~
+changes: 0
+changes: 0
+changes: 0
+~~~
+# sql
+CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))
+CREATE TABLE t2(a, b)
+CREATE INDEX t2expr ON t2(a) WHERE t2.b>0
+~~~
+error: error in index t2expr after rename: no such column: t2.b
+~~~
+# sql
+CREATE TABLE t1(a, b, CHECK(t1.a != t1.b))
+CREATE TABLE t2(a, b)
+CREATE INDEX t2expr ON t2(a) WHERE t2.b>0
+~~~

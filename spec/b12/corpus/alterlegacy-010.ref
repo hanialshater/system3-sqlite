@@ -1,0 +1,12 @@
+error: table t1 already exists
+~~~
+error: no such table: main.t1
+~~~
+# name|tbl_name
+~~~
+error: no such table: main.t1
+~~~
+error: there is already another table or index with this name: t2
+~~~
+error: table aux.t2 has 1 columns but 3 values were supplied
+~~~

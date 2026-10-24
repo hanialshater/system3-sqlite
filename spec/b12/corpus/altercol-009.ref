@@ -1,0 +1,14 @@
+changes: 0
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# a|d|c
+1|2|3
+~~~
+# sql
+CREATE TABLE t1(a, d, c)
+CREATE INDEX t1i ON t1(a, c)
+~~~

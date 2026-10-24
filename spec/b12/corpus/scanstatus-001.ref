@@ -1,0 +1,74 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# i|j
+2|two
+~~~
+# i|j
+2|two
+~~~
+# i|j
+4|four
+1|one
+3|three
+~~~
+# i|j
+2|two
+~~~
+# i|j
+3|three
+2|two
+~~~
+changes: 1
+changes: 4
+changes: 4
+changes: 4
+# i|j|k
+3|three|3 three
+2|two|2 two
+~~~
+# i|j|k
+~~~
+# i|j|k
+~~~
+# i|j|k
+3|three|3 three
+~~~
+changes: 4
+changes: 4
+changes: 4
+changes: 100
+~~~
+# d
+4
+13
+~~~
+# count(*)
+30
+~~~
+# count(*)
+90
+~~~
+# count(*)
+4
+~~~
+# count(*)
+4
+~~~
+changes: 100
+changes: 100
+changes: 100
+changes: 100
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 4
+changes: 4
+changes: 3
+~~~
+changes: 1
+~~~

@@ -1,0 +1,14 @@
+changes: 0
+changes: 1
+changes: 1
+# typeof(likely(a))
+real
+# typeof(likely(a))
+real
+~~~
+changes: 1
+# typeof(abs(a))
+real
+# typeof(abs(a))
+real
+~~~

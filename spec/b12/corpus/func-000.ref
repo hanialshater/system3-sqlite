@@ -1,0 +1,285 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# t1
+free
+is
+program
+software
+this
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a
+1
+NULL
+345
+NULL
+67890
+~~~
+# length(t1)
+4
+2
+7
+8
+4
+~~~
+# encoding
+UTF-8
+~~~
+# octet_length(t1)
+4
+2
+7
+8
+4
+~~~
+error: wrong number of arguments to function length()
+~~~
+error: wrong number of arguments to function length()
+~~~
+# length(t1)|count(*)
+2|1
+4|2
+7|1
+8|1
+~~~
+# coalesce(length(a),-1)
+1
+-1
+3
+-1
+5
+~~~
+# octet_length(12345)
+5
+~~~
+# octet_length(NULL)
+NULL
+~~~
+# octet_length(7.5)
+3
+~~~
+# octet_length(x'30313233')
+4
+~~~
+# length(x)|octet_length(x)
+5|10
+~~~
+# substr(t1,1,2)
+fr
+is
+pr
+so
+th
+~~~
+# substr(t1,2,1)
+r
+s
+r
+o
+h
+~~~
+# substr(t1,3,3)
+ee
+
+ogr
+ftw
+is
+~~~
+# substr(t1,-1,1)
+e
+s
+m
+e
+s
+~~~
+# substr(t1,-1,2)
+e
+s
+m
+e
+s
+~~~
+# substr(t1,-2,1)
+e
+i
+a
+r
+i
+~~~
+# substr(t1,-2,2)
+ee
+is
+am
+re
+is
+~~~
+# substr(t1,-4,2)
+fr
+
+gr
+wa
+th
+~~~
+# t1
+this
+software
+free
+program
+is
+~~~
+# substr(a,1,1)
+1
+NULL
+3
+NULL
+6
+~~~
+# substr(a,2,2)
+
+NULL
+45
+NULL
+78
+~~~
+# substr('abcdefg',0x100000001,2)
+
+~~~
+# substr('abcdefg',1,0x100000002)
+abcdefg
+~~~
+# quote(substr(x'313233343536373839',0x7ffffffffffffffe,5))
+X''
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# t1
+UTF-8
+characters
+contains
+hi?ho
+~~~
+# length(t1)
+5
+10
+8
+5
+~~~
+# substr(t1,1,2)
+UT
+ch
+co
+hi
+~~~
+# substr(t1,1,3)
+UTF
+cha
+con
+hi?
+~~~
+# substr(t1,2,2)
+TF
+ha
+on
+i?
+~~~
+# substr(t1,2,3)
+TF-
+har
+ont
+i?h
+~~~
+# substr(t1,3,2)
+F-
+ar
+nt
+?h
+~~~
+# substr(t1,4,2)
+-8
+ra
+ta
+ho
+~~~
+# substr(t1,-1,1)
+8
+s
+s
+o
+~~~
+# substr(t1,-3,2)
+F-
+er
+in
+?h
+~~~
+# substr(t1,-4,3)
+TF-
+ter
+ain
+i?h
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# t1
+this
+program
+is
+free
+software
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: wrong number of arguments to function abs()
+~~~
+error: table t1 already exists
+~~~
+error: wrong number of arguments to function abs()
+~~~
+error: wrong number of arguments to function abs()
+~~~
+# abs(b)
+2
+12345678901234
+2
+~~~
+# abs(c)
+3
+1234567890
+5
+~~~

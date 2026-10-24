@@ -1,0 +1,12 @@
+changes: 0
+~~~
+# sqlite_fail('constraint ccc already exists', 1)
+~~~
+# sql
+CREATE TABLE x1(a PRIMARY KEY, b CHECK(a!=b) NOT NULL, c, CONSTRAINT ccc CHECK (a!='a'))
+~~~
+# sqlite_fail('constraint failed', 19)
+~~~
+# sql
+CREATE TABLE x1(a PRIMARY KEY, b CHECK(a!=b) NOT NULL, c NOT NULL, CONSTRAINT ccc CHECK (a!='a'))
+~~~

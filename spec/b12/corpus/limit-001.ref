@@ -1,0 +1,15 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 3
+changes: 1
+changes: 3
+changes: 1
+# ( SELECT 100000 FROM (SELECT 200000 FROM t6 WHERE a = ( SELECT 300000 FROM t3 WHERE a ) ), (SELECT 400000 FROM t5 WHERE e=500000), (SELECT 600000 FROM t4 WHERE c=a) )
+100000
+~~~

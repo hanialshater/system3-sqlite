@@ -1,0 +1,5 @@
+PRAGMA page_size=511; PRAGMA page_size;
+PRAGMA page_size=512; PRAGMA page_size;
+PRAGMA page_size=8192; PRAGMA page_size;
+PRAGMA page_size=65537; PRAGMA page_size;
+PRAGMA page_size=1234; PRAGMA page_size

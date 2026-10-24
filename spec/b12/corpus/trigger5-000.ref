@@ -1,0 +1,8 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# UndoAction
+INSERT INTO Item (a,b,c) VALUES (1,38205.60865,340);
+~~~

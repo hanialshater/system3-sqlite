@@ -1,0 +1,33 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+error: no such table: sqlite_stat4
+~~~
+# id|parent|notused|detail
+3|0|55|SEARCH t1 USING COVERING INDEX ix (aa=? AND bb=?)
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+error: no such table: sqlite_stat4
+~~~
+# id|parent|notused|detail
+3|0|46|SEARCH t1 USING COVERING INDEX good (bb=? AND aa=? AND dd>? AND dd<?)
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 100
+changes: 100
+changes: 100
+changes: 100
+changes: 100
+changes: 100
+# tbl|idx|stat
+t2|t2_a|100 1
+t2|t2_ba|100 20 1 1
+t3|t3_a|100 1
+t3|t3_ba|100 20 1 1
+~~~

@@ -1,0 +1,70 @@
+changes: 0
+error: no such function: refcnt
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: no such table: explain
+~~~
+error: no such table: explain
+~~~
+error: no such table: explain
+~~~
+changes: 1
+changes: 2
+~~~
+# a|b
+2|4
+3|9
+~~~
+changes: 2
+changes: 2
+~~~
+# a|b
+2|4
+3|9
+~~~
+changes: 2
+changes: 5
+~~~
+# a|b
+1|123
+2|123
+3|123abc
+4|123.0
+~~~
+changes: 5
+# a|b
+1|123
+2|123
+3|123abc
+4|123.0
+~~~
+# a|b
+1|123
+2|123
+~~~
+changes: 5
+# a|b
+1|123
+2|123
+~~~
+changes: 5
+changes: 1
+~~~
+error: integer overflow
+~~~
+# sql
+CREATE TABLE t0(c0)
+changes: 1
+~~~
+changes: 1
+~~~

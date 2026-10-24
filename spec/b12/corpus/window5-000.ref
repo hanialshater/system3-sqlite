@@ -1,0 +1,25 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: no such function: win
+~~~
+error: no such function: sumint
+~~~
+error: no such function: sumint
+~~~
+# sum(a) OVER (ORDER BY b ROWS BETWEEN 1 PRECEDING AND CURRENT ROW)
+4
+10
+7
+6
+7
+5
+~~~
+# sum(a)
+21
+~~~

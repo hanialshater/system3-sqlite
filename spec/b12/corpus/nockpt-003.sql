@@ -1,0 +1,1 @@
+PRAGMA auto_vacuum=OFF; PRAGMA journal_mode = wal; CREATE TABLE y1(a PRIMARY KEY, b UNIQUE, c); INSERT INTO y1 VALUES('a', 'b', 'c'); INSERT INTO y1 VALUES('d', 'e', 'f');

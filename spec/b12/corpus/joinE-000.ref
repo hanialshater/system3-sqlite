@@ -1,0 +1,141 @@
+changes: 0
+changes: 2
+changes: 2
+changes: 2
+~~~
+# a|b
+1|2
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+# a|b
+1|2
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+# a|b
+1|2
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|2
+1|NULL
+NULL|2
+NULL|NULL
+~~~
+# a|b
+NULL|2
+NULL|NULL
+~~~
+# a|b
+1|NULL
+NULL|NULL
+~~~
+changes: 2
+changes: 1
+changes: 2
+changes: 1
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+~~~
+# a|b
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+~~~
+# a|b
+NULL|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+1|NULL
+~~~
+# a|b
+~~~
+# a|b
+1|NULL
+~~~

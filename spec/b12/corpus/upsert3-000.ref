@@ -1,0 +1,29 @@
+changes: 0
+changes: 0
+~~~
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~
+changes: 1
+# k|v
+0|abcdefghij
+~~~
+changes: 0
+# k|v
+0|abcdefghij
+~~~
+changes: 0
+changes: 0
+changes: 6
+# a|b|c|'x'
+1|2|2|x
+3|4|1|x
+5|6|0|x
+~~~
+changes: 1
+# a|b|c|'x'
+1|2|9|x
+3|4|1|x
+5|6|0|x
+~~~

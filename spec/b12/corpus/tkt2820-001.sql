@@ -1,0 +1,3 @@
+CREATE TABLE t1(a); CREATE TABLE t2(b);
+DROP TABLE t2
+SELECT name FROM sqlite_master ORDER BY 1

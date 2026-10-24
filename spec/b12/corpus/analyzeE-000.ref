@@ -1,0 +1,151 @@
+changes: 0
+changes: 1001
+changes: 1001
+changes: 1001
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+changes: 1001
+changes: 1001
+changes: 1001
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+~~~
+changes: 1001
+changes: 1001
+changes: 1001
+changes: 1001
+changes: 1001
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~
+changes: 1001
+changes: 1001
+changes: 1001
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+~~~

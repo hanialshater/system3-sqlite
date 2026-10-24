@@ -1,0 +1,9 @@
+changes: 0
+changes: 0
+error: table t2 already exists
+~~~
+# seqno|cid|name
+0|1|b
+~~~
+# seqno|cid|name
+~~~

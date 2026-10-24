@@ -1,0 +1,6 @@
+error: no such table: t1
+~~~
+error: cannot start a transaction within a transaction
+~~~
+error: no such table: t2
+~~~

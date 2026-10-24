@@ -1,0 +1,5 @@
+error: no such table: test
+~~~
+changes: 0
+error: no such table: main.v1
+~~~

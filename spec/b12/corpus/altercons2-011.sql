@@ -1,0 +1,3 @@
+CREATE TABLE abc(a, b, c, CONSTRAINT one CHECK (a>b) FOREIGN KEY(a) REFERENCES abc);
+ALTER TABLE abc DROP CONSTRAINT one
+SELECT sql FROM sqlite_schema

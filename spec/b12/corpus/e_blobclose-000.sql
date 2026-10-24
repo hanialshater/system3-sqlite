@@ -1,0 +1,2 @@
+PRAGMA lock_status
+PRAGMA lock_status

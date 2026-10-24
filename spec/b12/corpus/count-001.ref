@@ -1,0 +1,13 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: misuse of aggregate: count()
+~~~

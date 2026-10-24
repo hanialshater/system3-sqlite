@@ -1,0 +1,18 @@
+changes: 0
+changes: 0
+changes: 1
+# a|b
+1|abcde
+~~~
+changes: 1
+changes: 4
+changes: 4
+# x
+4
+~~~
+changes: 4
+changes: 4
+changes: 1
+# a|b
+44|-44
+~~~

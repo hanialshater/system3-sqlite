@@ -1,0 +1,47 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
+changes: 0
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+~~~
+# count(*)
+0
+# count(*)
+0
+# count(*)
+0
+~~~
+# id|parent|notused|detail
+3|0|164|SEARCH t1 USING INDEX t1c (c>? AND c<?)
+~~~
+# id|parent|notused|detail
+3|0|164|SEARCH t1 USING INDEX t1c (c>? AND c<?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+~~~
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+~~~

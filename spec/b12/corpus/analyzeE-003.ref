@@ -1,0 +1,12 @@
+changes: 0
+changes: 0
+changes: 5
+changes: 5
+# format('(%s)',a)
+(0)
+(apple)
+(banana)
+~~~
+# format('(%s)',a)
+()
+~~~

@@ -1,0 +1,31 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+# name|table|from|name|pk
+t2|t1|d|a|1
+~~~
+changes: 0
+changes: 1
+~~~
+# schema|name|type|ncol|wr|strict
+main|v1|view|0|0|0
+main|t2|table|2|0|0
+main|t1|table|2|0|0
+main|sqlite_schema|table|5|0|0
+temp|sqlite_temp_schema|table|5|0|0
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+changes: 1
+~~~
+# name|name
+a|a
+b|b
+~~~
+# name|name
+a|a
+b|b
+~~~

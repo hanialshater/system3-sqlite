@@ -1,0 +1,30 @@
+changes: 0
+changes: 0
+error: table t1 already exists
+~~~
+error: qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers
+~~~
+changes: 0
+changes: 1
+# a|b
+x|y
+~~~
+# a|b
+~~~
+error: trigger tr2 already exists
+~~~
+changes: 1
+error: no such column: e
+~~~
+# d|e|f
+~~~
+error: qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a|b
+~~~
+# a|b
+a|b
+~~~

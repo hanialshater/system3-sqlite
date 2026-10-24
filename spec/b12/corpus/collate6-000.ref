@@ -1,0 +1,49 @@
+changes: 0
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+# a|b
+a|b
+~~~
+changes: 1
+# a|b
+a|b
+A|B
+~~~
+changes: 1
+changes: 2
+~~~
+changes: 2
+~~~
+changes: 1
+# a|b
+1|1
+~~~
+changes: 1
+# a|b
+1|1
+1|0
+~~~
+changes: 1
+changes: 2
+~~~
+changes: 2
+~~~
+changes: 2
+changes: 2
+changes: 2
+~~~
+changes: 1
+changes: 1
+# a|b|c
+~~~
+changes: 1
+changes: 1
+# a|b|c
+~~~
+# 1
+~~~
+# 1
+~~~

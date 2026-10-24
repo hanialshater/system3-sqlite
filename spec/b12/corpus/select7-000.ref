@@ -1,0 +1,105 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# x
+amx
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# id|id:1
+1|1
+~~~
+# type|name|tbl_name|rootpage|sql
+table|tempx|tempx|3|CREATE TABLE tempx(id integer primary key, a TEXT NULL)
+view|tv1|tv1|0|CREATE VIEW tv1 AS SELECT x.id, tx.id FROM x JOIN tempx tx ON tx.id=x.id
+view|tv1b|tv1b|0|CREATE VIEW tv1b AS SELECT x.id, tx.id FROM x JOIN tempx tx on tx.id=x.id
+view|tv2|tv2|0|CREATE VIEW tv2 AS SELECT * FROM tv1 UNION SELECT * FROM tv1b
+table|x|x|2|CREATE TABLE x(id integer primary key, a TEXT NULL)
+~~~
+# type|name|tbl_name|rootpage|sql
+table|tempx|tempx|3|CREATE TABLE tempx(id integer primary key, a TEXT NULL)
+view|tv1|tv1|0|CREATE VIEW tv1 AS SELECT x.id, tx.id FROM x JOIN tempx tx ON tx.id=x.id
+view|tv1b|tv1b|0|CREATE VIEW tv1b AS SELECT x.id, tx.id FROM x JOIN tempx tx on tx.id=x.id
+view|tv2|tv2|0|CREATE VIEW tv2 AS SELECT * FROM tv1 UNION SELECT * FROM tv1b
+table|x|x|2|CREATE TABLE x(id integer primary key, a TEXT NULL)
+~~~
+changes: 1
+changes: 1
+# pk
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# pk
+2
+3
+~~~
+changes: 1
+error: sub-select returns 2 columns - expected 1
+~~~
+error: sub-select returns 2 columns - expected 1
+~~~
+error: sub-select returns 2 columns - expected 1
+~~~
+error: sub-select returns 2 columns - expected 1
+~~~
+changes: 1
+changes: 1
+~~~
+error: no such column: "" - should this be a string literal in single-quotes?
+~~~
+# count(*)
+0
+~~~
+error: no such column: "" - should this be a string literal in single-quotes?
+~~~
+# count(*)
+0
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+# categ|count(*)
+1.38|1
+1.62|1
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+# t
+1.0
+1.5
+~~~
+# a=0|typeof(a)
+0|real
+0|real
+~~~
+# a=0|typeof(a)
+0|real
+0|real
+~~~
+changes: 1
+changes: 1
+# typeof(a)|a
+text|123
+~~~
+changes: 1
+changes: 1
+~~~
+error: SELECTs to the left and right of UNION do not have the same number of result columns
+~~~
+changes: 1
+error: SELECTs to the left and right of UNION do not have the same number of result columns
+~~~

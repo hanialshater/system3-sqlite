@@ -1,0 +1,159 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# count(*)
+6
+~~~
+# a
+~~~
+# a
+1
+~~~
+# a
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# 'abc123'='abc123                         ' COLLATE RTRIM
+1
+~~~
+# 'abc123                         '='abc123' COLLATE RTRIM
+1
+~~~
+# '  '='' COLLATE RTRIM|'  '='' COLLATE BINARY|'  '=''
+1|0|0
+~~~
+# ''='  ' COLLATE RTRIM|''='  ' COLLATE BINARY|''='  '
+1|0|0
+~~~
+# '  '='      ' COLLATE RTRIM|'  '='        '
+1|0
+~~~
+# ''<>'  ' COLLATE RTRIM|''<>'  ' COLLATE BINARY|''<>'  '
+0|1|1
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+5
+6
+~~~
+# a
+5
+6
+~~~
+# a
+5
+6
+~~~
+changes: 1
+changes: 1
+# integrity_check
+ok
+~~~
+# a
+~~~
+# a
+1
+~~~
+# a
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+2
+3
+4
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+~~~
+# a
+5
+6
+~~~
+# a
+5
+6
+~~~
+# a
+5
+6
+~~~

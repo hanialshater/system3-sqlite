@@ -1,0 +1,432 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# x|typeof(x)|y|typeof(y)
+1|integer|1|integer
+2|integer|2|text
+3|text|3|integer
+4|text|4|text
+~~~
+# (SELECT rowid FROM a1 WHERE a=x AND b=y)
+NULL
+NULL
+15
+92
+~~~
+# (SELECT rowid FROM a1 WHERE (a, b) = (x, y))
+NULL
+NULL
+15
+92
+~~~
+# rowid
+15
+92
+~~~
+# rowid
+15
+92
+~~~
+# rowid
+3
+14
+15
+92
+~~~
+# rowid
+3
+14
+15
+92
+~~~
+# rowid
+3
+14
+15
+92
+~~~
+# rowid
+3
+14
+15
+92
+~~~
+# (SELECT rowid FROM a1 WHERE a=+x AND b=+y)
+3
+14
+15
+92
+~~~
+# (SELECT rowid FROM a1 WHERE (a, b) = (+x, +y))
+3
+14
+15
+92
+~~~
+# (SELECT rowid FROM a1 WHERE (+x, +y) = (a, b))
+3
+14
+15
+92
+~~~
+# rowid
+15
+92
+~~~
+# rowid
+3
+14
+15
+92
+3
+14
+15
+92
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|x
+~~~
+# a
+~~~
+changes: 1
+~~~
+# a
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b
+~~~
+changes: 1
+# a|b
+~~~
+# a|b
+~~~
+# rowid
+~~~
+# rowid
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+~~~
+# rowid
+3
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+# rowid
+2
+4
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# rowid
+1
+~~~
+# rowid
+2
+~~~
+# rowid
+2
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+# e|f
+~~~
+changes: 1
+# e|f
+~~~
+changes: 1
+changes: 12
+changes: 12
+changes: 12
+changes: 1
+changes: 1
+~~~
+# x|y
+1|4
+1|5
+~~~
+# x|y
+1|4
+1|5
+~~~
+# x|y
+1|4
+1|5
+~~~
+changes: 1
+changes: 1
+~~~
+error: sub-select returns 2 columns - expected 1
+~~~

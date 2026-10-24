@@ -1,0 +1,30 @@
+error: unrecognized token: "1.0e"
+~~~
+error: unrecognized token: "1.0E"
+~~~
+error: unrecognized token: "1.0e"
+~~~
+error: unrecognized token: "1.0E"
+~~~
+error: unrecognized token: "1.0e"
+~~~
+error: unrecognized token: "1.0E"
+~~~
+error: unrecognized token: "1.0e"
+~~~
+error: unrecognized token: "1.0E"
+~~~
+error: unrecognized token: "1.0F"
+~~~
+error: unrecognized token: "1.0d"
+~~~
+error: unrecognized token: "1.0e"
+~~~
+error: unrecognized token: "1.0E"
+~~~
+# 1|2
+1|2
+~~~
+# 1|2
+1|2
+~~~

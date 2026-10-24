@@ -1,0 +1,7 @@
+changes: 0
+~~~
+# sqlite_fail('constraint failed', 19)
+~~~
+# sql
+CREATE TABLE t1(a, b, c NOT NULL, CONSTRAINT xyz CHECK( a!=0 ))
+~~~

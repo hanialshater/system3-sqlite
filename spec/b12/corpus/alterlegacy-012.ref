@@ -1,0 +1,8 @@
+error: no such table: mytable
+~~~
+error: no such table: mytable
+~~~
+error: no such table: main.mytable_renamed
+~~~
+error: no such table: mytable_renamed
+~~~

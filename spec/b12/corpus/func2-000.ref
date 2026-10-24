@@ -1,0 +1,384 @@
+# 'Supercalifragilisticexpialidocious'
+Supercalifragilisticexpialidocious
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 1)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2)
+upercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 30)
+cious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 34)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 35)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 36)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -0)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -1)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -2)
+us
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -30)
+rcalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -34)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -35)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -36)
+Supercalifragilisticexpialidocious
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0, 2)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 1, 1)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, 1)
+u
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, 2)
+up
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 30, 1)
+c
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 34, 1)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 35, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 36, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -0, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -1, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -1, 1)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -1, 2)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -2, 1)
+u
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -30, 1)
+r
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -34, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -34, 1)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -34, 2)
+Su
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -35, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -35, 2)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -36, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -36, 1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -36, 2)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', -36, 3)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0, -1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 0, -2)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 1, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 1, -1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, -1)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 2, -2)
+S
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 3, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 3, -1)
+u
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 3, -2)
+Su
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 30, -1)
+o
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 30, -2)
+do
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 34, -1)
+u
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 35, -1)
+s
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 36, 0)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 36, -1)
+
+~~~
+# SUBSTR('Supercalifragilisticexpialidocious', 36, -2)
+s
+~~~
+# 'hi?ho'
+hi?ho
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+# SUBSTR('hi?ho', 0, 0)
+
+~~~
+# SUBSTR('hi?ho', 0, 1)
+
+~~~
+# SUBSTR('hi?ho', 0, 2)
+h
+~~~
+# SUBSTR('hi?ho', 0, 3)
+hi
+~~~
+# SUBSTR('hi?ho', 0, 4)
+hi?
+~~~
+# SUBSTR('hi?ho', 0, 5)
+hi?h
+~~~
+# SUBSTR('hi?ho', 0, 6)
+hi?ho
+~~~
+# SUBSTR('hi?ho', 1, 0)
+
+~~~
+# SUBSTR('hi?ho', 1, 1)
+h
+~~~
+# SUBSTR('hi?ho', 1, 2)
+hi
+~~~
+# SUBSTR('hi?ho', 1, 3)
+hi?
+~~~
+# SUBSTR('hi?ho', 1, 4)
+hi?h
+~~~
+# SUBSTR('hi?ho', 1, 5)
+hi?ho
+~~~
+# SUBSTR('hi?ho', 1, 6)
+hi?ho
+~~~
+# SUBSTR('hi?ho', 3, 0)
+
+~~~
+# SUBSTR('hi?ho', 3, 1)
+?
+~~~
+# SUBSTR('hi?ho', 3, 2)
+?h
+~~~
+# SUBSTR('?', 0, 0)
+
+~~~
+# SUBSTR('?', 0, 1)
+
+~~~
+# SUBSTR('?', 0, 2)
+?
+~~~
+# SUBSTR('?', 0, 3)
+?
+~~~
+# SUBSTR('?', 1, 0)
+
+~~~
+# SUBSTR('?', 1, 1)
+?
+~~~
+# SUBSTR('?', 1, 2)
+?
+~~~
+# SUBSTR('?', 1, 3)
+?
+~~~
+# SUBSTR('?', 2, 0)
+
+~~~
+# SUBSTR('?', 2, 1)
+
+~~~
+# SUBSTR('?', 2, 2)
+
+~~~
+# SUBSTR('?', -1, 0)
+
+~~~
+# SUBSTR('?', -1, 1)
+?
+~~~
+# SUBSTR('?', -1, 2)
+?
+~~~
+# SUBSTR('?', -1, 3)
+?
+~~~
+# x'1234'
+X'1234'
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+error: wrong number of arguments to function SUBSTR()
+~~~
+# SUBSTR(x'1234', 0, 0)
+X''
+~~~
+# SUBSTR(x'1234', 0, 1)
+X''
+~~~
+# SUBSTR(x'1234', 0, 2)
+X'12'
+~~~
+# SUBSTR(x'1234', 0, 3)
+X'1234'
+~~~
+# SUBSTR(x'1234', 1, 0)
+X''
+~~~
+# SUBSTR(x'1234', 1, 1)
+X'12'
+~~~
+# SUBSTR(x'1234', 1, 2)
+X'1234'
+~~~
+# SUBSTR(x'1234', 1, 3)
+X'1234'
+~~~
+# SUBSTR(x'1234', -1, 0)
+X''
+~~~
+# SUBSTR(x'1234', -1, 1)
+X'34'
+~~~
+# SUBSTR(x'1234', -1, 2)
+X'34'
+~~~
+# SUBSTR(x'1234', -1, 3)
+X'34'
+~~~
+# SUBSTR(x'1234', -2, 0)
+X''
+~~~
+# SUBSTR(x'1234', -2, 1)
+X'12'
+~~~
+# SUBSTR(x'1234', -2, 2)
+X'1234'
+~~~
+# SUBSTR(x'1234', -2, 3)
+X'1234'
+~~~
+# SUBSTR(x'1234', -1, 0)
+X''
+~~~
+# SUBSTR(x'1234', -1, -1)
+X'12'
+~~~
+# SUBSTR(x'1234', -1, -2)
+X'12'
+~~~
+# SUBSTR(x'1234', -1, -3)
+X'12'
+~~~
+# SUBSTR(x'1234', -2, 0)
+X''
+~~~
+# SUBSTR(x'1234', -2, -1)
+X''
+~~~
+# SUBSTR(x'1234', -2, -2)
+X''
+~~~
+# SUBSTR(x'1234', 1, 0)
+X''
+~~~
+# SUBSTR(x'1234', 1, -1)
+X''
+~~~
+# SUBSTR(x'1234', 1, -2)
+X''
+~~~
+# SUBSTR(x'1234', 2, 0)
+X''
+~~~
+# SUBSTR(x'1234', 2, -1)
+X'12'
+~~~
+# SUBSTR(x'1234', 2, -2)
+X'12'
+~~~
+# '' IN (zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB( zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(zerobloB(1) )))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))
+0
+~~~

@@ -1,0 +1,64 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# a|b
+1|11
+2|22
+3|33
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# b|c
+11|111
+33|333
+44|444
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# c|d
+111|1111
+444|4444
+555|5555
+~~~
+# a|b|c|d
+1|11|111|1111
+~~~
+# a|b|c|d
+1|11|111|1111
+3|33|333|NULL
+~~~
+# a|b|c|d
+1|11|111|1111
+~~~
+# b|c|a|d
+11|111|1|1111
+~~~
+# a|b|c|d
+1|11|111|1111
+2|22|NULL|NULL
+3|33|NULL|NULL
+~~~
+# a|b|c|d
+1|11|111|1111
+2|22|NULL|NULL
+3|33|NULL|NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: ON clause references tables to its right
+~~~
+error: ON clause references tables to its right
+~~~
+# a|c|b
+one|one|one
+~~~

@@ -1,0 +1,22 @@
+# journal_mode
+memory
+~~~
+# journal_mode
+memory
+~~~
+# journal_mode
+off
+~~~
+error: cannot rollback - no transaction is active
+~~~
+# journal_mode
+off
+~~~
+changes: 0
+changes: 0
+changes: 1
+~~~
+~~~
+# x
+1
+~~~

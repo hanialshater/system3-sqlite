@@ -1,0 +1,125 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: table t1 already exists
+~~~
+changes: 1
+# a|b|a:1|b:1
+a main|b main|a main|b main
+~~~
+# type|name|tbl_name|rootpage|sql
+view|new view|new view|0|CREATE VIEW "new view" AS SELECT * FROM t1 AS x, t1 AS y
+~~~
+changes: 1
+# type|name|tbl_name|rootpage|sql
+~~~
+error: no such table: new view
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# a|b
+a temp|b temp
+~~~
+changes: 1
+~~~
+error: no such table: temp.v1
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# a|b
+a main|b main
+~~~
+changes: 1
+~~~
+error: no such table: main.v1
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# a|b
+a main|b main
+~~~
+changes: 1
+~~~
+error: no such table: main.v2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+error: no such table: v1
+~~~
+error: no such view: v1
+~~~
+error: no such table: v1
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+error: no such table: aux.v2
+~~~
+error: no such view: aux.v2
+~~~
+error: no such table: aux.v2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+error: no such table: v3
+~~~
+error: no such view: v3
+~~~
+error: no such table: v3
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~
+# seq|name|file
+0|main|
+1|temp|
+2|aux|/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/test.db2
+~~~

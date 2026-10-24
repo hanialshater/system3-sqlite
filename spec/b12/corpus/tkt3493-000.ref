@@ -1,0 +1,90 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# Col1
+456
+XYZ
+~~~
+# Col1
+456
+XYZ
+~~~
+# val|col1
+1|xyz
+2|2
+~~~
+# val|col1
+1|xyz
+2|2
+~~~
+# val|col1
+1|xyz
+2|2
+~~~
+changes: 1
+changes: 1
+~~~
+# a=123
+1
+~~~
+# a=123
+1
+~~~
+# a='123'
+1
+~~~
+# count(*)|a=123
+1|1
+~~~
+# count(*)|+a=123
+1|0
+~~~
+# b='456'
+1
+~~~
+# b='456'
+1
+~~~
+# b='456'
+1
+~~~
+# typeof(a)|a
+text|123
+~~~
+# typeof(a)|a
+text|123
+~~~
+# typeof(b)|b
+integer|456
+~~~
+# typeof(b)|b
+integer|456
+~~~
+changes: 1
+changes: 1
+~~~
+# a='abc'
+1
+~~~
+# a='abc'
+1
+~~~
+# a>b
+0
+~~~
+# a>b COLLATE BINARY
+1
+~~~
+# b>a
+0
+~~~
+# b>a COLLATE NOCASE
+1
+~~~

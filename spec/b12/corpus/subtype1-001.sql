@@ -1,0 +1,13 @@
+CREATE TABLE t1(id, j); INSERT INTO t1 VALUES (1,'{a:{x:1,y:2},b:{x:3,y:4}}'), (2,'not json');
+SELECT id, subtype( (CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( (CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ); SELECT id, subtype( (CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1 INDEXED BY i1 ORDER BY id;
+SELECT id, subtype( +(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( +(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ); SELECT id, subtype( +(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1 INDEXED BY i1 ORDER BY id;
+SELECT id, subtype( -(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( -(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ); SELECT id, subtype( -(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) ) FROM t1 INDEXED BY i1 ORDER BY id;
+SELECT id, subtype( if( json_valid(j, 6), j->'a' ) ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( if( json_valid(j, 6), j->'a' ) ); SELECT id, subtype( if( json_valid(j, 6), j->'a' ) ) FROM t1 INDEXED BY i1 ORDER BY id;
+SELECT id, subtype( if( json_valid(j, 6), j->'a' ) COLLATE nocase ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( if( json_valid(j, 6), j->'a' ) COLLATE nocase ); SELECT id, subtype( if( json_valid(j, 6), j->'a' ) COLLATE nocase ) FROM t1 INDEXED BY i1 ORDER BY id;
+SELECT id, subtype( CAST( if( json_valid(j, 6), j->'a' ) AS TEXT ) ) FROM t1;
+DROP INDEX IF EXISTS i1; CREATE INDEX i1 ON t1( CAST( if( json_valid(j, 6), j->'a' ) AS TEXT ) ); SELECT id, subtype( CAST( if( json_valid(j, 6), j->'a' ) AS TEXT ) ) FROM t1 INDEXED BY i1 ORDER BY id;

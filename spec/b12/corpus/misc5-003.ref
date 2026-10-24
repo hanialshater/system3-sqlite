@@ -1,0 +1,16 @@
+error: no such table: blah
+~~~
+changes: 0
+~~~
+error: no such table: logs_base
+~~~
+changes: 0
+~~~
+changes: 1
+# x
+200
+~~~
+changes: 1
+~~~
+error: Recursion limit
+~~~

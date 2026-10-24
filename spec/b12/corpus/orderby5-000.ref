@@ -1,0 +1,110 @@
+changes: 0
+changes: 0
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+15|0|0|USE TEMP B-TREE FOR DISTINCT
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+15|0|0|USE TEMP B-TREE FOR DISTINCT
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+17|0|0|USE TEMP B-TREE FOR DISTINCT
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+4|0|91|SCAN t2 USING INDEX t2bc
+~~~
+# id|parent|notused|detail
+3|0|215|SCAN t1
+20|0|0|USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+4|0|224|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+4|0|224|SCAN t1 USING INDEX t1bc
+~~~
+# id|parent|notused|detail
+3|0|215|SCAN t1
+20|0|0|USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|55|SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)
+~~~
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|55|SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# b
+ABC
+aBC
+abc
+~~~
+# b
+ABC
+aBC
+abc
+~~~
+changes: 1
+changes: 1
+~~~
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=? AND key=?)
+~~~
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)
+~~~
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)
+~~~
+error: no such collation sequence: hello
+~~~

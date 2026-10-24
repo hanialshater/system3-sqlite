@@ -1,0 +1,27 @@
+changes: 0
+changes: 0
+changes: 0
+~~~
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: no such table: sqlite_stat4
+~~~
+error: no such table: sqlite_stat4
+~~~
+error: no such table: sqlite_stat4
+~~~
+# count(DISTINCT c)
+1
+~~~
+# count(DISTINCT c)
+0
+~~~
+error: no such table: sqlite_stat4
+~~~

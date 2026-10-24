@@ -1,0 +1,4 @@
+changes: 0
+changes: 0
+error: no such column: "a" - should this be a string literal in single-quotes?
+~~~

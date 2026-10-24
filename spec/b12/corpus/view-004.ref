@@ -1,0 +1,4 @@
+error: no such table: test
+~~~
+error: no such view: test
+~~~

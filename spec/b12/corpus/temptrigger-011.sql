@@ -1,0 +1,64 @@
+ATTACH ':memory:' AS db0
+CREATE TABLE db0.tbl(a, b, c)
+ATTACH ':memory:' AS db1
+CREATE TABLE db1.tbl(a, b, c)
+ATTACH ':memory:' AS db2
+CREATE TABLE db2.tbl(a, b, c)
+ATTACH ':memory:' AS db3
+CREATE TABLE db3.tbl(a, b, c)
+ATTACH ':memory:' AS db4
+CREATE TABLE db4.tbl(a, b, c)
+ATTACH ':memory:' AS db5
+CREATE TABLE db5.tbl(a, b, c)
+ATTACH ':memory:' AS db6
+CREATE TABLE db6.tbl(a, b, c)
+ATTACH ':memory:' AS db7
+CREATE TABLE db7.tbl(a, b, c)
+CREATE TEMP TRIGGER tr0 AFTER INSERT ON db0.tbl BEGIN INSERT INTO db1.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr1 AFTER INSERT ON db1.tbl BEGIN INSERT INTO db2.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr2 AFTER INSERT ON db2.tbl BEGIN INSERT INTO db3.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr3 AFTER INSERT ON db3.tbl BEGIN INSERT INTO db4.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr4 AFTER INSERT ON db4.tbl BEGIN INSERT INTO db5.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr5 AFTER INSERT ON db5.tbl BEGIN INSERT INTO db6.tbl VALUES(new.b, new.c, new.a); END;
+CREATE TEMP TRIGGER tr6 AFTER INSERT ON db6.tbl BEGIN INSERT INTO db7.tbl VALUES(new.b, new.c, new.a); END;
+INSERT INTO db0.tbl VALUES('a', 'b', 'c');
+SELECT * FROM db0.tbl
+SELECT * FROM db1.tbl
+SELECT * FROM db2.tbl
+SELECT * FROM db3.tbl
+SELECT * FROM db4.tbl
+SELECT * FROM db5.tbl
+SELECT * FROM db6.tbl
+SELECT * FROM db7.tbl
+CREATE TEMP TRIGGER tru0 AFTER UPDATE ON db0.tbl BEGIN UPDATE db1.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru1 AFTER UPDATE ON db1.tbl BEGIN UPDATE db2.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru2 AFTER UPDATE ON db2.tbl BEGIN UPDATE db3.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru3 AFTER UPDATE ON db3.tbl BEGIN UPDATE db4.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru4 AFTER UPDATE ON db4.tbl BEGIN UPDATE db5.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru5 AFTER UPDATE ON db5.tbl BEGIN UPDATE db6.tbl SET a=new.b, b=new.c, c=new.a; END;
+CREATE TEMP TRIGGER tru6 AFTER UPDATE ON db6.tbl BEGIN UPDATE db7.tbl SET a=new.b, b=new.c, c=new.a; END;
+UPDATE db0.tbl SET a=1, b=2, c=3
+SELECT * FROM db0.tbl
+SELECT * FROM db1.tbl
+SELECT * FROM db2.tbl
+SELECT * FROM db3.tbl
+SELECT * FROM db4.tbl
+SELECT * FROM db5.tbl
+SELECT * FROM db6.tbl
+SELECT * FROM db7.tbl
+CREATE TEMP TRIGGER trd0 BEFORE DELETE ON db0.tbl BEGIN DELETE FROM db1.tbl; END;
+CREATE TEMP TRIGGER trd1 BEFORE DELETE ON db1.tbl BEGIN DELETE FROM db2.tbl; END;
+CREATE TEMP TRIGGER trd2 BEFORE DELETE ON db2.tbl BEGIN DELETE FROM db3.tbl; END;
+CREATE TEMP TRIGGER trd3 BEFORE DELETE ON db3.tbl BEGIN DELETE FROM db4.tbl; END;
+CREATE TEMP TRIGGER trd4 BEFORE DELETE ON db4.tbl BEGIN DELETE FROM db5.tbl; END;
+CREATE TEMP TRIGGER trd5 BEFORE DELETE ON db5.tbl BEGIN DELETE FROM db6.tbl; END;
+CREATE TEMP TRIGGER trd6 BEFORE DELETE ON db6.tbl BEGIN DELETE FROM db7.tbl; END;
+DELETE FROM db0.tbl
+SELECT * FROM db0.tbl
+SELECT * FROM db1.tbl
+SELECT * FROM db2.tbl
+SELECT * FROM db3.tbl
+SELECT * FROM db4.tbl
+SELECT * FROM db5.tbl
+SELECT * FROM db6.tbl
+SELECT * FROM db7.tbl

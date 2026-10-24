@@ -1,0 +1,168 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+# c2
+NULL
+323831
+3435
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such collation sequence: hex
+~~~
+changes: 1
+~~~
+error: no such collation sequence: hex
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+error: no such table: collate1t1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# c1
+NULL
+1
+12
+101
+~~~
+# c2
+NULL
+1
+101
+12
+~~~
+# c2+0
+NULL
+1
+12
+101
+~~~
+# c1||''
+NULL
+1
+101
+12
+~~~
+error: no such collation sequence: numeric
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+# id
+1
+2
+~~~
+# id
+1
+~~~
+# id
+1
+2
+~~~
+error: no such column: """"" - should this be a string literal in single-quotes?
+~~~
+changes: 1
+error: no such collation sequence: """
+~~~
+error: no such collation sequence: """
+~~~
+error: no such collation sequence: """
+~~~
+error: no such collation sequence: """
+~~~
+error: no such table: p1
+~~~
+error: no such table: p1
+~~~
+error: no such table: p1
+~~~
+# 'abc'
+abc
+DEF
+~~~
+# 'abc'
+DEF
+abc
+~~~
+# 'abc'
+abc
+DEF
+~~~
+# ' ' > char(20) COLLATE rtrim
+0
+~~~
+# '' < char(20) COLLATE rtrim
+1
+~~~
+changes: 1
+changes: 1
+changes: 4
+# c0|c1
+ |1
+~~~
+changes: 4
+changes: 4
+~~~

@@ -1,0 +1,40 @@
+changes: 0
+changes: 0
+changes: 1
+~~~
+changes: 1
+# integrity_check
+ok
+# a1|a2|a3|memo
+2023-08-03|876|5|{"x":77}
+~~~
+changes: 1
+# integrity_check
+ok
+# a1|a2|a3|memo
+2023-08-03|876|5|{"x":77,"y":6}
+~~~
+# '{"1":"one","2":"two","3":"three"}'->>'2'
+two
+~~~
+# '{"1":"one","2":"two","3":"three"}'->>2
+NULL
+~~~
+# '["zero","one","two"]'->>'1'
+NULL
+~~~
+# '["zero","one","two"]'->>1
+one
+~~~
+# '{"1":"one","2":"two","3":"three"}'->'2'
+"two"
+~~~
+# '{"1":"one","2":"two","3":"three"}'->2
+NULL
+~~~
+# '["zero","one","two"]'->'1'
+NULL
+~~~
+# '["zero","one","two"]'->1
+"one"
+~~~

@@ -1,0 +1,4 @@
+error: no such column: "xyz" - should this be a string literal in single-quotes?
+~~~
+error: no such table: x1
+~~~

@@ -1,0 +1,11 @@
+CREATE TABLE t1(a1 DATE, a2 INTEGER PRIMARY KEY, a3 INTEGER, memo TEXT); CREATE INDEX t1x1 ON t1(a3, a1, memo->>'y'); INSERT INTO t1(a2,a1,a3,memo) VALUES (876, '2023-08-03', 5, '{"x":77,"y":4}');
+UPDATE t1 SET memo = JSON_REMOVE(memo, '$.y'); PRAGMA integrity_check; SELECT * FROM t1;
+UPDATE t1 SET memo = JSON_SET(memo, '$.y', 6) WHERE a2 IN (876) AND JSON_TYPE(memo, '$.y') IS NULL; PRAGMA integrity_check; SELECT * FROM t1;
+SELECT '{"1":"one","2":"two","3":"three"}'->>'2';
+SELECT '{"1":"one","2":"two","3":"three"}'->>2;
+SELECT '["zero","one","two"]'->>'1';
+SELECT '["zero","one","two"]'->>1;
+SELECT '{"1":"one","2":"two","3":"three"}'->'2';
+SELECT '{"1":"one","2":"two","3":"three"}'->2;
+SELECT '["zero","one","two"]'->'1';
+SELECT '["zero","one","two"]'->1;

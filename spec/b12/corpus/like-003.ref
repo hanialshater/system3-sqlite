@@ -1,0 +1,31 @@
+changes: 0
+changes: 11
+# y
+2
+~~~
+# id|parent|notused|detail
+3|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t15
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t15
+~~~
+# y
+32
+~~~
+# y
+2
+41
+~~~
+# id|parent|notused|detail
+4|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# y
+22
+~~~
+# id|parent|notused|detail
+3|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+~~~

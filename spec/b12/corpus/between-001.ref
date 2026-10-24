@@ -1,0 +1,24 @@
+changes: 0
+changes: 1
+~~~
+# x BETWEEN 1 AND '5'
+0
+~~~
+# x COLLATE binary BETWEEN 1 AND '5'
+0
+~~~
+# x COLLATE nocase BETWEEN 1 AND '5'
+0
+~~~
+# y BETWEEN 'A' AND 'B'
+1
+~~~
+# y COLLATE nocase BETWEEN 'A' AND 'B'
+1
+~~~
+# y COLLATE binary BETWEEN 'A' AND 'B'
+0
+~~~
+# (y COLLATE binary) BETWEEN 'A' AND 'B'
+0
+~~~

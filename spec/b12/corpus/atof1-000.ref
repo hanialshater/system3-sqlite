@@ -1,0 +1,23 @@
+changes: 0
+changes: 2
+# substr(a,',') is true
+0
+1
+~~~
+# substr(a,',') is true
+1
+0
+~~~
+changes: 2
+# count(*)
+1
+~~~
+# randomblob(0) - 1
+-1
+~~~
+# vtxt|CAST(vtxt AS REAL)
+~~~
+# vtxt|CAST(vtxt AS REAL)
+~~~
+# n|v1|v2
+~~~

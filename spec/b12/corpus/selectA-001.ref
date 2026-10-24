@@ -1,0 +1,19 @@
+changes: 0
+changes: 5
+changes: 5
+changes: 3
+changes: 3
+changes: 3
+changes: 3
+changes: 3
+~~~
+# c1|c2
+123|123
+~~~
+# c1|c2
+123|123
+~~~
+changes: 3
+changes: 3
+# sum(d) OVER( PARTITION BY(SELECT 0 FROM c JOIN a WHERE b =(SELECT b INTERSECT SELECT d FROM c) AND b = 123))
+~~~

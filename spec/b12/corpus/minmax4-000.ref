@@ -1,0 +1,85 @@
+changes: 0
+# p|max(q)
+NULL|NULL
+~~~
+# p|min(q)
+NULL|NULL
+~~~
+changes: 1
+# p|max(q)
+1|2
+~~~
+# p|min(q)
+1|2
+~~~
+changes: 1
+# p|max(q)
+3|4
+~~~
+# p|min(q)
+1|2
+# p
+1
+~~~
+changes: 1
+# p|max(q)
+3|4
+# p
+3
+~~~
+# p|min(q)
+5|0
+~~~
+changes: 1
+# p|max(q)
+3|4
+# p
+3
+~~~
+# p|min(q)
+5|0
+~~~
+changes: 1
+# p|max(q)
+3|4
+~~~
+# p|min(q)
+5|0
+~~~
+changes: 4
+# p|max(q)
+7|NULL
+~~~
+# p|min(q)
+7|NULL
+~~~
+changes: 4
+changes: 4
+# a|max(b)|c
+1|2|3
+2|3|5
+~~~
+# a|min(b)|c
+1|1|4
+2|3|5
+~~~
+# a|min(b)|avg(b)|count(b)|c
+2|3|3.0|1|5
+1|1|1.5|2|4
+~~~
+# a|min(b)|max(b)|c
+1|1|2|3
+2|3|3|5
+~~~
+# a|max(b)|min(b)|c
+1|2|1|4
+2|3|3|5
+~~~
+# a|max(b)|b|max(c)|c
+1|2|1|4|4
+2|3|3|5|5
+~~~
+# a|min(b)|b|min(c)|c
+1|1|NULL|2|2
+2|3|3|5|5
+~~~

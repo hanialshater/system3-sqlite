@@ -1,0 +1,61 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b|a|b|a|b|a|b
+111|x1|222|x2|333|x3|444|x4
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|333|x3|444|x4
+~~~
+# a:1
+333
+~~~
+# a:1|b:1
+333|x3
+~~~
+# a:1|b:1|a|b
+333|x3|222|x2
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|444|x4|555|x5
+~~~
+# a|b|a|b|a:1|b:1|a:2|b:2
+111|x1|222|x2|444|x4|555|x5
+~~~
+error: no such table: aux.t4
+~~~
+# a:1|b:2
+444|x5
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a|b|b|b:1|b:2
+111|x1|x2|x3|x4
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a|b|b|b:1|b:2
+111|x1|x2|x3|x4
+~~~
+changes: 1
+changes: 1
+# a|b|b|a|b|b:1
+111|x1|x2|222|x3|x4
+~~~
+changes: 1
+# a|b|b|a|b|b:1
+111|x1|x2|222|x3|NULL
+~~~
+# a|b|a|b|a:1|b|b:1
+111|x1|111|x2|222|x3|NULL
+~~~

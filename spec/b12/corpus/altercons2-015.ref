@@ -1,0 +1,22 @@
+changes: 0
+~~~
+# sqlite_fail('constraint c1 already exists', 1)
+~~~
+# sqlite_fail('constraint c2 already exists', 1)
+~~~
+# sql
+CREATE TABLE t1(a, b, c, CONSTRAINT c1 CHECK(a=b), CONSTRAINT c2 CHECK(a=b))
+~~~
+changes: 0
+~~~
+# sqlite_fail('constraint failed', 19)
+~~~
+# sql
+CREATE TABLE t2(a, b NOT NULL)
+~~~
+changes: 0
+# sql
+CREATE TABLE t2(a, b)
+~~~
+# sqlite_fail('constraint failed', 19)
+~~~

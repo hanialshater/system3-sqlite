@@ -1,0 +1,266 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+4|0|164|SEARCH t1 USING INDEX i1w (w>? AND w<?)
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+16|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+4|0|204|SEARCH t1 USING INDEX i1w (w>?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+4|0|204|SEARCH t1 USING INDEX i1w (w<?)
+23|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+4|0|205|SEARCH t1 USING INDEX i1zyx (z>?)
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+4|0|205|SEARCH t1 USING INDEX i1zyx (z>?)
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# w|x|y|z
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+17|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~

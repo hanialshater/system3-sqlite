@@ -1,0 +1,23 @@
+changes: 0
+changes: 0
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+t1|5|t2|0
+t1|7|t2|0
+t1|9|t2|0
+~~~
+changes: 3
+changes: 3
+# table|rowid|parent|fkid
+t1|9|t2|0
+~~~
+# table|rowid|parent|fkid|'x'
+t1|9|t2|0|x
+~~~
+# table|rowid|parent|fkid|'x'
+error: no such table: main.t1
+~~~
+# table|rowid|parent|fkid|'x'
+t1|9|t2|0|x
+~~~

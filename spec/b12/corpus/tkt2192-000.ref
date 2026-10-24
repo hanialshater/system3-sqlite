@@ -1,0 +1,59 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
+# 'jan'|expense|value|'nov'|expense:1|value:1
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# b
+7
+10
+14
+15
+20
+21
+25
+~~~
+# a|b
+1|7
+2|10
+3|14
+3|20
+3|25
+4|15
+4|21
+~~~
+# x.a || '/' || x.b || '/' || y.b
+3/14/20
+3/14/25
+3/20/25
+4/15/21
+~~~
+changes: 1
+# z
+3/14/20
+3/14/25
+3/20/25
+4/15/21
+~~~

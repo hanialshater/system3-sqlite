@@ -1,0 +1,31 @@
+changes: 0
+~~~
+error: UNIQUE constraint failed: t1.a, t1.b
+~~~
+changes: 0
+~~~
+changes: 1
+# b
+one
+~~~
+# seqno|cid|name
+0|0|a
+1|0|a
+~~~
+# seqno|cid|name|'|'
+0|0|a||
+1|0|a||
+~~~
+# seqno|cid|name|desc|coll|key
+0|0|a|0|nocase|1
+1|0|a|0|BINARY|1
+2|1|b|0|BINARY|0
+~~~
+# seqno|cid|name|desc|coll|key|'|'
+0|0|a|0|nocase|1||
+1|0|a|0|BINARY|1||
+2|1|b|0|BINARY|0||
+~~~
+changes: 1
+# seqno|cid|name
+~~~

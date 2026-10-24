@@ -1,0 +1,247 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+changes: 1
+changes: 6
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+# a
+12
+123
+~~~
+changes: 6
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# count(*)
+12
+~~~
+~~~
+# b
+abc
+abcd
+ABC
+ABCD
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t11
+~~~
+~~~
+# b
+abc
+abcd
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t11
+~~~
+changes: 1
+~~~
+# b
+abc
+abcd
+ABC
+ABCD
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11b (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+~~~
+# b
+abc
+abcd
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t11
+~~~
+changes: 1
+changes: 1
+~~~
+# b
+abc
+abcd
+ABC
+ABCD
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bnc (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+~~~
+# b
+abc
+abcd
+ABC
+ABCD
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bnc (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+~~~
+# b
+abc
+abcd
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bb (b>? AND b<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+~~~
+# b
+abc
+abcd
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bb (b>? AND b<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+changes: 1
+~~~
+# c
+abc
+abcd
+ABC
+ABCD
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11cnc (c>? AND c<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# c
+abc
+abcd
+~~~
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11cb (c>? AND c<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+changes: 3
+changes: 3
+changes: 3
+# id
+1
+3
+~~~
+# id
+1
+3
+~~~
+# id
+1
+3
+~~~
+# id
+1
+3
+~~~
+# id
+1
+3
+~~~
+# id
+1
+3
+~~~
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# char(0x304d) LIKE char(0x306d)
+0
+~~~
+# char(0x4d) LIKE char(0x306d)
+0
+~~~
+# char(0x304d) LIKE char(0x6d)
+0
+~~~
+# char(0x4d) LIKE char(0x6d)
+1
+~~~
+# 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz'GLOB'*a*a*a*a*a*a*a*a*y'
+0
+~~~
+# 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz'LIKE'%a%a%a%a%a%a%a%a%y'
+0
+~~~

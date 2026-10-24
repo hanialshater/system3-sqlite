@@ -1,0 +1,61 @@
+error: no such index: i1
+~~~
+error: no such index: i2
+~~~
+# seqno|cid|name
+~~~
+# seqno|cid|name
+~~~
+error: no such table: aux.sqlite_master
+~~~
+error: no such table: main.t1
+~~~
+# seq|name|unique|origin|partial
+~~~
+# seq|name|unique|origin|partial
+~~~
+error: no such index: i1
+~~~
+error: no such index: i2
+~~~
+# seq|name|unique|origin|partial
+~~~
+# seq|name|unique|origin|partial
+~~~
+error: no such table: aux.sqlite_master
+~~~
+error: no such table: main.t1
+~~~
+# id|seq|table|from|to|on_update|on_delete|match
+~~~
+# id|seq|table|from|to|on_update|on_delete|match
+~~~
+error: no such table: c1
+~~~
+error: no such table: c2
+~~~
+# id|seq|table|from|to|on_update|on_delete|match
+~~~
+# id|seq|table|from|to|on_update|on_delete|match
+~~~
+error: no such table: aux.sqlite_master
+~~~
+changes: 0
+error: unknown database aux
+~~~
+# table|rowid|parent|fkid
+~~~
+error: no such table: c2
+~~~
+error: no such table: c2
+~~~
+# table|rowid|parent|fkid
+~~~
+error: no such table: c2
+~~~
+changes: 0
+# cid|name|type|notnull|dflt_value|pk
+0|a||0|'abc'|0
+1|b||0|-1|0
+2|c||0|+4.0|0
+~~~

@@ -1,0 +1,4 @@
+error: cannot commit - no transaction is active
+~~~
+error: no such table: t1
+~~~

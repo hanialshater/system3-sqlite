@@ -1,0 +1,26 @@
+changes: 0
+~~~
+# a|b|c
+~~~
+error: cannot start a transaction within a transaction
+~~~
+# a|b|c
+~~~
+changes: 1
+~~~
+~~~
+changes: 1
+~~~
+error: cannot start a transaction within a transaction
+~~~
+error: cannot start a transaction within a transaction
+~~~
+error: cannot start a transaction within a transaction
+~~~
+# a|b|c
+1|2|3
+~~~
+~~~
+# a|b|c
+1|2|3
+~~~

@@ -1,0 +1,14 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+error: no such column: new.a
+~~~
+error: no such column: old.a
+~~~
+# a|x
+3|40
+~~~
+error: table pragma_encoding may not be modified
+~~~

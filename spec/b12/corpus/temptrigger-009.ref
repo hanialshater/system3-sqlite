@@ -1,0 +1,32 @@
+changes: 0
+error: table a1 already exists
+~~~
+changes: 0
+changes: 1
+# c|d
+hello|world
+5|6
+~~~
+changes: 1
+changes: 1
+~~~
+# e|f
+7|8
+~~~
+# c|d
+hello|world
+5|6
+~~~
+changes: 1
+changes: 1
+changes: 2
+changes: 1
+changes: 1
+~~~
+changes: 1
+# e|f
+world|hello
+~~~
+changes: 1
+error: trigger tr1 cannot reference objects in database aux
+~~~

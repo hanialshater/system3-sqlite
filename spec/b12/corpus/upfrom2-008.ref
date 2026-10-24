@@ -1,0 +1,11 @@
+changes: 0
+changes: 0
+~~~
+error: target object/alias may not appear in FROM clause: x1
+~~~
+error: target object/alias may not appear in FROM clause: grapes
+~~~
+error: target object/alias may not appear in FROM clause: x1
+~~~
+error: target object/alias may not appear in FROM clause: grapes
+~~~

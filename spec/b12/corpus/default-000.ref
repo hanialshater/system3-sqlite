@@ -1,0 +1,35 @@
+changes: 0
+changes: 1
+# a|b
+1|X'6869'
+~~~
+changes: 1
+changes: 1
+# x|y
+1|NULL
+~~~
+error: default value of column [y] is not constant
+~~~
+changes: 1
+# cid|name|type|notnull|dflt_value|pk
+0|c||0|'abc'|0
+~~~
+changes: 1
+# cid|name|type|notnull|dflt_value|pk
+0|c||0|'abc'|0
+~~~
+changes: 1
+changes: 1
+# a|typeof(a)|b|typeof(b)|c|typeof(c)|d|typeof(d)|e|typeof(e)|f|typeof(f)|g|typeof(g)
+1|integer|5|integer|row1|text|5.25|real|xyz|text|321|text|432|integer
+~~~
+changes: 1
+changes: 1
+# a|b|c|d|e|f|g
+2|12345|hello|NULL|4.36|NULL|43200
+~~~
+changes: 1
+changes: 1
+# a|b|c|d|e|f|g|h
+2147483647|2147483648|9223372036854775807|-2147483647|-2147483648|-9223372036854775808|9.2233720368547758e+18|9223372036854775807
+~~~

@@ -1,0 +1,5 @@
+CREATE TABLE x1(a PRIMARY KEY, b CHECK(a!=b) NOT NULL, c);
+ALTER TABLE x1 ADD CONSTRAINT ccc CHECK (a!='a')
+SELECT sql FROM sqlite_schema WHERE name='x1'
+ALTER TABLE x1 ALTER c SET NOT NULL
+SELECT sql FROM sqlite_schema WHERE name='x1'

@@ -1,0 +1,3 @@
+PRAGMA recursive_triggers = 1; CREATE TABLE t1(x, y); CREATE TRIGGER t1insert AFTER INSERT ON t1 WHEN new.x<5 BEGIN INSERT INTO t1 VALUES(new.x+1, new.y); END;
+INSERT INTO t1 VALUES(1, 'one') RETURNING *;
+SELECT * FROM t1

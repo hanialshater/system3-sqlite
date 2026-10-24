@@ -1,0 +1,10 @@
+# format('%g',192.496475)
+192.496
+~~~
+# format('%g',192.496501)
+192.497
+~~~
+error: no such function: ieee754_inc
+~~~
+error: no such function: ieee754_inc
+~~~

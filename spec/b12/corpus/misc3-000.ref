@@ -1,0 +1,321 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 2
+~~~
+error: UNIQUE constraint failed: t1.a
+~~~
+changes: 0
+# integrity_check
+ok
+~~~
+changes: 0
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+changes: 64
+~~~
+error: UNIQUE constraint failed: t1.a
+~~~
+changes: 1
+# integrity_check
+ok
+~~~
+# 2e-25*0.5e25
+1.0000000000000002
+~~~
+# 2.0e-25*000000.500000000000000000000000000000e+00025
+1.0000000000000002
+~~~
+# 000000000002e-0000000025*0.5e25
+1.0000000000000002
+~~~
+# 2e-25*0.5e250
+1.0e+225
+~~~
+# format('%.15e',2.0e-250*0.5e25)
+1.000000000000000e-225
+~~~
+# '-2.0e-127' * '-0.5e27'
+1.0e-100
+~~~
+# '+2.0e-127' * '-0.5e27'
+-1.0e-100
+~~~
+# 2.0e-27 * '+0.5e+127'
+1.0e+100
+~~~
+# 2.0e-27 * '+0.000005e+132'
+1.0e+100
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a
+-2147483649
+-2147483648
+-2147483647
+2147483646
+2147483647
+2147483648
+2147483649
+~~~
+# a
+-2147483648
+-2147483647
+2147483646
+2147483647
+2147483648
+2147483649
+~~~
+# a
+-2147483647
+2147483646
+2147483647
+2147483648
+2147483649
+~~~
+# a
+-2147483648
+-2147483647
+2147483646
+2147483647
+2147483648
+2147483649
+~~~
+# a
+2147483648
+2147483647
+2147483646
+~~~
+# a
+2147483648
+2147483647
+2147483646
+~~~
+# a
+2147483647
+2147483646
+~~~
+# a
+2147483647
+2147483646
+~~~
+# a
+2147483646
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+changes: 64
+# count(a)|count(b)
+128|64
+~~~
+# count(a)
+64
+~~~
+# count(a)
+64
+~~~
+changes: 64
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# c|e|b
+1|one|cat
+2|two|NULL
+3|three|NULL
+4|four|dog
+~~~
+# c|e|b
+1|one|cat
+2|two|NULL
+3|three|NULL
+4|four|dog
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|0|0|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+~~~
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|1|0|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+~~~
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|1|1|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+~~~
+~~~
+changes: 1
+changes: 1
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|65|0|NULL|0|NULL
+1|SorterOpen|2|0|1|k(2,,)|0|NULL
+2|OpenRead|0|13|0|3|0|NULL
+3|Rewind|0|9|0|NULL|0|NULL
+4|Column|0|0|2|54321|0|NULL
+5|Rowid|0|3|0|NULL|0|NULL
+6|MakeRecord|2|2|1|NULL|0|NULL
+7|SorterInsert|2|1|0|NULL|0|NULL
+8|Next|0|4|0|NULL|0|NULL
+9|Clear|14|0|0|NULL|0|NULL
+10|OpenWrite|1|14|0|k(2,,)|1|NULL
+11|SorterSort|2|19|0|NULL|0|NULL
+12|Goto|0|15|0|NULL|0|NULL
+13|SorterCompare|2|12|1|1|0|NULL
+14|Halt|2067|2|0|ex1.a|2|NULL
+15|SorterData|2|1|1|NULL|0|NULL
+16|SeekEnd|1|0|0|NULL|0|NULL
+17|IdxInsert|1|1|0|NULL|16|NULL
+18|SorterNext|2|13|0|NULL|0|NULL
+19|Close|0|0|0|NULL|0|NULL
+20|Close|1|0|0|NULL|0|NULL
+21|Close|2|0|0|NULL|0|NULL
+22|SorterOpen|5|0|1|k(2,,)|0|NULL
+23|OpenRead|3|2|0|2|0|NULL
+24|Rewind|3|30|0|NULL|0|NULL
+25|Column|3|0|2|NULL|0|NULL
+26|Rowid|3|3|0|NULL|0|NULL
+27|MakeRecord|2|2|1|NULL|0|NULL
+28|SorterInsert|5|1|0|NULL|0|NULL
+29|Next|3|25|0|NULL|0|NULL
+30|Clear|3|0|0|NULL|0|NULL
+31|OpenWrite|4|3|0|k(2,,)|1|NULL
+32|SorterSort|5|40|0|NULL|0|NULL
+33|Goto|0|36|0|NULL|0|NULL
+34|SorterCompare|5|33|1|1|0|NULL
+35|Halt|2067|2|0|t1.a|2|NULL
+36|SorterData|5|1|4|NULL|0|NULL
+37|SeekEnd|4|0|0|NULL|0|NULL
+38|IdxInsert|4|1|0|NULL|16|NULL
+39|SorterNext|5|34|0|NULL|0|NULL
+40|Close|3|0|0|NULL|0|NULL
+41|Close|4|0|0|NULL|0|NULL
+42|Close|5|0|0|NULL|0|NULL
+43|SorterOpen|8|0|1|k(2,,)|0|NULL
+44|OpenRead|6|8|0|1|0|NULL
+45|Rewind|6|51|0|NULL|0|NULL
+46|Column|6|0|2|NULL|0|NULL
+47|Rowid|6|3|0|NULL|0|NULL
+48|MakeRecord|2|2|1|NULL|0|NULL
+49|SorterInsert|8|1|0|NULL|0|NULL
+50|Next|6|46|0|NULL|0|NULL
+51|Clear|9|0|0|NULL|0|NULL
+52|OpenWrite|7|9|0|k(2,,)|1|NULL
+53|SorterSort|8|61|0|NULL|0|NULL
+54|Goto|0|57|0|NULL|0|NULL
+55|SorterCompare|8|54|1|1|0|NULL
+56|Halt|2067|2|0|t2.a|2|NULL
+57|SorterData|8|1|7|NULL|0|NULL
+58|SeekEnd|7|0|0|NULL|0|NULL
+59|IdxInsert|7|1|0|NULL|16|NULL
+60|SorterNext|8|55|0|NULL|0|NULL
+61|Close|6|0|0|NULL|0|NULL
+62|Close|7|0|0|NULL|0|NULL
+63|Close|8|0|0|NULL|0|NULL
+64|Halt|0|0|0|NULL|0|NULL
+65|Transaction|0|1|12|1|1|NULL
+66|Goto|0|1|0|NULL|0|NULL
+~~~
+# encoding
+UTF-8
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|24|0|NULL|0|NULL
+1|SorterOpen|1|6|0|k(2,B,-B)|0|NULL
+2|OpenRead|0|13|0|3|0|NULL
+3|Rewind|0|15|0|NULL|0|NULL
+4|Column|0|0|6|54321|0|NULL
+5|Add|7|6|3|NULL|0|NULL
+6|Column|0|1|6|hello|0|NULL
+7|Multiply|8|6|4|NULL|0|NULL
+8|Column|0|2|5|3.1415926|0|NULL
+9|RealAffinity|5|0|0|NULL|0|NULL
+10|Column|0|0|1|54321|0|NULL
+11|Column|0|1|2|hello|0|NULL
+12|MakeRecord|1|5|9|NULL|0|NULL
+13|SorterInsert|1|9|1|5|0|NULL
+14|Next|0|4|0|NULL|1|NULL
+15|OpenPseudo|2|10|6|NULL|0|NULL
+16|SorterSort|1|23|0|NULL|0|NULL
+17|SorterData|1|10|2|NULL|0|NULL
+18|Column|2|4|5|NULL|0|NULL
+19|Column|2|3|4|NULL|0|NULL
+20|Column|2|2|3|NULL|0|NULL
+21|ResultRow|3|3|0|NULL|0|NULL
+22|SorterNext|1|17|0|NULL|0|NULL
+23|Halt|0|0|0|NULL|0|NULL
+24|Transaction|0|0|12|1|1|NULL
+25|Int64|0|7|0|123456789012|0|NULL
+26|Real|0|8|0|4.5678|0|NULL
+27|Goto|0|1|0|NULL|0|NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+# count(*)
+32
+~~~
+changes: 32
+# count(*)
+0
+~~~
+# count(*)
+32
+~~~
+# count(CASE WHEN b IN ('abc','xyz') THEN 'x' END)
+2
+~~~
+# count(*)
+2
+~~~

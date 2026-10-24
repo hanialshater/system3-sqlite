@@ -1,0 +1,214 @@
+error: no such table: t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+changes: 0
+~~~
+changes: 0
+# idx|stat
+# integrity_check
+ok
+~~~
+error: no such table: t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: t1
+~~~
+error: no such table: t1
+~~~
+changes: 0
+# idx|stat
+# integrity_check
+ok
+~~~
+error: no such table: main.t1
+~~~
+changes: 0
+error: no such table: nums
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t2
+~~~
+changes: 0
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t2
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t2
+~~~
+error: no such index: t2a1
+~~~
+changes: 0
+# b
+# integrity_check
+ok
+~~~
+# id|parent|notused|detail
+2|0|216|SCAN t2
+~~~
+# b
+~~~
+# id|parent|notused|detail
+5|0|62|SEARCH t2 USING INDEX t2a2 (a=?)
+~~~
+# b
+~~~
+# id|parent|notused|detail
+5|0|62|SEARCH t2 USING INDEX t2a2 (a=?)
+~~~
+changes: 0
+error: no such table: nums
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+# count(*)
+2
+~~~
+changes: 2
+# integrity_check
+ok
+~~~
+changes: 2
+changes: 2
+# count(*)
+0
+# stat+0
+0
+~~~
+changes: 2
+error: no such table: main.t1
+~~~
+changes: 0
+# a|b
+~~~
+# integrity_check
+ok
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+# x|y
+1|NULL
+~~~
+changes: 1
+# x|y
+~~~
+changes: 1
+# x|y
+1|NULL
+99|2
+~~~
+# x|y
+99|2
+~~~
+# id|parent|notused|detail
+4|0|56|SEARCH t7a USING COVERING INDEX t7ax (x=?)
+8|0|216|SCAN t7b
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b|x|y
+1|one|value|1
+2|two|NULL|NULL
+3|three|value|3
+~~~
+changes: 1
+changes: 1
+changes: 5
+changes: 2
+# a|b|c|'|'
+NULL|7|3||
+1|1|9||
+10|35|35||
+11|15|82||
+20|5|5||
+~~~
+changes: 2
+changes: 2
+changes: 2
+changes: 4
+changes: 2
+# a|b|c|'|'
+1|1|9||
+10|35|35||
+11|15|82||
+20|5|5||
+~~~
+changes: 2
+changes: 4
+changes: 4
+# e
+5
+9
+~~~
+# id|parent|notused|detail
+4|0|214|SCAN t10 USING INDEX t10x
+~~~
+# e
+9
+5
+~~~
+# id|parent|notused|detail
+4|0|214|SCAN t10 USING INDEX t10x
+~~~
+# e
+9
+5
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t10
+14|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 4
+changes: 4
+# id|parent|notused|detail
+3|0|214|SCAN t11 USING INDEX t11x
+~~~
+# id|parent|notused|detail
+3|0|214|SCAN t11 USING INDEX t11x
+~~~
+changes: 4
+changes: 4
+changes: 4
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# 'one'|x
+changes: 1
+# 'two'|x
+~~~
+# x
+1
+2
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# c0
+NULL
+~~~

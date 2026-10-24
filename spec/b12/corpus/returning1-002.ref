@@ -1,0 +1,14 @@
+changes: 0
+changes: 0
+changes: 4
+changes: 3
+error: RETURNING may not use "TABLE.*" wildcards
+~~~
+# id|'|'
+29||
+# id
+1
+2
+9
+29
+~~~

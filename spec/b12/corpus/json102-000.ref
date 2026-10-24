@@ -1,0 +1,607 @@
+# json_object('ex','[52,3.14159]')
+{"ex":"[52,3.14159]"}
+~~~
+# json(jsonb_object('ex','[52,3.14159]'))
+{"ex":"[52,3.14159]"}
+~~~
+# json_object('ex',json('[52,3.14159]'))
+{"ex":[52,3.14159]}
+~~~
+# json(jsonb_object('ex',json('[52,3.14159]')))
+{"ex":[52,3.14159]}
+~~~
+# json_object('ex',jsonb('[52,3.14159]'))
+{"ex":[52,3.14159]}
+~~~
+# json(jsonb_object('ex',jsonb('[52,3.14159]')))
+{"ex":[52,3.14159]}
+~~~
+# json_object('ex',json_array(52,3.14159))
+{"ex":[52,3.14159]}
+~~~
+# json(jsonb_object('ex',json_array(52,3.14159)))
+{"ex":[52,3.14159]}
+~~~
+# json_object('ex',jsonb_array(52,3.14159))
+{"ex":[52,3.14159]}
+~~~
+# json(jsonb_object('ex',jsonb_array(52,3.14159)))
+{"ex":[52,3.14159]}
+~~~
+# json(' { "this" : "is", "a": [ "test" ] } ')
+{"this":"is","a":["test"]}
+~~~
+# json(jsonb(' { "this" : "is", "a": [ "test" ] } '))
+{"this":"is","a":["test"]}
+~~~
+# json_array(1,2,'3',4)
+[1,2,"3",4]
+~~~
+# json(jsonb_array(1,2,'3',4))
+[1,2,"3",4]
+~~~
+# json_array('[1,2]')
+["[1,2]"]
+~~~
+# json(jsonb_array('[1,2]'))
+["[1,2]"]
+~~~
+# json_array(json_array(1,2))
+[[1,2]]
+~~~
+# json_array(jsonb_array(1,2))
+[[1,2]]
+~~~
+# json(jsonb_array(json_array(1,2)))
+[[1,2]]
+~~~
+# json(jsonb_array(jsonb_array(1,2)))
+[[1,2]]
+~~~
+# json_array(1,null,'3','[4,5]','{"six":7.7}')
+[1,null,"3","[4,5]","{\"six\":7.7}"]
+~~~
+# json(jsonb_array(1,null,'3','[4,5]','{"six":7.7}'))
+[1,null,"3","[4,5]","{\"six\":7.7}"]
+~~~
+# json_array(1,null,'3',json('[4,5]'),json('{"six":7.7}'))
+[1,null,"3",[4,5],{"six":7.7}]
+~~~
+# json_array(1,null,'3',jsonb('[4,5]'),json('{"six":7.7}'))
+[1,null,"3",[4,5],{"six":7.7}]
+~~~
+# json(jsonb_array(1,null,'3',json('[4,5]'),json('{"six":7.7}')))
+[1,null,"3",[4,5],{"six":7.7}]
+~~~
+# json(jsonb_array(1,null,'3',jsonb('[4,5]'),jsonb('{"six":7.7}')))
+[1,null,"3",[4,5],{"six":7.7}]
+~~~
+# json_array_length('[1,2,3,4]')
+4
+~~~
+# json_array_length(jsonb('[1,2,3,4]'))
+4
+~~~
+# json_array_length( json_remove('[1,2,3,4]','$[2]') )
+3
+~~~
+# json_array_length( jsonb_remove('[1,2,3,4]','$[2]') )
+3
+~~~
+# json_array_length('[1,2,3,4]', '$')
+4
+~~~
+# json_array_length(jsonb('[1,2,3,4]'), '$')
+4
+~~~
+# json_array_length('[1,2,3,4]', '$[2]')
+0
+~~~
+# json_array_length(jsonb('[1,2,3,4]'), '$[2]')
+0
+~~~
+# json_array_length('{"one":[1,2,3]}')
+0
+~~~
+# json_array_length('{"one":[1,2,3]}')
+0
+~~~
+# json_array_length(jsonb('{"one":[1,2,3]}'), '$.one')
+3
+~~~
+# json_array_length('{"one":[1,2,3]}', '$.two')
+NULL
+~~~
+# json_array_length(jsonb('{"one":[1,2,3]}'), '$.two')
+NULL
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$')
+{"a":2,"c":[4,5,{"f":7}]}
+~~~
+# json_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$')
+{"a":2,"c":[4,5,{"f":7}]}
+~~~
+# json(jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$'))
+{"a":2,"c":[4,5,{"f":7}]}
+~~~
+# json(jsonb_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$'))
+{"a":2,"c":[4,5,{"f":7}]}
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c')
+[4,5,{"f":7}]
+~~~
+# json_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.c')
+[4,5,{"f":7}]
+~~~
+# json(jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c'))
+[4,5,{"f":7}]
+~~~
+# json(jsonb_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.c'))
+[4,5,{"f":7}]
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2]')
+{"f":7}
+~~~
+# json_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.c[2]')
+{"f":7}
+~~~
+# json(jsonb_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.c[2]'))
+{"f":7}
+~~~
+# json(jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2]'))
+{"f":7}
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2].f')
+7
+~~~
+# jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.c[2].f')
+7
+~~~
+# json_extract('{"a":2,"c":[4,5],"f":7}','$.c','$.a')
+[[4,5],2]
+~~~
+# json_extract(jsonb('{"a":2,"c":[4,5],"f":7}'),'$.c','$.a')
+[[4,5],2]
+~~~
+# json(jsonb_extract('{"a":2,"c":[4,5],"f":7}','$.c','$.a'))
+[[4,5],2]
+~~~
+# json(jsonb_extract(jsonb('{"a":2,"c":[4,5],"f":7}'),'$.c','$.a'))
+[[4,5],2]
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.x')
+NULL
+~~~
+# jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.x')
+NULL
+~~~
+# json_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.x', '$.a')
+[null,2]
+~~~
+# json_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.x', '$.a')
+[null,2]
+~~~
+# json(jsonb_extract(jsonb('{"a":2,"c":[4,5,{"f":7}]}'), '$.x', '$.a'))
+[null,2]
+~~~
+# json(jsonb_extract('{"a":2,"c":[4,5,{"f":7}]}', '$.x', '$.a'))
+[null,2]
+~~~
+# json_insert('{"a":2,"c":4}', '$.a', 99)
+{"a":2,"c":4}
+~~~
+# json_insert(jsonb('{"a":2,"c":4}'), '$.a', 99)
+{"a":2,"c":4}
+~~~
+# json(jsonb_insert('{"a":2,"c":4}', '$.a', 99))
+{"a":2,"c":4}
+~~~
+# json(jsonb_insert(jsonb('{"a":2,"c":4}'), '$.a', 99))
+{"a":2,"c":4}
+~~~
+# json_insert('{"a":2,"c":4}', '$.e', 99)
+{"a":2,"c":4,"e":99}
+~~~
+# json_insert(jsonb('{"a":2,"c":4}'), '$.e', 99)
+{"a":2,"c":4,"e":99}
+~~~
+# json(jsonb_insert('{"a":2,"c":4}', '$.e', 99))
+{"a":2,"c":4,"e":99}
+~~~
+# json(jsonb_insert(jsonb('{"a":2,"c":4}'), '$.e', 99))
+{"a":2,"c":4,"e":99}
+~~~
+# json_replace('{"a":2,"c":4}', '$.a', 99)
+{"a":99,"c":4}
+~~~
+# json_replace(jsonb('{"a":2,"c":4}'), '$.a', 99)
+{"a":99,"c":4}
+~~~
+# json(jsonb_replace('{"a":2,"c":4}', '$.a', 99))
+{"a":99,"c":4}
+~~~
+# json(jsonb_replace(jsonb('{"a":2,"c":4}'), '$.a', 99))
+{"a":99,"c":4}
+~~~
+# json_replace('{"a":2,"c":4}', '$.e', 99)
+{"a":2,"c":4}
+~~~
+# json_replace(jsonb('{"a":2,"c":4}'), '$.e', 99)
+{"a":2,"c":4}
+~~~
+# json(jsonb_replace('{"a":2,"c":4}', '$.e', 99))
+{"a":2,"c":4}
+~~~
+# json(jsonb_replace(jsonb('{"a":2,"c":4}'), '$.e', 99))
+{"a":2,"c":4}
+~~~
+# json_set('{"a":2,"c":4}', '$.a', 99)
+{"a":99,"c":4}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.a', 99)
+{"a":99,"c":4}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.a', 99))
+{"a":99,"c":4}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.a', 99))
+{"a":99,"c":4}
+~~~
+# json_set('{"a":2,"c":4}', '$.e', 99)
+{"a":2,"c":4,"e":99}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.e', 99)
+{"a":2,"c":4,"e":99}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.e', 99))
+{"a":2,"c":4,"e":99}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.e', 99))
+{"a":2,"c":4,"e":99}
+~~~
+# json_set('{"a":2,"c":4}', '$.c', '[97,96]')
+{"a":2,"c":"[97,96]"}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.c', '[97,96]')
+{"a":2,"c":"[97,96]"}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.c', '[97,96]'))
+{"a":2,"c":"[97,96]"}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.c', '[97,96]'))
+{"a":2,"c":"[97,96]"}
+~~~
+# json_set('{"a":2,"c":4}', '$.c', json('[97,96]'))
+{"a":2,"c":[97,96]}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.c', json('[97,96]'))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.c', json('[97,96]')))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.c', json('[97,96]')))
+{"a":2,"c":[97,96]}
+~~~
+# json_set('{"a":2,"c":4}', '$.c', jsonb('[97,96]'))
+{"a":2,"c":[97,96]}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.c', jsonb('[97,96]'))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.c', jsonb('[97,96]')))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.c', jsonb('[97,96]')))
+{"a":2,"c":[97,96]}
+~~~
+# json_set('{"a":2,"c":4}', '$.c', json_array(97,96))
+{"a":2,"c":[97,96]}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.c', json_array(97,96))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.c', json_array(97,96)))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.c', json_array(97,96)))
+{"a":2,"c":[97,96]}
+~~~
+# json_set('{"a":2,"c":4}', '$.c', jsonb_array(97,96))
+{"a":2,"c":[97,96]}
+~~~
+# json_set(jsonb('{"a":2,"c":4}'), '$.c', jsonb_array(97,96))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set('{"a":2,"c":4}', '$.c', jsonb_array(97,96)))
+{"a":2,"c":[97,96]}
+~~~
+# json(jsonb_set(jsonb('{"a":2,"c":4}'), '$.c', jsonb_array(97,96)))
+{"a":2,"c":[97,96]}
+~~~
+# json_object('a',2,'c',4)
+{"a":2,"c":4}
+~~~
+# json(jsonb_object('a',2,'c',4))
+{"a":2,"c":4}
+~~~
+# json_object('a',2,'c','{e:5}')
+{"a":2,"c":"{e:5}"}
+~~~
+# json(jsonb_object('a',2,'c','{e:5}'))
+{"a":2,"c":"{e:5}"}
+~~~
+# json_object('a',2,'c',json_object('e',5))
+{"a":2,"c":{"e":5}}
+~~~
+# json(jsonb_object('a',2,'c',json_object('e',5)))
+{"a":2,"c":{"e":5}}
+~~~
+# json_object('a',2,'c',jsonb_object('e',5))
+{"a":2,"c":{"e":5}}
+~~~
+# json(jsonb_object('a',2,'c',jsonb_object('e',5)))
+{"a":2,"c":{"e":5}}
+~~~
+# json_remove('[0,1,2,3,4]','$[2]')
+[0,1,3,4]
+~~~
+# json_remove(jsonb('[0,1,2,3,4]'),'$[2]')
+[0,1,3,4]
+~~~
+# json(jsonb_remove('[0,1,2,3,4]','$[2]'))
+[0,1,3,4]
+~~~
+# json(jsonb_remove(jsonb('[0,1,2,3,4]'),'$[2]'))
+[0,1,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[5]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[6]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[4294967295]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[4294967296]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[4294967297]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[42949672950]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[42949672960]')
+[0,1,2,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[2]','$[0]')
+[1,3,4]
+~~~
+# json_remove(jsonb('[0,1,2,3,4]'),'$[2]','$[0]')
+[1,3,4]
+~~~
+# json(jsonb_remove('[0,1,2,3,4]','$[2]','$[0]'))
+[1,3,4]
+~~~
+# json(jsonb_remove(jsonb('[0,1,2,3,4]'),'$[2]','$[0]'))
+[1,3,4]
+~~~
+# json_remove('[0,1,2,3,4]','$[0]','$[2]')
+[1,2,4]
+~~~
+# json_remove(jsonb('[0,1,2,3,4]'),'$[0]','$[2]')
+[1,2,4]
+~~~
+# json(jsonb_remove('[0,1,2,3,4]','$[0]','$[2]'))
+[1,2,4]
+~~~
+# json(jsonb_remove(jsonb('[0,1,2,3,4]'),'$[0]','$[2]'))
+[1,2,4]
+~~~
+# json_remove('{"x":25,"y":42}')
+{"x":25,"y":42}
+~~~
+# json_remove(jsonb('{"x":25,"y":42}'))
+{"x":25,"y":42}
+~~~
+# json(jsonb_remove('{"x":25,"y":42}'))
+{"x":25,"y":42}
+~~~
+# json(jsonb_remove(jsonb('{"x":25,"y":42}')))
+{"x":25,"y":42}
+~~~
+# json_remove('{"x":25,"y":42}','$.z')
+{"x":25,"y":42}
+~~~
+# json_remove(jsonb('{"x":25,"y":42}'),'$.z')
+{"x":25,"y":42}
+~~~
+# json(jsonb_remove('{"x":25,"y":42}','$.z'))
+{"x":25,"y":42}
+~~~
+# json(jsonb_remove(jsonb('{"x":25,"y":42}'),'$.z'))
+{"x":25,"y":42}
+~~~
+# json_remove('{"x":25,"y":42}','$.y')
+{"x":25}
+~~~
+# json_remove(jsonb('{"x":25,"y":42}'),'$.y')
+{"x":25}
+~~~
+# json(jsonb_remove('{"x":25,"y":42}','$.y'))
+{"x":25}
+~~~
+# json(jsonb_remove(jsonb('{"x":25,"y":42}'),'$.y'))
+{"x":25}
+~~~
+# json_remove('{"x":25,"y":42}','$')
+NULL
+~~~
+# json_remove(jsonb('{"x":25,"y":42}'),'$')
+NULL
+~~~
+# json(jsonb_remove('{"x":25,"y":42}','$'))
+NULL
+~~~
+# json(jsonb_remove(jsonb('{"x":25,"y":42}'),'$'))
+NULL
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}')
+object
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778')
+object
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$')
+object
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$')
+object
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a')
+array
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a')
+array
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[0]')
+integer
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[0]')
+integer
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[1]')
+real
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[1]')
+real
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[2]')
+true
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[2]')
+true
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[3]')
+false
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[3]')
+false
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[4]')
+null
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[4]')
+null
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[5]')
+text
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[5]')
+text
+~~~
+# json_type('{"a":[2,3.5,true,false,null,"x"]}','$.a[6]')
+NULL
+~~~
+# json_type(x'cc0f1761cb0b133235332e350102001778','$.a[6]')
+NULL
+~~~
+# json_valid(char(123)||'"x":35'||char(125))
+1
+~~~
+# json_valid(char(123)||'"x":35')
+0
+~~~
+changes: 0
+changes: 4
+changes: 4
+# name
+Cindy
+Dave
+~~~
+# name
+Cindy
+Dave
+~~~
+changes: 2
+# name|substr(phone,1,5)
+Alice|["919
+Bob|201-5
+Cindy|704-5
+Dave|["336
+~~~
+# name
+Cindy
+Dave
+~~~
+error: no such table: big
+~~~
+error: no such table: big
+~~~
+error: no such table: big
+~~~
+error: no such table: big
+~~~
+error: no such table: big
+~~~
+error: no such table: big
+~~~
+# json_valid(char(32) || '"xyz"')
+1
+~~~
+# json_valid(char(200) || '"xyz"')
+0
+~~~
+# json_valid('{"x":01}')|NOT json_error_position('{"x":01}')
+0|0
+~~~
+# json_valid('{"x":-01}')|NOT json_error_position('{"x":-01}')
+0|0
+~~~
+# json_valid('{"x":0}')|NOT json_error_position('{"x":0}')
+1|1
+~~~
+# json_valid('{"x":-0}')|NOT json_error_position('{"x":-0}')
+1|1
+~~~
+# json_valid('{"x":0.1}')|NOT json_error_position('{"x":0.1}')
+1|1
+~~~
+# json_valid('{"x":-0.1}')|NOT json_error_position('{"x":-0.1}')
+1|1
+~~~
+# json_valid('{"x":0.0000}')|NOT json_error_position('{"x":0.0000}')
+1|1
+~~~
+# json_valid('{"x":-0.0000}')|NOT json_error_position('{"x":-0.0000}')
+1|1
+~~~
+# json_valid('{"x":01.5}')|NOT json_error_position('{"x":01.5}')
+0|0
+~~~
+# json_valid('{"x":-01.5}')|NOT json_error_position('{"x":-01.5}')
+0|0
+~~~
+# json_valid('{"x":00}')|NOT json_error_position('{"x":00}')
+0|0
+~~~
+# json_valid('{"x":-00}')|NOT json_error_position('{"x":-00}')
+0|0
+~~~
+# json_valid('{"x":+0}')|NOT json_error_position('{"x":+0}')
+0|1
+~~~
+# json_valid('{"x":+5}')|NOT json_error_position('{"x":+5}')
+0|1
+~~~
+# json_valid('{"x":+5.5}')|NOT json_error_position('{"x":+5.5}')
+0|1
+~~~
+# x
+32
+~~~
+# sum(json_valid(json_quote('a'||char(x)||'z')))
+31
+~~~

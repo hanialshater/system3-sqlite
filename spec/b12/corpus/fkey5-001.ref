@@ -1,0 +1,11 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+# table|rowid|parent|fkid
+~~~
+changes: 1
+# table|rowid|parent|fkid
+c30|NULL|p30|0
+~~~

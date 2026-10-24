@@ -1,0 +1,34 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# b|a
+1|x
+~~~
+# b|a
+1|x
+~~~
+# subtype(a)
+0
+~~~
+# subtype(a)
+0
+~~~
+changes: 1
+changes: 1
+changes: 1
+# c0
+1
+~~~
+# y|json_quote(y)
+1|"1"
+~~~
+# y|json_quote(y)
+1|"1"
+~~~
+# id|subtype(if(json_valid(j,6),j->'a'))
+1|74
+2|0
+~~~

@@ -1,0 +1,10 @@
+# val|1|'/'
+NULL|1|/
+missing|NULL|/
+~~~
+changes: 0
+changes: 1
+changes: 1
+# c|b
+3|NULL
+~~~

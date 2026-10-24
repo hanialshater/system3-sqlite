@@ -1,0 +1,27 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# 1000 = y
+1
+~~~
+# 1000 IN (SELECT x FROM t2)|1000 = y
+0|1
+~~~
+# 0 IN (SELECT a)|(SELECT a LIMIT 0)
+0|NULL
+0|NULL
+~~~
+# 0 IN (SELECT a)
+0
+~~~
+changes: 1
+changes: 2
+# 0 IN(SELECT v1)
+0
+~~~

@@ -1,0 +1,62 @@
+error: no such table: v6
+~~~
+changes: 0
+error: no such table: main.v6
+~~~
+changes: 0
+error: no such table: main.t1
+~~~
+error: no such table: main.t1
+~~~
+error: no such table: v6
+~~~
+error: no such table: v6
+~~~
+error: no such table: t2
+~~~
+error: no such table: t2
+~~~
+changes: 0
+error: no such table: main.t2
+~~~
+error: no such table: main.t2
+~~~
+changes: 0
+error: no such table: main.t2
+~~~
+error: no such table: main.t2
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# 9
+1
+~~~
+# 4
+2
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a
+This
+this
+THIS
+~~~
+# a
+This
+this
+THIS
+~~~
+changes: 1
+# a
+This
+this
+THIS
+~~~
+error: parameters are not allowed in views
+~~~
+error: parameters are not allowed in views
+~~~

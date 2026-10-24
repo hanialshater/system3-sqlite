@@ -1,0 +1,199 @@
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+# max(y)
+NULL
+~~~
+# max(y)
+NULL
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# min(y)
+NULL
+~~~
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+changes: 0
+~~~
+# y
+~~~
+# max(y)
+NULL
+~~~
+changes: 0
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+2
+~~~
+# min(b)
+1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+NULL
+~~~
+# min(b)
+NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+2
+~~~
+# min(b)
+1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+1
+~~~
+# min(b)
+NULL
+~~~
+# min(b)
+NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+# max(x)
+abc
+~~~
+# max(x COLLATE nocase)
+BCD
+~~~
+# max(x)|max(x COLLATE nocase)
+abc|BCD
+~~~
+# max(x COLLATE binary)|max(x COLLATE nocase)
+abc|BCD
+~~~
+# max(x COLLATE nocase)|max(x COLLATE rtrim)
+BCD|abc
+~~~
+# max(x COLLATE nocase)|max(x)
+BCD|abc
+~~~
+# min(x)
+BCD
+~~~
+# min(x COLLATE nocase)
+abc
+~~~
+# min(x)|min(x COLLATE nocase)
+BCD|abc
+~~~
+# min(x COLLATE binary)|min(x COLLATE nocase)
+BCD|abc
+~~~
+# min(x COLLATE nocase)|min(x COLLATE rtrim)
+abc|BCD
+~~~
+# min(x COLLATE nocase)|min(x)
+abc|BCD
+~~~

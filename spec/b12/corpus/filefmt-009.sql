@@ -1,0 +1,3 @@
+PRAGMA auto_vacuum=OFF
+PRAGMA page_size=32768
+CREATE TABLE t1(x)

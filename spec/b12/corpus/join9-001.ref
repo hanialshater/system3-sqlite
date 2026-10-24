@@ -1,0 +1,270 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 4
+changes: 4
+changes: 5
+changes: 5
+~~~
+# id|x|y|z|id|id|id
+2|alice|orange|NULL|2|2|NULL
+4|bob|green|444|4|4|4
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+~~~
+# id|x|y|z|id|id|id
+2|alice|orange|NULL|2|2|NULL
+4|bob|green|444|4|4|4
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+~~~
+# id|x|y|z|id|id|id
+2|alice|orange|NULL|2|2|NULL
+4|bob|green|444|4|4|4
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+~~~
+# id|x|y|z|id|id|id
+2|alice|orange|NULL|2|2|NULL
+4|bob|green|444|4|4|4
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+~~~
+# id|x|y|z|id|id|id
+2|alice|orange|NULL|2|2|NULL
+4|bob|green|444|4|4|4
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|x|y|z|id|id|id
+0|NULL|NULL|1000|NULL|NULL|0
+1|NULL|red|NULL|NULL|1|NULL
+2|alice|orange|NULL|2|2|NULL
+3|NULL|yellow|333|NULL|3|3
+4|bob|green|444|4|4|4
+5|NULL|blue|555|NULL|5|5
+6|cindy|NULL|NULL|6|NULL|NULL
+8|dave|NULL|NULL|8|NULL|NULL
+9|NULL|NULL|999|NULL|NULL|9
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|a|a|w
+2|NULL|NULL|two
+3|NULL|NULL|three
+6|NULL|NULL|six
+7|NULL|NULL|seven
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|x|y|z
+0|NULL|NULL|NULL|1000
+1|NULL|NULL|red|NULL
+2|two|alice|orange|NULL
+3|three|NULL|yellow|333
+4|NULL|bob|green|444
+5|NULL|NULL|blue|555
+6|six|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL
+8|NULL|dave|NULL|NULL
+9|NULL|NULL|NULL|999
+~~~
+# id|w|id|x|y|z
+NULL|NULL|0|NULL|NULL|1000
+NULL|NULL|1|NULL|red|NULL
+2|two|2|alice|orange|NULL
+3|three|3|NULL|yellow|333
+NULL|NULL|4|bob|green|444
+NULL|NULL|5|NULL|blue|555
+6|six|6|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL|NULL
+NULL|NULL|8|dave|NULL|NULL
+NULL|NULL|9|NULL|NULL|999
+~~~
+# id|w|id|x|y|z
+NULL|NULL|0|NULL|NULL|1000
+NULL|NULL|1|NULL|red|NULL
+2|two|2|alice|orange|NULL
+3|three|3|NULL|yellow|333
+NULL|NULL|4|bob|green|444
+NULL|NULL|5|NULL|blue|555
+6|six|NULL|NULL|NULL|NULL
+7|seven|NULL|NULL|NULL|NULL
+NULL|NULL|9|NULL|NULL|999
+~~~
+# id|w|id|x|y|z
+2|two|2|alice|orange|NULL
+3|three|NULL|NULL|NULL|NULL
+NULL|NULL|4|bob|green|444
+6|six|6|cindy|NULL|NULL
+7|seven|NULL|NULL|NULL|NULL
+NULL|NULL|8|dave|NULL|NULL
+~~~
+# id|x|y|z
+2|alice|orange|NULL
+4|bob|green|444
+~~~
+# id|x|y|z
+2|alice|orange|NULL
+4|bob|green|444
+~~~
+# id|x|y|z
+3|NULL|yellow|333
+4|bob|green|444
+5|NULL|blue|555
+~~~
+# id|x|y|z
+3|NULL|yellow|333
+4|bob|green|444
+5|NULL|blue|555
+~~~

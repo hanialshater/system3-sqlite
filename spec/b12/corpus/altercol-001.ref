@@ -1,0 +1,12 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# a|x|d
+1|2|3
+~~~
+# sql
+CREATE TABLE t1(a INTEGER, x TEXT, "d" BLOB)
+~~~

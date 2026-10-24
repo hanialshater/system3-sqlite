@@ -1,0 +1,21 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+error: no such column: new.b
+~~~
+error: no such column: old.b
+~~~
+error: no such column: another.b
+~~~
+error: no such column: t2.x
+~~~
+# b
+32
+~~~
+error: no such column: alias.b
+~~~
+# b
+1032
+~~~

@@ -1,0 +1,26 @@
+changes: 0
+changes: 0
+~~~
+changes: 1
+changes: 1
+~~~
+changes: 1
+# w|x|y|z
+c|1|1|1
+b|2|2|2
+~~~
+changes: 1
+# w|x|y|z
+c|1|1|1
+bb|2|2|2
+~~~
+changes: 1
+# w|x|y|z
+c|1|1|1
+bbbb|2|2|2
+~~~
+changes: 1
+# w|x|y|z
+c|1|1|1
+bbbbbbbb|2|2|2
+~~~

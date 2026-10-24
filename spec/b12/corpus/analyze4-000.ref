@@ -1,0 +1,63 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 2
+changes: 4
+changes: 8
+changes: 16
+changes: 32
+changes: 64
+changes: 64
+~~~
+# id|parent|notused|detail
+3|0|36|SEARCH t1 USING INDEX t1a (a=?)
+~~~
+# idx|stat
+t1a|128 1
+t1b|128 128
+~~~
+changes: 64
+changes: 64
+# idx|stat
+t1a|128 1
+t1b|128 64
+~~~
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+# idx|stat
+t1a|128 1
+t1b|128 128
+t1bcd|128 128 4 2
+t1cbd|128 4 4 2
+t1cdb|128 4 2 2
+~~~
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 128
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# idx|stat
+t2a|8 4
+t2b|8 2
+t2c|8 1
+t2c2|8 4
+t2c3|8 2
+~~~

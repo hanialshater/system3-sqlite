@@ -1,0 +1,34 @@
+changes: 0
+changes: 1
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 4
+~~~
+changes: 8
+~~~
+changes: 16
+~~~
+changes: 32
+~~~
+changes: 64
+~~~
+changes: 128
+~~~
+changes: 256
+~~~
+# count(*)
+512
+~~~
+changes: 256
+changes: 256
+# count(*)
+0
+# count(*)
+0
+~~~
+changes: 256
+changes: 256
+# a
+~~~

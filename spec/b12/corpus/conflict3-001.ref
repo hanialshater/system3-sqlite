@@ -1,0 +1,34 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+error: constraint failed
+~~~
+# c0|c1
+1|NULL
+0|NULL
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+error: constraint failed
+~~~
+# a|b|c
+1|1|1
+2|2|2
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 0
+~~~
+# a|b
+~~~
+# x
+~~~

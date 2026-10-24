@@ -1,0 +1,11 @@
+# journal_mode
+off
+changes: 0
+~~~
+changes: 1
+~~~
+# count(*)
+1
+~~~
+changes: 1
+~~~

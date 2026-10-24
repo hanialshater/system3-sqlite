@@ -1,0 +1,21 @@
+changes: 0
+changes: 0
+~~~
+# b
+~~~
+# b
+~~~
+error: near "USING": syntax error
+~~~
+error: a JOIN clause is required before ON
+~~~
+error: near "USING": syntax error
+~~~
+error: a JOIN clause is required before ON
+~~~
+error: a JOIN clause is required before ON
+~~~
+error: near "USING": syntax error
+~~~
+error: a JOIN clause is required before USING
+~~~

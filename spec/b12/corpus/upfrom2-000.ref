@@ -1,0 +1,142 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 2
+# x|y|z
+1|i|ten
+2|ii|two
+3|iii|thirty
+4|iv|four
+# t
+one->ten
+i->i
+three->thirty
+iii->iii
+~~~
+changes: 2
+changes: 2
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 4
+changes: 2
+# x|y|z
+1|i|ten
+2|xii|two
+3|v|thirty
+4|iv|four
+# t
+two->two
+ii->xii
+thirty->thirty
+iii->v
+~~~
+changes: 4
+changes: 2
+# x|y|z
+1|i|eight
+2|xii|twelve
+3|v|thirty
+4|iv|four
+# t
+ten->eight
+i->i
+two->twelve
+xii->xii
+~~~
+changes: 2
+changes: 2
+changes: 4
+changes: 0
+~~~
+# x|y|z
+1|i|eight
+2|xii|twelve
+3|v|fourteen
+4|iv|sixteen
+# t
+thirty->thirteen
+v->v
+thirteen->fourteen
+v->v
+four->fifteen
+iv->iv
+fifteen->sixteen
+iv->iv
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 8
+changes: 2
+# w|x|y|z
+0|0|i|ten
+0|1|ii|two
+1|0|iii|thirty
+1|1|iv|four
+# t
+one->ten
+i->i
+three->thirty
+iii->iii
+~~~
+changes: 4
+changes: 2
+# w|x|y|z
+0|0|i|ten
+0|1|xii|two
+1|0|v|thirty
+1|1|iv|four
+# t
+two->two
+ii->xii
+thirty->thirty
+iii->v
+~~~
+changes: 4
+changes: 2
+# w|x|y|z
+0|0|i|eight
+0|1|xii|twelve
+1|0|v|thirty
+1|1|iv|four
+# t
+ten->eight
+i->i
+two->twelve
+xii->xii
+~~~
+changes: 2
+changes: 2
+changes: 4
+changes: 0
+~~~
+# w|x|y|z
+0|0|i|eight
+0|1|xii|twelve
+1|0|v|fourteen
+1|1|iv|sixteen
+# t
+thirty->thirteen
+v->v
+thirteen->fourteen
+v->v
+four->fifteen
+iv->iv
+fifteen->sixteen
+iv->iv
+~~~

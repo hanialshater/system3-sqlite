@@ -1,0 +1,16 @@
+changes: 0
+changes: 0
+changes: 0
+~~~
+changes: 1
+changes: 1
+~~~
+error: no such table: main.t1
+~~~
+changes: 1
+changes: 1
+~~~
+error: no such table: main.t2
+~~~
+error: no such function: squish
+~~~

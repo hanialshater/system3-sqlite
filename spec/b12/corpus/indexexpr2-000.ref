@@ -1,0 +1,21 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# 'TWOX' == (b || 'x')
+0
+0
+~~~
+# 'TWOX' == (b || 'x') COLLATE nocase
+0
+1
+~~~
+changes: 1
+~~~
+# a+1|quote(a+1)
+2|2
+3|3
+4|4
+~~~

@@ -1,0 +1,26 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b|c
+1|2|3
+~~~
+changes: 1
+~~~
+error: no such table: main.txx
+~~~
+# sql
+CREATE VIEW vvv AS SELECT main.txx.a, txx.b, c FROM txx
+~~~
+error: no such table: main.txx
+~~~
+# sql
+CREATE VIEW uuu AS SELECT main.one.a, one.b, c FROM txx AS one
+~~~
+error: no such table: txx
+~~~
+# sql
+CREATE VIEW ttt AS SELECT main.txx.a, txx.b, one.b, main.one.a FROM txx AS one, txx
+~~~

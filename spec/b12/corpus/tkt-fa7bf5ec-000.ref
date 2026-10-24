@@ -1,0 +1,7 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# count(CASE WHEN x='a' THEN 1 END)|count(CASE WHEN x='A' THEN 1 END)
+1|2
+~~~

@@ -1,0 +1,120 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# y
+1
+~~~
+error: ambiguous column name: y
+~~~
+changes: 1
+changes: 2
+# y
+11
+33
+~~~
+# yy
+33
+11
+~~~
+# yy
+11
+33
+~~~
+# yy
+11
+33
+~~~
+# y
+2
+~~~
+error: ambiguous column name: y
+~~~
+# y
+11
+33
+~~~
+# yy
+33
+11
+~~~
+# yy
+11
+33
+~~~
+# yy
+11
+33
+~~~
+error: ambiguous column name: y
+~~~
+error: ambiguous column name: y
+~~~
+# y
+33
+11
+~~~
+# yy
+33
+11
+~~~
+# yy
+11
+33
+~~~
+changes: 2
+changes: 1
+changes: 1
+changes: 1
+# '1'|m
+1|x
+1|y
+1|z
+# '2'|m
+2|x
+2|y
+2|z
+# '3'|m
+3|z
+3|y
+3|x
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# count(*)|m
+1|x
+1|x
+1|y
+~~~
+# count(*)|mx
+1|x
+1|x
+1|y
+~~~
+# count(*)|mx
+1|y
+2|x
+~~~
+# count(*)|mx
+1|y
+2|x
+~~~
+changes: 1
+# min(name)
+~~~
+# name
+~~~
+changes: 1
+changes: 1
+changes: 1
+# count()|name
+1|NULL
+1|NULL
+~~~
+# x
+2
+~~~
+# x
+~~~

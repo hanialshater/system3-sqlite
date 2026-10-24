@@ -1,0 +1,58 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+# a|b|'|'
+1|2||
+happy|glad||
+~~~
+# a|b|'x'
+1|9|x
+~~~
+# a|b|'@'
+1|9|@
+happy|glad|@
+~~~
+# op|x|y
+I1|1|2
+I1|happy|glad
+U1|1|9
+D1|1|9
+D1|happy|glad
+changes: 5
+~~~
+# d|c|'z'
+charlie|bravo|z
+~~~
+# op|x|y
+I2|bravo|charlie
+changes: 1
+~~~
+# 'I'|e
+I|1
+I|2
+I|3
+# 'U'|e|f
+U|1|101
+U|2|102
+U|3|103
+# 'D'|e|f
+D|1|101
+D|2|102
+D|3|103
+~~~
+# op|x|y
+U3|1|101
+U3|2|102
+U3|3|103
+D3|1|101
+D3|2|102
+D3|3|103
+changes: 6
+~~~

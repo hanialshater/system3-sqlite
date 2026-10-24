@@ -1,0 +1,10 @@
+changes: 0
+# journal_mode
+off
+~~~
+# locking_mode
+exclusive
+changes: 0
+# journal_mode
+off
+~~~

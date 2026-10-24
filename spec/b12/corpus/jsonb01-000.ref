@@ -1,0 +1,9 @@
+changes: 0
+changes: 1
+~~~
+# x'8ce6ffffffff171333' -> '$'
+error: malformed JSON
+~~~
+# json(x'6B37616263162d')
+error: malformed JSON
+~~~

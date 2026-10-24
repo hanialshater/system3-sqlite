@@ -1,0 +1,42 @@
+changes: 0
+changes: 1
+changes: 1
+# a
+1
+1
+~~~
+error: UNIQUE constraint failed: t1.a
+~~~
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 30
+~~~
+# a
+5
+~~~
+# id|parent|notused|detail
+3|0|39|SEARCH t1 USING INDEX sqlite_autoindex_t1_2 (b=?)
+~~~
+# name
+sqlite_autoindex_t1_1
+sqlite_autoindex_t1_2
+t1
+t1c
+t1d
+~~~
+changes: 30
+changes: 30
+changes: 30
+changes: 30
+~~~
+# name
+t2a
+t2b
+t2c
+t2d
+~~~
+changes: 1
+~~~

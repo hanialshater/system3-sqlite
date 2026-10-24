@@ -1,0 +1,7 @@
+CREATE TABLE t1(a, b); CREATE TABLE t2(x, y); INSERT INTO t1 VALUES(1, 2); INSERT INTO t1 VALUES(3, 4); INSERT INTO t2 VALUES('a', 'b'); INSERT INTO t2 VALUES('c', 'd'); INSERT INTO t2 VALUES('e', 'f');
+SELECT count(*) FROM t1, t2;
+SELECT count(*) FROM t1, t2;
+ANALYZE; SELECT count(*) FROM t1, t2;
+ANALYZE
+SELECT count(*) FROM t1, t2 WHERE t2.rowid>1;
+SELECT count(*) FROM t1, t2 WHERE t2.rowid>1;

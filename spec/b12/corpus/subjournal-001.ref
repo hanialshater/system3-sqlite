@@ -1,0 +1,8 @@
+# page_count
+0
+~~~
+error: no such table: t2
+~~~
+# integrity_check
+ok
+~~~

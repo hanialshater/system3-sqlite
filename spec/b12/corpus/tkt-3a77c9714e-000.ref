@@ -1,0 +1,28 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+# t1_title|t2_title
+ABCDEF|ABCDEF
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# SrcWord|Title
+FACTORING|FACTOR
+SWIMMING|SWIMM
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# (SELECT 1 FROM (SELECT 1 FROM t1 WHERE a=1 OR b='i') WHERE a='o' OR b IN (SELECT a=('b' IN (SELECT 'a'))))
+NULL
+~~~

@@ -1,0 +1,37 @@
+changes: 0
+changes: 0
+changes: 0
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~
+error: UNIQUE constraint failed: abc.x
+~~~
+# a|x|y
+1|one|1
+2|two|2
+3|xyz|3
+4|XYZ|4
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~
+error: UNIQUE constraint failed: abc.y
+~~~
+changes: 0
+changes: 0
+error: ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint
+~~~

@@ -1,0 +1,11 @@
+changes: 0
+changes: 3
+changes: 3
+changes: 2
+changes: 2
+changes: 1
+changes: 1
+# a|b|c|d|x|'x'
+3|4|NULL|NULL|NULL|x
+5|6|NULL|NULL|NULL|x
+~~~

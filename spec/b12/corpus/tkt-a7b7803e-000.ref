@@ -1,0 +1,30 @@
+changes: 0
+changes: 2
+# x|b
+1|first
+~~~
+# a|x
+99|1
+~~~
+# x|y|a|b
+1|1|99|fuzzy
+~~~
+# x|y|a|b
+0|1|0|first
+1|0|99|fuzzy
+~~~
+# x|b|y|b
+0|first|1|first
+1|fuzzy|1|first
+1|fuzzy|0|fuzzy
+~~~
+# x|b|y|b
+1|fuzzy|1|first
+~~~
+# x|b|y|b
+1|fuzzy|1|first
+~~~
+# x|b|y|b
+1|fuzzy|1|first
+1|fuzzy|0|fuzzy
+~~~

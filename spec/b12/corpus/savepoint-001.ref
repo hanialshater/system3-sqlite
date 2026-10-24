@@ -1,0 +1,123 @@
+~~~
+~~~
+~~~
+~~~
+~~~
+~~~
+~~~
+~~~
+~~~
+changes: 0
+changes: 1
+changes: 1
+~~~
+# a|b|c
+2|3|4
+~~~
+~~~
+# a|b|c
+1|2|3
+~~~
+changes: 1
+~~~
+# a|b|c
+1|2|3
+4|5|6
+~~~
+~~~
+# a|b|c
+1|2|3
+~~~
+changes: 1
+changes: 1
+~~~
+# a|b|c
+1|2|3
+7|8|9
+10|11|12
+~~~
+~~~
+# a|b|c
+1|2|3
+7|8|9
+~~~
+changes: 1
+~~~
+# a|b|c
+1|2|3
+7|8|9
+10|11|12
+~~~
+~~~
+# a|b|c
+1|2|3
+~~~
+changes: 1
+changes: 1
+~~~
+# a|b|c
+1|2|3
+a|b|c
+d|e|f
+~~~
+~~~
+# a|b|c
+1|2|3
+a|b|c
+d|e|f
+~~~
+~~~
+# a|b|c
+~~~
+changes: 1
+# sql
+CREATE TABLE t1(a, b, c)
+CREATE TABLE t2(d, e, f)
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 1
+changes: 1
+~~~
+# g|h|i
+III|IV|V
+~~~
+~~~
+# g|h
+I|II
+~~~
+# sql
+CREATE TABLE t1(a, b, c)
+CREATE TABLE t2(d, e, f)
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b|c
+z|y|x
+~~~
+changes: 1
+changes: 1
+~~~
+# a
+value
+~~~
+~~~
+changes: 1
+changes: 1
+~~~
+error: no such savepoint: abc
+~~~
+error: no such savepoint: abc
+~~~
+~~~
+error: no such savepoint: def
+~~~
+~~~
+~~~
+~~~
+changes: 1
+~~~

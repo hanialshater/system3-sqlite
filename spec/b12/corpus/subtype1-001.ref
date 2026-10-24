@@ -1,0 +1,63 @@
+changes: 0
+changes: 2
+~~~
+# id|subtype( (CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|74
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( (CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|74
+2|0
+~~~
+# id|subtype( +(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|74
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( +(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|74
+2|0
+~~~
+# id|subtype( -(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|0
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( -(CASE WHEN json_valid(j, 6) THEN j->'a' ELSE j END) )
+1|0
+2|0
+~~~
+# id|subtype( if( json_valid(j, 6), j->'a' ) )
+1|74
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( if( json_valid(j, 6), j->'a' ) )
+1|74
+2|0
+~~~
+# id|subtype( if( json_valid(j, 6), j->'a' ) COLLATE nocase )
+1|74
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( if( json_valid(j, 6), j->'a' ) COLLATE nocase )
+1|74
+2|0
+~~~
+# id|subtype( CAST( if( json_valid(j, 6), j->'a' ) AS TEXT ) )
+1|74
+2|0
+~~~
+changes: 2
+changes: 2
+# id|subtype( CAST( if( json_valid(j, 6), j->'a' ) AS TEXT ) )
+1|74
+2|0
+~~~

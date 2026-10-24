@@ -1,0 +1,177 @@
+error: no such table: test1
+~~~
+error: table sqlite_master may not be modified
+~~~
+changes: 0
+~~~
+error: table test1 has 3 columns but 2 values were supplied
+~~~
+error: table test1 has 3 columns but 4 values were supplied
+~~~
+error: 4 values for 2 columns
+~~~
+error: 1 values for 2 columns
+~~~
+error: table test1 has no column named four
+~~~
+changes: 1
+~~~
+# one|two|three
+1|2|3
+~~~
+changes: 1
+~~~
+# one|two|three
+1|2|3
+4|5|6
+~~~
+changes: 1
+~~~
+# one|two|three
+1|2|3
+4|5|6
+7|8|9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+# one|two|three
+1|2|NULL
+~~~
+changes: 1
+~~~
+# one|two|three
+NULL|5|6
+1|2|NULL
+~~~
+changes: 1
+~~~
+# one|two|three
+NULL|5|6
+1|2|NULL
+8|NULL|7
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4
+10|4.32|-10|7.89
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4
+-111|1.23|222|-3.45
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4
+77|1.23|222|3.45
+~~~
+changes: 1
+changes: 1
+~~~
+# f1|f2|f3|f4|f5
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4|f5
+111|-2.22|hi|hi!|NULL
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4|f5
+1|-4.32|hi|abc-123|xyzzy
+111|-2.22|hi|hi!|NULL
+~~~
+changes: 2
+changes: 2
+changes: 2
+# f1|f2|f3|f4|f5
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4|f5
+111|-3.33|hi|hum|NULL
+~~~
+changes: 1
+~~~
+# f1|f2|f3|f4|f5
+111|-3.33|hi|hum|NULL
+~~~
+# f1|f2|f3|f4|f5
+22|-4.44|hi|abc-123|wham
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+# a|b|c
+6|4|5
+~~~
+changes: 1
+~~~
+# a|b|c
+6|4|5
+7|5|6
+~~~
+error: no such column: t3.a
+~~~
+changes: 1
+~~~
+# a|b|c
+NULL|6|7
+6|4|5
+7|5|6
+~~~
+# b|c
+6|7
+~~~
+error: no such function: notafunc
+~~~
+changes: 1
+# a|b|c
+1|3|99
+~~~
+changes: 1
+changes: 1
+# x
+1
+~~~
+changes: 1
+# x
+1
+2
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|24|0|NULL|0|NULL
+1|InitCoroutine|3|9|2|NULL|0|NULL
+2|OpenRead|0|2|1|1|0|NULL
+3|Rewind|0|8|0|NULL|0|NULL
+4|Column|0|0|4|NULL|0|NULL
+5|Add|5|4|2|NULL|0|NULL
+6|Yield|3|0|0|NULL|0|NULL
+7|Next|0|4|0|NULL|1|NULL
+8|EndCoroutine|3|0|0|NULL|0|NULL
+9|OpenEphemeral|1|1|0|NULL|0|NULL
+10|Yield|3|15|0|NULL|0|NULL
+11|MakeRecord|2|1|6|NULL|0|NULL
+12|NewRowid|1|7|0|NULL|0|NULL
+13|Insert|1|6|7|NULL|0|NULL
+14|Goto|0|10|0|NULL|0|NULL
+15|OpenWrite|2|2|1|1|0|NULL
+16|Rewind|1|22|0|NULL|0|NULL
+17|Column|1|0|2|NULL|0|NULL
+18|NewRowid|2|1|0|NULL|0|NULL
+19|MakeRecord|2|1|8|NULL|0|NULL
+20|Insert|2|8|1|t4|57|NULL
+21|Next|1|17|0|NULL|0|NULL
+22|Close|1|0|0|NULL|0|NULL
+23|Halt|0|0|0|NULL|0|NULL
+24|Transaction|1|1|1|0|1|NULL
+25|Integer|2|5|0|NULL|0|NULL
+26|Goto|0|1|0|NULL|0|NULL
+~~~

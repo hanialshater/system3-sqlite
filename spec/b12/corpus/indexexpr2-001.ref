@@ -1,0 +1,75 @@
+changes: 0
+changes: 0
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# x
+.ABC
+.abcd
+.DEF
+.defg
+~~~
+changes: 1
+# x
+.ABC
+.abcd
+.DEF
+.defg
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|b
+.ABC|1
+.ABC|3
+.abc|2
+.abc|4
+~~~
+changes: 1
+# a|b
+.ABC|1
+.ABC|3
+.abc|2
+.abc|4
+~~~
+changes: 1
+changes: 4
+# a|b
+.ABC1|1
+.abc2|2
+.ABC3|3
+.abc4|4
+~~~
+# a|b
+.ABC1|1
+.ABC3|3
+.abc2|2
+.abc4|4
+~~~
+changes: 4
+# a|b
+.ABC1|1
+.abc2|2
+.ABC3|3
+.abc4|4
+~~~
+# id|parent|notused|detail
+4|0|225|SCAN t4 USING INDEX i4
+~~~
+# a|b
+.ABC1|1
+.ABC3|3
+.abc2|2
+.abc4|4
+~~~

@@ -1,0 +1,2 @@
+SELECT x FROM t2 WHERE x LIKE 'x%'
+SELECT x FROM t2 WHERE x LIKE '_y%'

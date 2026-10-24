@@ -1,0 +1,31 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# x|TextKey|DKey
+1|2|3.0
+1|2|3.0
+9|8|7.0
+9|8|7.0
+~~~
+# x|TextKey|DKey
+9|8|7.0
+1|2|3.0
+1|2|3.0
+9|8|7.0
+~~~
+changes: 1
+changes: 1
+# x|TextKey|DKey
+1|2|3.0
+1|2|3.0
+9|8|7.0
+9|8|7.0
+~~~
+# x|TextKey|DKey
+9|8|7.0
+1|2|3.0
+9|8|7.0
+1|2|3.0
+~~~

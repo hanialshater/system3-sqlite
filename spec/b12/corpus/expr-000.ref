@@ -1,0 +1,480 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: table test1 already exists
+~~~
+error: table test1 has 6 columns but 4 values were supplied
+~~~
+changes: 1
+# i1+i2
+30
+~~~
+changes: 1
+# i1-i2
+-10
+~~~
+changes: 1
+# i1*i2
+200
+~~~
+changes: 1
+# i1/i2
+0
+~~~
+changes: 1
+# i2/i1
+2
+~~~
+changes: 1
+# i2<i1
+0
+~~~
+changes: 1
+# i2<=i1
+0
+~~~
+changes: 1
+# i2>i1
+1
+~~~
+changes: 1
+# i2>=i1
+1
+~~~
+changes: 1
+# i2!=i1
+1
+~~~
+changes: 1
+# i2=i1
+0
+~~~
+changes: 1
+# i2<>i1
+1
+~~~
+changes: 1
+# i2==i1
+0
+~~~
+changes: 1
+# i2<i1
+0
+~~~
+changes: 1
+# i2<=i1
+1
+~~~
+changes: 1
+# i2>i1
+0
+~~~
+changes: 1
+# i2>=i1
+1
+~~~
+changes: 1
+# i2!=i1
+0
+~~~
+changes: 1
+# i2=i1
+1
+~~~
+changes: 1
+# i2<>i1
+0
+~~~
+changes: 1
+# i2==i1
+1
+~~~
+changes: 1
+# i1+i2*r1
+7.0
+~~~
+changes: 1
+# (i1+i2)*r1
+9.0
+~~~
+changes: 1
+# min(i1,i2,i1+i2,i1-i2)
+-1
+~~~
+changes: 1
+# max(i1,i2,i1+i2,i1-i2)
+3
+~~~
+changes: 1
+# max(i1,i2,i1+i2,i1-i2)
+3
+~~~
+changes: 1
+# i1==1 AND i2=2
+1
+~~~
+changes: 1
+# i1=2 AND i2=1
+0
+~~~
+changes: 1
+# i1=1 AND i2=1
+0
+~~~
+changes: 1
+# i1=2 AND i2=2
+0
+~~~
+changes: 1
+# i1==1 OR i2=2
+1
+~~~
+changes: 1
+# 0 OR 2
+1
+~~~
+changes: 1
+# false OR true
+1
+~~~
+changes: 1
+# 99 OR false
+1
+~~~
+changes: 1
+# i1=2 OR i2=1
+0
+~~~
+changes: 1
+# i1=1 OR i2=1
+1
+~~~
+changes: 1
+# i1=2 OR i2=2
+1
+~~~
+changes: 1
+# i1-i2=-1
+1
+~~~
+changes: 1
+# not i1
+0
+~~~
+changes: 1
+# not i2
+1
+~~~
+changes: 1
+# -i1
+-1
+~~~
+changes: 1
+# +i1
+1
+~~~
+changes: 1
+# +(i2+i1)
+3
+~~~
+changes: 1
+# -(i2+i1)
+-3
+~~~
+changes: 1
+# i1|i2
+3
+~~~
+changes: 1
+# 4|2
+6
+~~~
+changes: 1
+# i1&i2
+0
+~~~
+changes: 1
+# 4&5
+4
+~~~
+changes: 1
+# ~i1
+-2
+~~~
+changes: 1
+# ~i1
+NULL
+~~~
+changes: 1
+# i1<<i2
+8
+~~~
+changes: 1
+# i1>>i2
+8
+~~~
+changes: 1
+# i1<<i2
+1
+~~~
+changes: 1
+# i1<<i2
+4611686018427387904
+~~~
+changes: 1
+# i1<<i2
+-9223372036854775808
+~~~
+changes: 1
+# i1<<i2
+0
+~~~
+changes: 1
+# i1>>i2
+0
+~~~
+changes: 1
+# i1>>i2
+4
+~~~
+changes: 1
+# i1>>i2
+0
+~~~
+changes: 1
+# i1>>i2
+-4
+~~~
+changes: 1
+# i1>>i2
+-1
+~~~
+changes: 1
+# i1>>i2
+256
+~~~
+changes: 1
+# i1<i2
+0
+~~~
+changes: 1
+# i1=i2
+0
+~~~
+changes: 1
+# i1>i2
+1
+~~~
+changes: 1
+# i1<i2
+0
+~~~
+changes: 1
+# i1=i2
+0
+~~~
+changes: 1
+# i1>i2
+1
+~~~
+changes: 1
+# i1<i2
+0
+~~~
+changes: 1
+# i1=i2
+1
+~~~
+changes: 1
+# i1>i2
+0
+~~~
+changes: 1
+# i1%i2
+3
+~~~
+changes: 1
+# coalesce(i1+i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1+i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1+i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1-i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1-i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1-i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1*i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1*i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1*i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1/i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1/i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1/i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1<i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1>i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1<=i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1>=i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1!=i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1==i2,99)
+99
+~~~
+changes: 1
+# coalesce(not i1,99)
+99
+~~~
+changes: 1
+# coalesce(-i1,99)
+99
+~~~
+changes: 1
+# coalesce(i1 IS NULL AND i2=5,99)
+99
+~~~
+changes: 1
+# coalesce(i1 IS NULL OR i2=5,99)
+1
+~~~
+changes: 1
+# coalesce(i1=5 AND i2 IS NULL,99)
+99
+~~~
+changes: 1
+# coalesce(i1=5 OR i2 IS NULL,99)
+1
+~~~
+changes: 1
+# coalesce(min(i1,i2,1),99)
+99
+~~~
+changes: 1
+# coalesce(max(i1,i2,1),99)
+99
+~~~
+changes: 1
+# coalesce(min(i1,i2,1),99)
+99
+~~~
+changes: 1
+# coalesce(max(i1,i2,1),99)
+99
+~~~
+changes: 1
+# 5 between i1 and i2
+1
+~~~
+changes: 1
+# 5 not between i1 and i2
+0
+~~~
+changes: 1
+# 55 between i1 and i2
+0
+~~~
+changes: 1
+# 55 not between i1 and i2
+1
+~~~
+changes: 1
+# 5 between i1 and i2
+NULL
+~~~
+changes: 1
+# 5 not between i1 and i2
+NULL
+~~~
+changes: 1
+# 2 between i1 and i2
+0
+~~~
+changes: 1
+# 2 not between i1 and i2
+1
+~~~
+changes: 1
+# 2 between i1 and i2
+NULL
+~~~
+changes: 1
+# 2 not between i1 and i2
+NULL
+~~~
+changes: 1
+# 55 between i1 and i2
+0
+~~~
+changes: 1
+# 55 not between i1 and i2
+1
+~~~
+changes: 1
+# coalesce(i1<<i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1>>i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1|i2,99)
+99
+~~~
+changes: 1
+# coalesce(i1&i2,99)
+99
+~~~
+changes: 1
+# i1=i2
+0
+~~~
+changes: 1
+# i1=i2
+0
+~~~

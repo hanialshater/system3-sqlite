@@ -1,0 +1,19 @@
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+~~~
+# quote(c0)|quote(c2)
+NULL|'0'
+~~~
+# quote(c0)|quote(c2)
+NULL|'0'
+~~~
+changes: 1
+changes: 1
+changes: 4
+# coalesce(max(quote(a)),10)
+NULL
+''
+'X'
+~~~

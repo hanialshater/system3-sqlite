@@ -1,0 +1,86 @@
+error: missing datatype for t1.a
+~~~
+error: missing datatype for t1.a
+~~~
+error: missing datatype for t1.a
+~~~
+error: unknown datatype for t1.a: "BANJO"
+~~~
+error: unknown datatype for t1.f: "DATE"
+~~~
+error: unknown datatype for t1.f: "TEXT(50)"
+~~~
+changes: 0
+~~~
+# strict
+1
+~~~
+error: cannot store TEXT value in INT column t1.a
+~~~
+error: cannot store TEXT value in INTEGER column t1.b
+~~~
+error: cannot store TEXT value in BLOB column t1.c
+~~~
+error: cannot store BLOB value in TEXT column t1.d
+~~~
+error: cannot store TEXT value in REAL column t1.e
+~~~
+changes: 4
+# a|b|'|'
+1|2||
+3|4||
+5|6||
+NULL|NULL||
+~~~
+error: cannot store REAL value in INT column t1.a
+~~~
+error: cannot store BLOB value in INT column t1.a
+~~~
+error: cannot store REAL value in INTEGER column t1.b
+~~~
+error: cannot store BLOB value in INTEGER column t1.b
+~~~
+changes: 4
+changes: 2
+# typeof(c)|c
+blob|X'313233'
+null|NULL
+~~~
+error: cannot store TEXT value in BLOB column t1.c
+~~~
+changes: 2
+changes: 4
+# typeof(d)|d
+text|xyz
+text|4
+text|5.5
+null|NULL
+~~~
+error: cannot store BLOB value in TEXT column t1.d
+~~~
+changes: 4
+changes: 6
+# typeof(e)|e
+real|1.0
+real|2.5
+real|3.0
+real|4.5
+real|6.0
+null|NULL
+~~~
+error: cannot store TEXT value in REAL column t1.e
+~~~
+error: cannot store BLOB value in REAL column t1.e
+~~~
+changes: 0
+changes: 0
+changes: 1
+# a|b|c
+4|2|1
+~~~
+# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END
+error: error in table t4 after add column: unknown datatype for t4.d: "VARCHAR"
+~~~
+# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END
+error: error in table t4 after add column: missing datatype for t4.d
+~~~

@@ -1,0 +1,30 @@
+changes: 0
+changes: 1
+changes: 1
+# b|typeof(b)
+-123.0|text
+~~~
+changes: 1
+# c|typeof(c)
+-123.5|text
+~~~
+changes: 1
+# d|typeof(d)
+0|text
+~~~
+changes: 1
+# e|typeof(e)
+-123.0|real
+~~~
+changes: 1
+# f|typeof(f)
+-123.5|real
+~~~
+changes: 1
+# g|typeof(g)
+-9223372036854775808|integer
+~~~
+changes: 1
+# h|typeof(h)
+9223372036854775807|integer
+~~~

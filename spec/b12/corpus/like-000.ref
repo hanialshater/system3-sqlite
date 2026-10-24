@@ -1,0 +1,353 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)
+12
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+# x
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+# x
+error: unable to use function MATCH in the requested context
+~~~
+# x
+error: unable to use function MATCH in the requested context
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+changes: 1
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+~~~
+changes: 1
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+changes: 1
+changes: 12
+changes: 12
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+~~~
+~~~
+# x
+~~~
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# x
+zz-lower-lower
+zZ-lower-upper
+Zz-upper-lower
+ZZ-upper-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+# x
+zz-lower-lower
+zZ-lower-upper
+Zz-upper-lower
+ZZ-upper-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+# x
+zz-lower-lower
+zZ-lower-upper
+Zz-upper-lower
+ZZ-upper-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+# x
+zz-lower-lower
+zZ-lower-upper
+Zz-upper-lower
+ZZ-upper-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# x
+zz-lower-lower
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+~~~
+# x
+zZ-lower-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+~~~
+# x
+Zz-upper-lower
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+~~~
+# x
+ZZ-upper-upper
+~~~
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# x
+'abc
+'ax
+~~~
+# rowid|x
+1|NULL
+10|NULL
+11|NULL
+12|NULL
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# 1|x
+1|ghijkl
+# 2|x
+2|ghijkl
+~~~
+# 1|x
+1|ghijkl
+# 2|x
+2|ghijkl
+~~~
+# 1|x
+1|ghijkl
+# 2|x
+2|ghijkl
+~~~
+# 1|x
+1|ghijkl
+# 2|x
+2|ghijkl
+~~~

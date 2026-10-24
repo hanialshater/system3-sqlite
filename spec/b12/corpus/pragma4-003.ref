@@ -1,0 +1,13 @@
+changes: 0
+error: table t2 already exists
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|a||0|NULL|0
+1|b||0|NULL|0
+2|c||0|NULL|0
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|d||0|NULL|0
+1|e||0|NULL|0
+2|f||0|NULL|0
+~~~

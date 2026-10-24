@@ -1,0 +1,42 @@
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# a|sum(b) OVER ( ORDER BY a ROWS BETWEEN -1 PRECEDING AND 1 FOLLOWING )
+error: frame starting offset must be a non-negative integer
+~~~
+# a|sum(b) OVER ( ORDER BY a ROWS BETWEEN 1 PRECEDING AND -1 FOLLOWING )
+error: frame ending offset must be a non-negative integer
+~~~
+# a|sum(b) OVER ( ORDER BY a RANGE BETWEEN -1 PRECEDING AND 1 FOLLOWING )
+error: frame starting offset must be a non-negative number
+~~~
+# a|sum(b) OVER ( ORDER BY a RANGE BETWEEN 1 PRECEDING AND -1 FOLLOWING )
+error: frame ending offset must be a non-negative number
+~~~
+# a|sum(b) OVER ( ORDER BY a GROUPS BETWEEN -1 PRECEDING AND 1 FOLLOWING )
+error: frame starting offset must be a non-negative integer
+~~~
+# a|sum(b) OVER ( ORDER BY a GROUPS BETWEEN 1 PRECEDING AND -1 FOLLOWING )
+error: frame ending offset must be a non-negative integer
+~~~
+error: RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression
+~~~
+error: RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression
+~~~
+error: misuse of window function sum()
+~~~
+error: misuse of aliased window function xyz
+~~~
+# sum(a) OVER win
+error: frame starting offset must be a non-negative integer
+~~~
+# sum(a) OVER win
+error: frame ending offset must be a non-negative integer
+~~~
+error: wrong number of arguments to function row_number()
+~~~

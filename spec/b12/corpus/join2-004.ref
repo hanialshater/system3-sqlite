@@ -1,0 +1,29 @@
+changes: 0
+changes: 0
+changes: 1
+~~~
+# typeof(c0)|c0
+integer|0
+~~~
+# c0|c0
+0|0
+~~~
+# c0|c0
+0|0
+~~~
+# c0|c0
+0|0
+~~~
+# c0|c0
+0|0
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# ccc|ddd
+NULL|1
+~~~
+# ccc|ddd
+NULL|1
+~~~

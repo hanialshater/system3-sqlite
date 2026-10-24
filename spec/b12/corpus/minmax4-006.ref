@@ -1,0 +1,23 @@
+changes: 0
+changes: 1
+changes: 1
+~~~
+# min(a)|b|c
+NULL|1|x
+~~~
+changes: 1
+~~~
+# min(a)|b|c
+NULL|1|x
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+# c0|c1
+0|NULL
+~~~
+# c0|MIN(v0.c1)
+0|NULL
+~~~

@@ -1,0 +1,10 @@
+changes: 0
+changes: 0
+error: no such table: t3
+~~~
+error: cannot start a transaction within a transaction
+~~~
+error: no such table: t3
+~~~
+error: no such table: t3
+~~~

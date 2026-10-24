@@ -1,0 +1,19 @@
+changes: 0
+changes: 1
+~~~
+changes: 1
+~~~
+# min(a)|b
+NULL|1
+~~~
+# min(a)|b
+NULL|NULL
+~~~
+changes: 1
+~~~
+# min(a)|b
+2|2
+~~~
+# min(a)|b
+2|2
+~~~

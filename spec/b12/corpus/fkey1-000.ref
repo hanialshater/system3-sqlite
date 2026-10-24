@@ -1,0 +1,90 @@
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
+changes: 0
+changes: 0
+# id|seq|table|from|to|on_update|on_delete|match
+0|0|t5|e|c|NO ACTION|NO ACTION|NONE
+1|0|t5|d|NULL|NO ACTION|NO ACTION|NONE
+~~~
+changes: 0
+# id|seq|table|from|to|on_update|on_delete|match
+0|0|t5|d|a|NO ACTION|NO ACTION|NONE
+0|1|t5|e|b|NO ACTION|NO ACTION|NONE
+~~~
+changes: 0
+# id|seq|table|from|to|on_update|on_delete|match
+0|0|t5|d|NULL|SET NULL|CASCADE|NONE
+0|1|t5|e|NULL|SET NULL|CASCADE|NONE
+~~~
+changes: 0
+# id|seq|table|from|to|on_update|on_delete|match
+0|0|t5|d|NULL|SET DEFAULT|CASCADE|NONE
+0|1|t5|e|NULL|SET DEFAULT|CASCADE|NONE
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# 1|xx5
+1|abc
+changes: 2
+# 2|xx5
+~~~
+changes: 2
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# 1|"5
+1|abc
+changes: 2
+# 2|"5
+~~~
+# cid|name|type|notnull|dflt_value|pk
+0|"2|TEXT|0|NULL|1
+1|"3|TEXT|0|NULL|0
+~~~
+changes: 2
+changes: 3
+~~~
+error: FOREIGN KEY constraint failed
+~~~
+error: FOREIGN KEY constraint failed
+~~~
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: FOREIGN KEY constraint failed
+~~~
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+~~~
+error: foreign key mismatch - "c1" referencing "p1"
+~~~
+changes: 1
+changes: 1
+~~~

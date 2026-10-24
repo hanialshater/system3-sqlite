@@ -1,0 +1,115 @@
+changes: 0
+changes: 10000
+changes: 10000
+changes: 10000
+~~~
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|103|100|NULL|0|NULL
+1|Expire|1|1|0|NULL|0|NULL
+2|Integer|99|1|0|NULL|0|NULL
+3|Null|0|8|10|NULL|0|NULL
+4|IntegrityCk|1|2|8|[10184,1]|0|NULL
+5|IsNull|2|11|0|NULL|0|NULL
+6|String8|0|3|0|*** in database main ***
+|0|NULL
+7|Concat|2|3|3|NULL|0|NULL
+8|ResultRow|3|1|0|NULL|0|NULL
+9|IfPos|1|11|1|NULL|0|NULL
+10|Halt|0|0|0|NULL|0|NULL
+11|String8|0|2|0|wrong # of entries in index |0|NULL
+12|OpenRead|1|10184|0|1|0|NULL
+13|Integer|0|7|0|NULL|0|NULL
+14|Rewind|1|18|0|NULL|0|NULL
+15|AddImm|7|1|0|NULL|0|NULL
+16|Column|1|0|3|NULL|128|NULL
+17|Next|1|15|0|NULL|0|NULL
+18|OpenRead|1|1|0|5|0|NULL
+19|Integer|0|7|0|NULL|0|NULL
+20|Rewind|1|52|0|NULL|0|NULL
+21|AddImm|7|1|0|NULL|0|NULL
+22|Column|1|4|3|NULL|128|NULL
+23|IsType|1|28|0|5|28|NULL
+24|String8|0|3|0|NUMERIC value in sqlite_master.type|0|NULL
+25|ResultRow|3|1|0|NULL|0|NULL
+26|IfPos|1|28|1|NULL|0|NULL
+27|Halt|0|0|0|NULL|0|NULL
+28|IsType|1|33|1|5|28|NULL
+29|String8|0|3|0|NUMERIC value in sqlite_master.name|0|NULL
+30|ResultRow|3|1|0|NULL|0|NULL
+31|IfPos|1|33|1|NULL|0|NULL
+32|Halt|0|0|0|NULL|0|NULL
+33|IsType|1|38|2|5|28|NULL
+34|String8|0|3|0|NUMERIC value in sqlite_master.tbl_name|0|NULL
+35|ResultRow|3|1|0|NULL|0|NULL
+36|IfPos|1|38|1|NULL|0|NULL
+37|Halt|0|0|0|NULL|0|NULL
+38|IsType|1|46|3|5|27|NULL
+39|Column|1|3|3|NULL|0|NULL
+40|Affinity|3|1|0|C|0|NULL
+41|IsType|-1|46|3|5|28|NULL
+42|String8|0|3|0|TEXT value in sqlite_master.rootpage|0|NULL
+43|ResultRow|3|1|0|NULL|0|NULL
+44|IfPos|1|46|1|NULL|0|NULL
+45|Halt|0|0|0|NULL|0|NULL
+46|IsType|1|51|4|5|28|NULL
+47|String8|0|3|0|NUMERIC value in sqlite_master.sql|0|NULL
+48|ResultRow|3|1|0|NULL|0|NULL
+49|IfPos|1|51|1|NULL|0|NULL
+50|Halt|0|0|0|NULL|0|NULL
+51|Next|1|21|0|NULL|0|NULL
+52|Null|0|8|9|NULL|0|NULL
+53|IntegrityCk|1|1|8|[1]|1|NULL
+54|IsNull|2|60|0|NULL|0|NULL
+55|String8|0|3|0|*** in database temp ***
+|0|NULL
+56|Concat|2|3|3|NULL|0|NULL
+57|ResultRow|3|1|0|NULL|0|NULL
+58|IfPos|1|60|1|NULL|0|NULL
+59|Halt|0|0|0|NULL|0|NULL
+60|String8|0|2|0|wrong # of entries in index |0|NULL
+61|OpenRead|1|1|1|5|0|NULL
+62|Integer|0|7|0|NULL|0|NULL
+63|Rewind|1|95|0|NULL|0|NULL
+64|AddImm|7|1|0|NULL|0|NULL
+65|Column|1|4|3|NULL|128|NULL
+66|IsType|1|71|0|5|28|NULL
+67|String8|0|3|0|NUMERIC value in sqlite_temp_master.type|0|NULL
+68|ResultRow|3|1|0|NULL|0|NULL
+69|IfPos|1|71|1|NULL|0|NULL
+70|Halt|0|0|0|NULL|0|NULL
+71|IsType|1|76|1|5|28|NULL
+72|String8|0|3|0|NUMERIC value in sqlite_temp_master.name|0|NULL
+73|ResultRow|3|1|0|NULL|0|NULL
+74|IfPos|1|76|1|NULL|0|NULL
+75|Halt|0|0|0|NULL|0|NULL
+76|IsType|1|81|2|5|28|NULL
+77|String8|0|3|0|NUMERIC value in sqlite_temp_master.tbl_name|0|NULL
+78|ResultRow|3|1|0|NULL|0|NULL
+79|IfPos|1|81|1|NULL|0|NULL
+80|Halt|0|0|0|NULL|0|NULL
+81|IsType|1|89|3|5|27|NULL
+82|Column|1|3|3|NULL|0|NULL
+83|Affinity|3|1|0|C|0|NULL
+84|IsType|-1|89|3|5|28|NULL
+85|String8|0|3|0|TEXT value in sqlite_temp_master.rootpage|0|NULL
+86|ResultRow|3|1|0|NULL|0|NULL
+87|IfPos|1|89|1|NULL|0|NULL
+88|Halt|0|0|0|NULL|0|NULL
+89|IsType|1|94|4|5|28|NULL
+90|String8|0|3|0|NUMERIC value in sqlite_temp_master.sql|0|NULL
+91|ResultRow|3|1|0|NULL|0|NULL
+92|IfPos|1|94|1|NULL|0|NULL
+93|Halt|0|0|0|NULL|0|NULL
+94|Next|1|64|0|NULL|0|NULL
+95|AddImm|1|-99|0|NULL|0|NULL
+96|IfNotZero|1|99|0|NULL|0|NULL
+97|String8|0|3|0|ok|0|NULL
+98|ResultRow|3|1|0|NULL|0|NULL
+99|Halt|0|0|0|NULL|0|NULL
+100|String8|0|3|0|database disk image is malformed|0|NULL
+101|Goto|0|98|0|NULL|0|NULL
+102|Halt|0|0|0|NULL|0|NULL
+103|Transaction|0|0|3|0|1|NULL
+104|Transaction|1|0|0|0|1|NULL
+105|Goto|0|1|0|NULL|0|NULL
+~~~

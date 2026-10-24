@@ -1,0 +1,4 @@
+error: default value of column [b] is not constant
+~~~
+error: default value of column [Col0] is not constant
+~~~

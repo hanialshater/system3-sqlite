@@ -1,0 +1,134 @@
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+# length(d)
+1000000
+~~~
+changes: 1
+~~~
+# length(c)|length(d)
+1|1000000
+10000|1
+~~~
+changes: 1
+~~~
+# length(c)|length(d)
+1|1000000
+10000|1
+10000|10000
+~~~
+changes: 1
+~~~
+# length(b)|length(d)
+10000|10000
+~~~
+# a
+5
+~~~
+changes: 1
+# a
+5
+~~~
+# count(DISTINCT a)
+1
+~~~
+# hex(zeroblob(2) || x'61')
+000061
+~~~
+# CAST (zeroblob(100) AS REAL)
+0.0
+~~~
+# CAST (zeroblob(100) AS INTEGER)
+0
+~~~
+# CAST (zeroblob(100) AS TEXT)
+
+~~~
+# zeroblob(100)
+X'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+~~~
+# CAST(zeroblob(100) AS BLOB)
+X'00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
+~~~
+# zeroblob(-1)
+X''
+~~~
+# zeroblob(-10)
+X''
+~~~
+# zeroblob(-100)
+X''
+~~~
+# length(zeroblob(-1))
+0
+~~~
+# zeroblob(-1)|1
+1
+~~~
+# length(zeroblob(2147483648))
+error: string or blob too big
+~~~
+# zeroblob(2147483648)
+error: string or blob too big
+~~~
+# hex(zeroblob(-1))
+
+~~~
+# typeof(zeroblob(-1))
+blob
+~~~
+# a|b
+hello|X'00000000000000000000'
+hello|X'00000000000000000000'
+hello|X'00000000000000000000'
+hello|X'00000000000000000000'
+~~~
+# x'0000' IN (x'000000')
+0
+~~~
+# x'0000' IN (x'0000')
+1
+~~~
+# zeroblob(2) IN (x'000000')
+0
+~~~
+# zeroblob(2) IN (x'0000')
+1
+~~~
+# x'0000' IN (zeroblob(3))
+0
+~~~
+# x'0000' IN (zeroblob(2))
+1
+~~~
+# zeroblob(2) IN (zeroblob(3))
+0
+~~~
+# zeroblob(2) IN (zeroblob(2))
+1
+~~~
+changes: 1
+~~~
+error: string or blob too big
+~~~
+# length(zeroblob(-1444444444444444))
+0
+~~~
+# zeroblob(5000 * 1024 * 1024)
+error: string or blob too big
+~~~
+# quote(zeroblob(5000 * 1024 * 1024))
+error: string or blob too big
+~~~
+# quote(zeroblob(-1444444444444444))
+X''
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+# a|quote(b)|length(b)|c
+1|X'0000000000000000'|8|3
+~~~

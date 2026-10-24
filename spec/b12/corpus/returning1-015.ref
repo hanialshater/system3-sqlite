@@ -1,0 +1,16 @@
+changes: 0
+changes: 1
+# quote(x)|x IS NULL
+NULL|1
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: no such collation sequence: TRUE
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+~~~

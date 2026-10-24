@@ -1,0 +1,89 @@
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+error: no such function: REGEXP
+~~~
+# x|y|z
+~~~
+# x|y|z
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+# a|b
+1|a_x_1
+2|a_y_1
+# c|d
+1|b1
+2|b2
+# e|f
+1|b1
+2|b2
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 3
+changes: 5
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~
+error: no such function: REGEXP
+~~~

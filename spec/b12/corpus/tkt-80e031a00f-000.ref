@@ -1,0 +1,382 @@
+# 1 IN ()
+0
+~~~
+# 1 IN (2)
+0
+~~~
+# 1 IN (2,3,4,5,6,7,8,9)
+0
+~~~
+# 1 NOT IN ()
+1
+~~~
+# 1 NOT IN (2)
+1
+~~~
+# 1 NOT IN (2,3,4,5,6,7,8,9)
+1
+~~~
+# null IN ()
+0
+~~~
+# null NOT IN ()
+1
+~~~
+changes: 0
+# 1 IN t1
+0
+~~~
+# 1 NOT IN t1
+1
+~~~
+# null IN t1
+0
+~~~
+# null NOT IN t1
+1
+~~~
+changes: 0
+# 1 IN t2
+0
+~~~
+# 1 NOT IN t2
+1
+~~~
+# null IN t2
+0
+~~~
+# null NOT IN t2
+1
+~~~
+changes: 0
+# 1 IN t3
+0
+~~~
+# 1 NOT IN t3
+1
+~~~
+# null IN t3
+0
+~~~
+# null NOT IN t3
+1
+~~~
+# 1 IN (SELECT x+y FROM t1, t2)
+0
+~~~
+# 1 NOT IN (SELECT x+y FROM t1,t2)
+1
+~~~
+# null IN (SELECT x+y FROM t1,t2)
+0
+~~~
+# null NOT IN (SELECT x+y FROM t1,t2)
+1
+~~~
+# 1.23 IN ()
+0
+~~~
+# 1.23 NOT IN ()
+1
+~~~
+# 1.23 IN t1
+0
+~~~
+# 1.23 NOT IN t1
+1
+~~~
+# 'hello' IN ()
+0
+~~~
+# 'hello' NOT IN ()
+1
+~~~
+# 'hello' IN t1
+0
+~~~
+# 'hello' NOT IN t1
+1
+~~~
+# x'303132' IN ()
+0
+~~~
+# x'303132' NOT IN ()
+1
+~~~
+# x'303132' IN t1
+0
+~~~
+# x'303132' NOT IN t1
+1
+~~~
+# 1 IN (2,3,4)
+0
+~~~
+# 1 NOT IN (2,3,4)
+1
+~~~
+# 'a' IN ('b','c','d')
+0
+~~~
+# 'a' NOT IN ('b','c','d')
+1
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+changes: 3
+changes: 3
+changes: 3
+changes: 3
+changes: 3
+changes: 1
+changes: 4
+changes: 4
+changes: 4
+changes: 1
+changes: 1
+changes: 1
+changes: 3
+changes: 3
+changes: 3
+changes: 3
+changes: 1
+changes: 4
+~~~
+# 1 IN t4
+0
+~~~
+# 1 NOT IN t4
+1
+~~~
+# 1 IN t5
+0
+~~~
+# 1 NOT IN t5
+1
+~~~
+# 1 IN t6
+0
+~~~
+# 1 NOT IN t6
+1
+~~~
+# 'a' IN t7
+0
+~~~
+# 'a' NOT IN t7
+1
+~~~
+# 'a' IN t8
+0
+~~~
+# 'a' NOT IN t8
+1
+~~~
+# 2 IN (2,3,4,null)
+1
+~~~
+# 3 NOT IN (2,3,4,null)
+0
+~~~
+# 4 IN (2,3,4)
+1
+~~~
+# 2 NOT IN (2,3,4)
+0
+~~~
+# 'b' IN ('b','c','d')
+1
+~~~
+# 'c' NOT IN ('b','c','d')
+0
+~~~
+# 'd' IN ('b','c',null,'d')
+1
+~~~
+# 'b' NOT IN (null,'b','c','d')
+0
+~~~
+# 2 IN t4
+1
+~~~
+# 3 NOT IN t4
+0
+~~~
+# 4 IN t4n
+1
+~~~
+# 2 NOT IN t4n
+0
+~~~
+# 2 IN t5
+1
+~~~
+# 3 NOT IN t5
+0
+~~~
+# 2 IN t6
+1
+~~~
+# 3 NOT IN t6
+0
+~~~
+# 4 IN t6n
+1
+~~~
+# 2 NOT IN t6n
+0
+~~~
+# 'b' IN t7
+1
+~~~
+# 'c' NOT IN t7
+0
+~~~
+# 'c' IN t7n
+1
+~~~
+# 'd' NOT IN t7n
+0
+~~~
+# 'b' IN t8
+1
+~~~
+# 'c' NOT IN t8
+0
+~~~
+# 'c' IN t8n
+1
+~~~
+# 'd' NOT IN t8n
+0
+~~~
+# 'a' IN (NULL,'a')
+1
+~~~
+# 'a' IN (NULL,'b')
+NULL
+~~~
+# 'a' NOT IN (NULL,'a')
+0
+~~~
+# 'a' NOT IN (NULL,'b')
+NULL
+~~~
+# 1 IN (2,3,4,null)
+NULL
+~~~
+# 1 NOT IN (2,3,4,null)
+NULL
+~~~
+# 'a' IN ('b','c',null,'d')
+NULL
+~~~
+# 'a' NOT IN (null,'b','c','d')
+NULL
+~~~
+# 1 IN t4n
+NULL
+~~~
+# 5 NOT IN t4n
+NULL
+~~~
+# 6 IN t6n
+NULL
+~~~
+# 7 NOT IN t6n
+NULL
+~~~
+# 'a' IN t7n
+NULL
+~~~
+# 'e' NOT IN t7n
+NULL
+~~~
+# 'f' IN t8n
+NULL
+~~~
+# 'g' NOT IN t8n
+NULL
+~~~
+# null IN (2,3,4,null)
+NULL
+~~~
+# null NOT IN (2,3,4,null)
+NULL
+~~~
+# null IN (2,3,4)
+NULL
+~~~
+# null NOT IN (2,3,4)
+NULL
+~~~
+# null IN ('b','c','d')
+NULL
+~~~
+# null NOT IN ('b','c','d')
+NULL
+~~~
+# null IN ('b','c',null,'d')
+NULL
+~~~
+# null NOT IN (null,'b','c','d')
+NULL
+~~~
+# null IN t4
+NULL
+~~~
+# null NOT IN t4
+NULL
+~~~
+# null IN t4n
+NULL
+~~~
+# null NOT IN t4n
+NULL
+~~~
+# null IN t5
+NULL
+~~~
+# null NOT IN t5
+NULL
+~~~
+# null IN t6
+NULL
+~~~
+# null NOT IN t6
+NULL
+~~~
+# null IN t6n
+NULL
+~~~
+# null NOT IN t6n
+NULL
+~~~
+# null IN t7
+NULL
+~~~
+# null NOT IN t7
+NULL
+~~~
+# null IN t7n
+NULL
+~~~
+# null NOT IN t7n
+NULL
+~~~
+# null IN t8
+NULL
+~~~
+# null NOT IN t8
+NULL
+~~~
+# null IN t8n
+NULL
+~~~
+# null NOT IN t8n
+NULL
+~~~

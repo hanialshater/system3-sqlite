@@ -1,0 +1,19 @@
+changes: 0
+changes: 0
+~~~
+# (SELECT b FROM t1)
+~~~
+changes: 1
+~~~
+# (SELECT b FROM t1)
+NULL
+~~~
+changes: 1
+changes: 1
+# b
+123
+~~~
+changes: 1
+# (SELECT b FROM t1)
+123
+~~~

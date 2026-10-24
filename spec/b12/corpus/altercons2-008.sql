@@ -1,0 +1,3 @@
+CREATE TABLE abc(a, b, c, CONSTRAINT one CONSTRAINT two CHECK (b!=c));
+ALTER TABLE abc DROP CONSTRAINT one
+SELECT sql FROM sqlite_schema

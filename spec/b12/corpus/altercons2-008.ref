@@ -1,0 +1,7 @@
+changes: 0
+~~~
+changes: 0
+~~~
+# sql
+CREATE TABLE abc(a, b, c, CONSTRAINT two CHECK (b!=c))
+~~~

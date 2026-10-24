@@ -1,0 +1,49 @@
+changes: 0
+~~~
+changes: 1
+changes: 1
+changes: 1
+~~~
+changes: 0
+# a|b|c
+1|NULL|one
+2|NULL|two
+3|NULL|three
+~~~
+changes: 0
+# a|b|c
+1|NULL|one
+2|NULL|two
+3|NULL|three
+~~~
+changes: 1
+# a|b|c
+1|NULL|one
+2|1|two
+3|NULL|three
+~~~
+changes: 1
+# a|b|c
+1|NULL|one
+2|2|two
+3|NULL|three
+~~~
+error: UNIQUE constraint failed: t1.c
+~~~
+# a|b|c
+1|NULL|one
+2|2|two
+3|NULL|three
+~~~
+changes: 1
+# a|b|c
+1|NULL|one
+2|x|y
+3|NULL|three
+~~~
+changes: 1
+# a|b|c
+2|x|y
+3|NULL|three
+4|NULL|four
+~~~

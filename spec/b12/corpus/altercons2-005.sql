@@ -1,0 +1,3 @@
+CREATE TABLE t1(a, b, c NOT NULL, CONSTRAINT xyz CHECK( a!=0 ));
+ALTER TABLE t1 ADD CONSTRAINT nn CHECK (a!=0)
+SELECT sql FROM sqlite_schema WHERE name='t1'

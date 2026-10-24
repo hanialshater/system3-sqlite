@@ -1,0 +1,28 @@
+# typeof( unhex('') )|length( unhex('') )
+blob|0
+~~~
+error: wrong number of arguments to function unhex()
+~~~
+error: wrong number of arguments to function unhex()
+~~~
+# typeof( unhex(' ', ' -') )|length( unhex('-', ' -') )
+blob|0
+~~~
+# hex( unhex('?ABCD?', '??') )
+ABCD
+~~~
+# typeof( unhex('?ABCD?', '??') )
+blob
+~~~
+# hex( unhex('?AB CD??', '? ?') )
+ABCD
+~~~
+# typeof(unhex(NULL))
+null
+~~~
+# typeof(unhex(NULL, ' '))
+null
+~~~
+# typeof(unhex('1234', NULL))
+null
+~~~

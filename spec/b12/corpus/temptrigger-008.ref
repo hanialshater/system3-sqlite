@@ -1,0 +1,6 @@
+changes: 0
+~~~
+error: no such table: aux.sqlite_master
+~~~
+error: table main.t1 has 3 columns but 1 values were supplied
+~~~

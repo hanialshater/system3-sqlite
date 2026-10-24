@@ -1,0 +1,1 @@
+ALTER TABLE fff RENAME TO ggg;

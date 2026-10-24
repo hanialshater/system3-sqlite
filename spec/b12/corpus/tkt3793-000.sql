@@ -1,0 +1,3 @@
+BEGIN; SELECT count(*) FROM t1;
+PRAGMA cache_size = 10; BEGIN; UPDATE t1 SET b = randstr(50,50);
+SELECT * FROM t2 ORDER BY a LIMIT 20

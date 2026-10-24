@@ -1,0 +1,8 @@
+error: no such table: t5
+~~~
+error: no such table: t7
+~~~
+~~~
+# integrity_check
+ok
+~~~

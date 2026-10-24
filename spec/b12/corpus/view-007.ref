@@ -1,0 +1,34 @@
+error: table t2 already exists
+~~~
+changes: 0
+error: view t1 is circularly defined
+~~~
+changes: 0
+changes: 0
+error: view t1 is circularly defined
+~~~
+changes: 0
+~~~
+# sql
+CREATE VIEW v1 AS SELECT * FROM t1
+~~~
+changes: 0
+~~~
+error: no such view: nosuchview
+~~~
+error: no such view: main.nosuchview
+~~~
+changes: 0
+error: no such table: t1
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 0
+changes: 0
+changes: 0
+changes: 0
+~~~
