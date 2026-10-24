@@ -253,16 +253,16 @@
   (let [idxs (table-indexes db (:name tbl))
         ;; rowid conflict
         rid-conf (when (and (not= rid self) (contains? (:rows tbl) rid)) rid)]
-    (letfn [(handle [tbl conf msg upsert-ok]
+    (letfn [(handle [tbl conf msg what]
               (cond
-                (and upsert-ok (upsert-target? conf)) [:upsert conf]
+                (upsert-target? what) [:upsert what]
                 (= on-conflict :ignore) :ignore
                 (= on-conflict :replace) (update tbl :rows dissoc conf)
                 :else (err msg)))]
       (let [r (if rid-conf
                 (handle tbl rid-conf (str "UNIQUE constraint failed: " (:name tbl) "."
                                           (if (:ipk tbl) (:name (nth (:cols tbl) (:ipk tbl))) "rowid"))
-                        (upsert-target? :rowid))
+                        :rowid)
                 tbl)]
         (if (or (keyword? r) (vector? r))
           [tbl r]
@@ -272,7 +272,7 @@
               (let [idx (first idxs)
                     conf (find-conflict tbl idx row self)]
                 (if conf
-                  (let [r (handle tbl conf (unique-msg* tbl idx) (upsert-target? idx))]
+                  (let [r (handle tbl conf (unique-msg* tbl idx) idx)]
                     (if (or (keyword? r) (vector? r))
                       [tbl r]
                       (recur r (rest idxs))))
@@ -320,7 +320,7 @@
                        (set (map (comp lc :name) (:cols what))))
         :else false))))
 
-(defn- exec-insert [db sql st emit]
+(defn- exec-insert [db sql st emit prepared!]
   (let [tname (:table st)
         tbl (or (get-in db [:tables (lc tname)])
                 (err (str "no such table: " tname)))
@@ -375,6 +375,7 @@
         ret (when ret-src (compile-returning ctx ret-src (:returning st)))
         nslots (inc @(:slots ctx))
         env (object-array (+ nslots 2))
+        _ (prepared! (:names ret))
         src-rows (if (map? rows) (e/run-select-rows rows env) rows)
         ret-rows (java.util.ArrayList.)]
     (loop [db db rs (seq src-rows) changes 0]
@@ -448,7 +449,7 @@
 
 ;; ====================================================================== UPDATE / DELETE
 
-(defn- exec-update [db sql st emit]
+(defn- exec-update [db sql st emit prepared!]
   (let [tname (:table st)
         tbl (or (get-in db [:tables (lc tname)]) (err (str "no such table: " tname)))
         ncols (count (:cols tbl))
@@ -472,6 +473,7 @@
         on-conflict (or (:or st) :abort)
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (prepared! (:names ret))
         targets (vec (filter (fn [[rid row]]
                                (aset env slot row)
                                (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
@@ -512,7 +514,7 @@
                         (.add ret-rows (mapv #(% env) (:fs ret))))
                       (recur db2 (rest ts) (inc changes)))))))))))))
 
-(defn- exec-delete [db sql st emit]
+(defn- exec-delete [db sql st emit prepared!]
   (let [tname (:table st)
         tbl (or (get-in db [:tables (lc tname)]) (err (str "no such table: " tname)))
         ctx (new-ctx db sql)
@@ -525,6 +527,7 @@
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (prepared! (:names ret))
         doomed (vec (filter (fn [[rid row]]
                               (aset env slot row)
                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
@@ -629,6 +632,8 @@
       (.append out (v/display (nth row i))))
     (.append out "\n")))
 
+(def ^:dynamic *prepared* (volatile! false))
+
 (defn exec-statement
   "Executes one parsed statement. Writes its output into out. Returns the new db. Throws on error
   (after any rows already written)."
@@ -655,28 +660,17 @@
                 (when-not (::stop (ex-data ex)) (throw ex)))))
           (doseq [row (e/run-select-rows sub env)] (write-row out row))))
       db)
-    :insert (let [header (atom false)
-                  rows (java.util.ArrayList.)
-                  db2 (exec-insert db sql st (fn [r] (.add rows r)))]
-              (if (seq (:returning st))
-                (do (emit-line out (str "# " (str/join "|" (:names (compile-returning (new-ctx db sql) (table-source (new-ctx db sql) (get-in db [:tables (lc (:table st))]) nil) (:returning st))))))
-                    (doseq [r rows] (write-row out r)))
-                (emit-line out (str "changes: " (:changes db2))))
-              db2)
-    :update (let [rows (java.util.ArrayList.)
-                  db2 (exec-update db sql st (fn [r] (.add rows r)))]
-              (if (seq (:returning st))
-                (do (emit-line out (str "# " (str/join "|" (:names (compile-returning (new-ctx db sql) (table-source (new-ctx db sql) (get-in db [:tables (lc (:table st))]) (:alias st)) (:returning st))))))
-                    (doseq [r rows] (write-row out r)))
-                (emit-line out (str "changes: " (:changes db2))))
-              db2)
-    :delete (let [rows (java.util.ArrayList.)
-                  db2 (exec-delete db sql st (fn [r] (.add rows r)))]
-              (if (seq (:returning st))
-                (do (emit-line out (str "# " (str/join "|" (:names (compile-returning (new-ctx db sql) (table-source (new-ctx db sql) (get-in db [:tables (lc (:table st))]) (:alias st)) (:returning st))))))
-                    (doseq [r rows] (write-row out r)))
-                (emit-line out (str "changes: " (:changes db2))))
-              db2)
+    (:insert :update :delete)
+    (let [rows (java.util.ArrayList.)
+          f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
+          db2 (f db sql st (fn [r] (.add rows r))
+                 (fn [names]
+                   (when names (emit-line out (str "# " (str/join "|" names))))
+                   (vreset! *prepared* true)))]
+      (if (seq (:returning st))
+        (doseq [r rows] (write-row out r))
+        (emit-line out (str "changes: " (:changes db2))))
+      db2)
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
@@ -708,13 +702,16 @@
           (= st ::stop) [db (.toString out)]
           (nil? st) [db (.toString out)]
           :else
-          (let [r (try (exec-statement db line st out)
+          (let [prep (volatile! false)
+                r (try (binding [*prepared* prep] (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
-                           (do (emit-line out (str "error: " m)) ::stop)
+                           (do (emit-line out (str "error: " m))
+                               (if @prep [::stop (assoc db :changes 0)] ::stop))
                            (throw ex)))
                        (catch StackOverflowError _
                          (emit-line out "error: parser stack overflow") ::stop))]
-            (if (= r ::stop)
-              [db (.toString out)]
-              (recur r))))))))
+            (cond
+              (= r ::stop) [db (.toString out)]
+              (vector? r) [(second r) (.toString out)]
+              :else (recur r))))))))

@@ -252,10 +252,10 @@
 
 (defn parse-expr-prec [^P p minp]
   (let [minp (long minp)
-        left (if (and (<= minp 3) (at-kw? p "NOT"))
+        left (if (at-kw? p "NOT")
                (let [s (:s (tok p))]
                  (advance! p)
-                 (let [e (parse-expr-prec p 3)]
+                 (let [e (parse-expr-prec p 4)]
                    (node {:op :not :e e} s (:pe e))))
                (parse-unary p))]
     (loop [left left]
@@ -293,7 +293,7 @@
                 (recur (node {:op :like :o (keyword (str/lower-case u)) :e left :pat r :esc esc :not negate}
                              s (prev-end p))))
               "BETWEEN"
-              (let [lo (parse-expr-prec p 5)
+              (let [lo (parse-expr-prec p 3)
                     _ (expect-kw p "AND")
                     hi (parse-expr-prec p 5)]
                 (recur (node {:op :between :e left :lo lo :hi hi :not negate} s (:pe hi))))))
