@@ -181,7 +181,7 @@
 
 (declare compile-function)
 
-(declare cx*)
+(declare cx* const-term?)
 
 (defn cx
   "Compiles expression AST e in ctx. Returns {:f (fn [env]) :aff :coll :ecoll ...}.
@@ -226,7 +226,39 @@
 (defn condf
   "The function to use when an expression is a condition (WHERE, ON, HAVING, CASE WHEN, CHECK): AND/OR
   short-circuit there, while in value context both operands are evaluated."
-  [c] (or (:cf c) (:f c)))
+  [c] (or (:cft c) (:f c)))
+
+(defn condff
+  "Condition function when deciding whether an expression is FALSE (CHECK constraints, under NOT)."
+  [c] (or (:cff c) (:f c)))
+
+(defn- tvl "truth value: nil, 0 or 1" [x] (when-not (nil? x) (if (v/bool-value x) 1 0)))
+(defn- falsy? [x] (and (not (nil? x)) (not (v/bool-value x))))
+(defn- truthy? [x] (and (not (nil? x)) (v/bool-value x)))
+
+(defn- and-cond
+  "AND in condition context. mode :t decides TRUE (NULL left short-circuits like FALSE);
+  mode :f decides FALSE (only a FALSE left short-circuits)."
+  [fa fb mode]
+  (if (= mode :t)
+    (fn [env] (let [a (fa env)]
+                (if (or (nil? a) (falsy? a)) 0
+                    (tvl (fb env)))))
+    (fn [env] (let [a (fa env)]
+                (if (falsy? a) 0
+                    (let [b (fb env)]
+                      (cond (falsy? b) 0 (or (nil? a) (nil? b)) nil :else 1)))))))
+
+(defn- or-cond
+  [fa fb mode]
+  (if (= mode :t)
+    (fn [env] (let [a (fa env)]
+                (if (truthy? a) 1
+                    (let [b (fb env)]
+                      (cond (truthy? b) 1 (or (nil? a) (nil? b)) nil :else 0)))))
+    (fn [env] (let [a (fa env)]
+                (if (or (nil? a) (truthy? a)) (tvl a)
+                    (tvl (fb env)))))))
 
 (defn- contained
   "Compiles e; a resolution error is recorded instead of thrown (SQLite resolves the operand of
@@ -238,6 +270,20 @@
            (do (when (:pending ctx) (reset! (:pending ctx) m)) (const-c nil))
            (throw ex)))))
 
+(defn- simplified-and-or
+  "sqlite3ExprSimplifiedAndOr: with an always-true/false integer literal operand, AND/OR reduce to one
+  operand, whose truth value is the result. Returns the compiled replacement or nil."
+  [op l r]
+  (let [t? (fn [c] (and (:intlit c) (not= 0 (long (:intlit c)))))
+        f? (fn [c] (and (:intlit c) (= 0 (long (:intlit c)))))
+        ch (cond (or (t? l) (f? r)) (if (= op :and) r l)
+                 (or (t? r) (f? l)) (if (= op :and) l r)
+                 :else nil)]
+    (when ch
+      (let [tv (fn [g] (fn [env] (tvl (g env))))]
+        (cond-> (mk (tv (:f ch)) :cft (tv (condf ch)) :cff (tv (condff ch)))
+          (:intlit ch) (assoc :intlit (if (zero? (long (:intlit ch))) 0 1) :const true))))))
+
 (defn cx*
   [ctx e]
   ;; once an error has been recorded, SQLite's resolver aborts at the next non-column, non-function node
@@ -245,10 +291,15 @@
     (when (and @pend (not (#{:col :fn} (:op e))) (not (null-test? e)) (not (is-rfirst e)))
       (err @pend)))
   (case (:op e)
-    :lit (const-c (lit-value e))
+    :lit (let [v (lit-value e)
+               c (const-c v)]
+           ;; integer literals stored as 32-bit values count as always true/false for AND/OR simplification
+           (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
+             (assoc c :intlit v)
+             c))
     :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
            (if (contains? r :const)
-             (const-c (:const r))
+             (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
@@ -262,13 +313,13 @@
                  (const-c nl)
                  (let [c (cx ctx inner) f (:f c)]
                    (mk (fn [env] (v/arith :sub 0 (f env))) :ecoll (:ecoll c) :coll (when (:ecoll c) (:coll c))))))
-        :pos (let [c (cx ctx inner)] (assoc c :aff nil :const (:const c) :col nil))
+        :pos (let [c (cx ctx inner)] (assoc c :aff nil :const (:const c) :col nil :intlit nil))
         :bitnot (let [c (cx ctx inner) f (:f c)]
                   (mk (fn [env] (let [x (f env)] (when-not (nil? x) (bit-not (v/int-value x)))))
                       :ecoll (:ecoll c) :coll (when (:ecoll c) (:coll c))))))
-    :not (let [c (cx ctx (:e e)) f (:f c) cf (condf c)]
-           (mk (fn [env] (let [x (f env)] (when-not (nil? x) (if (v/bool-value x) 0 1))))
-               :cf (fn [env] (let [x (cf env)] (when-not (nil? x) (if (v/bool-value x) 0 1))))
+    :not (let [c (cx ctx (:e e)) f (:f c) ct (condf c) cfl (condff c)
+               neg (fn [g] (fn [env] (let [x (g env)] (when-not (nil? x) (if (v/bool-value x) 0 1)))))]
+           (mk (neg f) :cft (neg cfl) :cff (neg ct)
                :ecoll (:ecoll c) :coll (when (:ecoll c) (:coll c))))
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
@@ -282,38 +333,22 @@
           fl (:f l) fr (:f r)
           extra {:ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r])}]
       (case o
-        :and (let [cl (condf l) cr (condf r)]
-               (merge (mk (fn [env]
-                            (let [a (fl env) b (fr env)]
-                              (cond (and (not (nil? a)) (not (v/bool-value a))) 0
-                                    (and (not (nil? b)) (not (v/bool-value b))) 0
-                                    (or (nil? a) (nil? b)) nil
-                                    :else 1)))
-                          :cf (fn [env]
-                                (let [a (cl env)]
-                                  (if (and (not (nil? a)) (not (v/bool-value a)))
-                                    0
-                                    (let [b (cr env)]
-                                      (cond (and (not (nil? b)) (not (v/bool-value b))) 0
-                                            (or (nil? a) (nil? b)) nil
-                                            :else 1))))))
-                      extra))
-        :or (let [cl (condf l) cr (condf r)]
-              (merge (mk (fn [env]
-                           (let [a (fl env) b (fr env)]
-                             (cond (and (not (nil? a)) (v/bool-value a)) 1
-                                   (and (not (nil? b)) (v/bool-value b)) 1
-                                   (or (nil? a) (nil? b)) nil
-                                   :else 0)))
-                         :cf (fn [env]
-                               (let [a (cl env)]
-                                 (if (and (not (nil? a)) (v/bool-value a))
-                                   1
-                                   (let [b (cr env)]
-                                     (cond (and (not (nil? b)) (v/bool-value b)) 1
-                                           (or (nil? a) (nil? b)) nil
-                                           :else 0))))))
-                     extra))
+        :and (if-let [ch (simplified-and-or :and l r)]
+               ch
+             (merge (mk (fn [env]
+                          (let [a (fl env) b (fr env)]
+                            (cond (falsy? a) 0 (falsy? b) 0 (or (nil? a) (nil? b)) nil :else 1)))
+                        :cft (and-cond (condf l) (condf r) :t)
+                        :cff (and-cond (condff l) (condff r) :f))
+                    extra))
+        :or (if-let [ch (simplified-and-or :or l r)]
+              ch
+            (merge (mk (fn [env]
+                         (let [a (fl env) b (fr env)]
+                           (cond (truthy? a) 1 (truthy? b) 1 (or (nil? a) (nil? b)) nil :else 0)))
+                       :cft (or-cond (condf l) (condf r) :t)
+                       :cff (or-cond (condff l) (condff r) :f))
+                   extra))
         (:eq :ne :lt :le :gt :ge) (make-compare o l r)
         (:add :sub :mul :div :rem) (merge (mk (fn [env] (v/arith o (fl env) (fr env)))) extra)
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
@@ -357,18 +392,31 @@
                           (or (nil? c1) (nil? c2)) nil
                           :else 1)]
               (if negate (when-not (nil? r) (- 1 (long r))) r)))
-          :cf (fn [env]
-            (let [a (fx env)
-                  b (flo env)
-                  c1 (when-not (or (nil? a) (nil? b)) (bool->int (>= (long (compare-values a b aff1 coll1)) 0)))
-                  r (if (= c1 0)
-                      0
-                      (let [c (fhi env)
-                            c2 (when-not (or (nil? a) (nil? c)) (bool->int (<= (long (compare-values a c aff2 coll2)) 0)))]
-                        (cond (= c2 0) 0
-                              (or (nil? c1) (nil? c2)) nil
-                              :else 1)))]
-              (if negate (when-not (nil? r) (- 1 (long r))) r)))
+          :cft (let [bt (fn [mode]
+                          ;; x BETWEEN lo AND hi is coded as (x>=lo AND x<=hi) with x evaluated once
+                          (fn [env]
+                            (let [a (fx env)
+                                  b (flo env)
+                                  c1 (when-not (or (nil? a) (nil? b)) (bool->int (>= (long (compare-values a b aff1 coll1)) 0)))]
+                              (if (if (= mode :t) (or (nil? c1) (= c1 0)) (= c1 0))
+                                0
+                                (let [c (fhi env)
+                                      c2 (when-not (or (nil? a) (nil? c)) (bool->int (<= (long (compare-values a c aff2 coll2)) 0)))]
+                                  (cond (= c2 0) 0 (or (nil? c1) (nil? c2)) nil :else 1))))))
+                     neg (fn [g] (fn [env] (let [r (g env)] (when-not (nil? r) (- 1 (long r))))))]
+                 (if negate (neg (bt :f)) (bt :t)))
+          :cff (let [bt (fn [mode]
+                          (fn [env]
+                            (let [a (fx env)
+                                  b (flo env)
+                                  c1 (when-not (or (nil? a) (nil? b)) (bool->int (>= (long (compare-values a b aff1 coll1)) 0)))]
+                              (if (if (= mode :t) (or (nil? c1) (= c1 0)) (= c1 0))
+                                0
+                                (let [c (fhi env)
+                                      c2 (when-not (or (nil? a) (nil? c)) (bool->int (<= (long (compare-values a c aff2 coll2)) 0)))]
+                                  (cond (= c2 0) 0 (or (nil? c1) (nil? c2)) nil :else 1))))))
+                     neg (fn [g] (fn [env] (let [r (g env)] (when-not (nil? r) (- 1 (long r))))))]
+                 (if negate (neg (bt :t)) (bt :f)))
           :ecoll (some has-collate? [x lo hi]) :coll (coll-walk [x lo hi])))
     :like
     (let [x (cx ctx (:e e)) pt (cx ctx (:pat e)) es (when (:esc e) (cx ctx (:esc e)))
@@ -425,7 +473,13 @@
         (let [items (mapv #(cx ctx %) (:list e))
               aff (:aff x)
               coll (or (:coll x) "BINARY")
-              fs (mapv :f items)]
+              fs0 (mapv :f items)
+              ;; a constant list of 3+ items becomes an ephemeral table: every item is evaluated (once)
+              fs (if (and (>= (count fs0) 3) (every? const-term? (:list e)))
+                   (let [cache (volatile! nil)
+                         all (fn [env] (or @cache (vreset! cache (mapv #(% env) fs0))))]
+                     (vec (map-indexed (fn [i _] (fn [env] (nth (all env) i))) fs0)))
+                   fs0)]
           (when (= :vector (:op (:e e))) (err "row value misused"))
           (mk (fn [env]
                 (if (empty? fs)

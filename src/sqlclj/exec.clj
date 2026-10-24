@@ -19,8 +19,9 @@
 
 (defn- compile-row-expr
   "Compiles an expression over a single table row (for CHECK, index expressions, partial-index WHERE).
-  Returns (fn [row]) -> value."
-  [db sql tbl ast]
+  Returns (fn [row]) -> value. mode :check evaluates as a CHECK constraint (deciding FALSE)."
+  ([db sql tbl ast] (compile-row-expr db sql tbl ast nil))
+  ([db sql tbl ast mode]
   (let [ctx (new-ctx db sql)
         slot (e/new-slot! ctx)
         cols (mapv :name (:cols tbl))
@@ -29,9 +30,9 @@
              :ncols (count cols) :hidden #{}}
         ctx (assoc ctx :scope {:sources [src] :parent nil})
         c (e/cx ctx ast)
-        f (e/condf c)
+        f (if (= mode :check) (e/condff c) (e/condf c))
         n (inc @(:slots ctx))]
-    (assoc c :rowf (fn [row] (let [env (object-array n)] (aset env slot row) (f env))))))
+    (assoc c :rowf (fn [row] (let [env (object-array n)] (aset env slot row) (f env)))))))
 
 (defn- build-index
   "Index record from a definition. cols: [{:e ast :coll :desc}]"
@@ -138,7 +139,7 @@
                  :without-rowid (:without-rowid st)}
             db (assoc-in db [:tables lname] tbl)
             ;; compile checks against the table
-            tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck))))) checks))
+            tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck) :check)))) checks))
             db (assoc-in db [:tables lname] tbl)
             ;; autoindexes: PK (non-ipk) and UNIQUE in declaration order
             uniq-defs (concat
