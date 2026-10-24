@@ -22,8 +22,8 @@
   [^String s]
   (let [n (.length s)
         out (transient [])]
-    (loop [i 0]
-      (if (>= i n)
+    (loop [i (Long/valueOf 0)]
+      (if (>= (long i) n)
         (persistent! (conj! out {:t :eof :s n :e n :v ""}))
         (let [c (.charAt s i)]
           (cond

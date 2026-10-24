@@ -74,7 +74,7 @@
 
 (declare parse-expr parse-select parse-expr-prec)
 
-(defn- node [m s e] (assoc m :s s :e e))
+(defn- node [m s e] (assoc m :ps s :pe e))
 
 (defn- prev-end [^P p] (:e (nth (.-toks p) (dec (pos p)))))
 
@@ -219,7 +219,7 @@
       (and (= :op (:t t)) (#{"-" "+" "~"} (:v t)))
       (do (advance! p)
           (let [e (parse-expr-prec p 12)]
-            (node {:op :unary :o (case (:v t) "-" :neg "+" :pos "~" :bitnot) :e e} s (:e e))))
+            (node {:op :unary :o (case (:v t) "-" :neg "+" :pos "~" :bitnot) :e e} s (:pe e))))
       :else (parse-primary p))))
 
 (def ^:private binops
@@ -256,11 +256,11 @@
                (let [s (:s (tok p))]
                  (advance! p)
                  (let [e (parse-expr-prec p 3)]
-                   (node {:op :not :e e} s (:e e))))
+                   (node {:op :not :e e} s (:pe e))))
                (parse-unary p))]
     (loop [left left]
       (check-illegal p)
-      (let [t (tok p) s (:s left)]
+      (let [t (tok p) s (:ps left)]
         (cond
           ;; COLLATE (level 11)
           (and (kw? t "COLLATE") (<= minp 11))
@@ -285,7 +285,7 @@
                          dist (when (accept-kw p "DISTINCT") (expect-kw p "FROM") true)
                          r (parse-expr-prec p 5)
                          isnot (if dist (not n2) n2)]
-                     (recur (node {:op :is :not isnot :l left :r r} s (:e r))))
+                     (recur (node {:op :is :not isnot :l left :r r} s (:pe r))))
               "IN" (recur (parse-in-rhs p left s negate))
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
@@ -296,7 +296,7 @@
               (let [lo (parse-expr-prec p 5)
                     _ (expect-kw p "AND")
                     hi (parse-expr-prec p 5)]
-                (recur (node {:op :between :e left :lo lo :hi hi :not negate} s (:e hi))))))
+                (recur (node {:op :between :e left :lo lo :hi hi :not negate} s (:pe hi))))))
           :else
           (let [k (cond (= :op (:t t)) (:v t)
                         (= :id (:t t)) (:u t))
@@ -305,7 +305,7 @@
               (let [[prec o] b]
                 (advance! p)
                 (let [r (parse-expr-prec p (inc (long prec)))]
-                  (recur (node {:op :bin :o o :l left :r r} s (:e r)))))
+                  (recur (node {:op :bin :o o :l left :r r} s (:pe r)))))
               left)))))))
 
 (defn parse-expr [^P p] (parse-expr-prec p 1))
@@ -468,7 +468,7 @@
       (let [o (:v (advance! p))
             t (tok p)]
         (if (#{:int :float :hex} (:t t))
-          (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:e e)))
+          (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:pe e)))
           (fail! p)))
       :else (parse-primary p))))
 
