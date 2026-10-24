@@ -1204,7 +1204,11 @@
                      (let [si (search-index (:db ctx) src (or where-terms []) (:scan-refs src))]
                        (cond (= si :rowid) nil
                              si si
-                             :else (covering-index (:db ctx) src (:scan-refs src)))))]
+                             :else (or (first (for [idx (sort-by :seq > (filter #(= (:table %) tname) (vals (:indexes (:db ctx)))))
+                                                    :when (and (:where idx) (seq where-terms)
+                                                               (check-indexed-by ctx idx where-terms src))]
+                                                idx))
+                                       (covering-index (:db ctx) src (:scan-refs src))))))]
           (if plan
             (fn [_] (index-order-rows (:db ctx) plan))
             (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))
