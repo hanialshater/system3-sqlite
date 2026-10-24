@@ -992,7 +992,7 @@
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (e/compile-select (new-ctx db sql) (:select st))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st)
-                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                                                              :temp (:temp st) :db (:db st) :src-sql sql :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)

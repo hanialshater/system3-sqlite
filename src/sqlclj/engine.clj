@@ -1429,7 +1429,7 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src-sql view) (:sql ctx))) (:select view))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
