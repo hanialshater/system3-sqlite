@@ -508,6 +508,7 @@
                              :else (err (str "no such column: " c))))
                      f]))
         where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
+        where-pre (when (:where st) (e/where-precheck sctx (:where st)))
         ret (compile-returning ctx src (:returning st))
         on-conflict (or (:or st) :abort)
         env (object-array (+ 2 @(:slots ctx)))
@@ -516,7 +517,7 @@
         targets (vec (filter (fn [[rid row]]
                                (aset env slot row)
                                (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
-                             (:rows tbl)))
+                             (if (and where-pre (not (where-pre env))) [] (:rows tbl))))
         ret-rows (java.util.ArrayList.)]
     (loop [db db ts targets changes 0]
       (if (empty? ts)
@@ -569,6 +570,7 @@
               (err (str "no such index: " (:indexed-by st)))))
         sctx (assoc ctx :scope {:sources [src] :parent nil})
         where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
+        where-pre (when (:where st) (e/where-precheck sctx (:where st)))
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
@@ -576,7 +578,7 @@
         doomed (vec (filter (fn [[rid row]]
                               (aset env slot row)
                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
-                            (:rows tbl)))]
+                            (if (and where-pre (not (where-pre env))) [] (:rows tbl))))]
     (when ret
       (doseq [[_ row] doomed]
         (aset env slot row)

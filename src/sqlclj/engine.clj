@@ -946,8 +946,9 @@
         {:step (fn [[x]] (when (and (not (nil? x)) (dist-ok x)) (s x)) false)
          :final (fn [] (.invoke ^clojure.lang.IFn s kind nil))})
       ("min" "max")
-      (let [best (object-array 1) has (boolean-array 1) mx (= name "max")]
+      (let [best (object-array 1) has (boolean-array 1) mx (= name "max") last-hit (boolean-array 1)]
         {:step (fn [[x]]
+                 (let [r
                  (if (nil? x)
                    (not (aget has 0))
                  (if (dist-ok x)
@@ -957,7 +958,9 @@
                        (if (if mx (< c 0) (> c 0))
                          (do (aset best 0 x) true)
                          false)))
-                   false)))
+                   (aget last-hit 0)))]
+                   (aset last-hit 0 (boolean r))
+                   r))
          :final (fn [] (aget best 0))
          :minmax true})
       ("group_concat" "string_agg")
@@ -1035,6 +1038,25 @@
   (if (and (= :bin (:op e)) (= :and (:o e)))
     (concat (split-and (:l e)) (split-and (:r e)))
     [e]))
+
+(defn const-term?
+  "An expression with no column references or subqueries (SQLite evaluates such WHERE terms once,
+  before scanning)."
+  [e]
+  (letfn [(walk [e]
+            (cond (map? e) (and (not (#{:col :subq :exists} (:op e)))
+                                (not (and (= :in (:op e)) (or (:select e) (:table e))))
+                                (every? walk (vals e)))
+                  (sequential? e) (every? walk e)
+                  :else true))]
+    (walk e)))
+
+(defn where-precheck
+  "Compiles the constant top-level terms of a WHERE clause; returns (fn [env]) -> true if scanning may proceed."
+  [ctx where-ast]
+  (let [fs (vec (for [t (split-and where-ast) :when (const-term? t)] (condf (cx ctx t))))]
+    (when (seq fs)
+      (fn [env] (every? (fn [f] (let [x (f env)] (and (not (nil? x)) (v/bool-value x)))) fs)))))
 
 (defn- expand-star
   "Result column list with * expanded: [{:e ast-or-nil :src-col [slot idx] :name ...}]"
@@ -1351,6 +1373,7 @@
           where-c (when (:where core)
                     (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
           where-f (when where-c (condf where-c))
+          where-pre (when (:where core) (where-precheck (assoc ctx2 :aggs nil) (subst (:where core))))
           ;; join conditions
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
@@ -1444,7 +1467,8 @@
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
                                  (level (inc i))))))]
-                   (level 0)))
+                   (when (or (nil? where-pre) (where-pre env))
+                     (level 0))))
           run
           (if is-agg
             (fn [^objects env emit]
