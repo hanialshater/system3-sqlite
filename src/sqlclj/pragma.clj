@@ -132,7 +132,7 @@
   (let [n (lc (:name st))
         v (:value st)
         sc (some-> (:schema st) lc)]
-    (when (and sc (not (#{"main" "temp"} sc)) (not (get-in db [:attached sc])))
+    (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
     (cond
       (contains? flag-pragmas n)

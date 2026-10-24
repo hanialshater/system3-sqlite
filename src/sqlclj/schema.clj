@@ -63,7 +63,7 @@
 
 (defn schema-of
   "The schema name an object lives in."
-  [obj] (if (:temp obj) "temp" "main"))
+  [obj] (or (:db obj) (if (:temp obj) "temp" "main")))
 
 (defn alloc-page
   "Allocates a root page in schema sch; returns [db page]."
@@ -83,19 +83,27 @@
         [db pg] (if needs-page? (alloc-page db (schema-of obj)) [db 0])]
     [db (assoc obj :mseq s :rootpage pg)]))
 
+(defn display-name
+  "An object's name without the attached-database prefix."
+  [^String n obj]
+  (if (and n (:db obj) (str/starts-with? (str/lower-case n) (str (:db obj) ".")))
+    (subs n (inc (count (:db obj))))
+    n))
+
 (defn master-rows
-  "Rows of sqlite_master (temp? false) or sqlite_temp_master: [type name tbl_name rootpage sql]
-  ordered by creation."
-  [db temp?]
-  (let [objs (concat
-              (for [[_ t] (:tables db)] [(:mseq t) ["table" (:name t) (:name t) (long (or (:rootpage t) 0)) (:sql t)] t])
+  "Rows of sqlite_master for schema sch (\"main\", \"temp\" or an attached name):
+  [type name tbl_name rootpage sql] ordered by creation."
+  [db sch]
+  (let [dn (fn [n o] (display-name n o))
+        objs (concat
+              (for [[_ t] (:tables db)] [(:mseq t) ["table" (dn (:name t) t) (dn (:name t) t) (long (or (:rootpage t) 0)) (:sql t)] t])
               (for [[_ i] (:indexes db)]
-                [(:mseq i) ["index" (:name i) (:name (get-in db [:tables (:table i)]) (:table i))
+                [(:mseq i) ["index" (dn (:name i) i) (dn (or (:name (get-in db [:tables (:table i)])) (:table i)) i)
                             (long (or (:rootpage i) 0)) (:sql i)] i])
-              (for [[_ v] (:views db)] [(:mseq v) ["view" (:name v) (:name v) 0 (:sql v)] v])
-              (for [[_ g] (:triggers db)] [(:mseq g) ["trigger" (:name g) (or (:table-name g) (:name (get-in db [:tables (:table g)])) (:table g)) 0 (:sql g)] g]))]
+              (for [[_ v] (:views db)] [(:mseq v) ["view" (dn (:name v) v) (dn (:name v) v) 0 (:sql v)] v])
+              (for [[_ g] (:triggers db)] [(:mseq g) ["trigger" (dn (:name g) g) (dn (or (:table-name g) (:name (get-in db [:tables (:table g)])) (:table g)) g) 0 (:sql g)] g]))]
     (->> objs
-         (filter (fn [[_ _ o]] (= (boolean temp?) (boolean (:temp o)))))
+         (filter (fn [[_ _ o]] (= sch (schema-of o))))
          (sort-by (fn [[s]] (or s 0)))
          (mapv second))))
 
@@ -108,12 +116,87 @@
   (let [lsch (when schema (str/lower-case schema))
         temp? (cond (= lsch "temp") true
                     (contains? master-names lname) (get master-names lname)
-                    :else nil)]
-    (when (and (contains? master-names lname) (or (nil? lsch) (#{"main" "temp"} lsch)))
-      (let [rows (master-rows db temp?)
+                    :else nil)
+        sch (cond temp? "temp" (and lsch (not= lsch "main")) lsch :else "main")]
+    (when (and (contains? master-names lname) (or (nil? lsch) (#{"main" "temp"} lsch) (some #{lsch} (map first (:attached db)))))
+      (let [rows (master-rows db sch)
             cols (mapv (fn [n a] {:name n :type (if (= a :integer) "INT" "TEXT") :aff a})
                        ["type" "name" "tbl_name" "rootpage" "sql"] [:text :text :text :integer :text])]
         {:name (if temp? (if (= lname "sqlite_temp_schema") "sqlite_temp_schema" "sqlite_temp_master")
                    (if (= lname "sqlite_schema") "sqlite_schema" "sqlite_master"))
          :cols cols :ipk nil :strict false :checks [] :virtual true
          :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj r (long (inc i)))]) rows))}))))
+
+;; ====================================================================== attached databases
+;; Objects of an attached database live in the same maps as main's, keyed (and named internally)
+;; "<db>.<name>", with :db "<db>". Statements are rewritten (qualify-stmt) before execution so that
+;; their table references use those keys. main and temp objects keep plain lower-case keys.
+
+(defn attached-names [db] (map first (:attached db)))
+
+(defn- lc* [s] (when s (str/lower-case s)))
+
+(defn obj-key
+  "Storage key of object name in schema sch (an attached schema gives a prefixed key)."
+  [db name sch]
+  (let [l (lc* name) s (lc* sch)]
+    (if (and s (not (#{"main" "temp"} s)))
+      (str s "." l)
+      l)))
+
+(defn check-schema [db sch]
+  (let [s (lc* sch)]
+    (when (and s (not (#{"main" "temp"} s)) (not (some #{s} (attached-names db))))
+      (throw (ex-info "sql" {:sql-error (str "unknown database " sch)})))))
+
+(defn resolve-key
+  "Key of an existing table or view called name, as seen from schema qualifier sch (nil = search order)."
+  [db name sch]
+  (let [l (lc* name) s (lc* sch)
+        exists? (fn [k] (or (get-in db [:tables k]) (get-in db [:views k])))]
+    (cond
+      (nil? s) (if (exists? l) l (or (some (fn [a] (let [k (str a "." l)] (when (exists? k) k))) (attached-names db)) l))
+      (#{"main" "temp"} s) l
+      :else (str s "." l))))
+
+(defn- qualify-from-item [db item]
+  (if (and (:table item) (not (:op item)) (some #{(lc* (:schema item))} (attached-names db))
+           (not (contains? master-names (lc* (:table item)))))
+    (assoc item :table (resolve-key db (:table item) (:schema item)) :schema nil
+           :alias (or (:alias item) (:table item)))
+    (if (and (:table item) (not (:op item)) (nil? (:schema item)) (seq (:attached db)))
+      (let [k (resolve-key db (:table item) nil)]
+        (if (= k (lc* (:table item))) item (assoc item :table k :alias (or (:alias item) (:table item)))))
+      item)))
+
+(defn qualify-stmt
+  "Rewrites table references of a statement for attached databases (identity when none attached)."
+  [db st]
+  (if (and (empty? (:attached db)) (let [s (lc* (:schema st))] (or (nil? s) (#{"main" "temp"} s))))
+    st
+    (let [att (set (attached-names db))
+          sch (lc* (:schema st))
+          walk (fn walk [x]
+                 (cond
+                   (map? x) (let [x (if (and (= :col (:op x)) (:schema x)) (dissoc x :schema) x)
+                                  x (if (and (contains? x :indexed-by) (:table x)) (qualify-from-item db x) x)]
+                              (into {} (map (fn [[k v]] [k (walk v)]) x)))
+                   (vector? x) (mapv walk x)
+                   (seq? x) (doall (map walk x))
+                   :else x))]
+      (case (:kind st)
+        (:create-table :create-view)
+        (let [st (walk st)]
+          (if (att sch) (assoc st :name (obj-key db (:name st) sch) :db sch :schema nil) st))
+        :create-index
+        (if (att sch)
+          (assoc (walk st) :name (obj-key db (:name st) sch) :table (obj-key db (:table st) sch) :db sch :schema nil)
+          (let [st (walk st)] (assoc st :table (resolve-key db (:table st) nil))))
+        :drop
+        (assoc st :name (if (and sch (not (#{"main" "temp"} sch))) (obj-key db (:name st) sch)
+                            (if (and (nil? sch) (#{:table :view} (:what st))) (resolve-key db (:name st) nil) (:name st))))
+        (:insert :update :delete)
+        (let [t (:table st) s (:schema st)
+              st (walk st)]
+          (assoc st :table (resolve-key db t s) :schema nil))
+        (walk st)))))

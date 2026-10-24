@@ -784,7 +784,7 @@
               :else (fail! p))
         upsert (parse-upsert p)
         ret (parse-returning p)]
-    (merge {:kind :insert :or or-action :table tname :alias alias :cols cols :upsert upsert :returning ret} src)))
+    (merge {:kind :insert :or or-action :table tname :schema sch :alias alias :cols cols :upsert upsert :returning ret} src)))
 
 (defn- parse-qualified-table [^P p]
   (let [n1 (parse-nm p)
@@ -794,7 +794,7 @@
         ib (cond (at-kw? p "INDEXED") (do (advance! p) (expect-kw p "BY") (parse-nm p))
                  (and (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (do (advance! p) (advance! p) :none)
                  :else nil)]
-    {:table tname :alias alias :indexed-by ib}))
+    {:table tname :schema sch :alias alias :indexed-by ib}))
 
 (defn- parse-update [^P p or-action]
   (let [qt (parse-qualified-table p)
@@ -922,6 +922,13 @@
                          (do (accept-kw p "SAVEPOINT") {:kind :rollback :to (parse-nm p)})
                          {:kind :rollback}))
         "SAVEPOINT" (do (advance! p) {:kind :savepoint :name (parse-nm p)})
+        "ATTACH" (do (advance! p) (accept-kw p "DATABASE")
+                     (let [f (parse-expr p)]
+                       (expect-kw p "AS")
+                       (let [n (parse-expr p)]
+                         (when (accept-kw p "KEY") (parse-expr p))
+                         {:kind :attach :file f :as n})))
+        "DETACH" (do (advance! p) (accept-kw p "DATABASE") {:kind :detach :name (parse-expr p)})
         "RELEASE" (do (advance! p) (accept-kw p "SAVEPOINT") {:kind :release :name (parse-nm p)})
         "ANALYZE" (do (advance! p) (when (ident-tok? (tok p)) (parse-nm p)) {:kind :noop})
         "VACUUM" (do (advance! p) {:kind :noop})

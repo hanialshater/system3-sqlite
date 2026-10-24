@@ -1337,8 +1337,10 @@
 (defn- table-of
   ([ctx name] (table-of ctx name nil))
   ([ctx name sch]
-   (or (get-in (:db ctx) [:tables (lc name)])
-       (schema/master-table (:db ctx) (lc name) sch))))
+   (let [t (get-in (:db ctx) [:tables (lc name)])
+         ls (lc sch)
+         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
+     (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
   (get-in (:db ctx) [:views (lc name)]))
@@ -1438,7 +1440,7 @@
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
-        :else (err (str "no such table: " name))))
+        :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
     (:nested item)
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))
