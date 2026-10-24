@@ -256,7 +256,9 @@
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
         :concat (merge (mk (fn [env] (v/concat-values (fl env) (fr env)))) extra)
         (:ptr :ptr2) (err "no such function: ->")))
-    :is (let [l (cx ctx (:l e)) r (cx ctx (:r e))
+    :is (let [rfirst (and (= :col (:op (:r e))) (nil? (:table (:r e))))
+              r0 (when rfirst (cx ctx (:r e)))
+              l (cx ctx (:l e)) r (or r0 (cx ctx (:r e)))
               fl (:f l) fr (:f r)
               aff (v/compare-affinity (:aff l) (:aff r))
               coll (or (binary-coll l r) "BINARY")
@@ -789,14 +791,16 @@
       ("min" "max")
       (let [best (object-array 1) has (boolean-array 1) mx (= name "max")]
         {:step (fn [[x]]
-                 (if (and (not (nil? x)) (dist-ok x))
+                 (if (nil? x)
+                   (not (aget has 0))
+                 (if (dist-ok x)
                    (if (not (aget has 0))
                      (do (aset best 0 x) (aset has 0 true) true)
                      (let [c (v/sql-cmp (aget best 0) x coll)]
                        (if (if mx (< c 0) (> c 0))
                          (do (aset best 0 x) true)
                          false)))
-                   false))
+                   false)))
          :final (fn [] (aget best 0))
          :minmax true})
       ("group_concat" "string_agg")
@@ -1116,6 +1120,7 @@
           agg-specs @aggs
           minmax-only (and (seq agg-specs) (every? #(#{"min" "max"} (:name %)) agg-specs))
           has-minmax (some #(#{"min" "max"} (:name %)) agg-specs)
+          control (last (keep-indexed (fn [i sp] (when (#{"min" "max"} (:name sp)) i)) agg-specs))
           gfs (mapv :f group-c)
           gcolls (mapv #(or (:coll %) "BINARY") group-c)
           having-f (:f having-c)
@@ -1155,12 +1160,11 @@
                                     (or (.get ^TreeMap groups key)
                                         (let [g (new-group)] (.put ^TreeMap groups key g) g)))
                                   (or @single (vreset! single (new-group))))
-                              updated (reduce (fn [u [acc spec]]
-                                                (let [vals (mapv #((:f %) env) (:args spec))
-                                                      r ((:step acc) vals)]
-                                                  (or u r)))
-                                              false (map vector (:accs g) agg-specs))]
-                          (when (or (not (aget ^booleans (:init g) 0)) (and has-minmax updated))
+                              results (mapv (fn [acc spec]
+                                              ((:step acc) (mapv #((:f %) env) (:args spec))))
+                                            (:accs g) agg-specs)
+                              updated (when control (nth results control))]
+                          (when (if control updated (not (aget ^booleans (:init g) 0)))
                             (aset ^booleans (:init g) 0 true)
                             (snapshot! g)))))
                 (let [gs (if groups (vals groups) [(or @single (new-group))])

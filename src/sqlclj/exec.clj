@@ -173,7 +173,8 @@
                  :text (string? val)
                  :blob (v/blob? val))]
         (if ok val
-            (err (str "cannot store " (str/upper-case (v/type-name val)) " value in "
+            (err (str "cannot store " (let [tn (str/upper-case (v/type-name val))] (if (= tn "INTEGER") "INT" tn))
+                      " value in "
                       (case st :integer (str/upper-case (or (:type c) "INTEGER")) :real "REAL" :text "TEXT" :blob "BLOB")
                       " column " (:name tbl) "." (:name c))))))))
 
