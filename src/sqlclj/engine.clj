@@ -6,7 +6,8 @@
             [sqlclj.values :as v]
             [sqlclj.num :as num]
             [sqlclj.lexer :as lx]
-            [sqlclj.parser :as p])
+            [sqlclj.parser :as p]
+            [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -1033,8 +1034,11 @@
 
 ;; ====================================================================== SELECT compilation
 
-(defn- table-of [ctx name]
-  (get-in (:db ctx) [:tables (lc name)]))
+(defn- table-of
+  ([ctx name] (table-of ctx name nil))
+  ([ctx name sch]
+   (or (get-in (:db ctx) [:tables (lc name)])
+       (schema/master-table (:db ctx) (lc name) sch))))
 
 (defn- view-of [ctx name]
   (get-in (:db ctx) [:views (lc name)]))
@@ -1061,7 +1065,7 @@
   (cond
     (:table item)
     (let [name (:table item)
-          tbl (table-of ctx name)
+          tbl (table-of ctx name (:schema item))
           view (when-not tbl (view-of ctx name))]
       (cond
         tbl (let [slot (new-slot! ctx)
@@ -1349,7 +1353,9 @@
                                        (covering-index (:db ctx) src (:scan-refs src))))))]
           (if plan
             (fn [_] (index-order-rows (:db ctx) plan))
-            (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))
+            (if (:virtual (:table src))
+              (let [t (:table src)] (fn [_] (table-rows t)))
+              (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
     (:sub src)
     (let [sub (:sub src)]
       (if (:correlated sub)

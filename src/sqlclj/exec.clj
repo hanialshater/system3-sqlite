@@ -4,7 +4,8 @@
             [sqlclj.values :as v]
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
-            [sqlclj.engine :as e :refer [err lc]]))
+            [sqlclj.engine :as e :refer [err lc]]
+            [sqlclj.schema :as sch]))
 
 (set! *warn-on-reflection* true)
 
@@ -66,7 +67,8 @@
        (sort-by :seq >)))
 
 (defn- add-index [db idx]
-  (let [s (inc (long (:index-seq db)))]
+  (let [s (inc (long (:index-seq db)))
+        [db idx] (sch/register db (assoc idx :temp (:temp (get-in db [:tables (:table idx)]))) true)]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
 (defn- create-table [db sql st]
@@ -82,8 +84,10 @@
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
                        (:names sub) (:affs sub))
-            tbl {:name name :cols cols :ipk nil :strict false :checks []
-                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]
+            tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st)
+                 :sql (sch/create-table-stmt name cols)
+                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
+            [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
       :else
       (let [strict (:strict st)
@@ -136,7 +140,8 @@
                          (for [k (:tcons st) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
-                 :without-rowid (:without-rowid st)}
+                 :without-rowid (:without-rowid st) :temp (:temp st) :sql (sch/stmt-sql sql st "TABLE")}
+            [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
             ;; compile checks against the table
             tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck) :check)))) checks))
@@ -599,7 +604,8 @@
       (nil? tbl) (err (str "no such table: main." (:table st)))
       (str/starts-with? lname "sqlite_") (err (str "object name reserved for internal use: " name))
       :else
-      (let [idx (build-index db sql tbl name (:unique st) (:cols st) (:where st) false)]
+      (let [idx (assoc (build-index db sql tbl name (:unique st) (:cols st) (:where st) false)
+                       :sql (sch/stmt-sql sql (assoc st :st-e (:st-next st)) (if (:unique st) "UNIQUE INDEX" "INDEX")))]
         ;; uniqueness of existing data
         (when (:unique st)
           (let [rows (filter #(or (nil? (:wf idx)) ((:wf idx) %)) (e/table-rows tbl))
@@ -616,14 +622,17 @@
   (let [lname (lc (:name st))]
     (case (:what st)
       :table (if-let [t (get-in db [:tables lname])]
-               (-> db
-                   (update :tables dissoc lname)
-                   (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m)))))
+               (let [idxs (filter (fn [i] (= (:table i) lname)) (vals (:indexes db)))
+                     db (reduce (fn [db o] (sch/free-page db (sch/schema-of o) (:rootpage o))) db (cons t idxs))]
+                 (-> db
+                     (update :tables dissoc lname)
+                     (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
+                     (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))))
                (if (:if-exists st) db (err (str "no such table: " (:name st)))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
                  (err "index associated with UNIQUE or PRIMARY KEY constraint cannot be dropped")
-                 (update db :indexes dissoc lname))
+                 (-> db (sch/free-page (sch/schema-of i) (:rootpage i)) (update :indexes dissoc lname)))
                (if (:if-exists st) db (err (str "no such index: " (:name st)))))
       :view (if (get-in db [:views lname])
               (update db :views dissoc lname)
@@ -673,7 +682,44 @@
 ;; ====================================================================== driver
 
 (defn- readonly? [st]
-  (#{:select :begin :commit :rollback :pragma} (:kind st)))
+  (or (#{:select :commit :rollback :savepoint :release} (:kind st))
+      (and (= :begin (:kind st)) (not (#{:immediate :exclusive} (:mode st))))
+      (and (= :pragma (:kind st)) (not (:writes st)))))
+
+;; ====================================================================== transactions
+;; :tx in the db value is nil (autocommit) or {:snap db-before-BEGIN :sp [[lc-name snapshot] ...] :by-sp bool}.
+;; Snapshots are db values without :tx.
+
+(defn- snapshot [db] (dissoc db :tx))
+
+(defn- restore [db snap]
+  (assoc snap :tx (:tx db) :changes (:changes db)))
+
+(defn- exec-tx [db st]
+  (let [tx (:tx db)]
+    (case (:kind st)
+      :begin (if tx (err "cannot start a transaction within a transaction")
+                 (assoc db :tx {:snap (snapshot db) :sp [] :by-sp false}))
+      :commit (if tx (dissoc db :tx) (err "cannot commit - no transaction is active"))
+      :rollback
+      (cond
+        (nil? tx) (err (if (:to st) (str "no such savepoint: " (:to st)) "cannot rollback - no transaction is active"))
+        (:to st)
+        (let [n (lc (:to st))
+              sp (:sp tx)
+              i (last (keep-indexed (fn [i [nm]] (when (= nm n) i)) sp))]
+          (if (nil? i) (err (str "no such savepoint: " (:to st)))
+              (let [[_ snap] (nth sp i)]
+                (assoc (restore db snap) :tx (assoc tx :sp (subvec sp 0 (inc i)))))))
+        :else (dissoc (restore db (:snap tx)) :tx))
+      :savepoint (let [tx (or tx {:snap (snapshot db) :sp [] :by-sp true})]
+                   (assoc db :tx (update tx :sp conj [(lc (:name st)) (snapshot db)])))
+      :release (let [n (lc (:name st))
+                     sp (:sp tx)
+                     i (when tx (last (keep-indexed (fn [i [nm]] (when (= nm n) i)) sp)))]
+                 (cond (nil? i) (err (str "no such savepoint: " (:name st)))
+                       (and (zero? i) (:by-sp tx)) (dissoc db :tx)
+                       :else (assoc db :tx (assoc tx :sp (subvec sp 0 i))))))))
 
 (defn- emit-line [^StringBuilder out ^String s]
   (.append out s) (.append out "\n"))
@@ -731,11 +777,14 @@
                                (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (e/compile-select (new-ctx db sql) (:select st))
-                                               (assoc-in db [:views ln] {:name (:name st) :cols (:cols st) :select (:select st)}))))
+                                               (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st)
+                                                                              :temp (:temp st) :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                                 (assoc-in db [:views ln] v)))))
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st)
-                (:begin :commit :rollback :noop :pragma) db)]
+                (:begin :commit :rollback :savepoint :release) (exec-tx db st)
+                (:noop :pragma) db)]
       (cond
         (= db2 ::empty) db
         :else (do (when-not (readonly? st)

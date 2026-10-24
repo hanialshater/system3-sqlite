@@ -584,10 +584,11 @@
 
 (defn- parse-create-table [^P p temp]
   (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+        name-s (volatile! (:s (tok p)))
         n1 (parse-nm p)
-        [sch name] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])]
+        [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])]
     (if (accept-kw p "AS")
-      {:kind :create-table :name name :if-not-exists ine :as (parse-select p)}
+      {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :as (parse-select p)}
       (do
         (expect-op p "(")
         (let [[cols tcons]
@@ -626,7 +627,7 @@
                                                   (when-not (= "ROWID" (:u t)) (syntax-error p t)))
                                                 (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
                        :else opts))]
-          {:kind :create-table :name name :if-not-exists ine :cols cols :tcons tcons
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))))
 
 ;; ------------------------------------------------------------------ DML
@@ -757,22 +758,25 @@
                 (and (not unique) (accept-kw p "TABLE")) (parse-create-table p temp)
                 (accept-kw p "INDEX")
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+                      name-s (volatile! (:s (tok p)))
                       n1 (parse-nm p)
-                      [sch name] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+                      [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
                       _ (expect-kw p "ON")
                       tname (parse-nm p)
                       cols (parse-indexed-cols p)
                       where (when (accept-kw p "WHERE") (parse-expr p))]
-                  {:kind :create-index :unique (boolean unique) :if-not-exists ine :name name :table tname :cols cols :where where})
+                  {:kind :create-index :unique (boolean unique) :if-not-exists ine :name name :schema sch :name-s @name-s :table tname :cols cols :where where})
                 (and (not unique) (accept-kw p "VIEW"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
-                      name (parse-nm p)
+                      name-s (volatile! (:s (tok p)))
+                      n1 (parse-nm p)
+                      [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
                       cols (when (at-op? p "(") (advance! p)
                                  (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
                                    (expect-op p ")") c))
                       _ (expect-kw p "AS")
                       sel (parse-select p)]
-                  {:kind :create-view :name name :if-not-exists ine :cols cols :select sel})
+                  {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :select sel})
                 :else (fail! p))))
         "DROP"
         (do (advance! p)
@@ -781,7 +785,7 @@
                   ie (when (at-kw? p "IF") (advance! p) (expect-kw p "EXISTS") true)
                   n1 (parse-nm p)
                   [sch name] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])]
-              {:kind :drop :what what :if-exists ie :name name}))
+              {:kind :drop :what what :if-exists ie :name name :schema sch}))
         "REINDEX"
         (do (advance! p)
             (let [name (when (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (parse-nm p))
@@ -799,10 +803,19 @@
                 (accept-kw p "ADD") (do (accept-kw p "COLUMN") {:kind :alter :table tname :action :add :col (parse-column-def p)})
                 (accept-kw p "DROP") (do (accept-kw p "COLUMN") {:kind :alter :table tname :action :drop-col :col (parse-nm p)})
                 :else (fail! p))))
-        ("BEGIN") (do (advance! p) (or (accept-kw p "DEFERRED") (accept-kw p "IMMEDIATE") (accept-kw p "EXCLUSIVE"))
-                      (accept-kw p "TRANSACTION") {:kind :begin})
-        ("COMMIT" "END") (do (advance! p) (accept-kw p "TRANSACTION") {:kind :commit})
-        "ROLLBACK" (do (advance! p) (accept-kw p "TRANSACTION") {:kind :rollback})
+        ("BEGIN") (do (advance! p)
+                      (let [mode (or (when (accept-kw p "DEFERRED") :deferred) (when (accept-kw p "IMMEDIATE") :immediate)
+                                     (when (accept-kw p "EXCLUSIVE") :exclusive))]
+                        (when (accept-kw p "TRANSACTION") (when (ident-tok? (tok p)) (parse-nm p)))
+                        {:kind :begin :mode mode}))
+        ("COMMIT" "END") (do (advance! p) (when (accept-kw p "TRANSACTION") (when (ident-tok? (tok p)) (parse-nm p))) {:kind :commit})
+        "ROLLBACK" (do (advance! p)
+                       (when (accept-kw p "TRANSACTION") (when (and (ident-tok? (tok p)) (not (at-kw? p "TO"))) (parse-nm p)))
+                       (if (accept-kw p "TO")
+                         (do (accept-kw p "SAVEPOINT") {:kind :rollback :to (parse-nm p)})
+                         {:kind :rollback}))
+        "SAVEPOINT" (do (advance! p) {:kind :savepoint :name (parse-nm p)})
+        "RELEASE" (do (advance! p) (accept-kw p "SAVEPOINT") {:kind :release :name (parse-nm p)})
         "ANALYZE" (do (advance! p) (when (ident-tok? (tok p)) (parse-nm p)) {:kind :noop})
         "VACUUM" (do (advance! p) {:kind :noop})
         "PRAGMA" (do (advance! p) (let [n (parse-nm p)]
@@ -827,8 +840,10 @@
         (= :eof (:t t)) nil
         (and (= :op (:t t)) (= ";" (:v t))) (do (advance! p) (recur))
         :else
-        (let [st (parse-statement* p)
-              t (tok p)]
+        (let [st-s (:s t)
+              st (parse-statement* p)
+              t (tok p)
+              st (if (map? st) (assoc st :st-s st-s :st-e (prev-end p) :st-next (or (:s t) (count (.-sql p)))) st)]
           (cond
             (= :eof (:t t)) st
             (and (= :op (:t t)) (= ";" (:v t))) (do (advance! p) st)
