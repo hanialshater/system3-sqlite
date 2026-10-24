@@ -237,6 +237,10 @@
       (- (int-float-cmp (long b) (double a)))
       (let [x (double a) y (double b)] (cond (< x y) -1 (> x y) 1 :else 0)))))
 
+(defn- blob-cmp* ^long [^bytes a ^bytes b]
+  (let [c (java.util.Arrays/compareUnsigned a b)]
+    (cond (neg? c) -1 (pos? c) 1 :else 0)))
+
 (defn binary-cmp ^long [^String a ^String b]
   (let [na (.length a) nb (.length b)]
     (loop [i 0]
@@ -246,11 +250,13 @@
           (if (= ca cb)
             (recur (inc i))
             ;; compare as code points (UTF-8 byte order)
+            (if (or (and (>= (int ca) 0xD800) (<= (int ca) 0xDFFF)) (and (>= (int cb) 0xD800) (<= (int cb) 0xDFFF)))
+              (blob-cmp* (str->utf8 (subs a i)) (str->utf8 (subs b i)))
             (let [pa (.codePointAt a i) pb (.codePointAt b i)
                   ;; escaped raw bytes sort as their byte value relative to multibyte lead bytes
                   ka (if (and (>= pa 0xDC80) (<= pa 0xDCFF)) (+ 0x110000 (- pa 0xDC00)) pa)
                   kb (if (and (>= pb 0xDC80) (<= pb 0xDCFF)) (+ 0x110000 (- pb 0xDC00)) pb)]
-              (Long/compare ka kb))))))))
+              (Long/compare ka kb)))))))))
 
 (defn- lower-ascii ^long [^long c] (if (and (>= c 65) (<= c 90)) (+ c 32) c))
 

@@ -123,7 +123,7 @@ def expr(t, depth=0, alias=None, allow_col=True):
     r = random.randint(0, 22)
     e = lambda: expr(t, depth + 1, alias, allow_col)
     if r == 0:
-        return '-(%s)' % e()
+        return random.choice(['-(%s)', '-%s', '+%s']) % e()
     if r == 1:
         return 'NOT %s' % e()
     if r == 2:
@@ -148,14 +148,15 @@ def expr(t, depth=0, alias=None, allow_col=True):
         return '%s IS NULL' % e()
     if r == 12:
         return '%s IS NOT NULL' % e()
+    P = (lambda x: '(' + x + ')') if random.random() < 0.5 else (lambda x: x)
     if r == 13:
-        return '(%s %s %s)' % (e(), random.choice(['+', '-', '*', '/', '%']), e())
+        return P('%s %s %s' % (e(), random.choice(['+', '-', '*', '/', '%']), e()))
     if r == 14:
-        return '(%s %s %s)' % (e(), random.choice(['||', '&', '|', '<<', '>>']), e())
+        return P('%s %s %s' % (e(), random.choice(['||', '&', '|', '<<', '>>']), e()))
     if r == 15:
-        return '(%s %s %s)' % (e(), random.choice(['=', '<>', '<', '<=', '>', '>=', '==', '!=']), e())
+        return P('%s %s %s' % (e(), random.choice(['=', '<>', '<', '<=', '>', '>=', '==', '!=']), e()))
     if r == 16:
-        return '(%s %s %s)' % (e(), random.choice(['AND', 'OR']), e())
+        return P('%s %s %s' % (e(), random.choice(['AND', 'OR']), e()))
     if r == 17:
         return '%s IS %s' % (e(), e())
     if r == 18:

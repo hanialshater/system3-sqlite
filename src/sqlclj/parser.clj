@@ -293,7 +293,13 @@
                 (recur (node {:op :like :o (keyword (str/lower-case u)) :e left :pat r :esc esc :not negate}
                              s (prev-end p))))
               "BETWEEN"
-              (let [lo (parse-expr-prec p 3)
+              (let [lo (loop [lo (parse-expr-prec p 3)]
+                         ;; an OR inside the lower bound is shifted by SQLite's parser; its right side may take ANDs
+                         (if (at-kw? p "OR")
+                           (do (advance! p)
+                               (let [r (parse-expr-prec p 2)]
+                                 (recur (node {:op :bin :o :or :l lo :r r} (:ps lo) (:pe r)))))
+                           lo))
                     _ (expect-kw p "AND")
                     hi (parse-expr-prec p 5)]
                 (recur (node {:op :between :e left :lo lo :hi hi :not negate} s (:pe hi))))))

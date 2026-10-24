@@ -29,7 +29,7 @@
              :ncols (count cols) :hidden #{}}
         ctx (assoc ctx :scope {:sources [src] :parent nil})
         c (e/cx ctx ast)
-        f (:f c)
+        f (e/condf c)
         n (inc @(:slots ctx))]
     (assoc c :rowf (fn [row] (let [env (object-array n)] (aset env slot row) (f env))))))
 
@@ -507,7 +507,7 @@
                              (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                              :else (err (str "no such column: " c))))
                      f]))
-        where-f (when (:where st) (:f (e/cx sctx (:where st))))
+        where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
         ret (compile-returning ctx src (:returning st))
         on-conflict (or (:or st) :abort)
         env (object-array (+ 2 @(:slots ctx)))
@@ -565,7 +565,7 @@
             (when-not (get-in db [:indexes (lc (:indexed-by st))])
               (err (str "no such index: " (:indexed-by st)))))
         sctx (assoc ctx :scope {:sources [src] :parent nil})
-        where-f (when (:where st) (:f (e/cx sctx (:where st))))
+        where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))

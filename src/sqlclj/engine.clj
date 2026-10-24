@@ -79,6 +79,7 @@
             (= 1 (count hits))
             (let [[s i] (first hits)]
               {:slot (:slot s) :idx i :depth depth :src s
+               :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
             (and ltq (some #(= (:alias %) ltq) srcs))
@@ -192,11 +193,31 @@
       (when @pend (err @pend))
       r)))
 
+(defn- null-lit? [e] (and (= :lit (:op e)) (nil? (:kind e)) (nil? (:v e))))
+
+(defn- null-test? [e]
+  (or (#{:isnull :notnull} (:op e)) (and (= :is (:op e)) (null-lit? (:r e)))))
+
+(defn condf
+  "The function to use when an expression is a condition (WHERE, ON, HAVING, CASE WHEN, CHECK): AND/OR
+  short-circuit there, while in value context both operands are evaluated."
+  [c] (or (:cf c) (:f c)))
+
+(defn- contained
+  "Compiles e; a resolution error is recorded instead of thrown (SQLite resolves the operand of
+  IS NULL / NOT NULL with a nested walk whose failure does not stop the outer walk)."
+  [ctx e]
+  (try (cx ctx e)
+       (catch clojure.lang.ExceptionInfo ex
+         (if-let [m (:sql-error (ex-data ex))]
+           (do (when (:pending ctx) (reset! (:pending ctx) m)) (const-c nil))
+           (throw ex)))))
+
 (defn cx*
   [ctx e]
   ;; once an error has been recorded, SQLite's resolver aborts at the next non-column, non-function node
   (when-let [pend (:pending ctx)]
-    (when (and @pend (not (#{:col :fn} (:op e))))
+    (when (and @pend (not (#{:col :fn} (:op e))) (not (null-test? e)))
       (err @pend)))
   (case (:op e)
     :lit (const-c (lit-value e))
@@ -207,7 +228,7 @@
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
                (mk (fn [^objects env] (nth (aget env slot) idx))
-                   :aff (:aff r) :coll (or (:coll r) "BINARY") :col r))))
+                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
     :unary
     (let [o (:o e) inner (:e e)]
       (case o
@@ -220,8 +241,9 @@
         :bitnot (let [c (cx ctx inner) f (:f c)]
                   (mk (fn [env] (let [x (f env)] (when-not (nil? x) (bit-not (v/int-value x)))))
                       :ecoll (:ecoll c) :coll (when (:ecoll c) (:coll c))))))
-    :not (let [c (cx ctx (:e e)) f (:f c)]
+    :not (let [c (cx ctx (:e e)) f (:f c) cf (condf c)]
            (mk (fn [env] (let [x (f env)] (when-not (nil? x) (if (v/bool-value x) 0 1))))
+               :cf (fn [env] (let [x (cf env)] (when-not (nil? x) (if (v/bool-value x) 0 1))))
                :ecoll (:ecoll c) :coll (when (:ecoll c) (:coll c))))
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
@@ -235,22 +257,38 @@
           fl (:f l) fr (:f r)
           extra {:ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r])}]
       (case o
-        :and (merge (mk (fn [env]
-                          (let [a (fl env)]
-                            (if (and (not (nil? a)) (not (v/bool-value a)))
-                              0
-                              (let [b (fr env)]
-                                (cond (and (not (nil? b)) (not (v/bool-value b))) 0
-                                      (or (nil? a) (nil? b)) nil
-                                      :else 1)))))) extra)
-        :or (merge (mk (fn [env]
-                         (let [a (fl env)]
-                           (if (and (not (nil? a)) (v/bool-value a))
-                             1
-                             (let [b (fr env)]
-                               (cond (and (not (nil? b)) (v/bool-value b)) 1
-                                     (or (nil? a) (nil? b)) nil
-                                     :else 0)))))) extra)
+        :and (let [cl (condf l) cr (condf r)]
+               (merge (mk (fn [env]
+                            (let [a (fl env) b (fr env)]
+                              (cond (and (not (nil? a)) (not (v/bool-value a))) 0
+                                    (and (not (nil? b)) (not (v/bool-value b))) 0
+                                    (or (nil? a) (nil? b)) nil
+                                    :else 1)))
+                          :cf (fn [env]
+                                (let [a (cl env)]
+                                  (if (and (not (nil? a)) (not (v/bool-value a)))
+                                    0
+                                    (let [b (cr env)]
+                                      (cond (and (not (nil? b)) (not (v/bool-value b))) 0
+                                            (or (nil? a) (nil? b)) nil
+                                            :else 1))))))
+                      extra))
+        :or (let [cl (condf l) cr (condf r)]
+              (merge (mk (fn [env]
+                           (let [a (fl env) b (fr env)]
+                             (cond (and (not (nil? a)) (v/bool-value a)) 1
+                                   (and (not (nil? b)) (v/bool-value b)) 1
+                                   (or (nil? a) (nil? b)) nil
+                                   :else 0)))
+                         :cf (fn [env]
+                               (let [a (cl env)]
+                                 (if (and (not (nil? a)) (v/bool-value a))
+                                   1
+                                   (let [b (cr env)]
+                                     (cond (and (not (nil? b)) (v/bool-value b)) 1
+                                           (or (nil? a) (nil? b)) nil
+                                           :else 0))))))
+                     extra))
         (:eq :ne :lt :le :gt :ge) (make-compare o l r)
         (:add :sub :mul :div :rem) (merge (mk (fn [env] (v/arith o (fl env) (fr env)))) extra)
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
@@ -258,7 +296,9 @@
         (:ptr :ptr2) (err "no such function: ->")))
     :is (let [rfirst (and (= :col (:op (:r e))) (nil? (:table (:r e))))
               r0 (when rfirst (cx ctx (:r e)))
-              l (cx ctx (:l e)) r (or r0 (cx ctx (:r e)))
+              l (if (null-lit? (:r e)) (contained ctx (:l e)) (cx ctx (:l e)))
+              _ (when (and rfirst (:pending ctx) @(:pending ctx)) (err @(:pending ctx)))
+              r (or r0 (if (null-lit? (:r e)) (const-c nil) (cx ctx (:r e))))
               fl (:f l) fr (:f r)
               aff (v/compare-affinity (:aff l) (:aff r))
               coll (or (binary-coll l r) "BINARY")
@@ -270,8 +310,8 @@
                                :else (zero? (long (compare-values a b aff coll))))]
                   (bool->int (if isnot (not eq) eq))))
               :ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r])))
-    :isnull (let [c (cx ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (nil? (f env))))))
-    :notnull (let [c (cx ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (not (nil? (f env)))))))
+    :isnull (let [c (contained ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (nil? (f env))))))
+    :notnull (let [c (contained ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (not (nil? (f env)))))))
     :between
     (let [x (cx ctx (:e e)) lo (cx ctx (:lo e)) hi (cx ctx (:hi e))
           fx (:f x) flo (:f lo) fhi (:f hi)
@@ -279,6 +319,16 @@
           aff2 (v/compare-affinity (:aff x) (:aff hi)) coll2 (or (binary-coll x hi) "BINARY")
           negate (:not e)]
       (mk (fn [env]
+            (let [a (fx env)
+                  b (flo env)
+                  c (fhi env)
+                  c1 (when-not (or (nil? a) (nil? b)) (bool->int (>= (long (compare-values a b aff1 coll1)) 0)))
+                  c2 (when-not (or (nil? a) (nil? c)) (bool->int (<= (long (compare-values a c aff2 coll2)) 0)))
+                  r (cond (or (= c1 0) (= c2 0)) 0
+                          (or (nil? c1) (nil? c2)) nil
+                          :else 1)]
+              (if negate (when-not (nil? r) (- 1 (long r))) r)))
+          :cf (fn [env]
             (let [a (fx env)
                   b (flo env)
                   c1 (when-not (or (nil? a) (nil? b)) (bool->int (>= (long (compare-values a b aff1 coll1)) 0)))
@@ -330,7 +380,7 @@
                         (if (and (not (nil? b)) (not (nil? w)) (zero? (long (compare-values b w aff coll))))
                           (ft env)
                           (recur (rest ws))))))))))
-        (let [ws (mapv (fn [[w t]] [(:f w) (:f t)]) whens)]
+        (let [ws (mapv (fn [[w t]] [(condf w) (:f t)]) whens)]
           (mk (fn [env]
                 (loop [ws ws]
                   (if (empty? ws)
@@ -703,7 +753,7 @@
           (mk (fn [env] (loop [fs fs] (when (seq fs) (let [x ((first fs) env)] (if (nil? x) (recur (rest fs)) x)))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
         ("iif" "if")
-        (let [[fc ft fe] (mapv :f args)]
+        (let [[fc ft fe] (cons (condf (first args)) (map :f (rest args)))]
           (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
         (let [coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
@@ -1040,7 +1090,8 @@
                         (if-let [[s i] (:star-col rc)]
                           (let [sl (long (:slot s)) i (long i)]
                             {:f (fn [^objects env] (nth (aget env sl) i))
-                             :aff (nth (:affs s) i) :coll (or (nth (:colls s) i) "BINARY")
+                             :aff (nth (:affs s) i)
+                             :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
                              :col {:slot (:slot s) :idx i :depth 0}})
                           (cx actx (:e rc))))
                       rcols)
@@ -1056,14 +1107,14 @@
                     :else e))
           where-c (when (:where core)
                     (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
-          where-f (:f where-c)
+          where-f (when where-c (condf where-c))
           ;; join conditions
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
                               using (nth join-conds i)
                               s (nth sources i)]
                           (cond
-                            (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (:f c))
+                            (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (condf c))
                             (seq using)
                             (let [preds (for [u using]
                                           (let [lu (lc u)
@@ -1123,7 +1174,7 @@
           control (last (keep-indexed (fn [i sp] (when (#{"min" "max"} (:name sp)) i)) agg-specs))
           gfs (mapv :f group-c)
           gcolls (mapv #(or (:coll %) "BINARY") group-c)
-          having-f (:f having-c)
+          having-f (when having-c (condf having-c))
           distinct (:distinct core)
           slots (mapv :slot sources)
           ;; nested loop over sources
@@ -1212,7 +1263,7 @@
           cmp (row-comparator colls)
           op (:op body)
           merge? (:merge ctx)]
-      {:names (:names l) :affs (:affs l) :colls (:colls l) :ecolls (:ecolls l) :exprs (:exprs l)
+      {:names (:names l) :affs (:affs l) :colls colls :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
        :correlated (or (:correlated l) (:correlated r))
        :rows (fn [env]
