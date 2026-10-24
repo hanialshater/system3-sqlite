@@ -70,7 +70,9 @@
 
 (defn- add-index [db idx]
   (let [s (inc (long (:index-seq db)))
-        [db idx] (sch/register db (assoc idx :temp (:temp (get-in db [:tables (:table idx)]))) true)]
+        t (get-in db [:tables (:table idx)])
+        idx (if (and (:db t) (:auto idx)) (assoc idx :name (str (:db t) "." (:name idx))) idx)
+        [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t)) true)]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
 (defn- create-table [db sql st]
@@ -86,7 +88,7 @@
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
                        (:names sub) (:affs sub))
-            tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st)
+            tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt name cols)
                  :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
@@ -147,7 +149,7 @@
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
                  :pk-cols (mapv :i pk-cols) :fks fks
-                 :without-rowid (:without-rowid st) :temp (:temp st) :sql (sch/stmt-sql sql st "TABLE")}
+                 :without-rowid (:without-rowid st) :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
             ;; compile checks against the table
@@ -164,7 +166,7 @@
                          (with-meta (:cols k) {:pk (= :pk (:c k))})))
             db (reduce (fn [db [n icols]]
                          (let [tbl (get-in db [:tables lname])
-                               idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" name "_" n) true icols nil true)
+                               idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" (sch/display-name name {:db (:db st)}) "_" n) true icols nil true)
                                           :pk-auto (:pk (meta icols)))]
                            ;; skip duplicate identical unique constraints
                            (if (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))))
@@ -219,7 +221,7 @@
 
 (defn- unique-msg* [tbl idx]
   (if (every? :col (:cols idx))
-    (str "UNIQUE constraint failed: " (str/join ", " (map #(str (:name tbl) "." (:name %)) (:cols idx))))
+    (str "UNIQUE constraint failed: " (str/join ", " (map #(str (sch/display-name (:name tbl) tbl) "." (:name %)) (:cols idx))))
     (str "UNIQUE constraint failed: index '" (:name idx) "'")))
 
 (defn- default-value [db sql tbl ci]
@@ -914,7 +916,33 @@
   "Executes one parsed statement. Writes its output into out. Returns the new db. Throws on error
   (after any rows already written)."
   [db sql st ^StringBuilder out]
+  (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  (let [st (sch/qualify-stmt db st)]
   (case (:kind st)
+    :attach
+    (let [ctx (new-ctx db sql)
+          ev (fn [e] (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx ctx e)) (object-array 4))))
+          file (ev (:file st))
+          nm (some-> (ev (:as st)) str)
+          lnm (lc nm)]
+      (when (or (#{"main" "temp"} lnm) (some #{lnm} (sch/attached-names db)))
+        (err (str "database " nm " is already in use")))
+      (when (>= (count (:attached db)) 10) (err "too many attached databases - max 10"))
+      (update db :attached (fnil conj []) [lnm {:file (if (= file ":memory:") "" (str file)) :name nm}]))
+    :detach
+    (let [e (:name st)
+          nm (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx (new-ctx db sql) e)) (object-array 4)))
+          lnm (lc (str nm))]
+      (when-not (some #{lnm} (sch/attached-names db))
+        (err (if (#{"main" "temp"} lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
+      (let [keep? (fn [[_ o]] (not= lnm (:db o)))]
+        (-> db
+            (update :attached (fn [a] (vec (remove #(= lnm (first %)) a))))
+            (update :tables #(into {} (filter keep? %)))
+            (update :indexes #(into {} (filter keep? %)))
+            (update :views #(into {} (filter keep? %)))
+            (update :triggers #(into {} (filter keep? %)))
+            (update :pages dissoc lnm))))
     :select
     (let [ctx (new-ctx db sql)
           sub (e/compile-select ctx (:select st))]
@@ -964,7 +992,7 @@
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (e/compile-select (new-ctx db sql) (:select st))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st)
-                                                                              :temp (:temp st) :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)
@@ -979,7 +1007,7 @@
             (update db2 :schema-version (fnil inc 0)))
         :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (pos? (.length out))))
                     (emit-line out (str "changes: " (:changes db2))))
-                  db2)))))
+                  db2))))))
 
 (defn run-line
   "Runs one input line; returns [db' output]."
