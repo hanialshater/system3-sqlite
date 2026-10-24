@@ -2,3 +2,4 @@ build/
 *.out
 .b10-leftover/
 .cpcache/
+work/
