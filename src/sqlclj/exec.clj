@@ -119,6 +119,30 @@
             row (range (count (:cols tbl))))
     row))
 
+(defn- ensure-sequence-table [db st]
+  (if (get-in db [:tables "sqlite_sequence"])
+    db
+    (let [tbl {:name "sqlite_sequence" :cols [{:name "name" :type nil :aff :blob} {:name "seq" :type nil :aff :blob}]
+               :ipk nil :strict false :checks [] :rows (sorted-map) :pk-cols [] :fks []
+               :temp (:temp st) :db (:db st) :sql "CREATE TABLE sqlite_sequence(name,seq)"}
+          [db tbl] (sch/register db tbl true)]
+      (assoc-in db [:tables "sqlite_sequence"] tbl))))
+
+(defn- sequence-value [db tbl]
+  (let [sq (get-in db [:tables "sqlite_sequence"])]
+    (or (some (fn [[_ r]] (when (= (first r) (:name tbl)) (let [x (second r)] (if (instance? Long x) x (long (or (v/apply-affinity x :integer) 0)))))) (:rows sq)) 0)))
+
+(defn- bump-sequence [db tbl rid]
+  (let [sq (get-in db [:tables "sqlite_sequence"])]
+    (if-not sq db
+      (let [hit (some (fn [[k r]] (when (= (first r) (:name tbl)) k)) (:rows sq))]
+        (cond
+          hit (let [cur (second (get (:rows sq) hit))]
+                (if (and (instance? Long cur) (>= (long cur) (long rid))) db
+                    (assoc-in db [:tables "sqlite_sequence" :rows hit] [(:name tbl) rid hit])))
+          :else (let [k (if (empty? (:rows sq)) 1 (inc (long (key (first (rseq (:rows sq)))))))]
+                  (assoc-in db [:tables "sqlite_sequence" :rows k] [(:name tbl) rid k])))))))
+
 (defn- create-table [db sql st]
   (let [name (:name st) lname (lc name)]
     (cond
@@ -203,11 +227,14 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
             fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
+            autoinc (boolean (some (fn [d] (some #(and (= :pk (:c %)) (:auto %)) (:cons d))) defs))
+            _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
-                 :pk-cols (mapv :i pk-cols) :fks fks
+                 :pk-cols (mapv :i pk-cols) :fks fks :autoinc autoinc
                  :without-rowid (:without-rowid st) :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
+            db (if autoinc (ensure-sequence-table db st) db)
             ;; compile checks against the table
             tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck) :check)))) checks))
             tbl (if (some :gen cols)
@@ -542,7 +569,12 @@
               ipk (:ipk tbl)
               rid-val (if ipk (nth row ipk) @rid-given)
               rid (if (nil? rid-val)
-                    (next-rowid tbl)
+                    (if (:autoinc tbl)
+                      (let [m (long (if (empty? (:rows tbl)) 0 (key (first (rseq (:rows tbl))))))
+                            sv (long (sequence-value db tbl))
+                            mx (max m sv)]
+                        (if (= mx Long/MAX_VALUE) (err "database or disk is full") (inc mx)))
+                      (next-rowid tbl))
                     (let [x (v/apply-affinity rid-val :integer)]
                       (if (instance? Long x) x (err "datatype mismatch"))))
               row (if ipk (assoc row ipk rid) row)
@@ -608,7 +640,8 @@
                             (after-update db3 tbl existing (assoc nrow ncols nrid) tkey (map first (:sets-c up)) changes)))))))
                 :else
                 (let [tbl3 (put-row tbl2 rid row)
-                      db2 (assoc-in db [:tables tkey] tbl3)]
+                      db2 (assoc-in db [:tables tkey] tbl3)
+                      db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
@@ -807,6 +840,12 @@
                     (err (unique-msg* tbl idx))))))))
         (add-index db idx)))))
 
+(defn- drop-seq-row [db tname]
+  (if-let [t (get-in db [:tables "sqlite_sequence"])]
+    (assoc-in db [:tables "sqlite_sequence" :rows]
+              (into (sorted-map) (remove (fn [[_ r]] (= (first r) tname)) (:rows t))))
+    db))
+
 (defn- exec-drop [db st]
   (let [lname (lc (:name st))]
     (case (:what st)
@@ -816,7 +855,8 @@
                  (-> db
                      (update :tables dissoc lname)
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
-                     (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))))
+                     (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
+                     (drop-seq-row (:name t))))
                (if (:if-exists st) db (err (str "no such table: " (:name st)))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
