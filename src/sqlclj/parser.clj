@@ -930,7 +930,10 @@
                          {:kind :attach :file f :as n})))
         "DETACH" (do (advance! p) (accept-kw p "DATABASE") {:kind :detach :name (parse-expr p)})
         "RELEASE" (do (advance! p) (accept-kw p "SAVEPOINT") {:kind :release :name (parse-nm p)})
-        "ANALYZE" (do (advance! p) (when (ident-tok? (tok p)) (parse-nm p)) {:kind :noop})
+        "ANALYZE" (do (advance! p)
+                      (let [n1 (when (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (parse-nm p))
+                            [sch n] (if (and n1 (accept-op p ".")) [n1 (parse-nm p)] [nil n1])]
+                        {:kind :analyze :schema sch :name n}))
         "VACUUM" (do (advance! p) {:kind :noop})
         "PRAGMA" (do (advance! p)
                      (let [n1 (parse-nm p)

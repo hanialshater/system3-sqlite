@@ -103,7 +103,7 @@
               (for [[_ v] (:views db)] [(:mseq v) ["view" (dn (:name v) v) (dn (:name v) v) 0 (:sql v)] v])
               (for [[_ g] (:triggers db)] [(:mseq g) ["trigger" (dn (:name g) g) (dn (or (:table-name g) (:name (get-in db [:tables (:table g)])) (:table g)) g) 0 (:sql g)] g]))]
     (->> objs
-         (filter (fn [[_ _ o]] (= sch (schema-of o))))
+         (filter (fn [[_ _ o]] (and (= sch (schema-of o)) (not (:no-master o)))))
          (sort-by (fn [[s]] (or s 0)))
          (mapv second))))
 
