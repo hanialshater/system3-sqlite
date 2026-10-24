@@ -1061,8 +1061,29 @@
 
 (declare index-order-rows check-indexed-by)
 
+(defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
+  {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
+   :rows (fn [db arg-values]) -> seq of row vectors of the visible columns}.
+  Arguments are bound to the hidden columns in order; the hidden columns read back the arguments."}
+  tvf-resolvers (atom []))
+
+(defn- tvf-entry [db lname]
+  (some #(% lname db) @tvf-resolvers))
+
 (defn- make-source [ctx item]
   (cond
+    (:tvf item)
+    (let [lname (lc (:tvf item))
+          ent (or (tvf-entry (:db ctx) lname) (err (str "no such table: " (:tvf item))))
+          nargs (count (:args item))
+          _ (when (> nargs (count (:hidden ent)))
+              (err (str "too many arguments on " (:tvf item) "() - max " (count (:hidden ent)))))
+          cols (vec (concat (:cols ent) (:hidden ent)))
+          slot (new-slot! ctx)]
+      {:alias (lc (or (:alias item) (:tvf item))) :tname (:tvf item) :cols cols :lcols (mapv lc cols)
+       :affs (vec (take (count cols) (concat (:affs ent) (repeat nil)))) :colls (vec (repeat (count cols) nil))
+       :slot slot :rowid? false :ncols (count cols) :hidden (set (map lc (:hidden ent)))
+       :tvf ent :tvf-args (:args item)})
     (:table item)
     (let [name (:table item)
           tbl (table-of ctx name (:schema item))
@@ -1334,6 +1355,15 @@
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
+    (:tvf src)
+    (let [ent (:tvf src)
+          argfs (mapv #(:f (cx ctx %)) (:tvf-args src))
+          nh (count (:hidden ent))
+          db (:db ctx)]
+      (fn [env]
+        (let [args (mapv #(% env) argfs)
+              hid (vec (take nh (concat args (repeat nil))))]
+          (map (fn [r] (into (vec r) hid)) ((:rows ent) db args)))))
     (:table src)
     (let [tname (lc (:tname src))
           ib (:indexed-by src)]

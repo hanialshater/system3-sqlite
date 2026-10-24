@@ -5,7 +5,8 @@
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
             [sqlclj.engine :as e :refer [err lc]]
-            [sqlclj.schema :as sch]))
+            [sqlclj.schema :as sch]
+            [sqlclj.pragma :as pragma]))
 
 (set! *warn-on-reflection* true)
 
@@ -108,7 +109,9 @@
                            {:name (:name d) :type t :aff aff
                             :strict-type (when strict (strict-types (str/upper-case t)))
                             :notnull (some #(= :notnull (:c %)) cons)
-                            :default (:e (first (filter #(= :default (:c %)) cons)))
+                            :default (:e (last (filter #(= :default (:c %)) cons)))
+                            :default-text (when-let [de (:e (last (filter #(= :default (:c %)) cons)))]
+                                            (when (:ps de) (subs sql (:ps de) (:pe de))))
                             :coll (when-let [c (:coll (last (filter #(= :collate (:c %)) cons)))] (e/check-coll c))
                             :pk (first (filter #(= :pk (:c %)) cons))
                             :unique (filter #(= :unique (:c %)) cons)}))
@@ -139,7 +142,10 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
                          (for [k (:tcons st) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
+            fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
+                             (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
+                 :pk-cols (mapv :i pk-cols) :fks fks
                  :without-rowid (:without-rowid st) :temp (:temp st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
@@ -152,12 +158,13 @@
                              :let [items (concat (when (and (:pk c) (not= i ipk)) [[:pk]])
                                                  (map (fn [_] [:u]) (:unique c)))]
                              it items]
-                         [{:e {:op :col :name (:name c)} :coll nil :desc false}])
+                         (with-meta [{:e {:op :col :name (:name c)} :coll nil :desc false}] {:pk (= it [:pk])}))
                        (for [k (:tcons st) :when (or (= :unique (:c k)) (and (= :pk (:c k)) (nil? ipk)))]
-                         (:cols k)))
+                         (with-meta (:cols k) {:pk (= :pk (:c k))})))
             db (reduce (fn [db [n icols]]
                          (let [tbl (get-in db [:tables lname])
-                               idx (build-index db sql tbl (str "sqlite_autoindex_" name "_" n) true icols nil true)]
+                               idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" name "_" n) true icols nil true)
+                                          :pk-auto (:pk (meta icols)))]
                            ;; skip duplicate identical unique constraints
                            (if (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))))
                                      (table-indexes db lname))
@@ -759,6 +766,14 @@
                 (when-not (::stop (ex-data ex)) (throw ex)))))
           (doseq [row (e/run-select-rows sub env)] (write-row out row))))
       db)
+    :pragma
+    (let [r (pragma/run db st)]
+      (when (:names r)
+        (emit-line out (str "# " (str/join "|" (:names r))))
+        (doseq [row (:rows r)] (write-row out row)))
+      (when (and (nil? (:names r)) (:writes r))
+        (emit-line out (str "changes: " (:changes db))))
+      (:db r))
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
@@ -787,6 +802,9 @@
                 (:noop :pragma) db)]
       (cond
         (= db2 ::empty) db
+        (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
+        (do (emit-line out (str "changes: " (:changes db2)))
+            (update db2 :schema-version (fnil inc 0)))
         :else (do (when-not (readonly? st)
                     (emit-line out (str "changes: " (:changes db2))))
                   db2)))))
