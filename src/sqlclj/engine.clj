@@ -1428,6 +1428,18 @@
                     (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
           where-f (when where-c (condf where-c))
           where-pre (when (:where core) (where-precheck (assoc ctx2 :aggs nil) (subst (:where core))))
+          ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
+          in-pre (when (and (:where core) (= 1 (count sources)) (:table (first sources)))
+                   (let [s0 (first sources)]
+                     (vec (for [t (split-and (:where core))
+                                :when (and (= :in (:op t)) (:select t) (not (:not t)) (= :col (:op (:e t)))
+                                           (let [ce (:e t) ln (lc (:name ce))
+                                                 i (.indexOf ^java.util.List (:lcols s0) ln)]
+                                             (and (or (nil? (:table ce)) (= (lc (:table ce)) (:alias s0)))
+                                                  (if (>= i 0) (= i (:ipk (:table s0))) (#{"rowid" "oid" "_rowid_"} ln)))))
+                                :let [sub (compile-select (assoc ctx2 :aggs nil) (:select t))]
+                                :when (not (:correlated sub))]
+                            sub))))
           ;; join conditions
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
@@ -1522,6 +1534,7 @@
                                  (aset env slot (nth null-rows i))
                                  (level (inc i))))))]
                    (when (or (nil? where-pre) (where-pre env))
+                     (doseq [sub in-pre] (doall (run-select-rows sub env)))
                      (level 0))))
           run
           (if is-agg
