@@ -44,7 +44,8 @@
 
 (defn -main [& args]
   (if (= "--batch" (first args))
-    (let [[_ list-file _ out-dir] args]
+    (let [[_ list-file _ out-dir] args
+          _ (.mkdirs (io/file out-dir))]
       (doseq [f (str/split-lines (slurp list-file)) :when (not (str/blank? f))]
         (let [name (str/replace (.getName (io/file f)) #"\.sql$" "")]
           (with-open [os (io/output-stream (io/file out-dir (str name ".out")))]
