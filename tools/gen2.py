@@ -172,3 +172,58 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+
+def s_more(ts):
+    a, b = random.choice(ts), random.choice(ts)
+    ca, cb = random.choice(a.colnames()), random.choice(b.colnames())
+    r = random.random()
+    if r < 0.1:
+        return 'SELECT id, CASE %s WHEN %s THEN %s WHEN %s THEN %s ELSE %s END FROM %s ORDER BY id;' % (
+            ca, rnd_value(), expr(a, 2), rnd_value(), expr(a, 2), rnd_value(), a.name)
+    if r < 0.2:
+        return 'SELECT id, %s IN (SELECT %s FROM %s), EXISTS (SELECT 1 FROM %s WHERE %s = %s.%s) FROM %s ORDER BY id;' % (
+            ca, cb, b.name, b.name, cb, a.name, ca, a.name)
+    if r < 0.3:
+        return 'SELECT %s AS k, count(*) AS n, sum(id) FROM %s GROUP BY %s, %s ORDER BY n DESC, k;' % (
+            ca, a.name, ca, random.choice(a.colnames()))
+    if r < 0.4:
+        return 'SELECT %s AS x, id FROM %s ORDER BY x COLLATE NOCASE DESC, -id LIMIT 7;' % (ca, a.name)
+    if r < 0.5:
+        return 'SELECT %s AS v FROM %s UNION SELECT %s FROM %s ORDER BY v DESC;' % (ca, a.name, cb, b.name)
+    if r < 0.6:
+        return 'UPDATE %s SET %s = (SELECT max(%s) FROM %s WHERE %s.id <= %s.id) WHERE id %% 2 = 1;' % (
+            a.name, ca, cb, b.name, b.name, a.name)
+    if r < 0.7:
+        uc = [x[0] for x in a.cols if 'UNIQUE' in x[2]]
+        c = uc[0] if uc else ca
+        return 'UPDATE OR REPLACE %s SET %s = %s WHERE id = %d;' % (a.name, c, rnd_value(), random.randint(1, 6))
+    if r < 0.8:
+        return 'SELECT typeof(%s), quote(%s), %s || %s, length(%s) FROM %s ORDER BY id DESC LIMIT 5 OFFSET 1;' % (
+            ca, ca, ca, rnd_value(), ca, a.name)
+    if r < 0.9:
+        return 'SELECT count(DISTINCT %s), group_concat(DISTINCT %s), avg(DISTINCT %s), max(%s) FILTER IS NULL FROM %s;' % (
+            ca, ca, ca, ca, a.name) if random.random() < 0.1 else \
+            'SELECT count(DISTINCT %s), group_concat(DISTINCT %s), avg(DISTINCT %s) FROM %s WHERE %s;' % (ca, ca, ca, a.name, expr(a, 1))
+    return 'SELECT * FROM %s WHERE %s %s (SELECT %s FROM %s ORDER BY id LIMIT 1) ORDER BY id;' % (
+        a.name, ca, random.choice(['=', '<', '>=', 'IS', 'IS NOT']), cb, b.name)
+
+
+_orig_gen_script = gen_script
+
+
+def gen_script():
+    ntab = 3
+    tables = []
+    lines = []
+    for i in range(ntab):
+        t = G.gen_table('t%d' % i, random.randint(2, 4), tables[-1].name if tables else None)
+        tables.append(t)
+        lines.append(G.table_sql(t))
+        for _ in range(random.randint(2, 10)):
+            lines.append(G.insert_sql(t))
+    for _ in range(random.randint(20, 40)):
+        f = random.choice([s_select, s_join, s_sub, s_dml, s_index, s_more, s_more])
+        x = f(tables)
+        lines.extend(x if isinstance(x, list) else [x])
+    return '\n'.join(lines) + '\n'

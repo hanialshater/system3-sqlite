@@ -38,7 +38,7 @@
   (let [result (promise)
         t (Thread. nil (fn [] (deliver result (try (run-script (script-lines f))
                                                     (catch Throwable t (str "error: internal " t "\n")))))
-                   "sql" (* 512 1024 1024))]
+                   "sql" (* 64 1024 1024))]
     (.start t)
     @result))
 
