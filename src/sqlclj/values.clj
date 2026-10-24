@@ -423,9 +423,30 @@
 
 ;; ------------------------------------------------------------------ LIKE / GLOB
 
-(defn- cps ^ints [^String s]
-  (let [a (.toArray (.codePoints s))]
-    (java.util.Arrays/copyOf a (inc (alength a)))))
+(defn- cps
+  "Characters decoded like sqlite3Utf8Read from the UTF-8 bytes of s, up to the first NUL, 0-terminated."
+  ^ints [^String s]
+  (let [^bytes b (str->utf8 s)
+        n (alength b)
+        out (java.util.ArrayList.)]
+    (loop [i 0]
+      (when (and (< i n) (not (zero? (aget b i))))
+        (let [c0 (bit-and (aget b i) 0xff)]
+          (if (< c0 0xc0)
+            (do (.add out (int c0)) (recur (inc i)))
+            (let [t1 (cond (< c0 0xe0) (bit-and c0 0x1f) (< c0 0xf0) (bit-and c0 0x0f) (< c0 0xf8) (bit-and c0 0x07)
+                           (< c0 0xfc) (bit-and c0 0x03) (< c0 0xfe) (bit-and c0 0x01) :else 0)
+                  [c j] (loop [j (inc i) c (long t1)]
+                          (if (and (< j n) (= 0x80 (bit-and (aget b j) 0xc0)))
+                            (recur (inc j) (bit-and 0xffffffff (+ (bit-shift-left c 6) (bit-and (aget b j) 0x3f))))
+                            [c j]))
+                  c (long c)
+                  c (if (or (< c 0x80) (= 0xD800 (bit-and c 0xFFFFF800)) (= 0xFFFE (bit-and c 0xFFFFFFFE))) 0xFFFD c)]
+              (.add out (int (unchecked-int c)))
+              (recur (long j)))))))
+    (let [a (int-array (inc (.size out)))]
+      (dotimes [k (.size out)] (aset a k (int (.get out k))))
+      a)))
 
 (defn- pattern-compare
   "Port of patternCompare. Returns 0 match, 1 no match, 2 no wildcard match."

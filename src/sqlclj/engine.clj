@@ -533,7 +533,10 @@
               p2 (if (> (+ p1 p2) n) (max 0 (- n p1)) p2)]
           (if (or (>= p1 n) (<= p2 0)) (Blob. (byte-array 0))
               (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (+ p1 p2)))))))
-        (let [^bytes tb (v/str->utf8 (v/text-of x))
+        (let [^bytes tb0 (v/str->utf8 (v/text-of x))
+              ;; text is scanned up to its first NUL
+              ^bytes tb (let [k (loop [i 0] (if (and (< i (alength tb0)) (not (zero? (aget tb0 i)))) (recur (inc i)) i))]
+                          (java.util.Arrays/copyOf tb0 (int k)))
               nb (alength tb)
               ;; character start offsets as SQLITE_SKIP_UTF8 sees them
               starts (loop [i 0 acc (transient [])]
@@ -589,29 +592,62 @@
       (let [c (.charAt sb i)] (when (and (>= (int c) 65) (<= (int c) 90)) (.setCharAt sb i (char (+ (int c) 32))))))
     (.toString sb)))
 
-(defn- trim-impl [x chars mode]
+(defn- utf8-char-seqs
+  "The characters of b (up to the first NUL when nul-stop) as byte vectors, segmented like SQLITE_SKIP_UTF8."
+  [^bytes b nul-stop]
+  (let [n (alength b)]
+    (loop [i 0 acc []]
+      (if (or (>= i n) (and nul-stop (zero? (aget b i))))
+        acc
+        (let [c (bit-and (aget b i) 0xff)
+              j (if (>= c 0xc0)
+                  (loop [j (inc i)] (if (and (< j n) (= 0x80 (bit-and (aget b j) 0xc0))) (recur (inc j)) j))
+                  (inc i))]
+          (recur j (conj acc (java.util.Arrays/copyOfRange b i j))))))))
+
+(defn- trim-impl
+  "Port of trimFunc: byte-level, with the character set read up to its first NUL."
+  [x chars mode]
   (if (or (nil? x) (and chars (nil? (first chars))))
     nil
-    (let [^String s (v/text-of x)
-          set-cps (if chars (set (.toArray (.codePoints ^String (v/text-of (first chars))))) #{32})
-          cps (.toArray (.codePoints s))
-          n (alength cps)
-          st (if (#{:both :left} mode) (loop [i 0] (if (and (< i n) (set-cps (aget cps i))) (recur (inc i)) i)) 0)
-          en (if (#{:both :right} mode) (loop [j n] (if (and (> j st) (set-cps (aget cps (dec j)))) (recur (dec j)) j)) n)]
-      (String. cps (int st) (int (- en st))))))
+    (let [^bytes b (v/str->utf8 (v/text-of x))
+          set-chars (if chars (utf8-char-seqs (v/str->utf8 (v/text-of (first chars))) true) [(byte-array [32])])
+          starts-with (fn [^bytes c ^long from ^long to]
+                        (let [l (alength c)]
+                          (and (<= l (- to from))
+                               (java.util.Arrays/equals c (java.util.Arrays/copyOfRange b (int from) (int (+ from l)))))))
+          ends-with (fn [^bytes c ^long from ^long to]
+                      (let [l (alength c)]
+                        (and (<= l (- to from))
+                             (java.util.Arrays/equals c (java.util.Arrays/copyOfRange b (int (- to l)) (int to))))))
+          n (alength b)
+          st (if (and (seq set-chars) (#{:both :left} mode))
+               (loop [i 0]
+                 (if-let [c (when (< i n) (first (filter #(starts-with % i n) set-chars)))]
+                   (recur (+ i (alength ^bytes c)))
+                   i))
+               0)
+          en (if (and (seq set-chars) (#{:both :right} mode))
+               (loop [j n]
+                 (if-let [c (when (> j st) (first (filter #(ends-with % st j) set-chars)))]
+                   (recur (- j (alength ^bytes c)))
+                   j))
+               n)]
+      (v/utf8->str (java.util.Arrays/copyOfRange b (int st) (int en))))))
 
 (defn- quote-impl [x]
   (cond (nil? x) "NULL"
         (instance? Long x) (str x)
         (instance? Double x) (num/real->text (double x))
-        (string? x) (str "'" (str/replace x "'" "''") "'")
+        (string? x) (let [k (.indexOf ^String x (int 0)) x (if (neg? k) x (subs x 0 k))]
+                      (str "'" (str/replace x "'" "''") "'"))
         :else (str "X'" (v/hex-upper (v/blob-bytes x)) "'")))
 
 (defn- replace-impl [x from to]
   (if (or (nil? x) (nil? from) (nil? to))
     nil
     (let [^String s (v/text-of x) ^String f (v/text-of from) ^String t (v/text-of to)]
-      (if (= "" f)
+      (if (or (= "" f) (= \u0000 (.charAt f 0)))
         s
         (let [^bytes sb (v/str->utf8 s) ^bytes fb (v/str->utf8 f) ^bytes tb (v/str->utf8 t)
               n (alength sb) m (alength fb)
