@@ -541,12 +541,15 @@
                                                (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
                               row (range ncols))
                   has-checks (seq (:checks tbl))
+                  moved (not= rid-new rid)
+                  ;; with a new rowid the type check follows the rowid check; otherwise it precedes CHECK
+                  early-type (and has-checks (not moved))
                   row (check-notnull db sql tbl row on-conflict)
-                  row (when row (if has-checks (check-checks tbl (check-strict tbl row) on-conflict) row))]
+                  row (when row (if has-checks (check-checks tbl (if early-type (check-strict tbl row) row) on-conflict) row))]
               (if (nil? row)
                 (recur db (rest ts) changes)
                 (let [[tbl2 res] (resolve-uniques db tbl rid-new row rid on-conflict (constantly false)
-                                                  (fn [] (when-not has-checks (check-strict tbl row))) false)]
+                                                  (fn [] (when-not early-type (check-strict tbl row))) false)]
                   (if (= res :ignore)
                     (recur db (rest ts) changes)
                     (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)
