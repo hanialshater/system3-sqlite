@@ -455,9 +455,11 @@
                     (do
                       (aset env (long (:slot tsrc)) existing)
                       (aset env (long (:slot xsrc))
-                            (assoc (reduce (fn [r ci] (if (and (= :real (:aff (nth (:cols tbl) ci))) (instance? Long (nth r ci)))
-                                                        (assoc r ci (double (long (nth r ci)))) r))
-                                           raw-row (range ncols))
+                            (assoc (if has-checks
+                                     row
+                                     (reduce (fn [r ci] (if (and (= :real (:aff (nth (:cols tbl) ci))) (instance? Long (nth r ci)))
+                                                          (assoc r ci (double (long (nth r ci)))) r))
+                                             raw-row (range ncols)))
                                    ncols rid))
                       (if (and (:where-c up) (let [w ((:where-c up) env)] (or (nil? w) (not (v/bool-value w)))))
                         (recur db (rest rs) changes)

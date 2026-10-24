@@ -194,6 +194,10 @@
 
 (defn cx*
   [ctx e]
+  ;; once an error has been recorded, SQLite's resolver aborts at the next non-column, non-function node
+  (when-let [pend (:pending ctx)]
+    (when (and @pend (not (#{:col :fn} (:op e))))
+      (err @pend)))
   (case (:op e)
     :lit (const-c (lit-value e))
     :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
@@ -985,7 +989,7 @@
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
-  (let [ctx (assoc ctx :pending nil)]
+  (let [ctx (assoc ctx :pending nil :merge nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -1202,7 +1206,8 @@
                         " do not have the same number of result columns")))
           colls (mapv (fn [a b] (or a b "BINARY")) (:colls l) (:colls r))
           cmp (row-comparator colls)
-          op (:op body)]
+          op (:op body)
+          merge? (:merge ctx)]
       {:names (:names l) :affs (:affs l) :colls (:colls l) :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
        :correlated (or (:correlated l) (:correlated r))
@@ -1210,7 +1215,15 @@
                (let [lr ((:rows l) env) rr ((:rows r) env)]
                  (case op
                    :union-all (concat lr rr)
-                   :union (let [ts (TreeSet. ^Comparator cmp)] (doseq [x (concat lr rr)] (.add ts x)) (seq ts))
+                   :union (if merge?
+                            ;; ORDER BY compounds are merged: among equal rows the right-hand one is kept
+                            (let [tl (TreeSet. ^Comparator cmp) tr (TreeSet. ^Comparator cmp)]
+                              (doseq [x lr] (.add tl x))
+                              (doseq [x rr] (.add tr x))
+                              (doseq [x tr] (.remove tl x))
+                              (doseq [x tr] (.add tl x))
+                              (seq tl))
+                            (let [ts (TreeSet. ^Comparator cmp)] (doseq [x (concat lr rr)] (.add ts x)) (seq ts)))
                    :intersect (let [rs (TreeSet. ^Comparator cmp) ts (TreeSet. ^Comparator cmp)]
                                 (doseq [x rr] (.add rs x))
                                 (doseq [x lr] (when (.contains rs x) (.add ts x)))
@@ -1240,7 +1253,7 @@
         limit (eval-limit ctx (:limit sel) "LIMIT")
         offset (eval-limit ctx (:offset sel) "OFFSET")]
     (if (= :compound (:type body))
-      (let [b (compile-body ctx body)
+      (let [b (compile-body (if order (assoc ctx :merge true) ctx) body)
             names (:names b)
             lm (:leftmost b)
             aliases (mapv lc names)
@@ -1253,6 +1266,10 @@
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
                           order)))
+            specs (when specs
+                    (let [used (set (map :ri specs))]
+                      (into specs (for [i (range (count names)) :when (not (used i))]
+                                    {:ri i :coll (or (nth (:colls b) i) "BINARY") :desc false :nulls nil}))))
             cmp (when specs (compare-keys-fn (map (fn [s] [(:coll s) (:desc s) (:nulls s)]) specs)))]
         {:names names :affs (:affs b) :colls (:colls b) :ecolls (:ecolls b) :correlated (:correlated b)
          :rows-fn (fn [env]
