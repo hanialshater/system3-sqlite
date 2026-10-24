@@ -300,10 +300,11 @@ def gen_script(family):
     tables = []
     lines = []
     for i in range(ntab):
-        t = gen_table('t%d' % i, random.randint(2, 5), tables[-1].name if tables else None)
+        big = os.environ.get('BIG')
+        t = gen_table('t%d' % i, random.randint(2, 7 if big else 5), tables[-1].name if tables else None)
         tables.append(t)
         lines.append(table_sql(t))
-        for _ in range(random.randint(2, 12)):
+        for _ in range(random.randint(10, 30) if big else random.randint(2, 12)):
             lines.append(insert_sql(t))
     body = []
     state = {}

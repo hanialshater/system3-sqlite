@@ -250,6 +250,40 @@
       (when (at-op? p "(") (fail! p))
       (node {:op :in :e lhs :table nm :not negate} s (prev-end p)))))
 
+
+;; ------------------------------------------------------------------ parse-time folding (as SQLite's parser)
+
+(defn- foldable-literal? [e]
+  (let [e (if (and (= :unary (:op e)) (= :neg (:o e))) (:e e) e)]
+    (and (= :lit (:op e)) (or (#{:int :float :hex :blob} (:kind e)) (string? (:v e))))))
+
+(defn- fold-null-test
+  "<numeric or blob literal> IS [NOT] NULL is folded to the integer 0/1."
+  [n operand isnull]
+  (if (foldable-literal? operand)
+    (assoc n :op :lit :kind :int :text (if isnull "0" "1"))
+    n))
+
+(defn- false-literal? [e]
+  (and (= :lit (:op e)) (#{:int :hex} (:kind e))
+       (let [t (:text e)]
+         (try (zero? (if (= :hex (:kind e)) (Long/parseUnsignedLong (subs t 2) 16) (Long/parseLong t)))
+              (catch Exception _ false)))))
+
+(defn- has-function? [e]
+  (cond (map? e) (or (= :fn (:op e)) (some has-function? (vals (dissoc e :select))))
+        (sequential? e) (some has-function? e)
+        :else false))
+
+(defn- fold-and
+  "X AND Y is replaced by 0 when either side is the integer literal 0 and neither contains a function."
+  [n]
+  (if (and (= :and (:o n))
+           (or (false-literal? (:l n)) (false-literal? (:r n)))
+           (not (has-function? (:l n))) (not (has-function? (:r n))))
+    {:op :lit :kind :int :text "0" :ps (:ps n) :pe (:pe n)}
+    n))
+
 (defn parse-expr-prec [^P p minp]
   (let [minp (long minp)
         left (if (at-kw? p "NOT")
@@ -278,14 +312,17 @@
                 t (advance! p)
                 u (:u t)]
             (case u
-              "ISNULL" (recur (node {:op :isnull :e left} s (prev-end p)))
-              "NOTNULL" (recur (node {:op :notnull :e left} s (prev-end p)))
-              "NULL" (recur (node {:op :notnull :e left} s (prev-end p)))
+              "ISNULL" (recur (fold-null-test (node {:op :isnull :e left} s (prev-end p)) left true))
+              "NOTNULL" (recur (fold-null-test (node {:op :notnull :e left} s (prev-end p)) left false))
+              "NULL" (recur (fold-null-test (node {:op :notnull :e left} s (prev-end p)) left false))
               "IS" (let [n2 (boolean (accept-kw p "NOT"))
                          dist (when (accept-kw p "DISTINCT") (expect-kw p "FROM") true)
                          r (parse-expr-prec p 5)
                          isnot (if dist (not n2) n2)]
-                     (recur (node {:op :is :not isnot :l left :r r} s (:pe r))))
+                     (recur (let [n (node {:op :is :not isnot :l left :r r} s (:pe r))]
+                              (if (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
+                                (fold-null-test n left (not isnot))
+                                n))))
               "IN" (recur (parse-in-rhs p left s negate))
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
@@ -311,7 +348,7 @@
               (let [[prec o] b]
                 (advance! p)
                 (let [r (parse-expr-prec p (inc (long prec)))]
-                  (recur (node {:op :bin :o o :l left :r r} s (:pe r)))))
+                  (recur (fold-and (node {:op :bin :o o :l left :r r} s (:pe r))))))
               left)))))))
 
 (defn parse-expr [^P p] (parse-expr-prec p 1))
