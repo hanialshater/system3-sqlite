@@ -11,7 +11,7 @@
 (def empty-db {:tables {} :indexes {} :views {} :changes 0 :index-seq 0})
 
 (defn- new-ctx [db sql]
-  (e/->Ctx db sql nil (atom 0) nil nil nil))
+  (assoc (e/->Ctx db sql nil (atom 0) nil nil nil) :refs (atom #{})))
 
 ;; ====================================================================== CREATE TABLE
 

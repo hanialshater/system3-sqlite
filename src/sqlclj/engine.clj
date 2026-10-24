@@ -78,6 +78,7 @@
             (err (str "ambiguous column name: " (if tq (str tq "." name) name)))
             (= 1 (count hits))
             (let [[s i] (first hits)]
+              (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
               {:slot (:slot s) :idx i :depth depth :src s
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
@@ -1041,6 +1042,124 @@
       (walk (:having core)))
     @found))
 
+
+;; ---------------------------------------------------------------------- covering-index full scans
+
+(defn- log-est
+  "sqlite3LogEst."
+  ^long [^long x]
+  (let [a [0 2 3 5 6 7 8 9]]
+    (if (< x 8)
+      (if (< x 2) 0
+          (loop [y 40 x x] (if (< x 8) (recur (- y 10) (bit-shift-left x 1)) (+ (nth a (bit-and x 7)) y -10))))
+      (let [i (- 60 (Long/numberOfLeadingZeros x))]
+        (+ (nth a (bit-and (unsigned-bit-shift-right x i) 7)) 40 (* i 10) -10)))))
+
+(defn- col-size-est
+  "Column width estimate from the declared type (sqlite3AffinityType's szEst)."
+  ^long [col]
+  (let [t (:type col)]
+    (if (or (nil? t) (= "" t))
+      1
+      (let [aff (v/type-affinity t)
+            u (str/upper-case t)]
+        (if (#{:text :blob} aff)
+          (let [ci (.indexOf u "CHAR")
+                vv (if (>= ci 0)
+                     (let [m (re-find #"[0-9]+" (subs u ci))] (if m (Long/parseLong m) 0))
+                     (if (and (= aff :blob) (re-find #"BLOB\(" u))
+                       (let [m (re-find #"[0-9]+" (subs u (.indexOf u "BLOB")))] (if m (Long/parseLong m) 0))
+                       16))]
+            (min 255 (inc (quot vv 4))))
+          1)))))
+
+(defn- term-target
+  "If top-level WHERE conjunct t can drive a lookup on table source src, returns [col-idx class coll]
+  where class is :eq or :range and col-idx is the table column (ncols = rowid)."
+  [src t]
+  (let [ncols (:ncols src)
+        tbl (:table src)
+        col-idx (fn [e] (when (and (= :col (:op e))
+                                   (or (nil? (:table e)) (= (lc (:table e)) (:alias src))))
+                          (let [i (.indexOf ^java.util.List (:lcols src) (lc (:name e)))]
+                            (cond (>= i 0) (if (= i (:ipk tbl)) ncols i)
+                                  (#{"rowid" "oid" "_rowid_"} (lc (:name e))) ncols
+                                  :else nil))))
+        refs-me? (fn refs [e] (cond (map? e) (or (some? (col-idx e)) (some refs (vals e)))
+                                    (sequential? e) (some refs e)
+                                    :else false))
+        coll-of (fn [ce other]
+                  (cond (= :collate (:op other)) (str/upper-case (:coll other))
+                        (= :collate (:op ce)) (str/upper-case (:coll ce))
+                        :else (let [i (col-idx ce)] (or (when (and i (< i ncols)) (:coll (nth (:cols tbl) i))) "BINARY"))))
+        side (fn [a b cls]
+               (let [a0 (if (= :collate (:op a)) (:e a) a)
+                     i (col-idx a0)]
+                 (when (and i (not (refs-me? b)))
+                   [i cls (coll-of a b)])))]
+    (case (:op t)
+      :bin (when-let [cls (case (:o t) :eq :eq (:lt :le :gt :ge) :range nil)]
+             (or (side (:l t) (:r t) cls) (side (:r t) (:l t) cls)))
+      :is (when-not (:not t) (or (side (:l t) (:r t) :eq) (side (:r t) (:l t) :eq)))
+      :in (when (and (not (:not t)) (or (:list t) (:select t)) (not (refs-me? (:list t))))
+            (side (:e t) {:op :lit} :eq))
+      :between (when (and (not (:not t)) (not (refs-me? (:lo t))) (not (refs-me? (:hi t))))
+                 (side (:e t) {:op :lit} :range))
+      :isnull (side (:e t) {:op :lit} :eq)
+      nil)))
+
+(defn- idx-width ^long [tbl idx]
+  (let [ncols (count (:cols tbl)) ipk (:ipk tbl)]
+    (+ 1 (reduce + (map (fn [ic] (let [c (:col ic)]
+                                   (if (or (= c ncols) (= c ipk)) 1 (col-size-est (nth (:cols tbl) c)))))
+                        (:cols idx))))))
+
+(defn search-index
+  "The index SQLite would search for the WHERE terms, :rowid for a rowid lookup, or nil if none."
+  [db src terms refcols]
+  (let [tbl (get-in db [:tables (lc (:tname src))])
+        ncols (count (:cols tbl))
+        ipk (:ipk tbl)
+        targets (keep #(term-target src %) terms)]
+    (cond
+      (empty? targets) nil
+      (some #(= ncols (first %)) targets) :rowid
+      :else
+      (let [need (set (remove #(or (= % ncols) (= % ipk)) refcols))
+            cands (for [idx (sort-by :seq > (filter #(= (:table %) (lc (:tname src))) (vals (:indexes db))))
+                        :when (and (nil? (:where idx)) (every? :col (:cols idx)))
+                        :let [ic0 (first (:cols idx))
+                              c0 (let [c (:col ic0)] (if (= c ipk) ncols c))
+                              hits (filter #(and (= (first %) c0) (= (nth % 2) (:coll ic0))) targets)]
+                        :when (seq hits)
+                        :let [cls (if (some #(= :eq (second %)) hits) 0 1)
+                              covering (if (every? (set (map :col (:cols idx))) need) 0 1)
+                              w (idx-width tbl idx)]]
+                    [[cls covering w] idx])]
+        (when (seq cands)
+          (second (reduce (fn [best c] (if (neg? (compare (first c) (first best))) c best)) (first cands) (rest cands))))))))
+
+(defn covering-index
+  "The index SQLite would use for a full scan of src covering the referenced columns, or nil."
+  [db src refcols]
+  (let [tbl (get-in db [:tables (lc (:tname src))])
+        ncols (count (:cols tbl))
+        ipk (:ipk tbl)
+        need (set (remove #(or (= % ncols) (= % ipk)) refcols))
+        sz-tab (log-est (* 4 (+ (reduce + (map col-size-est (:cols tbl))) (if ipk 0 1))))
+        cands (for [idx (sort-by :seq > (filter #(= (:table %) (lc (:tname src))) (vals (:indexes db))))
+                    :when (and (nil? (:where idx)) (every? :col (:cols idx)))
+                    :let [cs (set (map :col (:cols idx)))]
+                    :when (every? cs need)
+                    :let [w (+ 1 (reduce + (map (fn [ic] (let [c (:col ic)]
+                                                           (if (or (= c ncols) (= c ipk)) 1 (col-size-est (nth (:cols tbl) c)))))
+                                                (:cols idx))))
+                          sz (log-est (* 4 w))]
+                    :when (< sz sz-tab)]
+                [(quot (* 15 sz) sz-tab) idx])]
+    (when (seq cands)
+      (second (reduce (fn [best c] (if (< (long (first c)) (long (first best))) c best)) (first cands) (rest cands))))))
+
 (defn- make-scanner
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
@@ -1053,7 +1172,14 @@
           (when (and (:where idx) (not (check-indexed-by ctx idx where-terms src)))
             (err "no query solution"))
           (fn [_] (index-order-rows (:db ctx) idx)))
-        (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))
+        (let [plan (when (and (:scan-refs src) (nil? ib))
+                     (let [si (search-index (:db ctx) src (or where-terms []) (:scan-refs src))]
+                       (cond (= si :rowid) nil
+                             si si
+                             :else (covering-index (:db ctx) src (:scan-refs src)))))]
+          (if plan
+            (fn [_] (index-order-rows (:db ctx) plan))
+            (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))
     (:sub src)
     (let [sub (:sub src)]
       (if (:correlated sub)
@@ -1111,6 +1237,7 @@
           rcomp (mapv (fn [rc]
                         (if-let [[s i] (:star-col rc)]
                           (let [sl (long (:slot s)) i (long i)]
+                            (when-let [refs (:refs ctx)] (swap! refs conj [sl i]))
                             {:f (fn [^objects env] (nth (aget env sl) i))
                              :aff (nth (:affs s) i)
                              :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
@@ -1187,7 +1314,12 @@
           scanners (if (= rowid-order :desc)
                      (let [tname (lc (:tname (first sources)))]
                        [(fn [_] (map val (rseq (:rows (get-in (:db ctx2) [:tables tname])))))])
-                     (mapv #(make-scanner ctx2 % (when (:where core) (split-and (:where core)))) sources))
+                     (mapv #(make-scanner ctx2
+                                          (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
+                                            (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2))))
+                                            %)
+                                          (when (:where core) (split-and (:where core))))
+                           sources))
           rfs (mapv :f rcomp)
           ofs (mapv :f order-c)
           agg-specs @aggs
