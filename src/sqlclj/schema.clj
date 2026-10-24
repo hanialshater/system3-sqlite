@@ -200,3 +200,18 @@
               st (walk st)]
           (assoc st :table (resolve-key db t s) :schema nil))
         (walk st)))))
+
+(defn constant-default?
+  "Whether a DEFAULT expression is constant (no column references, bound variables or subqueries)."
+  [e]
+  (letfn [(walk [x]
+            (cond
+              (map? x) (cond
+                         (and (= :col (:op x)) (not (and (nil? (:table x)) (#{"true" "false"} (lc* (:name x)))))) false
+                         (:var x) false
+                         (#{:subq :exists :raise} (:op x)) false
+                         (and (= :in (:op x)) (or (:select x) (:table x))) false
+                         :else (every? walk (vals x)))
+              (sequential? x) (every? walk x)
+              :else true))]
+    (walk e)))

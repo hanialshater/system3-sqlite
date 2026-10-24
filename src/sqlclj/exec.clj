@@ -975,6 +975,17 @@
   (after any rows already written)."
   [db sql st ^StringBuilder out]
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be modified")))
+  (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be indexed")))
+  (when (= :create-table (:kind st))
+    (doseq [d (:cols st)
+            k (:cons d) :when (= :default (:c k))]
+      (when-not (sch/constant-default? (:e k))
+        (err (str "default value of column [" (:name d) "] is not constant")))))
   (let [st (sch/qualify-stmt db st)]
   (case (:kind st)
     :attach
@@ -1057,7 +1068,11 @@
                 :alter (exec-alter db sql st out)
                 :analyze (exec-analyze db sql st)
                 (:begin :commit :rollback :savepoint :release) (exec-tx db st)
-                (:noop :pragma) db)]
+                (:noop :pragma) db
+                :vacuum (do (when-let [sc (lc (:schema st))]
+                              (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
+                                (err (str "unknown database " (:schema st)))))
+                            db))]
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
