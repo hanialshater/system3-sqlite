@@ -11,7 +11,8 @@
 (def empty-db {:tables {} :indexes {} :views {} :changes 0 :index-seq 0})
 
 (defn- new-ctx [db sql]
-  (assoc (e/->Ctx db sql nil (atom 0) nil nil nil) :refs (atom #{})))
+  (cond-> (assoc (e/->Ctx db sql nil (atom 0) nil nil nil) :refs (atom #{}))
+    e/*with* (e/add-ctes e/*with*)))
 
 ;; ====================================================================== CREATE TABLE
 
@@ -716,10 +717,11 @@
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
-          db2 (f db sql st (fn [r] (.add rows r))
+          db2 (binding [e/*with* (:with st)]
+               (f db sql st (fn [r] (.add rows r))
                  (fn [names]
                    (when names (emit-line out (str "# " (str/join "|" names))))
-                   (vreset! *prepared* true)))]
+                   (vreset! *prepared* true))))]
       (if (seq (:returning st))
         (doseq [r rows] (write-row out r))
         (emit-line out (str "changes: " (:changes db2))))
