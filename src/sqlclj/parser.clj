@@ -72,7 +72,7 @@
 
 ;; ------------------------------------------------------------------ expressions
 
-(declare parse-expr parse-select parse-expr-prec)
+(declare parse-expr parse-select parse-expr-prec parse-window-def)
 (def ^:dynamic *in-trigger* false)
 
 (defn- node [m s e] (assoc m :ps s :pe e))
@@ -133,7 +133,7 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p) (node {:op :lit :v nil} s (:e t)))
+      :var (do (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
@@ -210,10 +210,18 @@
               (cond
                 (at-op? p "(")
                 (do (advance! p)
-                    (let [fa (parse-function-args p)]
-                      (when (at-kw? p "FILTER") (fail! p))
-                      (when (at-kw? p "OVER") (fail! p))
-                      (node (merge {:op :fn :name (str/lower-case (:v t))} fa) s (prev-end p))))
+                    (let [fa (parse-function-args p)
+                          filt (when (at-kw? p "FILTER")
+                                 (advance! p) (expect-op p "(") (expect-kw p "WHERE")
+                                 (let [e (parse-expr p)] (expect-op p ")") e))
+                          over (when (accept-kw p "OVER")
+                                 (if (accept-op p "(")
+                                   (let [w (parse-window-def p)] (expect-op p ")") w)
+                                   (parse-nm p)))]
+                      (node (cond-> (merge {:op :fn :name (str/lower-case (:v t))} fa)
+                              filt (assoc :filter filt)
+                              over (assoc :over over))
+                            s (prev-end p))))
                 (at-op? p ".")
                 (do (advance! p)
                     (let [n2 (parse-nm p)]
@@ -222,6 +230,52 @@
                         (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
                 :else (node {:op :col :name (:v t)} s (:e t))))))
       (fail! p))))
+
+(declare parse-order-by)
+
+(defn- parse-frame-bound [^P p start?]
+  (cond
+    (at-kw? p "UNBOUNDED")
+    (do (advance! p)
+        (cond (and start? (accept-kw p "PRECEDING")) {:kind :unbounded-preceding}
+              (and (not start?) (accept-kw p "FOLLOWING")) {:kind :unbounded-following}
+              :else (fail! p)))
+    (at-kw? p "CURRENT") (do (advance! p) (expect-kw p "ROW") {:kind :current})
+    :else (let [e (parse-expr p)]
+            (cond (accept-kw p "PRECEDING") {:kind :preceding :e e}
+                  (accept-kw p "FOLLOWING") {:kind :following :e e}
+                  :else (fail! p)))))
+
+(defn- parse-window-def
+  "Inside OVER ( ... ) or WINDOW w AS ( ... )."
+  [^P p]
+  (let [base (when (and (ident-tok? (tok p))
+                        (not (#{"PARTITION" "ORDER" "RANGE" "ROWS" "GROUPS"} (:u (tok p)))))
+               (parse-nm p))
+        part (when (at-kw? p "PARTITION")
+               (advance! p) (expect-kw p "BY")
+               (loop [acc [(parse-expr p)]] (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc)))
+        order (when (at-kw? p "ORDER") (advance! p) (expect-kw p "BY") (parse-order-by p))
+        frame (when (and (= :id (:t (tok p))) (#{"RANGE" "ROWS" "GROUPS"} (:u (tok p))))
+                (let [ft (keyword (str/lower-case (:u (advance! p))))
+                      [st en] (if (accept-kw p "BETWEEN")
+                                (let [a (parse-frame-bound p true)
+                                      _ (expect-kw p "AND")
+                                      b (parse-frame-bound p false)]
+                                  [a b])
+                                [(parse-frame-bound p true) {:kind :current}])
+                      excl (when (accept-kw p "EXCLUDE")
+                             (cond (accept-kw p "NO") (do (expect-kw p "OTHERS") :no-others)
+                                   (accept-kw p "CURRENT") (do (expect-kw p "ROW") :current-row)
+                                   (accept-kw p "GROUP") :group
+                                   (accept-kw p "TIES") :ties
+                                   :else (fail! p)))
+                      rank {:unbounded-preceding 0 :preceding 1 :current 2 :following 3 :unbounded-following 4}]
+                  (when (or (and (= :current (:kind st)) (= :preceding (:kind en)))
+                            (and (= :following (:kind st)) (#{:preceding :current} (:kind en))))
+                    (throw (lx/sql-error "unsupported frame specification")))
+                  {:type ft :start st :end en :exclude excl}))]
+    {:base base :part part :order order :frame frame}))
 
 (defn- parse-unary [^P p]
   (check-illegal p)
@@ -483,8 +537,17 @@
                     (advance! p) (expect-kw p "BY")
                     (loop [acc [(parse-expr p)]] (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc)))
             having (when (accept-kw p "HAVING") (parse-expr p))]
-        (when (at-kw? p "WINDOW") (fail! p))
-        {:type :core :distinct distinct :cols cols :from from :where where :group group :having having}))))
+        (let [windows (when (accept-kw p "WINDOW")
+                        (loop [acc []]
+                          (let [n (parse-nm p)
+                                _ (expect-kw p "AS")
+                                _ (expect-op p "(")
+                                w (parse-window-def p)
+                                _ (expect-op p ")")
+                                acc (conj acc [n w])]
+                            (if (accept-op p ",") (recur acc) acc))))]
+          (cond-> {:type :core :distinct distinct :cols cols :from from :where where :group group :having having}
+            windows (assoc :windows windows)))))))
 
 (defn parse-with
   "After WITH: [RECURSIVE] cte, ... Returns {:recursive :ctes [{:name :cols :select}]}."
@@ -546,6 +609,35 @@
           (fail! p)))
       :else (parse-primary p))))
 
+(defn- parse-fk-tail
+  "After REFERENCES: parent table, optional column list, actions. Returns a map."
+  [^P p]
+  (let [tbl (parse-nm p)
+        to (when (accept-op p "(")
+             (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
+               (expect-op p ")") c))
+        acts (loop [m {}]
+               (cond
+                 (and (at-kw? p "ON") (#{"DELETE" "UPDATE"} (:u (tok-at p 1))))
+                 (let [_ (advance! p)
+                       which (if (= "DELETE" (:u (advance! p))) :on-delete :on-update)
+                       act (cond (accept-kw p "SET") (if (accept-kw p "NULL") :set-null
+                                                         (do (expect-kw p "DEFAULT") :set-default))
+                                 (accept-kw p "CASCADE") :cascade
+                                 (accept-kw p "RESTRICT") :restrict
+                                 (accept-kw p "NO") (do (expect-kw p "ACTION") :no-action)
+                                 :else (fail! p))]
+                   (recur (assoc m which act)))
+                 (accept-kw p "MATCH") (recur (assoc m :match (parse-nm p)))
+                 :else m))
+        deferred (when (or (at-kw? p "DEFERRABLE") (and (at-kw? p "NOT") (kw? (tok-at p 1) "DEFERRABLE")))
+                   (let [neg (accept-kw p "NOT")]
+                     (advance! p)
+                     (let [init (when (accept-kw p "INITIALLY")
+                                  (let [t (advance! p)] (:u t)))]
+                       (and (not neg) (= init "DEFERRED")))))]
+    (merge {:table tbl :to to :deferred (boolean deferred)} acts)))
+
 (defn- parse-column-def [^P p]
   (let [cs (:s (tok p))
         name (parse-nm p)
@@ -580,25 +672,8 @@
                    (kw? t "COLLATE")
                    (do (advance! p) (recur (conj acc {:c :collate :coll (parse-nm p)})))
                    (kw? t "REFERENCES")
-                   (do (advance! p) (parse-nm p)
-                       (when (accept-op p "(") (loop [] (parse-nm p) (when (accept-op p ",") (recur))) (expect-op p ")"))
-                       ;; skip ON DELETE/UPDATE ... MATCH ... DEFERRABLE
-                       (loop []
-                         (cond
-                           (and (at-kw? p "ON") (#{"DELETE" "UPDATE"} (:u (tok-at p 1))))
-                           (do (advance! p) (advance! p)
-                               (cond (accept-kw p "SET") (do (advance! p))
-                                     (accept-kw p "CASCADE") nil
-                                     (accept-kw p "RESTRICT") nil
-                                     (accept-kw p "NO") (expect-kw p "ACTION")
-                                     :else (fail! p))
-                               (recur))
-                           (accept-kw p "MATCH") (do (parse-nm p) (recur))
-                           :else nil))
-                       (when (or (at-kw? p "DEFERRABLE") (and (at-kw? p "NOT") (kw? (tok-at p 1) "DEFERRABLE")))
-                         (accept-kw p "NOT") (advance! p)
-                         (when (accept-kw p "INITIALLY") (advance! p)))
-                       (recur acc))
+                   (do (advance! p)
+                       (recur (conj acc (assoc (parse-fk-tail p) :c :fk :from [name]))))
                    (kw? t "GENERATED") (fail! p)
                    (kw? t "AS") (fail! p)
                    :else (do (when cname (fail! p)) acc))))]
@@ -637,10 +712,10 @@
                                                  {:c :pk :cols (parse-indexed-cols p) :conflict (parse-conflict-clause p)})
                                    "UNIQUE" (do (advance! p) {:c :unique :cols (parse-indexed-cols p) :conflict (parse-conflict-clause p)})
                                    "CHECK" (do (advance! p) (expect-op p "(") (let [e (parse-expr p)] (expect-op p ")") {:c :check :e e :name cname}))
-                                   "FOREIGN" (do (advance! p) (expect-kw p "KEY") (parse-indexed-cols p)
-                                                 (expect-kw p "REFERENCES") (parse-nm p)
-                                                 (when (accept-op p "(") (loop [] (parse-nm p) (when (accept-op p ",") (recur))) (expect-op p ")"))
-                                                 {:c :fk}))
+                                   "FOREIGN" (do (advance! p) (expect-kw p "KEY")
+                                                 (let [from (mapv (fn [ic] (:name (:e ic))) (parse-indexed-cols p))]
+                                                   (expect-kw p "REFERENCES")
+                                                   (assoc (parse-fk-tail p) :c :fk :from from))))
                               tcons (conj tcons tc)]
                           (cond (accept-op p ",") (recur cols tcons)
                                 (accept-op p ")") [cols tcons]
@@ -720,7 +795,7 @@
               :else (fail! p))
         upsert (parse-upsert p)
         ret (parse-returning p)]
-    (merge {:kind :insert :or or-action :table tname :alias alias :cols cols :upsert upsert :returning ret} src)))
+    (merge {:kind :insert :or or-action :table tname :schema sch :alias alias :cols cols :upsert upsert :returning ret} src)))
 
 (defn- parse-qualified-table [^P p]
   (let [n1 (parse-nm p)
@@ -730,7 +805,7 @@
         ib (cond (at-kw? p "INDEXED") (do (advance! p) (expect-kw p "BY") (parse-nm p))
                  (and (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (do (advance! p) (advance! p) :none)
                  :else nil)]
-    {:table tname :alias alias :indexed-by ib}))
+    {:table tname :schema sch :alias alias :indexed-by ib}))
 
 (defn- parse-update [^P p or-action]
   (let [qt (parse-qualified-table p)
@@ -892,13 +967,34 @@
                          (do (accept-kw p "SAVEPOINT") {:kind :rollback :to (parse-nm p)})
                          {:kind :rollback}))
         "SAVEPOINT" (do (advance! p) {:kind :savepoint :name (parse-nm p)})
+        "ATTACH" (do (advance! p) (accept-kw p "DATABASE")
+                     (let [f (parse-expr p)]
+                       (expect-kw p "AS")
+                       (let [n (parse-expr p)]
+                         (when (accept-kw p "KEY") (parse-expr p))
+                         {:kind :attach :file f :as n})))
+        "DETACH" (do (advance! p) (accept-kw p "DATABASE") {:kind :detach :name (parse-expr p)})
         "RELEASE" (do (advance! p) (accept-kw p "SAVEPOINT") {:kind :release :name (parse-nm p)})
-        "ANALYZE" (do (advance! p) (when (ident-tok? (tok p)) (parse-nm p)) {:kind :noop})
-        "VACUUM" (do (advance! p) {:kind :noop})
-        "PRAGMA" (do (advance! p) (let [n (parse-nm p)]
-                                    (when (accept-op p "=") (advance! p))
-                                    (when (accept-op p "(") (advance! p) (expect-op p ")"))
-                                    {:kind :pragma :name n}))
+        "ANALYZE" (do (advance! p)
+                      (let [n1 (when (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (parse-nm p))
+                            [sch n] (if (and n1 (accept-op p ".")) [n1 (parse-nm p)] [nil n1])]
+                        {:kind :analyze :schema sch :name n}))
+        "VACUUM" (do (advance! p)
+                     (let [sch (when (and (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (not (at-kw? p "INTO"))) (parse-nm p))
+                           into (when (accept-kw p "INTO") (parse-expr p))]
+                       {:kind :vacuum :schema sch :into into}))
+        "PRAGMA" (do (advance! p)
+                     (let [n1 (parse-nm p)
+                           [sch n] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+                           pval (fn []
+                                  (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
+                                        t (advance! p)]
+                                    (when (= :eof (:t t)) (syntax-error p t))
+                                    (str sign (:v t))))
+                           v (cond (accept-op p "=") (pval)
+                                   (accept-op p "(") (let [x (pval)] (expect-op p ")") x)
+                                   :else nil)]
+                       {:kind :pragma :schema sch :name n :value v}))
         "EXPLAIN" (fail! p)
         (fail! p)))))
 

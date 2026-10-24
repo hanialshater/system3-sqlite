@@ -6,7 +6,8 @@
             [sqlclj.parser :as p]
             [sqlclj.engine :as e :refer [err lc]]
             [sqlclj.schema :as sch]
-            [sqlclj.trigger :as trg]))
+            [sqlclj.trigger :as trg]
+            [sqlclj.pragma :as pragma]))
 
 (set! *warn-on-reflection* true)
 
@@ -70,7 +71,10 @@
 
 (defn- add-index [db idx]
   (let [s (inc (long (:index-seq db)))
-        [db idx] (sch/register db (assoc idx :temp (:temp (get-in db [:tables (:table idx)]))) true)]
+        t (get-in db [:tables (:table idx)])
+        idx (if (and (:db t) (:auto idx)) (assoc idx :name (str (:db t) "." (:name idx))) idx)
+        wr-pk (and (:without-rowid t) (:pk-auto idx))
+        [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t) :no-master wr-pk) (not wr-pk))]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
 (defn- create-table [db sql st]
@@ -86,7 +90,7 @@
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
                        (:names sub) (:affs sub))
-            tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st)
+            tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt name cols)
                  :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
@@ -110,7 +114,9 @@
                            {:name (:name d) :type t :aff aff
                             :strict-type (when strict (strict-types (str/upper-case t)))
                             :notnull (some #(= :notnull (:c %)) cons)
-                            :default (:e (first (filter #(= :default (:c %)) cons)))
+                            :default (:e (last (filter #(= :default (:c %)) cons)))
+                            :default-text (when-let [de (:e (last (filter #(= :default (:c %)) cons)))]
+                                            (when (:ps de) (subs sql (:ps de) (:pe de))))
                             :coll (when-let [c (:coll (last (filter #(= :collate (:c %)) cons)))] (e/check-coll c))
                             :pk (first (filter #(= :pk (:c %)) cons))
                             :unique (filter #(= :unique (:c %)) cons)}))
@@ -141,8 +147,11 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
                          (for [k (:tcons st) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
+            fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
+                             (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
-                 :without-rowid (:without-rowid st) :temp (:temp st) :sql (sch/stmt-sql sql st "TABLE")}
+                 :pk-cols (mapv :i pk-cols) :fks fks
+                 :without-rowid (:without-rowid st) :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
             ;; compile checks against the table
@@ -154,12 +163,13 @@
                              :let [items (concat (when (and (:pk c) (not= i ipk)) [[:pk]])
                                                  (map (fn [_] [:u]) (:unique c)))]
                              it items]
-                         [{:e {:op :col :name (:name c)} :coll nil :desc false}])
+                         (with-meta [{:e {:op :col :name (:name c)} :coll nil :desc false}] {:pk (= it [:pk])}))
                        (for [k (:tcons st) :when (or (= :unique (:c k)) (and (= :pk (:c k)) (nil? ipk)))]
-                         (:cols k)))
+                         (with-meta (:cols k) {:pk (= :pk (:c k))})))
             db (reduce (fn [db [n icols]]
                          (let [tbl (get-in db [:tables lname])
-                               idx (build-index db sql tbl (str "sqlite_autoindex_" name "_" n) true icols nil true)]
+                               idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" (sch/display-name name {:db (:db st)}) "_" n) true icols nil true)
+                                          :pk-auto (:pk (meta icols)))]
                            ;; skip duplicate identical unique constraints
                            (if (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))))
                                      (table-indexes db lname))
@@ -213,7 +223,7 @@
 
 (defn- unique-msg* [tbl idx]
   (if (every? :col (:cols idx))
-    (str "UNIQUE constraint failed: " (str/join ", " (map #(str (:name tbl) "." (:name %)) (:cols idx))))
+    (str "UNIQUE constraint failed: " (str/join ", " (map #(str (sch/display-name (:name tbl) tbl) "." (:name %)) (:cols idx))))
     (str "UNIQUE constraint failed: index '" (:name idx) "'")))
 
 (defn- default-value [db sql tbl ci]
@@ -752,6 +762,63 @@
                  (update db :triggers dissoc lname)
                  (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
 
+(defn- index-stat
+  "sqlite_stat1 stat text for index idx of tbl, or nil when the index is empty."
+  [tbl idx]
+  (let [rows (filter #(or (nil? (:wf idx)) ((:wf idx) %)) (e/table-rows tbl))
+        n (count rows)
+        k (count (:cols idx))
+        colls (mapv :coll (:cols idx))]
+    (when (pos? n)
+      (let [keys (sort (e/row-comparator colls) (map #(e/index-key tbl idx %) rows))
+            eqv (fn [a b c] (or (and (nil? a) (nil? b)) (and (some? a) (some? b) (zero? (v/sql-cmp a b c)))))
+            dist (long-array k)]
+        (reduce (fn [prev cur]
+                  (when prev
+                    (let [i (loop [i 0] (if (and (< i k) (eqv (nth prev i) (nth cur i) (nth colls i))) (recur (inc i)) i))]
+                      (loop [j i] (when (< j k) (aset dist j (inc (aget dist j))) (recur (inc j))))))
+                  cur)
+                nil keys)
+        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d)))))))))
+
+(defn- exec-analyze [db sql st]
+  (let [lname (lc (:name st)) lsch (lc (:schema st))
+        target (cond
+                 (nil? lname) :all
+                 (and (nil? lsch) (#{"main" "temp"} lname)) :all
+                 (and (nil? lsch) (#{"sqlite_master" "sqlite_schema"} lname)) [:table lname]
+                 (get-in db [:indexes lname]) [:index lname]
+                 (get-in db [:tables lname]) [:table lname]
+                 :else (err (str "no such table: " (:name st))))
+        db (if (get-in db [:tables "sqlite_stat1"])
+             db
+             (create-table db "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
+                           (assoc (p/next-statement (p/parse-statements "CREATE TABLE sqlite_stat1(tbl,idx,stat)")) :internal true)))
+        tnames (case target
+                 :all (->> (vals (:tables db)) (sort-by :mseq) (map (comp lc :name))
+                           (remove #(str/starts-with? % "sqlite_")))
+                 (if (= :table (first target)) [(second target)]
+                     (let [t (:table (get-in db [:indexes (second target)]))] (if (str/starts-with? t "sqlite_") [] [t]))))
+        only-idx (when (and (vector? target) (= :index (first target))) (second target))
+        stat-rows (vec (for [tn tnames
+                             :let [tbl (get-in db [:tables tn])
+                                   idxs (table-indexes db tn)
+                                   idxs (if only-idx (filter #(= (lc (:name %)) only-idx) idxs) idxs)
+                                   n (count (:rows tbl))]
+                             r (if (and (empty? idxs) (nil? only-idx))
+                                 (when (pos? n) [[(:name tbl) nil (str n)]])
+                                 (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
+                                   [(:name tbl) (if (and (:without-rowid tbl) (:pk-auto idx)) (:name tbl) (:name idx)) stat]))]
+                         r))
+        st1 (get-in db [:tables "sqlite_stat1"])
+        drop? (fn [row] (let [t (lc (nth row 0)) i (some-> (nth row 1) lc)]
+                          (if only-idx (= i only-idx) (some #{t} tnames))))
+        kept (vec (remove drop? (vals (:rows st1))))
+        start (if (seq kept) (inc (long (last (nth kept (dec (count kept))))))  1)
+        rows (into (sorted-map) (concat (map (fn [r] [(long (last r)) r]) kept)
+                                        (map-indexed (fn [i r] (let [rid (+ start i)] [rid (conj r rid)])) stat-rows)))]
+    (assoc-in db [:tables "sqlite_stat1" :rows] rows)))
+
 (defn- exec-reindex
   "Returns db, or ::empty when there is nothing to rebuild (SQLite then prepares no statement)."
   [db st]
@@ -1019,7 +1086,44 @@
   "Executes one parsed statement. Writes its output into out. Returns the new db. Throws on error
   (after any rows already written)."
   [db sql st ^StringBuilder out]
+  (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be modified")))
+  (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
+    (err (str "table " (:table st) " may not be indexed")))
+  (when (= :create-table (:kind st))
+    (doseq [d (:cols st)
+            k (:cons d) :when (= :default (:c k))]
+      (when-not (sch/constant-default? (:e k))
+        (err (str "default value of column [" (:name d) "] is not constant")))))
+  (let [st (sch/qualify-stmt db st)]
   (case (:kind st)
+    :attach
+    (let [ctx (new-ctx db sql)
+          ev (fn [e] (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx ctx e)) (object-array 4))))
+          file (ev (:file st))
+          nm (some-> (ev (:as st)) str)
+          lnm (lc nm)]
+      (when (or (#{"main" "temp"} lnm) (some #{lnm} (sch/attached-names db)))
+        (err (str "database " nm " is already in use")))
+      (when (>= (count (:attached db)) 10) (err "too many attached databases - max 10"))
+      (update db :attached (fnil conj []) [lnm {:file (if (= file ":memory:") "" (str file)) :name nm}]))
+    :detach
+    (let [e (:name st)
+          nm (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx (new-ctx db sql) e)) (object-array 4)))
+          lnm (lc (str nm))]
+      (when-not (some #{lnm} (sch/attached-names db))
+        (err (if (#{"main" "temp"} lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
+      (let [keep? (fn [[_ o]] (not= lnm (:db o)))]
+        (-> db
+            (update :attached (fn [a] (vec (remove #(= lnm (first %)) a))))
+            (update :tables #(into {} (filter keep? %)))
+            (update :indexes #(into {} (filter keep? %)))
+            (update :views #(into {} (filter keep? %)))
+            (update :triggers #(into {} (filter keep? %)))
+            (update :pages dissoc lnm))))
     :select
     (let [ctx (new-ctx db sql)
           sub (e/compile-select ctx (:select st))]
@@ -1041,6 +1145,14 @@
                 (when-not (::stop (ex-data ex)) (throw ex)))))
           (doseq [row (e/run-select-rows sub env)] (write-row out row))))
       db)
+    :pragma
+    (let [r (pragma/run db st)]
+      (when (:names r)
+        (emit-line out (str "# " (str/join "|" (:names r))))
+        (doseq [row (:rows r)] (write-row out row)))
+      (when (and (nil? (:names r)) (:writes r))
+        (emit-line out (str "changes: " (:changes db))))
+      (:db r))
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
@@ -1062,18 +1174,27 @@
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (e/compile-select (new-ctx db sql) (:select st))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
-                                                                              :temp (:temp st) :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st out)
+                :analyze (exec-analyze db sql st)
                 (:begin :commit :rollback :savepoint :release) (exec-tx db st)
-                (:noop :pragma) db)]
+                (:noop :pragma) db
+                :vacuum (do (when-let [sc (lc (:schema st))]
+                              (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
+                                (err (str "unknown database " (:schema st)))))
+                            db))]
       (cond
         (= db2 ::empty) db
+        (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
+        (do (when-not (and (= :alter (:kind st)) (pos? (.length out)))
+              (emit-line out (str "changes: " (:changes db2))))
+            (update db2 :schema-version (fnil inc 0)))
         :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (pos? (.length out))))
                     (emit-line out (str "changes: " (:changes db2))))
-                  db2)))))
+                  db2))))))
 
 (reset! trg/exec-fn exec-statement)
 

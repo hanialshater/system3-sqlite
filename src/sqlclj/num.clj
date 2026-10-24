@@ -199,6 +199,7 @@
 
 ;; ------------------------------------------------------------------ number -> text
 
+(declare decode-17)
 (defn- digits-17
   "Decimal digits of r > 0 as produced by SQLite's FpDecode for iRound=17 (before rounding).
   Returns [digit-string iDP]."
@@ -222,6 +223,11 @@
         E (- e10 17)
         ds (Long/toUnsignedString nn)]
     [ds (+ E (count ds))]))
+
+(defn fp-digits
+  "[digit-string idp] for r > 0 (18 digits as FpDecode generates them; alt17 uses the iRound=17 special rules)."
+  [^double r alt17]
+  (if alt17 (decode-17 r) (digits-17 r)))
 
 (defn- strip-zeros ^String [^String s]
   (let [e (loop [k (count s)] (if (and (> k 1) (= (.charAt s (dec k)) \0)) (recur (dec k)) k))]
