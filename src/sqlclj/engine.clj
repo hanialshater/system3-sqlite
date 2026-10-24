@@ -7,6 +7,7 @@
             [sqlclj.num :as num]
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
+            [sqlclj.ext :as ext]
             [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
@@ -997,10 +998,10 @@
                                     (dotimes [i (alength b)] (aset b i (unchecked-byte (Integer/parseInt (subs s (* 2 i) (+ 2 (* 2 i))) 16))))
                                     (Blob. b)))))))
       "sqlite_version" (do (ar (= n 0)) (fn [_] "3.53.4"))
-      nil)))
+      (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
-  #{"random" "randomblob" "changes" "total_changes" "last_insert_rowid" "printf" "format"
+  #{"random" "randomblob" "changes" "total_changes" "last_insert_rowid"
     "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
 
 (defn- function-level-error

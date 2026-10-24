@@ -3,3 +3,4 @@ build/
 .b10-leftover/
 .cpcache/
 work/
+.w/
