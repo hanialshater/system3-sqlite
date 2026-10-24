@@ -913,7 +913,7 @@
         ferr (function-level-error ctx e)
         _ (when ferr (reset! (:pending ctx) ferr))
         agg (and (agg-call? e) (:aggs ctx) (not (:in-agg ctx)))
-        actx (if agg (assoc ctx :in-agg true :aggs nil) ctx)
+        actx (if agg (assoc ctx :in-agg true :aggs nil :wins nil) ctx)
         args (compile-args actx (:args e))]
     (cond
       (or ferr (nil? args)) (const-c nil)
@@ -1429,7 +1429,7 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src-sql view) (:sql ctx))) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))) (:select view))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)

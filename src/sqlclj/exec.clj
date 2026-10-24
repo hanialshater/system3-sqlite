@@ -739,7 +739,7 @@
                                             (let [ns (when (:sql v) (f (:sql v)))]
                                               [k (if (or (nil? ns) (= ns (:sql v))) v
                                                      (let [st (parse-one ns)]
-                                                       (assoc v :sql ns :select (:select st) :cols (:cols st))))]))
+                                                       (assoc v :sql ns :src ns :select (:select st) :cols (:cols st))))]))
                                           m))))
       (update :triggers (fn [m] (into {} (map (fn [[k t]]
                                                (let [ns (when (:sql t) (f (:sql t)))]
@@ -991,8 +991,8 @@
                                (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (e/compile-select (new-ctx db sql) (:select st))
-                                               (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st)
-                                                                              :temp (:temp st) :db (:db st) :src-sql sql :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                               (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
+                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
                 :drop (exec-drop db st)
                 :reindex (exec-reindex db st)
