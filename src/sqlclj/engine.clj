@@ -611,7 +611,18 @@
   (if (or (nil? x) (nil? from) (nil? to))
     nil
     (let [^String s (v/text-of x) ^String f (v/text-of from) ^String t (v/text-of to)]
-      (if (= "" f) s (.replace s f t)))))
+      (if (= "" f)
+        s
+        (let [^bytes sb (v/str->utf8 s) ^bytes fb (v/str->utf8 f) ^bytes tb (v/str->utf8 t)
+              n (alength sb) m (alength fb)
+              out (java.io.ByteArrayOutputStream. n)]
+          (loop [i 0]
+            (if (> (+ i m) n)
+              (.write out sb i (- n i))
+              (if (java.util.Arrays/equals (java.util.Arrays/copyOfRange sb i (+ i m)) fb)
+                (do (.write out tb 0 (alength tb)) (recur (+ i m)))
+                (do (.write out (int (aget sb i))) (recur (inc i))))))
+          (v/utf8->str (.toByteArray out)))))))
 
 (defn- instr-impl [h n]
   (if (or (nil? h) (nil? n))
@@ -623,9 +634,14 @@
           (cond (> (+ i nn) hn) 0
                 (java.util.Arrays/equals (java.util.Arrays/copyOfRange hb i (+ i nn)) nb) (inc i)
                 :else (recur (inc i)))))
-      (let [^String hs (v/text-of h) ^String ns (v/text-of n)
-            k (.indexOf hs ns)]
-        (if (neg? k) 0 (inc (.codePointCount hs 0 k)))))))
+      (let [^bytes hb (v/str->utf8 (v/text-of h)) ^bytes nb (v/str->utf8 (v/text-of n))
+            hn (alength hb) nn (alength nb)]
+        ;; byte search; the position counts characters by skipping UTF-8 continuation bytes
+        (loop [i 0 cnt 1]
+          (cond (> (+ i nn) hn) 0
+                (java.util.Arrays/equals (java.util.Arrays/copyOfRange hb i (+ i nn)) nb) cnt
+                :else (let [j (loop [j (inc i)] (if (and (< j hn) (= 0x80 (bit-and (aget hb j) 0xc0))) (recur (inc j)) j))]
+                        (recur j (inc cnt)))))))))
 
 (defn- char-impl [args]
   (let [sb (StringBuilder.)]
