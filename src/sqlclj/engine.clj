@@ -7,7 +7,8 @@
             [sqlclj.num :as num]
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
-            [sqlclj.ext :as ext])
+            [sqlclj.ext :as ext]
+            [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -30,7 +31,7 @@
 (def agg-names #{"count" "sum" "total" "avg" "min" "max" "group_concat" "string_agg"})
 
 (defn agg-call? [e]
-  (and (= :fn (:op e))
+  (and (= :fn (:op e)) (not (:over e))
        (let [n (:name e) k (count (:args e))]
          (case n
            ("min" "max") (and (= k 1) (not (:star e)))
@@ -61,11 +62,16 @@
                     (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
         (let [srcs (:sources scope)
               hits (if ltq
-                     (for [s srcs :when (= (:alias s) ltq)
-                           :let [i (find-in-source s lname)
-                                 i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
-                           :when i]
-                       [s i])
+                     (concat
+                      (for [s srcs :when (= (:alias s) ltq)
+                            :let [i (find-in-source s lname)
+                                  i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
+                            :when i]
+                        [s i])
+                      (for [s srcs :when (and (:quals s) (not= (:alias s) ltq))
+                            :let [i (get-in (:quals s) [ltq lname])]
+                            :when i]
+                        [s i]))
                      (for [s srcs
                            :let [i (find-in-source s lname)]
                            :when (and i (not (:qualified-only s)) (not (contains? (:hidden s) lname)))]
@@ -81,10 +87,11 @@
             (let [[s i] (first hits)]
               (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
               {:slot (:slot s) :idx i :depth depth :src s
+               :alt (when (and (nil? ltq) (< i (:ncols s))) (get (:coalesce s) lname))
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
-            (and ltq (some #(= (:alias %) ltq) srcs))
+            (and ltq (some #(or (= (:alias %) ltq) (get-in % [:quals ltq])) srcs))
             (err (str "no such column: " tq "." name))
             :else (recur (:parent scope) (inc depth))))))))
 
@@ -301,10 +308,14 @@
     :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
-             (let [slot (long (:slot r)) idx (long (:idx r))]
+             (let [slot (long (:slot r)) idx (long (:idx r))
+                   [aslot aidx] (:alt r)]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
-               (mk (fn [^objects env] (nth (aget env slot) idx))
+               (mk (if aslot
+                     (let [aslot (long aslot) aidx (long aidx)]
+                       (fn [^objects env] (let [x (nth (aget env slot) idx)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+                     (fn [^objects env] (nth (aget env slot) idx)))
                    :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
     :unary
     (let [o (:o e) inner (:e e)]
@@ -525,6 +536,8 @@
                                           (zero? (long (compare-values a b aff coll))) 1
                                           :else (recur (rest vs) saw-null)))))]
                         (if negate (when-not (nil? r) (- 1 (long r))) r))))))))
+        (:table e)
+        (cx ctx (-> e (dissoc :table) (assoc :select {:body {:type :core :cols [{:star true}] :from [{:table (:table e)}]}})))
         :else (err (str "no such table: " (:table e)))))
     :subq
     (let [sub (compile-select ctx (:select e))
@@ -871,6 +884,8 @@
       (#{"min" "max"} name) (when (< n 1) (str "wrong number of arguments to function " name "()"))
       (#{"coalesce"} name) (when (< n 2) (str "wrong number of arguments to function " name "()"))
       (#{"ifnull"} name) (when (not= n 2) (str "wrong number of arguments to function " name "()"))
+      (#{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
+         "first_value" "last_value" "nth_value"} name) (str "misuse of window function " name "()")
       (#{"iif" "if"} name) (when-not (#{2 3} n) (str "wrong number of arguments to function " name "()"))
       :else
       (try (if (compile-scalar-fn name n "BINARY")
@@ -890,12 +905,21 @@
            (do (when (:pending ctx) (reset! (:pending ctx) m)) nil)
            (throw ex)))))
 
+(declare compile-window compile-function*)
+
 (defn compile-function [ctx e]
+  (if (:over e)
+    (compile-window ctx e)
+    (compile-function* ctx e)))
+
+(defn- compile-function* [ctx e]
   (let [name (:name e) n (count (:args e))
+        _ (when (and (:filter e) (not (agg-call? e)))
+            (err (str "FILTER may not be used with non-aggregate " name "()")))
         ferr (function-level-error ctx e)
         _ (when ferr (reset! (:pending ctx) ferr))
         agg (and (agg-call? e) (:aggs ctx) (not (:in-agg ctx)))
-        actx (if agg (assoc ctx :in-agg true :aggs nil) ctx)
+        actx (if agg (assoc ctx :in-agg true :aggs nil :wins nil) ctx)
         args (compile-args actx (:args e))]
     (cond
       (or ferr (nil? args)) (const-c nil)
@@ -904,6 +928,7 @@
             idx (count @aggs)
             slot (long (:agg-slot ctx))]
         (swap! aggs conj {:name name :args args :star (:star e) :distinct (:distinct e)
+                          :filter (when (:filter e) (condf (cx actx (:filter e))))
                           :coll (or (:coll (first args)) "BINARY")})
         (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
             :coll (when (#{"min" "max"} name) (:coll (first args)))
@@ -1032,10 +1057,291 @@
                  false)
          :final (fn [] (when (aget has 0) (.toString sb)))}))))
 
+;; ====================================================================== window functions
+
+(declare row-comparator compare-keys-fn)
+
+(def window-only #{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
+                   "first_value" "last_value" "nth_value"})
+
+(def ^:private win-arity
+  {"row_number" #{0} "rank" #{0} "dense_rank" #{0} "percent_rank" #{0} "cume_dist" #{0}
+   "ntile" #{1} "lag" #{1 2 3} "lead" #{1 2 3} "first_value" #{1} "last_value" #{1} "nth_value" #{2}})
+
+(defn- strip-pos [e]
+  (cond (map? e) (into {} (for [[k x] e :when (not (#{:ps :pe :paren} k))] [k (strip-pos x)]))
+        (vector? e) (mapv strip-pos e)
+        (seq? e) (mapv strip-pos e)
+        :else e))
+
+(defn- resolve-window-def
+  "The effective window definition of an OVER clause (a name or a def with an optional base)."
+  [ctx over]
+  (let [named (:windefs ctx)
+        lookup (fn [n] (or (get named (lc n)) (err (str "no such window: " n))))]
+    (if (string? over)
+      (lookup over)
+      (if-let [b (:base over)]
+        (let [bw (lookup b)]
+          (when (:part over) (err (str "cannot override PARTITION clause of window: " b)))
+          (when (and (:order over) (:order bw)) (err (str "cannot override ORDER BY clause of window: " b)))
+          (when (:frame bw) (err (str "cannot override frame specification of window: " b)))
+          {:part (:part bw) :order (or (:order over) (:order bw)) :frame (:frame over)})
+        over))))
+
+(defn compile-window
+  "Compiles a window function call; registers it in (:wins ctx) and returns a reader of its value."
+  [ctx e]
+  (let [name (:name e) n (count (:args e))
+        aggf (agg-call? (dissoc e :over))]
+    (when (nil? (:wins ctx)) (err (str "misuse of window function " name "()")))
+    (cond
+      (window-only name)
+      (when-not (contains? (win-arity name) n) (err (str "wrong number of arguments to function " name "()")))
+      aggf nil
+      :else (if (or (agg-names name) (try (compile-scalar-fn name n "BINARY") (catch clojure.lang.ExceptionInfo _ true)))
+              (if (agg-names name)
+                (err (str "wrong number of arguments to function " name "()"))
+                (err (str name "() may not be used as a window function")))
+              (err (str "no such function: " name))))
+    (when (:distinct e) (err "DISTINCT is not supported for window functions"))
+    (when (and (:filter e) (not aggf)) (err "FILTER clause may only be used with aggregate window functions"))
+    (let [wd (resolve-window-def ctx (:over e))
+          ictx (assoc ctx :wins nil)
+          args (mapv #(cx ictx %) (:args e))
+          filt (when (:filter e) (condf (cx ictx (:filter e))))
+          part (mapv #(cx ictx %) (:part wd))
+          order (mapv (fn [t] (let [c (cx ictx (:e t))]
+                                {:f (:f c) :coll (or (:coll c) "BINARY") :desc (:desc t) :nulls (:nulls t)}))
+                      (:order wd))
+          fr (:frame wd)
+          _ (when (and fr (= :range (:type fr))
+                       (or (#{:preceding :following} (:kind (:start fr))) (#{:preceding :following} (:kind (:end fr))))
+                       (not= 1 (count order)))
+              (err "RANGE with offset PRECEDING/FOLLOWING requires one ORDER BY expression"))
+          bound (fn [b] (cond-> b (:e b) (assoc :f (:f (cx (assoc ictx :aggs nil) (:e b))))))
+          frame (when fr (assoc fr :start (bound (:start fr)) :end (bound (:end fr))))
+          wins (:wins ctx)
+          idx (count @wins)
+          slot (long (:win-slot ctx))]
+      (swap! wins conj {:name name :agg aggf :args args :filter filt :part part :order order :frame frame
+                        :star (:star e) :coll (or (:coll (first args)) "BINARY")
+                        :gkey (strip-pos [(:part wd) (mapv (fn [t] [(:e t) (:desc t) (:nulls t)]) (:order wd))])})
+      (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
+          :coll (when (#{"min" "max" "first_value" "last_value" "nth_value" "lag" "lead"} name) (:coll (first args)))))))
+
+(defn- win-key-cmp
+  "Comparator over [pvals ovals] for a window group."
+  [spec]
+  (let [pc (row-comparator (map #(or (:coll %) "BINARY") (:part spec)))
+        oc (compare-keys-fn (map (fn [o] [(:coll o) (:desc o) (:nulls o)]) (:order spec)))]
+    (reify Comparator
+      (compare [_ a b]
+        (let [c (.compare ^Comparator pc (first a) (first b))]
+          (if (zero? c) (.compare ^Comparator oc (second a) (second b)) c))))))
+
+(defn- frame-offset [b ^objects env0 start? range?]
+  (let [x ((:f b) env0)
+        x (if (string? x) (v/apply-numeric-text x true) x)
+        x (if (and (not range?) (instance? Double x)) (v/integer-affinity (double x)) x)
+        what (if start? "starting" "ending")]
+    (if range?
+      (if (and (number? x) (>= (double x) 0.0)) x
+          (err (str "frame " what " offset must be a non-negative number")))
+      (if (and (instance? Long x) (>= (long x) 0)) (long x)
+          (err (str "frame " what " offset must be a non-negative integer"))))))
+
+(defn- pos-int-arg [x msg]
+  (let [x (if (string? x) (v/apply-numeric-text x true) x)
+        x (if (instance? Double x) (v/integer-affinity (double x)) x)]
+    (if (and (instance? Long x) (pos? (long x))) (long x) (err msg))))
+
+(defn- eval-partition
+  "Computes spec's values for one partition (positions -> snapshot indices), storing them into results."
+  [spec ^objects snaps prow okeys ^objects results widx env0]
+  (let [m (count prow)
+        name (:name spec)
+        snap (fn ^objects [k] (aget snaps (long (nth prow k))))
+        ;; peer groups
+        ocmp (compare-keys-fn (map (fn [o] [(:coll o) (:desc o) (:nulls o)]) (:order spec)))
+        grp (int-array m)
+        _ (dotimes [k m]
+            (when (pos? k)
+              (aset grp k (if (zero? (.compare ^Comparator ocmp (nth okeys (dec k)) (nth okeys k)))
+                            (aget grp (dec k)) (inc (aget grp (dec k)))))))
+        ng (if (pos? m) (inc (aget grp (dec m))) 0)
+        gs (int-array ng) ge (int-array ng)
+        _ (dotimes [k m] (let [g (aget grp k)] (when (or (zero? k) (not= g (aget grp (dec k)))) (aset gs g k)) (aset ge g k)))
+        argv (let [cache (object-array m)]
+               (fn [k] (or (aget cache k) (let [r (mapv #((:f %) (snap k)) (:args spec))] (aset cache k r) r))))
+        put! (fn [k val] (aset ^objects (aget ^objects (snap k) (long (:win-slot spec))) (long widx) val))
+        fr (or (:frame spec) {:type :range :start {:kind :unbounded-preceding} :end {:kind :current}})
+        ftype (:type fr)
+        range? (= ftype :range)
+        st (:start fr) en (:end fr)
+        soff (when (:f st) (frame-offset st env0 true range?))
+        eoff (when (:f en) (frame-offset en env0 false range?))
+        excl (:exclude fr)
+        o1 (first (:order spec))
+        desc (:desc o1)
+        ocoll (:coll o1)
+        key0 (fn [k] (first (nth okeys k)))
+        nonnull (when (and range? o1 (or soff eoff))
+                  (let [ks (filter #(not (nil? (key0 %))) (range m))]
+                    (if (seq ks) [(first ks) (last ks)] [0 -1])))
+        rtarget (fn [v off plus]
+                  (if (number? v) (v/arith (if plus :add :sub) v off) v))
+        range-start (fn [k off kind]
+                      (let [v (key0 k)]
+                        (if (nil? v) (aget gs (aget grp k))
+                            (let [t (rtarget v off (if desc (= kind :preceding) (= kind :following)))
+                                  [a b] nonnull]
+                              (loop [j a] (if (and (<= j b) (let [c (v/sql-cmp (key0 j) t ocoll)] (if desc (> c 0) (< c 0))))
+                                            (recur (inc j)) j))))))
+        range-end (fn [k off kind]
+                    (let [v (key0 k)]
+                      (if (nil? v) (aget ge (aget grp k))
+                          (let [t (rtarget v off (if desc (= kind :preceding) (= kind :following)))
+                                [a b] nonnull]
+                            (loop [j b] (if (and (>= j a) (let [c (v/sql-cmp (key0 j) t ocoll)] (if desc (< c 0) (> c 0))))
+                                          (recur (dec j)) j))))))
+        lo-of (fn [k]
+                (let [g (aget grp k)]
+                  (case (:kind st)
+                    :unbounded-preceding 0
+                    :current (if (= ftype :rows) k (aget gs g))
+                    :preceding (case ftype
+                                 :rows (- k (long soff))
+                                 :groups (aget gs (max 0 (- g (long soff))))
+                                 :range (range-start k soff :preceding))
+                    :following (case ftype
+                                 :rows (+ k (long soff))
+                                 :groups (if (< (+ g (long soff)) ng) (aget gs (+ g (long soff))) m)
+                                 :range (range-start k soff :following)))))
+        hi-of (fn [k]
+                (let [g (aget grp k)]
+                  (case (:kind en)
+                    :unbounded-following (dec m)
+                    :current (if (= ftype :rows) k (aget ge g))
+                    :preceding (case ftype
+                                 :rows (- k (long eoff))
+                                 :groups (if (>= (- g (long eoff)) 0) (aget ge (- g (long eoff))) -1)
+                                 :range (range-end k eoff :preceding))
+                    :following (case ftype
+                                 :rows (+ k (long eoff))
+                                 :groups (aget ge (min (dec ng) (+ g (long eoff))))
+                                 :range (range-end k eoff :following)))))
+        frame-pos (fn [k]
+                    (let [lo (max 0 (long (lo-of k))) hi (min (dec m) (long (hi-of k)))
+                          g (aget grp k)]
+                      (for [j (range lo (inc hi))
+                            :when (case excl
+                                    :current-row (not= j k)
+                                    :group (not= (aget grp j) g)
+                                    :ties (or (= j k) (not= (aget grp j) g))
+                                    true)]
+                        j)))]
+    (case name
+      "row_number" (dotimes [k m] (put! k (long (inc k))))
+      "rank" (dotimes [k m] (put! k (long (inc (aget gs (aget grp k))))))
+      "dense_rank" (dotimes [k m] (put! k (long (inc (aget grp k)))))
+      "percent_rank" (dotimes [k m] (put! k (if (> m 1) (/ (double (aget gs (aget grp k))) (double (dec m))) 0.0)))
+      "cume_dist" (dotimes [k m] (put! k (/ (double (inc (aget ge (aget grp k)))) (double m))))
+      "ntile" (dotimes [k m]
+                (let [nn (pos-int-arg (first (argv k)) "argument of ntile must be a positive integer")
+                      size (quot m nn)]
+                  (put! k (if (zero? size)
+                            (long (inc k))
+                            (let [nlarge (- m (* nn size)) ismall (* nlarge (inc size))]
+                              (if (< k ismall) (long (inc (quot k (inc size))))
+                                  (long (+ 1 nlarge (quot (- k ismall) size)))))))))
+      ("lag" "lead")
+      (dotimes [k m]
+        (let [a (argv k)
+              off (if (> (count a) 1) (nth a 1) 1)
+              off (if (instance? Double off) (v/integer-affinity (double off)) off)
+              dflt (when (> (count a) 2) (nth a 2))]
+          (put! k (if (instance? Long off)
+                    (let [j (if (= name "lag") (- k (long off)) (+ k (long off)))]
+                      (if (and (>= j 0) (< j m)) (first (argv j)) dflt))
+                    dflt))))
+      ("first_value" "last_value" "nth_value")
+      (dotimes [k m]
+        (let [ps (frame-pos k)]
+          (put! k (case name
+                    "first_value" (when-let [j (first ps)] (first (argv j)))
+                    "last_value" (when-let [j (last ps)] (first (argv j)))
+                    "nth_value" (let [nn (pos-int-arg (second (argv k)) "second argument to nth_value must be a positive integer")]
+                                  (when-let [j (first (drop (dec nn) ps))] (first (argv j))))))))
+      ;; aggregates over the frame
+      (let [filt (:filter spec)
+            step (fn [acc j] (when (or (nil? filt) (let [x (filt (snap j))] (and (not (nil? x)) (v/bool-value x))))
+                               ((:step acc) (argv j))))
+            running (and (= :unbounded-preceding (:kind st)) (nil? excl) (not (:f en)))]
+        (if running
+          (let [acc (make-acc spec) done (long-array [-1])]
+            (dotimes [k m]
+              (let [hi (min (dec m) (long (hi-of k)))]
+                (loop [j (inc (aget done 0))] (when (<= j hi) (step acc j) (recur (inc j))))
+                (aset done 0 (max (aget done 0) hi))
+                (put! k ((:final acc))))))
+          (dotimes [k m]
+            (let [acc (make-acc spec)]
+              (doseq [j (frame-pos k)] (step acc j))
+              (put! k ((:final acc))))))))))
+
+(defn- partition-by-cmp [xs same?]
+  (if (empty? xs) []
+      (reduce (fn [acc x] (let [l (peek acc)]
+                            (if (same? (peek l) x) (conj (pop acc) (conj l x)) (conj acc [x]))))
+              [[(first xs)]] (rest xs))))
+
+(defn run-windows
+  "Computes all window functions over the snapshots (env arrays). Returns the snapshots in output order."
+  [specs ^java.util.List snap-list win-slot nslots]
+  (let [snaps (.toArray snap-list)
+        n (alength snaps)
+        nspec (count specs)
+        env0 (object-array nslots)
+        specs (mapv #(assoc % :win-slot win-slot) specs)
+        gkeys (vec (distinct (map :gkey specs)))
+        rep (into {} (for [g gkeys] [g (first (filter #(= g (:gkey %)) specs))]))
+        keys-of (into {} (for [g gkeys]
+                           (let [s (rep g)]
+                             [g (mapv (fn [^objects sn] [(mapv #((:f %) sn) (:part s)) (mapv #((:f %) sn) (:order s))])
+                                      snaps)])))]
+    (dotimes [i n] (aset ^objects (aget snaps i) (long win-slot) (object-array nspec)))
+    (doseq [g gkeys]
+      (let [s (rep g)
+            ks (keys-of g)
+            cmp (win-key-cmp s)
+            pc (row-comparator (map #(or (:coll %) "BINARY") (:part s)))
+            idx (sort (fn [a b] (let [c (.compare ^Comparator cmp (nth ks a) (nth ks b))] (if (zero? c) (compare a b) c)))
+                      (range n))
+            parts (partition-by-cmp idx (fn [a b] (zero? (.compare ^Comparator pc (first (nth ks a)) (first (nth ks b))))))]
+        (doseq [prow parts]
+          (let [prow (vec prow) okeys (mapv #(second (nth ks %)) prow)]
+            (doseq [[wi sp] (map-indexed vector specs) :when (= g (:gkey sp))]
+              (eval-partition sp snaps prow okeys nil wi env0))))))
+    (let [cmps (mapv (fn [g] [(keys-of g) (win-key-cmp (rep g))]) gkeys)
+          order (sort (fn [a b]
+                        (loop [cs cmps]
+                          (if (empty? cs) (compare a b)
+                              (let [[ks c] (first cs) r (.compare ^Comparator c (nth ks a) (nth ks b))]
+                                (if (zero? r) (recur (rest cs)) r)))))
+                      (range n))]
+      (map #(aget snaps (long %)) order))))
+
+
 ;; ====================================================================== SELECT compilation
 
-(defn- table-of [ctx name]
-  (get-in (:db ctx) [:tables (lc name)]))
+(defn- table-of
+  ([ctx name] (table-of ctx name nil))
+  ([ctx name sch]
+   (let [t (get-in (:db ctx) [:tables (lc name)])
+         ls (lc sch)
+         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
+     (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
   (get-in (:db ctx) [:views (lc name)]))
@@ -1058,11 +1364,66 @@
 
 (declare index-order-rows check-indexed-by)
 
+(defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
+  {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
+   :rows (fn [db arg-values]) -> seq of row vectors of the visible columns}.
+  Arguments are bound to the hidden columns in order; the hidden columns read back the arguments."}
+  tvf-resolvers (atom []))
+
+(defn- tvf-entry [db lname]
+  (some #(% lname db) @tvf-resolvers))
+
+(defn dedup-names
+  "sqlite3ColumnsFromExprList: makes column names unique (case-insensitively) by appending :N."
+  [names]
+  (let [seen (java.util.HashSet.)]
+    (mapv (fn [^String n]
+            (loop [nm n cnt 1]
+              (if (.contains seen (lc nm))
+                (let [base (let [j (loop [j (dec (count nm))] (if (and (> j 0) (Character/isDigit (.charAt nm j))) (recur (dec j)) j))]
+                             (if (and (pos? (count nm)) (= \: (.charAt nm (int j)))) (subs nm 0 j) nm))]
+                  (recur (str base ":" cnt) (inc cnt)))
+                (do (.add seen (lc nm)) nm))))
+          names)))
+
+(declare compile-cte)
+
+(defn- sub-source [sub alias tname cols]
+  (let [cols (vec cols)]
+    {:alias (lc alias) :tname tname :cols cols :lcols (mapv lc cols)
+     :affs (:affs sub) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
+
 (defn- make-source [ctx item]
   (cond
+    (:tvf item)
+    (let [lname (lc (:tvf item))
+          ent (or (tvf-entry (:db ctx) lname) (err (str "no such table: " (:tvf item))))
+          nargs (count (:args item))
+          _ (when (> nargs (count (:hidden ent)))
+              (err (str "too many arguments on " (:tvf item) "() - max " (count (:hidden ent)))))
+          cols (vec (concat (:cols ent) (:hidden ent)))
+          slot (new-slot! ctx)]
+      {:alias (lc (or (:alias item) (:tvf item))) :tname (:tvf item) :cols cols :lcols (mapv lc cols)
+       :affs (vec (take (count cols) (concat (:affs ent) (repeat nil)))) :colls (vec (repeat (count cols) nil))
+       :slot slot :rowid? false :ncols (count cols) :hidden (set (map lc (:hidden ent)))
+       :tvf ent :tvf-args (:args item)})
+    (and (:table item) (nil? (:schema item)) (get (:ctes ctx) (lc (:table item))))
+    (let [lname (lc (:table item))
+          cte (get (:ctes ctx) lname)]
+      (if (:rec-ref item)
+        (let [rc (get (:rec-cells ctx) lname)
+              cell (:cell rc)]
+          (assoc (sub-source {:affs (:affs rc) :colls (:colls rc) :rows-fn (fn [_] @cell) :lazy true}
+                             (or (:alias item) (:table item)) (:name cte) (:cols rc))
+                 :slot (new-slot! ctx)))
+        (do
+          (when-let [m (get (:cte-err ctx) lname)] (err (str m (:name cte))))
+          (let [sub (compile-cte ctx cte)]
+            (assoc (sub-source sub (or (:alias item) (:table item)) (:name cte) (:cte-cols sub))
+                   :slot (new-slot! ctx))))))
     (:table item)
     (let [name (:table item)
-          tbl (table-of ctx name)
+          tbl (table-of ctx name (:schema item))
           view (when-not tbl (view-of ctx name))]
       (cond
         tbl (let [slot (new-slot! ctx)
@@ -1074,17 +1435,29 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))) (:select view))
                    slot (new-slot! ctx)
-                   cols (or (:cols view) (:names sub))]
+                   cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
-        :else (err (str "no such table: " name))))
+        :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
+    (:nested item)
+    (let [items (:nested item)]
+      (if (and (= 1 (count items)) (nil? (:alias item)))
+        (make-source ctx (merge (first items) (select-keys item [:join :on :using])))
+        (let [sel {:body {:type :core :cols [{:star true}] :from items}}
+              sub (compile-select ctx sel)
+              slot (new-slot! ctx)
+              cols (dedup-names (:names sub))
+              ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
+              quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
+                            {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
+          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals))))
     (:subq item)
     (let [sub (compile-select ctx (:subq item))
           slot (new-slot! ctx)
-          cols (:names sub)]
+          cols (dedup-names (:names sub))]
       {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
        :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
     :else (err "unsupported FROM item")))
@@ -1131,7 +1504,7 @@
             (err (str "ambiguous column name: main." (:tname dup) "." col))
           (for [s sources, i (range (:ncols s))
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
-            {:star-col [s i] :name (nth (:cols s) i)})))
+            {:star-col [s i] :name (nth (:cols s) i) :unq true})))
         (:star rc)
         (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
           (when-not s (err (str "no such table: " (:table rc))))
@@ -1331,6 +1704,15 @@
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
+    (:tvf src)
+    (let [ent (:tvf src)
+          argfs (mapv #(:f (cx ctx %)) (:tvf-args src))
+          nh (count (:hidden ent))
+          db (:db ctx)]
+      (fn [env]
+        (let [args (mapv #(% env) argfs)
+              hid (vec (take nh (concat args (repeat nil))))]
+          (map (fn [r] (into (vec r) hid)) ((:rows ent) db args)))))
     (:table src)
     (let [tname (lc (:tname src))
           ib (:indexed-by src)]
@@ -1350,10 +1732,12 @@
                                        (covering-index (:db ctx) src (:scan-refs src))))))]
           (if plan
             (fn [_] (index-order-rows (:db ctx) plan))
-            (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))
+            (if (:virtual (:table src))
+              (let [t (:table src)] (fn [_] (table-rows t)))
+              (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
     (:sub src)
     (let [sub (:sub src)]
-      (if (:correlated sub)
+      (if (or (:correlated sub) (:lazy sub))
         (fn [env] (run-select-rows sub env))
         (let [cache (volatile! nil)]
           (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))))
@@ -1371,6 +1755,8 @@
       {:names (vec (for [i (range n)] (str "column" (inc i))))
        :affs (vec (repeat n nil)) :colls (vec (repeat n nil)) :ecolls (vec (repeat n nil))
        :exprs (first rows)
+       :outer-refs (atom false)
+       :order-info [[] []]
        :run (fn [env emit]
               (doseq [r rows] (emit (mapv #((:f %) env) r) nil)))})
     (let [from (:from core)
@@ -1385,18 +1771,28 @@
                     s (nth srcs i)
                     jt (:join item)
                     using (cond (:using item) (:using item)
-                                (#{:natural :natural-left} jt)
+                                (#{:natural :natural-left :natural-right :natural-full} jt)
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
                                   (filter #(prev-cols (lc %)) (:cols s)))
                                 :else nil)
-                    s (if using (update s :hidden into (map lc using)) s)]
-                (recur (inc i) (assoc srcs i s) (conj conds using)))))
+                    s (if using (update s :hidden into (map lc using)) s)
+                    srcs (assoc srcs i s)
+                    ;; RIGHT/FULL JOIN ... USING: the unqualified column is coalesce(left, right)
+                    srcs (if (and using (#{:right :full :natural-right :natural-full} jt))
+                           (reduce (fn [srcs u]
+                                     (let [lu (lc u)
+                                           li (first (filter #(find-in-source (nth srcs %) lu) (range i)))
+                                           ri (find-in-source s lu)]
+                                       (if (and li ri) (assoc-in srcs [li :coalesce lu] [(:slot s) ri]) srcs)))
+                                   srcs using)
+                           srcs)]
+                (recur (inc i) srcs (conj conds using)))))
           scope {:sources sources :parent (:scope ctx)}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
-          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left} (:join item)))))
-          _ (when (some #{:right :full :natural-right :natural-full} (map :join from))
-              (err "RIGHT and FULL OUTER JOINs are not supported"))
+          left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
+          right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
+          any-rj (some true? right-join)
           rcols (expand-star ctx2 sources (:cols core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
@@ -1404,16 +1800,25 @@
           aggs (atom [])
           agg-slot (new-slot! ctx)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
+          wins (atom [])
+          win-slot (new-slot! ctx)
+          windefs (reduce (fn [m [n d]] (assoc m (lc n) (resolve-window-def (assoc actx :windefs m) d)))
+                          {} (:windows core))
+          wctx (assoc actx :wins wins :win-slot win-slot :windefs windefs)
           ;; result column compile
           rcomp (mapv (fn [rc]
                         (if-let [[s i] (:star-col rc)]
-                          (let [sl (long (:slot s)) i (long i)]
+                          (let [sl (long (:slot s)) i (long i)
+                                [aslot aidx] (when (:unq rc) (get (:coalesce s) (nth (:lcols s) i)))]
                             (when-let [refs (:refs ctx)] (swap! refs conj [sl i]))
-                            {:f (fn [^objects env] (nth (aget env sl) i))
+                            {:f (if aslot
+                                  (let [aslot (long aslot) aidx (long aidx)]
+                                    (fn [^objects env] (let [x (nth (aget env sl) i)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+                                  (fn [^objects env] (nth (aget env sl) i)))
                              :aff (nth (:affs s) i)
                              :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
                              :col {:slot (:slot s) :idx i :depth 0}})
-                          (cx actx (:e rc))))
+                          (cx wctx (:e rc))))
                       rcols)
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
@@ -1449,7 +1854,7 @@
                           (cond
                             (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (condf c))
                             (seq using)
-                            (let [preds (for [u using]
+                            (let [preds (doall (for [u using]
                                           (let [lu (lc u)
                                                 left (first (filter #(find-in-source % lu) (take i sources)))
                                                 _ (when (or (nil? left) (nil? (find-in-source s lu)))
@@ -1459,7 +1864,7 @@
                                                       :aff (nth (:affs left) li) :coll (or (nth (:colls left) li) "BINARY")}
                                                 rcmp {:f (let [sl (long (:slot s)) ri (long ri)] (fn [^objects env] (nth (aget env sl) ri)))
                                                       :aff (nth (:affs s) ri) :coll (or (nth (:colls s) ri) "BINARY")}]
-                                            (:f (make-compare :eq lcmp rcmp))))]
+                                            (:f (make-compare :eq lcmp rcmp)))))]
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil))))
           nagg-before (count @aggs)
@@ -1483,12 +1888,14 @@
                     (vec (map-indexed
                           (fn [i term]
                             (let [ri (order-term-index ctx2 term names aliases (ordinal (inc i)))
-                                  c (if ri (nth rcomp ri) (cx actx (:e term)))]
+                                  c (if ri (nth rcomp ri) (cx wctx (:e term)))]
                               {:f (:f c) :ri ri :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
                           order)))
           nsrc (count sources)
-          rowid-order (when (and order-c (= 1 nsrc) (:table (first sources)) (not is-agg) (not (:distinct core))
+          win-specs @wins
+          win? (boolean (seq win-specs))
+          rowid-order (when (and order-c (= 1 nsrc) (:table (first sources)) (not is-agg) (not (:distinct core)) (not win?)
                                  (nil? (:indexed-by (first sources))))
                         (let [o (first order-c) col (:col o) s0 (first sources)]
                           (when (and col (= (:slot col) (:slot s0)) (zero? (long (:depth col)))
@@ -1515,8 +1922,22 @@
           having-f (when having-c (condf having-c))
           distinct (:distinct core)
           slots (mapv :slot sources)
+          nslots-a (:slots ctx)
+          produce (if win?
+                    (fn [^objects env ^java.util.List sfl _ _] (.add sfl (aclone env)))
+                    (fn [^objects env _ emit seen]
+                      (let [row (mapv #(% env) rfs)]
+                        (when (or (nil? seen) (.add ^TreeSet seen row))
+                          (emit row (when (seq ofs) (mapv #(% env) ofs)))))))
+          finish (fn [^java.util.List sfl emit seen]
+                   (when win?
+                     (doseq [^objects env (run-windows win-specs sfl win-slot (+ 2 (long @nslots-a)))]
+                       (let [row (mapv #(% env) rfs)]
+                         (when (or (nil? seen) (.add ^TreeSet seen row))
+                           (emit row (when (seq ofs) (mapv #(% env) ofs))))))))
           ;; nested loop over sources
           scan (fn scan [^objects env k]
+                 (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
                            (if (= i nsrc)
                              (when (or (nil? where-f)
@@ -1525,18 +1946,33 @@
                              (let [slot (long (nth slots i))
                                    onf (nth on-fns i)
                                    lj (nth left-join i)
-                                   matched (boolean-array 1)]
+                                   ^java.util.HashSet rset (when rsets (nth rsets i))
+                                   matched (boolean-array 1)
+                                   cnt (long-array 1)]
                                (doseq [row ((nth scanners i) env)]
                                  (aset env slot row)
                                  (when (or (nil? onf) (let [r (onf env)] (and (not (nil? r)) (v/bool-value r))))
                                    (aset matched 0 true)
-                                   (level (inc i))))
+                                   (when rset (.add rset (aget cnt 0)))
+                                   (level (inc i)))
+                                 (aset cnt 0 (inc (aget cnt 0))))
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
                                  (level (inc i))))))]
                    (when (or (nil? where-pre) (where-pre env))
                      (doseq [sub in-pre] (doall (run-select-rows sub env)))
-                     (level 0))))
+                     (level 0)
+                     ;; RIGHT/FULL JOIN fix-up: right rows never matched, with NULLs for every table to the left
+                     (when rsets
+                       (dotimes [i nsrc]
+                         (when (nth right-join i)
+                           (let [^java.util.HashSet rset (nth rsets i)
+                                 slot (long (nth slots i))]
+                             (doseq [[j row] (map-indexed vector ((nth scanners i) env))]
+                               (when-not (.contains rset (long j))
+                                 (dotimes [q i] (aset env (long (nth slots q)) (nth null-rows q)))
+                                 (aset env slot row)
+                                 (level (inc i))))))))))))
           run
           (if is-agg
             (fn [^objects env emit]
@@ -1552,7 +1988,10 @@
                                         (let [g (new-group)] (.put ^TreeMap groups key g) g)))
                                   (or @single (vreset! single (new-group))))
                               results (mapv (fn [acc spec]
-                                              ((:step acc) (mapv #((:f %) env) (:args spec))))
+                                              (if (or (nil? (:filter spec))
+                                                      (let [x ((:filter spec) env)] (and (not (nil? x)) (v/bool-value x))))
+                                                ((:step acc) (mapv #((:f %) env) (:args spec)))
+                                                false))
                                             (:accs g) agg-specs)
                               updated (when control (nth results control))]
                           (when (if control updated (not (aget ^booleans (:init g) 0)))
@@ -1560,22 +1999,20 @@
                             (snapshot! g)))))
                 (let [gs (if groups (vals groups) [(or @single (new-group))])
                       seen (when distinct (TreeSet. ^Comparator (row-comparator (map #(or (:coll %) "BINARY") rcomp))))]
-                  (doseq [g gs]
-                    (let [^objects sn (:snap g)]
-                      (dotimes [i nsrc]
-                        (aset env (long (nth slots i)) (or (aget sn i) (nth null-rows i)))))
-                    (aset env (long agg-slot) (object-array (map #((:final %)) (:accs g))))
-                    (when (or (nil? having-f) (let [h (having-f env)] (and (not (nil? h)) (v/bool-value h))))
-                      (let [row (mapv #(% env) rfs)]
-                        (when (or (nil? seen) (.add ^TreeSet seen row))
-                          (emit row (when (seq ofs) (mapv #(% env) ofs))))))))))
+                  (let [sfl (java.util.ArrayList.)]
+                    (doseq [g gs]
+                      (let [^objects sn (:snap g)]
+                        (dotimes [i nsrc]
+                          (aset env (long (nth slots i)) (or (aget sn i) (nth null-rows i)))))
+                      (aset env (long agg-slot) (object-array (map #((:final %)) (:accs g))))
+                      (when (or (nil? having-f) (let [h (having-f env)] (and (not (nil? h)) (v/bool-value h))))
+                        (produce env sfl emit seen)))
+                    (finish sfl emit seen)))))
             (fn [^objects env emit]
-              (let [seen (when distinct (TreeSet. ^Comparator (row-comparator (map #(or (:coll %) "BINARY") rcomp))))]
-                (scan env
-                      (fn []
-                        (let [row (mapv #(% env) rfs)]
-                          (when (or (nil? seen) (.add ^TreeSet seen row))
-                            (emit row (when (seq ofs) (mapv #(% env) ofs))))))))))]
+              (let [seen (when distinct (TreeSet. ^Comparator (row-comparator (map #(or (:coll %) "BINARY") rcomp))))
+                    sfl (java.util.ArrayList.)]
+                (scan env (fn [] (produce env sfl emit seen)))
+                (finish sfl emit seen))))]
       {:names names
        :affs (mapv :aff rcomp)
        :colls (mapv :coll rcomp)
@@ -1583,6 +2020,11 @@
        :exprs rcomp
        :order-specs (mapv (fn [o] [(:coll o) (:desc o) (:nulls o)]) order-c)
        :presorted (boolean rowid-order)
+       :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
+       :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
+                                    (cons [(:alias s) (nth (:lcols s) i)]
+                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
+                         rcols)
        :outer-refs outer-refs
        :run run}))))
 
@@ -1605,6 +2047,7 @@
           merge? (:merge ctx)]
       {:names (:names l) :affs (:affs l) :colls colls :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
+       :order-infos (into (or (:order-infos l) [(:order-info l)]) (or (:order-infos r) [(:order-info r)]))
        :correlated (or (:correlated l) (:correlated r))
        :rows (fn [env]
                (let [lr ((:rows l) env) rr ((:rows r) env)]
@@ -1640,8 +2083,165 @@
         rows (if (and limit (>= (long limit) 0)) (take limit rows) rows)]
     rows))
 
+(declare compile-select* expr-equal?)
+
+(defn- compound-order-index
+  "resolveCompoundOrderBy: an integer, else an AS alias or an equal result expression of any SELECT,
+  the left-most first."
+  [ctx e n infos nth-word]
+  (if (and (= :lit (:op e)) (= :int (:kind e)))
+    (let [k (long (lit-value e))]
+      (if (or (< k 1) (> k n))
+        (err (str nth-word " ORDER BY term out of range - should be between 1 and " n))
+        (dec k)))
+    (let [strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table :dq)
+                                   (map? e) (into {} (for [[k x] e] [k (sq x)]))
+                                   (vector? e) (mapv sq e)
+                                   :else e))
+          e0 (strip-q e)]
+      (some (fn [[aliases asts]]
+              (or (when (and (= :col (:op e)) (nil? (:table e)))
+                    (let [i (.indexOf ^java.util.List aliases (lc (:name e)))] (when (>= i 0) i)))
+                  (first (keep-indexed (fn [i a] (when (and a (expr-equal? (strip-q a) e0)) i)) asts))))
+            infos))))
+
+(def ^:dynamic *with* nil)
+
+(defn add-ctes [ctx w]
+  (let [env (atom nil)
+        entries (reduce (fn [m c]
+                          (let [ln (lc (:name c))]
+                            (when (contains? m ln) (err (str "duplicate WITH table name: " (:name c))))
+                            (assoc m ln (assoc c :env env))))
+                        {} (:ctes w))
+        all (merge (:ctes ctx) entries)]
+    (reset! env all)
+    (assoc ctx :ctes all)))
+
 (defn compile-select
-  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :run-rows (fn [env limit-hint])}."
+  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :rows-fn (fn [env])}."
+  [ctx sel]
+  (if-let [w (:with sel)]
+    (compile-select* (add-ctes ctx w) (dissoc sel :with))
+    (compile-select* ctx sel)))
+
+(defn- compound-terms
+  "Flattens a left-deep compound body into [[nil t0] [op1 t1] ...]."
+  [body]
+  (if (= :compound (:type body))
+    (conj (compound-terms (:left body)) [(:op body) (:right body)])
+    [[nil body]]))
+
+(defn- rebuild-compound [terms]
+  (reduce (fn [l [op t]] {:type :compound :op op :left l :right t}) (second (first terms)) (rest terms)))
+
+(defn- self-refs [core lname]
+  (when (= :core (:type core))
+    (count (filter #(and (:table %) (nil? (:schema %)) (= lname (lc (:table %)))) (:from core)))))
+
+(defn- cte-check-cols [cte names]
+  (when (and (:cols cte) (not= (count (:cols cte)) (count names)))
+    (err (str "table " (:name cte) " has " (count names) " values for " (count (:cols cte)) " columns")))
+  (dedup-names (or (:cols cte) names)))
+
+(defn compile-cte
+  "Compiles a CTE reference. Returns a compiled select with :cte-cols."
+  [ctx cte]
+  (let [lname (lc (:name cte))
+        sel (:select cte)
+        body (:body sel)
+        ctx (assoc ctx :ctes @(:env cte))
+        terms (compound-terms body)
+        last-op (first (last terms))
+        rec-idx (when (#{:union :union-all} last-op)
+                  (loop [i (dec (count terms)) found nil]
+                    (if (<= i 0)
+                      found
+                      (let [[op t] (nth terms i)
+                            n (or (self-refs t lname) 0)]
+                        (cond (> n 1) (err (str "multiple references to recursive table: " (:name cte)))
+                              (and (= op last-op) (pos? n)) (recur (dec i) i)
+                              :else found)))))]
+    (if-not rec-idx
+      (let [sub (compile-select (assoc ctx :cte-err (assoc (:cte-err ctx) lname "circular reference: ")) sel)]
+        (assoc sub :cte-cols (cte-check-cols cte (:names sub))))
+      (let [setup-sel {:body (rebuild-compound (subvec terms 0 rec-idx))}
+            setup (compile-select (assoc ctx :cte-err (assoc (:cte-err ctx) lname "circular reference: ")) setup-sel)
+            cols (cte-check-cols cte (:names setup))
+            cell (volatile! nil)
+            rctx (assoc ctx
+                        :cte-err (assoc (:cte-err ctx) lname "recursive reference in a subquery: ")
+                        :rec-cells (assoc (:rec-cells ctx) lname {:cell cell :cols cols :affs (:affs setup) :colls (:colls setup)}))
+            recs (vec (for [[_ t] (subvec terms rec-idx)]
+                        (let [t (update t :from (fn [items] (mapv #(if (and (:table %) (nil? (:schema %)) (= lname (lc (:table %))))
+                                                                      (assoc % :rec-ref true) %) items)))]
+                          (when (or (seq (:group t)) (core-has-agg? t))
+                            (err "recursive aggregate queries not supported"))
+                          (let [r (compile-select rctx {:body t})]
+                            (when (not= (count (:names r)) (count cols))
+                              (err (str "SELECTs to the left and right of "
+                                        (case last-op :union "UNION" :union-all "UNION ALL")
+                                        " do not have the same number of result columns")))
+                            r))))
+            colls (mapv #(or % "BINARY") (:colls setup))
+            names (:names setup)
+            aliases (mapv lc names)
+            specs (when (:order sel)
+                    (vec (map-indexed
+                          (fn [i term]
+                            (let [e (:e term)
+                                  [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
+                                  infos (for [[_ t] terms :when (= :core (:type t))]
+                                          [(mapv #(lc (:alias %)) (:cols t)) (mapv :e (:cols t))])
+                                  ri (or (compound-order-index ctx e (count names) infos (ordinal (inc i)))
+                                         (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
+                              [ri [(or coll (nth colls ri)) (:desc term) (:nulls term)]]))
+                          (:order sel))))
+            kcmp (when specs (compare-keys-fn (map second specs)))
+            rowcmp (row-comparator colls)
+            union? (= last-op :union)
+            limit-e (:limit sel) offset-e (:offset sel)]
+        {:names names :affs (:affs setup) :colls (:colls setup) :ecolls (:ecolls setup)
+         :correlated (or (:correlated setup) (some :correlated recs))
+         :lazy true
+         :cte-cols cols
+         :rows-fn
+         (fn [env]
+           (let [limit (eval-limit ctx limit-e "LIMIT")
+                 offset (or (eval-limit ctx offset-e "OFFSET") 0)
+                 seqno (long-array 1)
+                 queue (if kcmp
+                         (java.util.PriorityQueue. 16 (reify Comparator
+                                                        (compare [_ a b]
+                                                          (let [c (.compare ^Comparator kcmp (first a) (first b))]
+                                                            (if (zero? c)
+                                                              (if union?
+                                                                (.compare ^Comparator rowcmp (nth a 2) (nth b 2))
+                                                                (Long/compare (long (second a)) (long (second b))))
+                                                              c)))))
+                         (java.util.ArrayDeque.))
+                 seen (when union? (TreeSet. ^Comparator rowcmp))
+                 add! (fn [row]
+                        (when (or (nil? seen) (.add ^TreeSet seen row))
+                          (let [n (aget seqno 0)]
+                            (aset seqno 0 (inc n))
+                            (.add ^java.util.Queue queue (if kcmp [(mapv #(nth row (first %)) specs) n row] row)))))
+                 poll (fn [] (let [x (.poll ^java.util.Queue queue)] (if kcmp (nth x 2) x)))
+                 run-rec (fn [row]
+                           (vreset! cell [(conj (vec row) nil)])
+                           (doseq [r recs] (doseq [x (run-select-rows r env)] (add! x))))]
+             (doseq [r (run-select-rows setup env)] (add! r))
+             (letfn [(step [skip emitted]
+                       (lazy-seq
+                        (when (and (not (.isEmpty ^java.util.Collection queue))
+                                   (or (nil? limit) (neg? (long limit)) (< (long emitted) (long limit))))
+                          (let [row (poll)]
+                            (if (pos? (long skip))
+                              (do (run-rec row) (step (dec (long skip)) emitted))
+                              (cons row (lazy-seq (run-rec row) (step skip (inc (long emitted))))))))))]
+               (step offset 0))))}))))
+
+(defn- compile-select*
   [ctx sel]
   (let [body (:body sel)
         order (:order sel)
@@ -1657,7 +2257,7 @@
                           (fn [i term]
                             (let [e (:e term)
                                   [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
-                                  ri (or (order-term-index ctx (assoc term :e e) names aliases (ordinal (inc i)))
+                                  ri (or (compound-order-index ctx e (count names) (:order-infos b) (ordinal (inc i)))
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
                           order)))
