@@ -1571,13 +1571,21 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                              :in-view (or (:db view) (if (:temp view) "temp" "main")))
+                                       (:select view))
+                   _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
+                       (err (str "expected " (count (:cols view)) " columns for '" (:name view) "' but got " (count (:names sub)))))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
-        :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
+        (and (nil? (:schema item)) (tvf-entry (:db ctx) (lc name)))
+        (make-source ctx (assoc item :tvf name :args []))
+        :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
+                                                 (:in-view ctx) (str (:in-view ctx) "." name)
+                                                 :else name)))))
     (:nested item)
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))

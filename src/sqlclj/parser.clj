@@ -944,7 +944,9 @@
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
-                                    (when (= :eof (:t t)) (syntax-error p t))
+                                    (when (or (= :eof (:t t)) (= :op (:t t))
+                                              (and (= :id (:t t)) (#{"NULL"} (:u t))))
+                                      (syntax-error p t))
                                     (str sign (:v t))))
                            v (cond (accept-op p "=") (pval)
                                    (accept-op p "(") (let [x (pval)] (expect-op p ")") x)

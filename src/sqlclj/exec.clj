@@ -1059,7 +1059,19 @@
                 :create-view (let [ln (lc (:name st))]
                                (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
-                                     :else (do (e/compile-select (new-ctx db sql) (:select st))
+                                     :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
+                                                 (err "parameters are not allowed in views"))
+                                               (when-not (or (:temp st) (:db st))
+                                                 (let [att (set (sch/attached-names db))
+                                                       refs (atom nil)]
+                                                   (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
+                                                                                             (string? (:table x)))
+                                                                                    (let [k (lc (:table x))
+                                                                                          dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
+                                                                                      (when dbn (reset! refs dbn))))
+                                                                            x)
+                                                                          (:select st))
+                                                   (when @refs (err (str "view " (:name st) " cannot reference objects in database " @refs)))))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))

@@ -196,7 +196,7 @@
         (if (nil? v) (one db n (long (pget db n 0)))
             (let [u (lc v)
                   x (case u "none" 0 "full" 1 "incremental" 2 (or (int-value v) 0))]
-              (none (if (empty? (get-in db [:pages "main"])) (pset db n x) db))))
+              {:db (pset db n x) :names nil :rows [] :writes true}))
         "encoding" (if (nil? v) (one db n "UTF-8") (none db))
         "integrity_check" (if (and v (not (int-value v)) (not (find-table db v)))
                             (err (str "no such table: " v))
