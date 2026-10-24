@@ -500,7 +500,7 @@
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
-                  (recur db2 (rest rs) (inc changes)))))))))))
+                  (recur (assoc db2 :last-rowid rid) (rest rs) (inc changes)))))))))))
 
 ;; ====================================================================== UPDATE / DELETE
 
@@ -983,7 +983,7 @@
       (if (seq (:returning st))
         (doseq [r rows] (write-row out r))
         (emit-line out (str "changes: " (:changes db2))))
-      db2)
+      (update db2 :total-changes (fnil + 0) (long (or (:changes db2) 0))))
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)

@@ -381,7 +381,7 @@
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
                     esc (when (accept-kw p "ESCAPE") (parse-expr-prec p 5))]
-                (recur (node {:op :like :o (keyword (str/lower-case u)) :e left :pat r :esc esc :not negate}
+                (recur (node {:op :like :o (keyword (str/lower-case u)) :ostr (:v t) :e left :pat r :esc esc :not negate}
                              s (prev-end p))))
               "BETWEEN"
               (let [lo (loop [lo (parse-expr-prec p 3)]

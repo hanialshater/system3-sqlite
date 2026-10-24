@@ -8,6 +8,7 @@
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
             [sqlclj.ext :as ext]
+            [sqlclj.printf :as pf]
             [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
@@ -435,8 +436,9 @@
           fx (:f x) fp (:f pt) fe (:f es)
           glob? (= :glob (:o e))
           negate (:not e)]
-      (when (#{:match :regexp} (:o e)) (err (str "no such function: " (name (:o e)))))
+      (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
       (mk (fn [env]
+            (when (= :match (:o e)) (err "unable to use function MATCH in the requested context"))
             (let [s (fx env) pat (fp env) esc (when fe (fe env))]
               (if (or (nil? s) (nil? pat) (and fe (nil? esc)))
                 nil
@@ -768,8 +770,8 @@
         (cond
           (or (< r -4503599627370496.0) (> r 4503599627370496.0)) r
           (= n 0) (let [r2 (double (long (+ (Math/abs r) 0.5)))] (if (neg? r) (- r2) r2))
-          :else (let [s (format (str "%." n "f") r)]
-                  (first (num/atof (num/real->text (Double/parseDouble s))))))))))
+          :else (let [s (pf/sql-printf "%!.*f" [(long n) r])]
+                  (first (num/atof s))))))))
 
 (defn- hex-impl [x]
   (if (nil? x) "" (v/hex-upper (v/bytes-of x))))
@@ -865,8 +867,7 @@
       (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
-  #{"random" "randomblob" "changes" "total_changes" "last_insert_rowid"
-    "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
+  #{    "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
 
 (defn- function-level-error
   "Errors SQLite reports for the function node itself (before resolving its arguments)."
@@ -939,6 +940,11 @@
         (let [fs (mapv :f args)]
           (mk (fn [env] (loop [fs fs] (when (seq fs) (let [x ((first fs) env)] (if (nil? x) (recur (rest fs)) x)))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
+        ("changes" "total_changes" "last_insert_rowid")
+        (let [db (:db ctx)
+              val (case name "changes" (long (or (:changes db) 0)) "total_changes" (long (or (:total-changes db) 0))
+                    (long (or (:last-rowid db) 0)))]
+          (mk (fn [_] val)))
         ("iif" "if")
         (let [[fc ft fe] (cons (condf (first args)) (map :f (rest args)))]
           (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
