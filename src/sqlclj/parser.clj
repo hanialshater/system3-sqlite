@@ -475,8 +475,27 @@
         (when (at-kw? p "WINDOW") (fail! p))
         {:type :core :distinct distinct :cols cols :from from :where where :group group :having having}))))
 
+(defn parse-with
+  "After WITH: [RECURSIVE] cte, ... Returns {:recursive :ctes [{:name :cols :select}]}."
+  [^P p]
+  (let [rec (boolean (accept-kw p "RECURSIVE"))
+        ctes (loop [acc []]
+               (let [name (parse-nm p)
+                     cols (when (accept-op p "(")
+                            (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
+                              (expect-op p ")") c))
+                     _ (expect-kw p "AS")
+                     _ (cond (accept-kw p "MATERIALIZED") nil
+                             (at-kw? p "NOT") (do (advance! p) (expect-kw p "MATERIALIZED")))
+                     _ (expect-op p "(")
+                     sel (parse-select p)
+                     _ (expect-op p ")")
+                     acc (conj acc {:name name :cols cols :select sel})]
+                 (if (accept-op p ",") (recur acc) acc)))]
+    {:recursive rec :ctes ctes}))
+
 (defn parse-select [^P p]
-  (let [with (when (at-kw? p "WITH") (fail! p))
+  (let [with (when (at-kw? p "WITH") (advance! p) (parse-with p))
         first-core (parse-select-core p)
         body (loop [left first-core]
                (let [op (cond (at-kw? p "UNION") (do (advance! p) (if (accept-kw p "ALL") :union-all :union))
@@ -492,7 +511,8 @@
                            (cond (accept-kw p "OFFSET") [a (parse-expr p)]
                                  (accept-op p ",") [(parse-expr p) a]
                                  :else [a nil])))]
-    {:body body :order order :limit limit :offset offset}))
+    (cond-> {:body body :order order :limit limit :offset offset}
+      with (assoc :with with))))
 
 ;; ------------------------------------------------------------------ DDL
 
@@ -745,7 +765,14 @@
       (fail! p)
       (case (:u t)
         ("SELECT" "VALUES") {:kind :select :select (parse-select p)}
-        "WITH" (fail! p)
+        "WITH" (do (advance! p)
+                   (let [w (parse-with p)
+                         t2 (tok p)]
+                     (if (and (= :id (:t t2)) (#{"SELECT" "VALUES"} (:u t2)))
+                       {:kind :select :select (assoc (parse-select p) :with w)}
+                       (if (and (= :id (:t t2)) (#{"INSERT" "REPLACE" "UPDATE" "DELETE"} (:u t2)))
+                         (assoc (parse-statement* p) :with w)
+                         (fail! p)))))
         "INSERT" (do (advance! p)
                      (let [or-action (when (accept-kw p "OR")
                                        (let [t (advance! p)]

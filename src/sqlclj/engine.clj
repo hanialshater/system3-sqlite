@@ -61,11 +61,16 @@
                     (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
         (let [srcs (:sources scope)
               hits (if ltq
-                     (for [s srcs :when (= (:alias s) ltq)
-                           :let [i (find-in-source s lname)
-                                 i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
-                           :when i]
-                       [s i])
+                     (concat
+                      (for [s srcs :when (= (:alias s) ltq)
+                            :let [i (find-in-source s lname)
+                                  i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
+                            :when i]
+                        [s i])
+                      (for [s srcs :when (and (:quals s) (not= (:alias s) ltq))
+                            :let [i (get-in (:quals s) [ltq lname])]
+                            :when i]
+                        [s i]))
                      (for [s srcs
                            :let [i (find-in-source s lname)]
                            :when (and i (not (:qualified-only s)) (not (contains? (:hidden s) lname)))]
@@ -84,7 +89,7 @@
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
-            (and ltq (some #(= (:alias %) ltq) srcs))
+            (and ltq (some #(or (= (:alias %) ltq) (get-in % [:quals ltq])) srcs))
             (err (str "no such column: " tq "." name))
             :else (recur (:parent scope) (inc depth))))))))
 
@@ -525,6 +530,8 @@
                                           (zero? (long (compare-values a b aff coll))) 1
                                           :else (recur (rest vs) saw-null)))))]
                         (if negate (when-not (nil? r) (- 1 (long r))) r))))))))
+        (:table e)
+        (cx ctx (-> e (dissoc :table) (assoc :select {:body {:type :core :cols [{:star true}] :from [{:table (:table e)}]}})))
         :else (err (str "no such table: " (:table e)))))
     :subq
     (let [sub (compile-select ctx (:select e))
@@ -1070,6 +1077,26 @@
 (defn- tvf-entry [db lname]
   (some #(% lname db) @tvf-resolvers))
 
+(defn dedup-names
+  "sqlite3ColumnsFromExprList: makes column names unique (case-insensitively) by appending :N."
+  [names]
+  (let [seen (java.util.HashSet.)]
+    (mapv (fn [^String n]
+            (loop [nm n cnt 1]
+              (if (.contains seen (lc nm))
+                (let [base (let [j (loop [j (dec (count nm))] (if (and (> j 0) (Character/isDigit (.charAt nm j))) (recur (dec j)) j))]
+                             (if (and (pos? (count nm)) (= \: (.charAt nm (int j)))) (subs nm 0 j) nm))]
+                  (recur (str base ":" cnt) (inc cnt)))
+                (do (.add seen (lc nm)) nm))))
+          names)))
+
+(declare compile-cte)
+
+(defn- sub-source [sub alias tname cols]
+  (let [cols (vec cols)]
+    {:alias (lc alias) :tname tname :cols cols :lcols (mapv lc cols)
+     :affs (:affs sub) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
+
 (defn- make-source [ctx item]
   (cond
     (:tvf item)
@@ -1084,6 +1111,20 @@
        :affs (vec (take (count cols) (concat (:affs ent) (repeat nil)))) :colls (vec (repeat (count cols) nil))
        :slot slot :rowid? false :ncols (count cols) :hidden (set (map lc (:hidden ent)))
        :tvf ent :tvf-args (:args item)})
+    (and (:table item) (nil? (:schema item)) (get (:ctes ctx) (lc (:table item))))
+    (let [lname (lc (:table item))
+          cte (get (:ctes ctx) lname)]
+      (if (:rec-ref item)
+        (let [rc (get (:rec-cells ctx) lname)
+              cell (:cell rc)]
+          (assoc (sub-source {:affs (:affs rc) :colls (:colls rc) :rows-fn (fn [_] @cell) :lazy true}
+                             (or (:alias item) (:table item)) (:name cte) (:cols rc))
+                 :slot (new-slot! ctx)))
+        (do
+          (when-let [m (get (:cte-err ctx) lname)] (err (str m (:name cte))))
+          (let [sub (compile-cte ctx cte)]
+            (assoc (sub-source sub (or (:alias item) (:table item)) (:name cte) (:cte-cols sub))
+                   :slot (new-slot! ctx))))))
     (:table item)
     (let [name (:table item)
           tbl (table-of ctx name (:schema item))
@@ -1098,17 +1139,29 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil) (:select view))
                    slot (new-slot! ctx)
-                   cols (or (:cols view) (:names sub))]
+                   cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
         :else (err (str "no such table: " name))))
+    (:nested item)
+    (let [items (:nested item)]
+      (if (and (= 1 (count items)) (nil? (:alias item)))
+        (make-source ctx (merge (first items) (select-keys item [:join :on :using])))
+        (let [sel {:body {:type :core :cols [{:star true}] :from items}}
+              sub (compile-select ctx sel)
+              slot (new-slot! ctx)
+              cols (dedup-names (:names sub))
+              ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
+              quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
+                            {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
+          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals))))
     (:subq item)
     (let [sub (compile-select ctx (:subq item))
           slot (new-slot! ctx)
-          cols (:names sub)]
+          cols (dedup-names (:names sub))]
       {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
        :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
     :else (err "unsupported FROM item")))
@@ -1388,7 +1441,7 @@
               (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
     (:sub src)
     (let [sub (:sub src)]
-      (if (:correlated sub)
+      (if (or (:correlated sub) (:lazy sub))
         (fn [env] (run-select-rows sub env))
         (let [cache (volatile! nil)]
           (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))))
@@ -1406,6 +1459,8 @@
       {:names (vec (for [i (range n)] (str "column" (inc i))))
        :affs (vec (repeat n nil)) :colls (vec (repeat n nil)) :ecolls (vec (repeat n nil))
        :exprs (first rows)
+       :outer-refs (atom false)
+       :order-info [[] []]
        :run (fn [env emit]
               (doseq [r rows] (emit (mapv #((:f %) env) r) nil)))})
     (let [from (:from core)
@@ -1618,6 +1673,11 @@
        :exprs rcomp
        :order-specs (mapv (fn [o] [(:coll o) (:desc o) (:nulls o)]) order-c)
        :presorted (boolean rowid-order)
+       :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
+       :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
+                                    (cons [(:alias s) (nth (:lcols s) i)]
+                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
+                         rcols)
        :outer-refs outer-refs
        :run run}))))
 
@@ -1640,6 +1700,7 @@
           merge? (:merge ctx)]
       {:names (:names l) :affs (:affs l) :colls colls :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
+       :order-infos (into (or (:order-infos l) [(:order-info l)]) (or (:order-infos r) [(:order-info r)]))
        :correlated (or (:correlated l) (:correlated r))
        :rows (fn [env]
                (let [lr ((:rows l) env) rr ((:rows r) env)]
@@ -1675,8 +1736,165 @@
         rows (if (and limit (>= (long limit) 0)) (take limit rows) rows)]
     rows))
 
+(declare compile-select* expr-equal?)
+
+(defn- compound-order-index
+  "resolveCompoundOrderBy: an integer, else an AS alias or an equal result expression of any SELECT,
+  the left-most first."
+  [ctx e n infos nth-word]
+  (if (and (= :lit (:op e)) (= :int (:kind e)))
+    (let [k (long (lit-value e))]
+      (if (or (< k 1) (> k n))
+        (err (str nth-word " ORDER BY term out of range - should be between 1 and " n))
+        (dec k)))
+    (let [strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table :dq)
+                                   (map? e) (into {} (for [[k x] e] [k (sq x)]))
+                                   (vector? e) (mapv sq e)
+                                   :else e))
+          e0 (strip-q e)]
+      (some (fn [[aliases asts]]
+              (or (when (and (= :col (:op e)) (nil? (:table e)))
+                    (let [i (.indexOf ^java.util.List aliases (lc (:name e)))] (when (>= i 0) i)))
+                  (first (keep-indexed (fn [i a] (when (and a (expr-equal? (strip-q a) e0)) i)) asts))))
+            infos))))
+
+(def ^:dynamic *with* nil)
+
+(defn add-ctes [ctx w]
+  (let [env (atom nil)
+        entries (reduce (fn [m c]
+                          (let [ln (lc (:name c))]
+                            (when (contains? m ln) (err (str "duplicate WITH table name: " (:name c))))
+                            (assoc m ln (assoc c :env env))))
+                        {} (:ctes w))
+        all (merge (:ctes ctx) entries)]
+    (reset! env all)
+    (assoc ctx :ctes all)))
+
 (defn compile-select
-  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :run-rows (fn [env limit-hint])}."
+  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :rows-fn (fn [env])}."
+  [ctx sel]
+  (if-let [w (:with sel)]
+    (compile-select* (add-ctes ctx w) (dissoc sel :with))
+    (compile-select* ctx sel)))
+
+(defn- compound-terms
+  "Flattens a left-deep compound body into [[nil t0] [op1 t1] ...]."
+  [body]
+  (if (= :compound (:type body))
+    (conj (compound-terms (:left body)) [(:op body) (:right body)])
+    [[nil body]]))
+
+(defn- rebuild-compound [terms]
+  (reduce (fn [l [op t]] {:type :compound :op op :left l :right t}) (second (first terms)) (rest terms)))
+
+(defn- self-refs [core lname]
+  (when (= :core (:type core))
+    (count (filter #(and (:table %) (nil? (:schema %)) (= lname (lc (:table %)))) (:from core)))))
+
+(defn- cte-check-cols [cte names]
+  (when (and (:cols cte) (not= (count (:cols cte)) (count names)))
+    (err (str "table " (:name cte) " has " (count names) " values for " (count (:cols cte)) " columns")))
+  (dedup-names (or (:cols cte) names)))
+
+(defn compile-cte
+  "Compiles a CTE reference. Returns a compiled select with :cte-cols."
+  [ctx cte]
+  (let [lname (lc (:name cte))
+        sel (:select cte)
+        body (:body sel)
+        ctx (assoc ctx :ctes @(:env cte))
+        terms (compound-terms body)
+        last-op (first (last terms))
+        rec-idx (when (#{:union :union-all} last-op)
+                  (loop [i (dec (count terms)) found nil]
+                    (if (<= i 0)
+                      found
+                      (let [[op t] (nth terms i)
+                            n (or (self-refs t lname) 0)]
+                        (cond (> n 1) (err (str "multiple references to recursive table: " (:name cte)))
+                              (and (= op last-op) (pos? n)) (recur (dec i) i)
+                              :else found)))))]
+    (if-not rec-idx
+      (let [sub (compile-select (assoc ctx :cte-err (assoc (:cte-err ctx) lname "circular reference: ")) sel)]
+        (assoc sub :cte-cols (cte-check-cols cte (:names sub))))
+      (let [setup-sel {:body (rebuild-compound (subvec terms 0 rec-idx))}
+            setup (compile-select (assoc ctx :cte-err (assoc (:cte-err ctx) lname "circular reference: ")) setup-sel)
+            cols (cte-check-cols cte (:names setup))
+            cell (volatile! nil)
+            rctx (assoc ctx
+                        :cte-err (assoc (:cte-err ctx) lname "recursive reference in a subquery: ")
+                        :rec-cells (assoc (:rec-cells ctx) lname {:cell cell :cols cols :affs (:affs setup) :colls (:colls setup)}))
+            recs (vec (for [[_ t] (subvec terms rec-idx)]
+                        (let [t (update t :from (fn [items] (mapv #(if (and (:table %) (nil? (:schema %)) (= lname (lc (:table %))))
+                                                                      (assoc % :rec-ref true) %) items)))]
+                          (when (or (seq (:group t)) (core-has-agg? t))
+                            (err "recursive aggregate queries not supported"))
+                          (let [r (compile-select rctx {:body t})]
+                            (when (not= (count (:names r)) (count cols))
+                              (err (str "SELECTs to the left and right of "
+                                        (case last-op :union "UNION" :union-all "UNION ALL")
+                                        " do not have the same number of result columns")))
+                            r))))
+            colls (mapv #(or % "BINARY") (:colls setup))
+            names (:names setup)
+            aliases (mapv lc names)
+            specs (when (:order sel)
+                    (vec (map-indexed
+                          (fn [i term]
+                            (let [e (:e term)
+                                  [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
+                                  infos (for [[_ t] terms :when (= :core (:type t))]
+                                          [(mapv #(lc (:alias %)) (:cols t)) (mapv :e (:cols t))])
+                                  ri (or (compound-order-index ctx e (count names) infos (ordinal (inc i)))
+                                         (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
+                              [ri [(or coll (nth colls ri)) (:desc term) (:nulls term)]]))
+                          (:order sel))))
+            kcmp (when specs (compare-keys-fn (map second specs)))
+            rowcmp (row-comparator colls)
+            union? (= last-op :union)
+            limit-e (:limit sel) offset-e (:offset sel)]
+        {:names names :affs (:affs setup) :colls (:colls setup) :ecolls (:ecolls setup)
+         :correlated (or (:correlated setup) (some :correlated recs))
+         :lazy true
+         :cte-cols cols
+         :rows-fn
+         (fn [env]
+           (let [limit (eval-limit ctx limit-e "LIMIT")
+                 offset (or (eval-limit ctx offset-e "OFFSET") 0)
+                 seqno (long-array 1)
+                 queue (if kcmp
+                         (java.util.PriorityQueue. 16 (reify Comparator
+                                                        (compare [_ a b]
+                                                          (let [c (.compare ^Comparator kcmp (first a) (first b))]
+                                                            (if (zero? c)
+                                                              (if union?
+                                                                (.compare ^Comparator rowcmp (nth a 2) (nth b 2))
+                                                                (Long/compare (long (second a)) (long (second b))))
+                                                              c)))))
+                         (java.util.ArrayDeque.))
+                 seen (when union? (TreeSet. ^Comparator rowcmp))
+                 add! (fn [row]
+                        (when (or (nil? seen) (.add ^TreeSet seen row))
+                          (let [n (aget seqno 0)]
+                            (aset seqno 0 (inc n))
+                            (.add ^java.util.Queue queue (if kcmp [(mapv #(nth row (first %)) specs) n row] row)))))
+                 poll (fn [] (let [x (.poll ^java.util.Queue queue)] (if kcmp (nth x 2) x)))
+                 run-rec (fn [row]
+                           (vreset! cell [(conj (vec row) nil)])
+                           (doseq [r recs] (doseq [x (run-select-rows r env)] (add! x))))]
+             (doseq [r (run-select-rows setup env)] (add! r))
+             (letfn [(step [skip emitted]
+                       (lazy-seq
+                        (when (and (not (.isEmpty ^java.util.Collection queue))
+                                   (or (nil? limit) (neg? (long limit)) (< (long emitted) (long limit))))
+                          (let [row (poll)]
+                            (if (pos? (long skip))
+                              (do (run-rec row) (step (dec (long skip)) emitted))
+                              (cons row (lazy-seq (run-rec row) (step skip (inc (long emitted))))))))))]
+               (step offset 0))))}))))
+
+(defn- compile-select*
   [ctx sel]
   (let [body (:body sel)
         order (:order sel)
@@ -1692,7 +1910,7 @@
                           (fn [i term]
                             (let [e (:e term)
                                   [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
-                                  ri (or (order-term-index ctx (assoc term :e e) names aliases (ordinal (inc i)))
+                                  ri (or (compound-order-index ctx e (count names) (:order-infos b) (ordinal (inc i)))
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
                           order)))
