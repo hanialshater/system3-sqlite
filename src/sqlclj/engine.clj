@@ -629,7 +629,7 @@
             (let [t1 (cond (< c0 0xe0) (bit-and c0 0x1f) (< c0 0xf0) (bit-and c0 0x0f) (< c0 0xf8) (bit-and c0 0x07) :else 0)
                   c (loop [i 1 c t1]
                       (if (and (< i n) (= 0x80 (bit-and (aget b i) 0xc0)))
-                        (recur (inc i) (+ (bit-shift-left c 6) (bit-and (aget b i) 0x3f)))
+                        (recur (inc i) (bit-and 0xffffffff (+ (bit-shift-left c 6) (bit-and (aget b i) 0x3f))))
                         c))]
               (if (or (< c 0x80) (= 0xD800 (bit-and c 0xFFFFF800)) (= 0xFFFE (bit-and c 0xFFFFFFFE)))
                 0xFFFD
