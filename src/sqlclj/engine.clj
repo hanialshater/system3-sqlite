@@ -196,8 +196,32 @@
 
 (defn- null-lit? [e] (and (= :lit (:op e)) (nil? (:kind e)) (nil? (:v e))))
 
-(defn- null-test? [e]
-  (or (#{:isnull :notnull} (:op e)) (and (= :is (:op e)) (null-lit? (:r e)))))
+(defn- skip-collate-likely [e]
+  (cond (= :collate (:op e)) (recur (:e e))
+        (and (= :fn (:op e)) (#{"likely" "unlikely" "likelihood"} (:name e)) (seq (:args e))) (recur (first (:args e)))
+        :else e))
+
+(defn- is-rfirst
+  "For IS / IS NOT, SQLite resolves a bare-identifier right operand (looking through COLLATE) first."
+  [e]
+  (when (= :is (:op e))
+    (let [r (skip-collate-likely (:r e))]
+      (when (and (= :col (:op r)) (nil? (:table r))) r))))
+
+(defn- null-test-operand [e]
+  (when (or (#{:isnull :notnull} (:op e)) (and (= :is (:op e)) (null-lit? (:r e))))
+    (if (= :is (:op e)) (:l e) (:e e))))
+
+(defn- nonnull-literal? [e]
+  (let [e (loop [e e] (if (and (= :unary (:op e)) (#{:neg :pos} (:o e))) (recur (:e e)) e))]
+    (and (= :lit (:op e)) (not (null-lit? e)))))
+
+(defn- null-test?
+  "IS NULL / NOT NULL: SQLite resolves the operand in a nested walk whose errors do not stop the outer
+  walk; only an operand folded to a constant (a non-NULL literal) lets a pending error abort."
+  [e]
+  (when-let [o (null-test-operand e)]
+    (not (nonnull-literal? o))))
 
 (defn condf
   "The function to use when an expression is a condition (WHERE, ON, HAVING, CASE WHEN, CHECK): AND/OR
@@ -218,7 +242,7 @@
   [ctx e]
   ;; once an error has been recorded, SQLite's resolver aborts at the next non-column, non-function node
   (when-let [pend (:pending ctx)]
-    (when (and @pend (not (#{:col :fn} (:op e))) (not (null-test? e)))
+    (when (and @pend (not (#{:col :fn} (:op e))) (not (null-test? e)) (not (is-rfirst e)))
       (err @pend)))
   (case (:op e)
     :lit (const-c (lit-value e))
@@ -295,9 +319,13 @@
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
         :concat (merge (mk (fn [env] (v/concat-values (fl env) (fr env)))) extra)
         (:ptr :ptr2) (err "no such function: ->")))
-    :is (let [rfirst (and (= :col (:op (:r e))) (nil? (:table (:r e))))
+    :is (let [rcol (is-rfirst e)
+              rfirst (boolean rcol)
+              _ (when rcol
+                  (cx ctx rcol)
+                  (when (and (:pending ctx) @(:pending ctx)) (err @(:pending ctx))))
               r0 (when rfirst (cx ctx (:r e)))
-              l (if (null-lit? (:r e)) (contained ctx (:l e)) (cx ctx (:l e)))
+              l (if (null-test? e) (contained ctx (:l e)) (cx ctx (:l e)))
               _ (when (and rfirst (:pending ctx) @(:pending ctx)) (err @(:pending ctx)))
               r (or r0 (if (null-lit? (:r e)) (const-c nil) (cx ctx (:r e))))
               fl (:f l) fr (:f r)
@@ -311,8 +339,8 @@
                                :else (zero? (long (compare-values a b aff coll))))]
                   (bool->int (if isnot (not eq) eq))))
               :ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r])))
-    :isnull (let [c (contained ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (nil? (f env))))))
-    :notnull (let [c (contained ctx (:e e)) f (:f c)] (mk (fn [env] (bool->int (not (nil? (f env)))))))
+    :isnull (let [c (if (null-test? e) (contained ctx (:e e)) (cx ctx (:e e))) f (:f c)] (mk (fn [env] (bool->int (nil? (f env))))))
+    :notnull (let [c (if (null-test? e) (contained ctx (:e e)) (cx ctx (:e e))) f (:f c)] (mk (fn [env] (bool->int (not (nil? (f env)))))))
     :between
     (let [x (cx ctx (:e e)) lo (cx ctx (:lo e)) hi (cx ctx (:hi e))
           fx (:f x) flo (:f lo) fhi (:f hi)

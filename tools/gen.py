@@ -231,8 +231,8 @@ def stmt_strings(ts):
             "trim(%s), ltrim(%s, 'ab'), hex(%s), quote(%s), unicode(%s), %s LIKE %s, %s GLOB %s, char(%d, %d), "
             "%s || %s, %s < %s, %s = %s COLLATE NOCASE;") % (
         s, s, s, s, random.randint(-3, 5), random.randint(-2, 5), s, o, s, random.choice(["'a'", "''", "'é'", o]),
-        random.choice(["'XY'", "''"]), s, s, s, s, s, s, random.choice(["'a%'", "'%a_'", "'A%'", "'_'", "'%'", o]),
-        s, random.choice(["'*'", "'?'", "'*[a-m]*'", "'[^a]*'", o]), random.randint(65, 90),
+        random.choice(["'XY'", "''"]), s, s, s, s, s, s, random.choice(["'a%'", "'%a_'", "'A%'", "'_'", "'%'", "'%é%'", o]),
+        s, random.choice(["'*'", "'?'", "'*[a-m]*'", "'[^a]*'", "'a*'", o]), random.randint(65, 90),
         random.randint(100, 1000), s, o, s, o, s, o)
 
 
