@@ -103,4 +103,9 @@
                 op (do (conj! out {:t :op :v op :s i :e (+ i (count op))}) (recur (+ i (count op))))
                 (= c \?) (let [j (loop [j (inc i)] (if (and (< j n) (digit? (.charAt s j))) (recur (inc j)) j))]
                            (conj! out {:t :var :v (subs s i j) :s i :e j}) (recur j))
+                (and (or (= c \:) (= c \@) (= c \$))
+                     (let [j (loop [j (inc i)] (if (and (< j n) (or (id-char? (.charAt s j)) (and (= c \$) (= (.charAt s j) \:) (< (inc j) n) (= (.charAt s (inc j)) \:)))) (recur (inc j)) j))]
+                       (> j (inc i))))
+                (let [j (loop [j (inc i)] (if (and (< j n) (or (id-char? (.charAt s j)) (and (= c \$) (= (.charAt s j) \:) (< (inc j) n) (= (.charAt s (inc j)) \:)))) (recur (inc j)) j))]
+                  (conj! out {:t :var :v (subs s i j) :s i :e j}) (recur j))
                 :else (do (conj! out {:t :illegal :s i :e (inc i)}) (recur (inc i)))))))))))

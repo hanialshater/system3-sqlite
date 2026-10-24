@@ -536,7 +536,8 @@
       :else (parse-primary p))))
 
 (defn- parse-column-def [^P p]
-  (let [name (parse-nm p)
+  (let [cs (:s (tok p))
+        name (parse-nm p)
         type (parse-type-name p)
         cons (loop [acc []]
                (let [cname (when (accept-kw p "CONSTRAINT") (parse-nm p))
@@ -561,6 +562,7 @@
                    (do (advance! p)
                        (let [e (cond
                                  (at-op? p "(") (do (advance! p) (let [e (parse-expr p)] (expect-op p ")") e))
+                                 (and (:u (tok p)) (#{"CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u (tok p)))) (parse-primary p)
                                  (ident-tok? (tok p)) (let [t (advance! p)] (node {:op :lit :v (:v t)} (:s t) (:e t)))
                                  :else (parse-signed-literal p))]
                          (recur (conj acc {:c :default :e e}))))
@@ -589,7 +591,7 @@
                    (kw? t "GENERATED") (fail! p)
                    (kw? t "AS") (fail! p)
                    :else (do (when cname (fail! p)) acc))))]
-    {:name name :type type :cons cons}))
+    {:name name :type type :cons cons :s cs :e (prev-end p)}))
 
 (defn- parse-indexed-cols [^P p]
   (expect-op p "(")
@@ -820,16 +822,19 @@
               {:kind :reindex :name name}))
         "ALTER"
         (do (advance! p) (expect-kw p "TABLE")
-            (let [tname (parse-nm p)]
-              (cond
-                (accept-kw p "RENAME")
-                (cond
-                  (accept-kw p "TO") {:kind :alter :table tname :action :rename :to (parse-nm p)}
-                  :else (do (accept-kw p "COLUMN")
-                            (let [old (parse-nm p)] (expect-kw p "TO") {:kind :alter :table tname :action :rename-col :old old :to (parse-nm p)})))
-                (accept-kw p "ADD") (do (accept-kw p "COLUMN") {:kind :alter :table tname :action :add :col (parse-column-def p)})
-                (accept-kw p "DROP") (do (accept-kw p "COLUMN") {:kind :alter :table tname :action :drop-col :col (parse-nm p)})
-                :else (fail! p))))
+            (let [n1 (parse-nm p)
+                  [sch tname] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])]
+              (merge
+               {:kind :alter :schema sch :table tname}
+               (cond
+                 (accept-kw p "RENAME")
+                 (cond
+                   (accept-kw p "TO") {:action :rename :to (parse-nm p)}
+                   :else (do (accept-kw p "COLUMN")
+                             (let [old (parse-nm p)] (expect-kw p "TO") {:action :rename-col :old old :to (parse-nm p)})))
+                 (accept-kw p "ADD") (do (accept-kw p "COLUMN") {:action :add :col (parse-column-def p)})
+                 (accept-kw p "DROP") (do (accept-kw p "COLUMN") {:action :drop-col :col (parse-nm p)})
+                 :else (fail! p)))))
         ("BEGIN") (do (advance! p)
                       (let [mode (or (when (accept-kw p "DEFERRED") :deferred) (when (accept-kw p "IMMEDIATE") :immediate)
                                      (when (accept-kw p "EXCLUSIVE") :exclusive))]
