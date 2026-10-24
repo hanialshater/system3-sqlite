@@ -260,7 +260,30 @@
 
 (defn- lower-ascii ^long [^long c] (if (and (>= c 65) (<= c 90)) (+ c 32) c))
 
+(defn- needs-bytes? [^String s]
+  (let [n (.length s)]
+    (loop [i 0] (if (>= i n) false
+                    (let [c (int (.charAt s i))]
+                      (if (or (zero? c) (and (>= c 0xD800) (<= c 0xDFFF))) true (recur (inc i))))))))
+
+(defn- nocase-cmp-bytes
+  "nocaseCollatingFunc: sqlite3StrNICmp over the common length (stopping at a NUL), then length difference."
+  ^long [^bytes a ^bytes b]
+  (let [la (alength a) lb (alength b) n (min la lb)
+        lw (fn ^long [x] (let [x (bit-and (long x) 0xff)] (if (and (>= x 65) (<= x 90)) (+ x 32) x)))
+        i (loop [i 0] (if (and (< i n) (not (zero? (aget a i))) (= (lw (aget a i)) (lw (aget b i)))) (recur (inc i)) i))
+        r (if (= i n) 0 (- (lw (aget a i)) (lw (aget b i))))
+        r (if (zero? r) (- la lb) r)]
+    (cond (neg? r) -1 (pos? r) 1 :else 0)))
+
+(declare nocase-cmp*)
+
 (defn nocase-cmp ^long [^String a ^String b]
+  (if (or (needs-bytes? a) (needs-bytes? b))
+    (nocase-cmp-bytes (str->utf8 a) (str->utf8 b))
+    (nocase-cmp* a b)))
+
+(defn- nocase-cmp* ^long [^String a ^String b]
   (let [na (.length a) nb (.length b)]
     (loop [i 0]
       (if (or (>= i na) (>= i nb))
