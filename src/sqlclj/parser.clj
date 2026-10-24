@@ -72,7 +72,7 @@
 
 ;; ------------------------------------------------------------------ expressions
 
-(declare parse-expr parse-select parse-expr-prec)
+(declare parse-expr parse-select parse-expr-prec parse-window-def)
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
@@ -199,10 +199,18 @@
               (cond
                 (at-op? p "(")
                 (do (advance! p)
-                    (let [fa (parse-function-args p)]
-                      (when (at-kw? p "FILTER") (fail! p))
-                      (when (at-kw? p "OVER") (fail! p))
-                      (node (merge {:op :fn :name (str/lower-case (:v t))} fa) s (prev-end p))))
+                    (let [fa (parse-function-args p)
+                          filt (when (at-kw? p "FILTER")
+                                 (advance! p) (expect-op p "(") (expect-kw p "WHERE")
+                                 (let [e (parse-expr p)] (expect-op p ")") e))
+                          over (when (accept-kw p "OVER")
+                                 (if (accept-op p "(")
+                                   (let [w (parse-window-def p)] (expect-op p ")") w)
+                                   (parse-nm p)))]
+                      (node (cond-> (merge {:op :fn :name (str/lower-case (:v t))} fa)
+                              filt (assoc :filter filt)
+                              over (assoc :over over))
+                            s (prev-end p))))
                 (at-op? p ".")
                 (do (advance! p)
                     (let [n2 (parse-nm p)]
@@ -211,6 +219,52 @@
                         (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
                 :else (node {:op :col :name (:v t)} s (:e t))))))
       (fail! p))))
+
+(declare parse-order-by)
+
+(defn- parse-frame-bound [^P p start?]
+  (cond
+    (at-kw? p "UNBOUNDED")
+    (do (advance! p)
+        (cond (and start? (accept-kw p "PRECEDING")) {:kind :unbounded-preceding}
+              (and (not start?) (accept-kw p "FOLLOWING")) {:kind :unbounded-following}
+              :else (fail! p)))
+    (at-kw? p "CURRENT") (do (advance! p) (expect-kw p "ROW") {:kind :current})
+    :else (let [e (parse-expr p)]
+            (cond (accept-kw p "PRECEDING") {:kind :preceding :e e}
+                  (accept-kw p "FOLLOWING") {:kind :following :e e}
+                  :else (fail! p)))))
+
+(defn- parse-window-def
+  "Inside OVER ( ... ) or WINDOW w AS ( ... )."
+  [^P p]
+  (let [base (when (and (ident-tok? (tok p))
+                        (not (#{"PARTITION" "ORDER" "RANGE" "ROWS" "GROUPS"} (:u (tok p)))))
+               (parse-nm p))
+        part (when (at-kw? p "PARTITION")
+               (advance! p) (expect-kw p "BY")
+               (loop [acc [(parse-expr p)]] (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc)))
+        order (when (at-kw? p "ORDER") (advance! p) (expect-kw p "BY") (parse-order-by p))
+        frame (when (and (= :id (:t (tok p))) (#{"RANGE" "ROWS" "GROUPS"} (:u (tok p))))
+                (let [ft (keyword (str/lower-case (:u (advance! p))))
+                      [st en] (if (accept-kw p "BETWEEN")
+                                (let [a (parse-frame-bound p true)
+                                      _ (expect-kw p "AND")
+                                      b (parse-frame-bound p false)]
+                                  [a b])
+                                [(parse-frame-bound p true) {:kind :current}])
+                      excl (when (accept-kw p "EXCLUDE")
+                             (cond (accept-kw p "NO") (do (expect-kw p "OTHERS") :no-others)
+                                   (accept-kw p "CURRENT") (do (expect-kw p "ROW") :current-row)
+                                   (accept-kw p "GROUP") :group
+                                   (accept-kw p "TIES") :ties
+                                   :else (fail! p)))
+                      rank {:unbounded-preceding 0 :preceding 1 :current 2 :following 3 :unbounded-following 4}]
+                  (when (or (and (= :current (:kind st)) (= :preceding (:kind en)))
+                            (and (= :following (:kind st)) (#{:preceding :current} (:kind en))))
+                    (throw (lx/sql-error "unsupported frame specification")))
+                  {:type ft :start st :end en :exclude excl}))]
+    {:base base :part part :order order :frame frame}))
 
 (defn- parse-unary [^P p]
   (check-illegal p)
@@ -472,8 +526,17 @@
                     (advance! p) (expect-kw p "BY")
                     (loop [acc [(parse-expr p)]] (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc)))
             having (when (accept-kw p "HAVING") (parse-expr p))]
-        (when (at-kw? p "WINDOW") (fail! p))
-        {:type :core :distinct distinct :cols cols :from from :where where :group group :having having}))))
+        (let [windows (when (accept-kw p "WINDOW")
+                        (loop [acc []]
+                          (let [n (parse-nm p)
+                                _ (expect-kw p "AS")
+                                _ (expect-op p "(")
+                                w (parse-window-def p)
+                                _ (expect-op p ")")
+                                acc (conj acc [n w])]
+                            (if (accept-op p ",") (recur acc) acc))))]
+          (cond-> {:type :core :distinct distinct :cols cols :from from :where where :group group :having having}
+            windows (assoc :windows windows)))))))
 
 (defn parse-with
   "After WITH: [RECURSIVE] cte, ... Returns {:recursive :ctes [{:name :cols :select}]}."
