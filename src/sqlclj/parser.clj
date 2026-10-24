@@ -132,7 +132,7 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p) (node {:op :lit :v nil} s (:e t)))
+      :var (do (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
@@ -930,8 +930,14 @@
                          {:kind :attach :file f :as n})))
         "DETACH" (do (advance! p) (accept-kw p "DATABASE") {:kind :detach :name (parse-expr p)})
         "RELEASE" (do (advance! p) (accept-kw p "SAVEPOINT") {:kind :release :name (parse-nm p)})
-        "ANALYZE" (do (advance! p) (when (ident-tok? (tok p)) (parse-nm p)) {:kind :noop})
-        "VACUUM" (do (advance! p) {:kind :noop})
+        "ANALYZE" (do (advance! p)
+                      (let [n1 (when (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (parse-nm p))
+                            [sch n] (if (and n1 (accept-op p ".")) [n1 (parse-nm p)] [nil n1])]
+                        {:kind :analyze :schema sch :name n}))
+        "VACUUM" (do (advance! p)
+                     (let [sch (when (and (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (not (at-kw? p "INTO"))) (parse-nm p))
+                           into (when (accept-kw p "INTO") (parse-expr p))]
+                       {:kind :vacuum :schema sch :into into}))
         "PRAGMA" (do (advance! p)
                      (let [n1 (parse-nm p)
                            [sch n] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])

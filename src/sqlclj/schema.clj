@@ -103,7 +103,7 @@
               (for [[_ v] (:views db)] [(:mseq v) ["view" (dn (:name v) v) (dn (:name v) v) 0 (:sql v)] v])
               (for [[_ g] (:triggers db)] [(:mseq g) ["trigger" (dn (:name g) g) (dn (or (:table-name g) (:name (get-in db [:tables (:table g)])) (:table g)) g) 0 (:sql g)] g]))]
     (->> objs
-         (filter (fn [[_ _ o]] (= sch (schema-of o))))
+         (filter (fn [[_ _ o]] (and (= sch (schema-of o)) (not (:no-master o)))))
          (sort-by (fn [[s]] (or s 0)))
          (mapv second))))
 
@@ -200,3 +200,18 @@
               st (walk st)]
           (assoc st :table (resolve-key db t s) :schema nil))
         (walk st)))))
+
+(defn constant-default?
+  "Whether a DEFAULT expression is constant (no column references, bound variables or subqueries)."
+  [e]
+  (letfn [(walk [x]
+            (cond
+              (map? x) (cond
+                         (and (= :col (:op x)) (not (and (nil? (:table x)) (#{"true" "false"} (lc* (:name x)))))) false
+                         (:var x) false
+                         (#{:subq :exists :raise} (:op x)) false
+                         (and (= :in (:op x)) (or (:select x) (:table x))) false
+                         :else (every? walk (vals x)))
+              (sequential? x) (every? walk x)
+              :else true))]
+    (walk e)))

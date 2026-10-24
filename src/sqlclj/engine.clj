@@ -293,6 +293,124 @@
         (cond-> (mk (tv (:f ch)) :cft (tv (condf ch)) :cff (tv (condff ch)))
           (:intlit ch) (assoc :intlit (if (zero? (long (:intlit ch))) 0 1) :const true))))))
 
+;; ---------------------------------------------------------------------- row values
+
+(defn- multi-col-ast? [sel]
+  (let [b (loop [b (:body sel)] (if (= :compound (:type b)) (recur (:left b)) b))]
+    (or (not= :core (:type b)) (> (count (:cols b)) 1) (some :star (:cols b)))))
+
+(defn- row-like? [e]
+  (or (= :vector (:op e)) (and (= :subq (:op e)) (multi-col-ast? (:select e)))))
+
+(defn- row-parts
+  "A row value: {:n :row (fn [env] -> values) :parts [{:aff :coll ...}]}, or nil for a scalar."
+  [ctx e]
+  (case (:op e)
+    :vector (let [cs (mapv (fn [x] (when (row-like? x) (err "row value misused")) (cx ctx x)) (:items e))
+                  fs (mapv :f cs)]
+              {:n (count cs) :parts cs :row (fn [env] (mapv #(% env) fs))})
+    :subq (when (multi-col-ast? (:select e))
+            (let [sub (compile-select ctx (:select e))
+                  n (count (:names sub))]
+              (when (> n 1)
+                (let [cache (when-not (:correlated sub) (volatile! nil))
+                      run (fn [env] (or (first (run-select-rows sub env 1)) (vec (repeat n nil))))]
+                  {:n n
+                   :parts (vec (for [i (range n)] {:aff (nth (:affs sub) i) :coll (nth (:colls sub) i)
+                                                   :ecoll (nth (:ecolls sub) i)}))
+                   :row (if cache (fn [env] (or @cache (vreset! cache (run env)))) run)}))))
+    nil))
+
+(defn- scalar-part [ctx e]
+  (let [c (cx ctx e)] {:n 1 :parts [c] :row (let [f (:f c)] (fn [env] [(f env)]))}))
+
+(defn- pair-specs [lp rp]
+  (when (not= (:n lp) (:n rp)) (err "row value misused"))
+  (mapv (fn [l r] [(v/compare-affinity (:aff l) (:aff r)) (or (binary-coll l r) "BINARY")])
+        (:parts lp) (:parts rp)))
+
+(defn- row-eq
+  "Three-valued equality of two value vectors."
+  [specs ls rs]
+  (loop [i 0 null false]
+    (if (= i (count specs))
+      (if null nil 1)
+      (let [a (nth ls i) b (nth rs i)]
+        (if (or (nil? a) (nil? b))
+          (recur (inc i) true)
+          (let [[aff coll] (nth specs i)]
+            (if (zero? (long (compare-values a b aff coll))) (recur (inc i) null) 0)))))))
+
+(defn- compile-row-compare [op lp rp]
+  (let [specs (pair-specs lp rp)
+        n (count specs)
+        lf (:row lp) rf (:row rp)]
+    (mk (fn [env]
+          (let [ls (lf env) rs (rf env)]
+            (case op
+              :eq (row-eq specs ls rs)
+              :ne (let [r (row-eq specs ls rs)] (when r (- 1 (long r))))
+              (:lt :le :gt :ge)
+              (loop [i 0]
+                (let [a (nth ls i) b (nth rs i)]
+                  (if (or (nil? a) (nil? b))
+                    nil
+                    (let [[aff coll] (nth specs i)
+                          c (long (compare-values a b aff coll))]
+                      (if (= i (dec n))
+                        (bool->int (case op :lt (< c 0) :le (<= c 0) :gt (> c 0) :ge (>= c 0)))
+                        (if (zero? c) (recur (inc i))
+                            (bool->int (if (#{:lt :le} op) (< c 0) (> c 0)))))))))))))))
+
+(defn- compile-row-is [isnot lp rp]
+  (let [specs (pair-specs lp rp)
+        lf (:row lp) rf (:row rp)]
+    (mk (fn [env]
+          (let [ls (lf env) rs (rf env)
+                eq (every? (fn [i] (let [a (nth ls i) b (nth rs i)]
+                                     (cond (and (nil? a) (nil? b)) true
+                                           (or (nil? a) (nil? b)) false
+                                           :else (let [[aff coll] (nth specs i)]
+                                                   (zero? (long (compare-values a b aff coll)))))))
+                           (range (count specs)))]
+            (bool->int (if isnot (not eq) eq)))))))
+
+(defn- compile-row-in [ctx e lp]
+  (let [n (:n lp) lf (:row lp) negate (:not e)
+        finish (fn [r] (if negate (when-not (nil? r) (- 1 (long r))) r))]
+    (cond
+      (:list e)
+      (let [items (mapv (fn [it]
+                          (let [rp (or (row-parts ctx it) (scalar-part ctx it))]
+                            (when (not= n (:n rp))
+                              (err (str "IN(...) element has " (:n rp) " term" (when (not= 1 (:n rp)) "s") " - expected " n)))
+                            rp))
+                        (:list e))
+            specs (mapv #(pair-specs lp %) items)]
+        (mk (fn [env]
+              (let [ls (lf env)]
+                (finish (loop [k 0 null false]
+                          (if (= k (count items))
+                            (if null nil 0)
+                            (let [r (row-eq (nth specs k) ls ((:row (nth items k)) env))]
+                              (cond (= r 1) 1 (nil? r) (recur (inc k) true) :else (recur (inc k) null))))))))))
+      (:select e)
+      (let [sub (compile-select ctx (:select e))
+            m (count (:names sub))
+            _ (when (not= m n) (err (str "sub-select returns " m " columns - expected " n)))
+            specs (pair-specs lp {:n m :parts (vec (for [i (range m)] {:aff (nth (:affs sub) i) :coll (nth (:colls sub) i)
+                                                                       :ecoll (nth (:ecolls sub) i)}))})
+            cache (when-not (:correlated sub) (volatile! nil))
+            rows-of (fn [env] (if cache (or @cache (vreset! cache (vec (run-select-rows sub env)))) (run-select-rows sub env)))]
+        (mk (fn [env]
+              (let [ls (lf env) rows (rows-of env)]
+                (finish (loop [rows (seq rows) null false]
+                          (if (empty? rows)
+                            (if null nil 0)
+                            (let [r (row-eq specs ls (first rows))]
+                              (cond (= r 1) 1 (nil? r) (recur (rest rows) true) :else (recur (rest rows) null))))))))))
+      :else (err "row value misused"))))
+
 (defn cx*
   [ctx e]
   ;; once an error has been recorded, SQLite's resolver aborts at the next non-column, non-function node
@@ -341,6 +459,11 @@
                 aff (v/type-affinity (:type e))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
     :bin
+    (if-let [rc (when (and (#{:eq :ne :lt :le :gt :ge} (:o e)) (or (row-like? (:l e)) (row-like? (:r e))))
+                  (let [lp (row-parts ctx (:l e)) rp (row-parts ctx (:r e))]
+                    (when (or lp rp)
+                      (compile-row-compare (:o e) (or lp (scalar-part ctx (:l e))) (or rp (scalar-part ctx (:r e)))))))]
+      rc
     (let [o (:o e)
           l (cx ctx (:l e)) r (cx ctx (:r e))
           fl (:f l) fr (:f r)
@@ -366,8 +489,10 @@
         (:add :sub :mul :div :rem) (merge (mk (fn [env] (v/arith o (fl env) (fr env)))) extra)
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
         :concat (merge (mk (fn [env] (v/concat-values (fl env) (fr env)))) extra)
-        (:ptr :ptr2) (err "no such function: ->")))
-    :is (let [rcol (is-rfirst e)
+        (:ptr :ptr2) (err "no such function: ->"))))
+    :is (if (or (row-like? (:l e)) (row-like? (:r e)))
+          (compile-row-is (:not e) (or (row-parts ctx (:l e)) (scalar-part ctx (:l e))) (or (row-parts ctx (:r e)) (scalar-part ctx (:r e))))
+        (let [rcol (is-rfirst e)
               rfirst (boolean rcol)
               _ (when rcol
                   (cx ctx rcol)
@@ -386,10 +511,19 @@
                                (or (nil? a) (nil? b)) false
                                :else (zero? (long (compare-values a b aff coll))))]
                   (bool->int (if isnot (not eq) eq))))
-              :ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r])))
+              :ecoll (or (has-collate? l) (has-collate? r)) :coll (coll-walk [l r]))))
     :isnull (let [c (if (null-test? e) (contained ctx (:e e)) (cx ctx (:e e))) f (:f c)] (mk (fn [env] (bool->int (nil? (f env))))))
     :notnull (let [c (if (null-test? e) (contained ctx (:e e)) (cx ctx (:e e))) f (:f c)] (mk (fn [env] (bool->int (not (nil? (f env)))))))
     :between
+    (if (row-like? (:e e))
+      (let [xp (or (row-parts ctx (:e e)) (scalar-part ctx (:e e)))
+            lp (or (row-parts ctx (:lo e)) (scalar-part ctx (:lo e)))
+            hp (or (row-parts ctx (:hi e)) (scalar-part ctx (:hi e)))
+            f1 (:f (compile-row-compare :ge xp lp)) f2 (:f (compile-row-compare :le xp hp))
+            negate (:not e)]
+        (mk (fn [env] (let [a (f1 env) b (f2 env)
+                            r (cond (or (= a 0) (= b 0)) 0 (or (nil? a) (nil? b)) nil :else 1)]
+                        (if negate (when-not (nil? r) (- 1 (long r))) r)))))
     (let [x (cx ctx (:e e)) lo (cx ctx (:lo e)) hi (cx ctx (:hi e))
           fx (:f x) flo (:f lo) fhi (:f hi)
           aff1 (v/compare-affinity (:aff x) (:aff lo)) coll1 (or (binary-coll x lo) "BINARY")
@@ -430,7 +564,7 @@
                                   (cond (= c2 0) 0 (or (nil? c1) (nil? c2)) nil :else 1))))))
                      neg (fn [g] (fn [env] (let [r (g env)] (when-not (nil? r) (- 1 (long r))))))]
                  (if negate (neg (bt :t)) (bt :f)))
-          :ecoll (some has-collate? [x lo hi]) :coll (coll-walk [x lo hi])))
+          :ecoll (some has-collate? [x lo hi]) :coll (coll-walk [x lo hi]))))
     :like
     (let [x (cx ctx (:e e)) pt (cx ctx (:pat e)) es (when (:esc e) (cx ctx (:esc e)))
           fx (:f x) fp (:f pt) fe (:f es)
@@ -481,6 +615,8 @@
                         (ft env)
                         (recur (rest ws)))))))))))
     :in
+    (if (row-like? (:e e))
+      (compile-row-in ctx e (or (row-parts ctx (:e e)) (scalar-part ctx (:e e))))
     (let [x (cx ctx (:e e)) fx (:f x) negate (:not e)]
       (cond
         (:list e)
@@ -540,7 +676,7 @@
                         (if negate (when-not (nil? r) (- 1 (long r))) r))))))))
         (:table e)
         (cx ctx (-> e (dissoc :table) (assoc :select {:body {:type :core :cols [{:star true}] :from [{:table (:table e)}]}})))
-        :else (err (str "no such table: " (:table e)))))
+        :else (err (str "no such table: " (:table e))))))
     :subq
     (let [sub (compile-select ctx (:select e))
           _ (when (not= 1 (count (:names sub)))
@@ -1368,7 +1504,7 @@
   [tbl]
   (vals (:rows tbl)))
 
-(declare index-order-rows check-indexed-by)
+(declare index-order-rows check-indexed-by expr-dtype aff-mask)
 
 (defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
   {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
@@ -1397,7 +1533,7 @@
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
     {:alias (lc alias) :tname tname :cols cols :lcols (mapv lc cols)
-     :affs (:affs sub) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
+     :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
 
 (defn- make-source [ctx item]
   (cond
@@ -1445,7 +1581,7 @@
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
-                :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
+                :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
         :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
     (:nested item)
@@ -1465,7 +1601,7 @@
           slot (new-slot! ctx)
           cols (dedup-names (:names sub))]
       {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
-       :affs (:affs sub) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
+       :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
     :else (err "unsupported FROM item")))
 
 (defn- split-and [e]
@@ -1761,6 +1897,7 @@
       {:names (vec (for [i (range n)] (str "column" (inc i))))
        :affs (vec (repeat n nil)) :colls (vec (repeat n nil)) :ecolls (vec (repeat n nil))
        :exprs (first rows)
+       :dtypes (mapv #(expr-dtype % nil) (first (:rows core)))
        :outer-refs (atom false)
        :order-info [[] []]
        :run (fn [env emit]
@@ -2027,12 +2164,29 @@
        :order-specs (mapv (fn [o] [(:coll o) (:desc o) (:nulls o)]) order-c)
        :presorted (boolean rowid-order)
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
+       :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
                                     (cons [(:alias s) (nth (:lcols s) i)]
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
                          rcols)
        :outer-refs outer-refs
        :run run}))))
+
+(defn- aff-mask ^long [aff]
+  (case aff (:integer :real :numeric) 5 :text 6 7))
+
+(defn expr-dtype
+  "sqlite3ExprDataType: bit 1 numeric, 2 text, 4 blob."
+  ^long [e c]
+  (case (:op e)
+    :collate (expr-dtype (:e e) c)
+    :unary (if (= :pos (:o e)) (expr-dtype (:e e) c) 1)
+    :lit (cond (= :blob (:kind e)) 4 (#{:int :float :hex} (:kind e)) 1 (string? (:v e)) 2 (:param e) 7 :else 0)
+    :bin (if (= :concat (:o e)) 6 1)
+    :fn 7
+    (:col :subq :cast) (if c (aff-mask (:aff c)) 7)
+    :case (reduce bit-or (long (if (:else e) (expr-dtype (:else e) nil) 0)) (map #(expr-dtype (second %) nil) (:whens e)))
+    1))
 
 (defn- compound-colls [l r]
   (mapv (fn [a b] (or a b "BINARY")) (:colls l) (:colls r)))
@@ -2054,6 +2208,9 @@
       {:names (:names l) :affs (:affs l) :colls colls :ecolls (:ecolls l) :exprs (:exprs l)
        :leftmost (or (:leftmost l) l)
        :order-infos (into (or (:order-infos l) [(:order-info l)]) (or (:order-infos r) [(:order-info r)]))
+       :lm-affs (or (:lm-affs l) (:affs l))
+       :dtypes (mapv bit-or (:dtypes l) (:dtypes r))
+       :rest-mask (if (:rest-mask l) (mapv bit-or (:rest-mask l) (:dtypes r)) (:dtypes r))
        :correlated (or (:correlated l) (:correlated r))
        :rows (fn [env]
                (let [lr ((:rows l) env) rr ((:rows r) env)]
@@ -2273,6 +2430,11 @@
                                     {:ri i :coll (or (nth (:colls b) i) "BINARY") :desc false :nulls nil}))))
             cmp (when specs (compare-keys-fn (map (fn [s] [(:coll s) (:desc s) (:nulls s)]) specs)))]
         {:names names :affs (:affs b) :colls (:colls b) :ecolls (:ecolls b) :correlated (:correlated b)
+         :src-affs (mapv (fn [a m] (let [m (long (or m 0))]
+                                     (cond (and (= a :text) (pos? (bit-and m 1))) :blob
+                                           (and (#{:numeric :integer :real} a) (pos? (bit-and m 2))) :blob
+                                           :else a)))
+                         (:lm-affs b) (or (:rest-mask b) (repeat nil)))
          :rows-fn (fn [env]
                     (let [rows ((:rows b) env)
                           rows (if cmp
