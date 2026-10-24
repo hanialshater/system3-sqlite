@@ -1424,7 +1424,7 @@
                (let [lr ((:rows l) env) rr ((:rows r) env)]
                  (case op
                    :union-all (concat lr rr)
-                   :union (if merge?
+                   :union (if true
                             ;; ORDER BY compounds are merged: among equal rows the right-hand one is kept
                             (let [tl (TreeSet. ^Comparator cmp) tr (TreeSet. ^Comparator cmp)]
                               (doseq [x lr] (.add tl x))
