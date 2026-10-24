@@ -1,0 +1,177 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 8
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|X'3D67F2D7DD'
+~~~
+# id|c0|c1|c2
+9|X'3D67F2D7DD'|NULL|NULL
+8|0|44.16|0
+7|0|21.998|0
+6|0|-22.141|759
+4|0|-35.123|X'D6FF73560EF0'
+3|0|-15.22|-1
+2|-113!|35.542|-2
+1|0|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|X'504C63D28E'
+~~~
+# id|c0|c1|c2|c3|ref
+1|-7|NULL|NULL|NULL|NULL
+2|0|1.0e-07|-689.5833|xi|1
+3|0|X'A0'|-305|NULL|7
+4|0|123456789012|Ελλάδα|X'A827FFBF'|3
+5|X'504C63D28E'|NULL|NULL|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: NOT NULL constraint failed: t0.c0
+~~~
+# id|c0|c1|c2
+1|integer|NULL|NULL
+2|text|35.542|-2
+3|integer|-15.22|-1
+4|X'00374D02'|NULL|NULL
+6|1000000000000000.0!|-22.141|759
+7|integer|21.998|0
+9|blob|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|X'4B41'
+~~~
+# id|c0|c1|c2|c3|ref
+1|-7|NULL|NULL|NULL|NULL
+2|0|1.0e-07|-689.5833|xi|1
+3|0|X'A0'|-305|NULL|7
+4|NULL|NULL|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL|NULL
+6|X'4B41'|NULL|NULL|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: NOT NULL constraint failed: t0.c0
+~~~
+# id|c0|c1|c2
+1|1|NULL|NULL
+2|1|35.542|-2
+3|\*!|-15.22|-1
+5|-314.75|NULL|NULL
+6|1|-22.141|759
+7|1|21.998|0
+9|1|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|723.37
+~~~
+# id|c0|c1|c2
+2|0|35.542|-2
+3|X'79'|NULL|NULL
+6|1!|-22.141|759
+7|0|21.998|0
+8|723.37|NULL|NULL
+~~~
+# id|id|c0|c0
+1|2|-7|0
+~~~
+# count(*)
+6
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|6
+4|6
+5|6
+6|6
+2|6
+3|6
+~~~
+# id
+~~~
+# id
+6
+~~~
+# id
+NULL
+0
+1
+2
+3
+4
+5
+6
+-7
+X'4B41'
+~~~

@@ -1,0 +1,225 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|id
+1|1|1000000000000000|1
+1|2|1000000000000000|2
+1|3|1000000000000000|3
+1|4|1000000000000000|4
+1|5|1000000000000000|5
+1|6|1000000000000000|6
+1|7|1000000000000000|7
+2|1|2.5|1
+2|2|2.5|2
+2|3|2.5|3
+2|4|2.5|4
+2|5|2.5|5
+2|6|2.5|6
+2|7|2.5|7
+3|1|-253|1
+3|2|-253|2
+3|3|-253|3
+3|4|-253|4
+~~~
+# count(*)
+6
+~~~
+# id|id|c2|id
+1|2|NULL|2
+1|3|NULL|3
+1|4|NULL|4
+1|5|NULL|5
+1|6|NULL|6
+1|7|NULL|7
+2|3|X'50'|3
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|id
+1|1|1|1
+1|2|1|2
+1|3|1|3
+1|4|1|4
+1|5|1|5
+1|6|1|6
+1|7|1|7
+2|1|2|1
+2|2|2|2
+2|3|2|3
+2|4|2|4
+2|5|2|5
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c2
+1|1|chi|-2
+1|2|chi|NULL
+1|3|chi|-9223372036854775808
+1|4|chi|0
+1|5|chi|NULL
+1|6|chi|X'5FEDDACBE84D'
+1|7|chi|X'7E'
+2|1|upsilon|-2
+2|2|upsilon|NULL
+2|3|upsilon|-9223372036854775808
+2|4|upsilon|0
+2|5|upsilon|NULL
+2|6|upsilon|X'5FEDDACBE84D'
+2|7|upsilon|X'7E'
+3|1|0|-2
+3|2|0|NULL
+3|3|0|-9223372036854775808
+3|4|0|0
+3|5|0|NULL
+3|6|0|X'5FEDDACBE84D'
+3|7|0|X'7E'
+4|1|-995|-2
+4|2|-995|NULL
+4|3|-995|-9223372036854775808
+4|4|-995|0
+4|5|-995|NULL
+4|6|-995|X'5FEDDACBE84D'
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|c2
+1|1|1|-2
+1|2|1|NULL
+1|3|1|-9223372036854775808
+1|4|1|0
+1|5|1|NULL
+1|6|1|X'5FEDDACBE84D'
+1|7|1|X'7E'
+2|1|2|-2
+2|2|2|NULL
+2|3|2|-9223372036854775808
+2|4|2|0
+2|5|2|NULL
+2|6|2|X'5FEDDACBE84D'
+2|7|2|X'7E'
+3|1|3|-2
+3|2|3|NULL
+3|3|3|-9223372036854775808
+3|4|3|0
+~~~
+# count(*)
+13
+~~~
+# id|id|c3|c0
+1|1|NULL|chi
+1|2|NULL|upsilon
+1|3|NULL|0
+1|4|NULL|-995
+1|5|NULL|0
+1|6|NULL|upsilon
+1|7|NULL|334.47
+2|1|X'0BA32A00'|chi
+2|2|X'0BA32A00'|upsilon
+2|3|X'0BA32A00'|0
+2|4|X'0BA32A00'|-995
+2|5|X'0BA32A00'|0
+2|6|X'0BA32A00'|upsilon
+2|7|X'0BA32A00'|334.47
+3|1|X'7D4A844DBF'|chi
+3|2|X'7D4A844DBF'|upsilon
+3|3|X'7D4A844DBF'|0
+3|4|X'7D4A844DBF'|-995
+3|5|X'7D4A844DBF'|0
+3|6|X'7D4A844DBF'|upsilon
+3|7|X'7D4A844DBF'|334.47
+4|1|-274|chi
+4|2|-274|upsilon
+~~~
+# count(*)
+13
+~~~
+changes: 13
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|X'B3'
+~~~
+# id|c0|c1|c2|c3|c4
+1|1|X'2D0776EA62'|NULL|NULL|NULL
+2|-4|d|NULL|NULL|NULL
+3|1|-3|-382.0|X'7D4A844DBF'|0x1F
+5|1|NULL|NULL|-77|430.35
+6|1|NULL|-129.0|X'FB1389BCF7'|4
+7|1|NULL|426.3|NULL|1
+9|1|NULL|4.500000000000011e-310|5|123456789012
+10|1|upsilon|X'9411B12D'|NULL|beta
+11|1|1000000000000000.0|NULL|1|X'F4'
+13|1|NULL|1000000000000000.0|1.0e-07|5
+14|X'B3'|d|NULL|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|7
+5|7
+3|7
+7|7
+1|7
+6|7
+2|7
+~~~
+# id
+~~~
+# id
+5
+6
+7
+~~~
+# c0
+0
+0
+0
+0
+334.47
+334.47
+chi
+~~~

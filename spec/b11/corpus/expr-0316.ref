@@ -1,0 +1,222 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id IN (coalesce('Lambda', 313), -356.5546, x'6ffefa') IN ((NOT c0 || nullif(c0, c0)), -0.0, -4)|coalesce(typeof(c1), (coalesce(-5, id) OR 'kappa' IN (c1, NULL, NULL)))
+1|1|text
+2|1|blob
+3|1|text
+4|1|text
+5|1|text
+6|1|null
+7|1|text
+8|1|blob
+9|1|text
+~~~
+# x'0c2775'|-(iif(3.141592653589793 IS NULL, -5, 'eta'))
+X'0C2775'|0
+~~~
+# id|id IS NULL|CASE WHEN iif(coalesce(-464, c1), typeof(c1), 2) THEN abs(NULL) BETWEEN typeof(-290) AND CAST('eta' AS TEXT) ELSE id END
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|0|6
+7|0|7
+8|0|8
+9|0|9
+~~~
+# 1e308|abs(NULL)
+1.0e+308|NULL
+~~~
+# id|typeof(typeof(nullif(c0, c0)))|-(CAST(-768 AS BLOB))
+1|text|768
+2|text|768
+3|text|768
+4|text|768
+5|text|768
+6|text|768
+7|text|768
+8|text|768
+9|text|768
+~~~
+# NULL|-(x'06837ed17d')
+NULL|0
+~~~
+# id|c2|'phi'
+10|NULL|phi
+9|2.5|phi
+8|1000000000000000.0|phi
+7|42.0|phi
+6|NULL|phi
+5|-194.31|phi
+4|iota|phi
+3|-703.24|phi
+2|3.1415926535897931|phi
+1|766.2938|phi
+~~~
+# typeof(typeof(CAST('upsilon' AS BLOB)))|nullif(coalesce(721, -104), nullif(coalesce('über', 626.5), abs('psi')))
+text|721
+~~~
+# id|abs(-(c0))|abs(id BETWEEN -(NULL) AND CAST(534 AS TEXT))
+1|0|NULL
+2|0|NULL
+3|235|NULL
+4|NULL|NULL
+5|NULL|NULL
+6|439.301|NULL
+7|0|NULL
+8|0|NULL
+9|230|NULL
+10|NULL|NULL
+~~~
+# 1e308|iif(1e308, -(-(x'20d8')), NULL)
+1.0e+308|0
+~~~
+# id|coalesce(typeof(c1), NOT id BETWEEN (c0 < id) AND abs(c1))|CASE WHEN coalesce(typeof(x'3bbdf0'), -399.99) THEN c1 ELSE NOT nullif('naïve', c0) END
+1|real|1
+2|blob|1
+3|integer|1
+4|blob|1
+5|integer|1
+6|text|1
+7|integer|1
+8|text|1
+9|blob|1
+10|blob|1
+11|text|1
+12|text|1
+13|integer|1
+14|text|1
+15|real|1
+16|blob|1
+17|blob|1
+18|integer|1
+19|blob|1
+20|text|1
+21|integer|1
+22|integer|1
+~~~
+# nullif(iif(coalesce(NULL, -234.3), abs(x'86a907'), 0), (CASE WHEN 2 THEN x'e31ad5f4' ELSE 'NULL' END << nullif(-0.0, -1e308)))|NULL
+NULL|NULL
+~~~
+# id|3.141592653589793 BETWEEN c0 AND NULL BETWEEN c0 AND id IN (c1, '-7', NULL)|typeof(c1)
+1|NULL|text
+2|NULL|blob
+3|NULL|text
+4|NULL|text
+5|NULL|text
+6|NULL|null
+7|NULL|text
+8|NULL|blob
+9|NULL|text
+~~~
+# -(CAST(-(4.5e-310) AS TEXT))|-977
+4.500000000000011e-310|-977
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|1
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|-465|3|766.2938|beta|-465|3
+3|1000|X'AF3A9F'|-703.24|theta|1e3|3
+4|naïve|NULL|NULL|NULL|NULL|NULL
+5|1000000000000000|NULL|-194.31|658.9464|1000000000000000.0|NULL
+7|0|rho|42.0|NULL|0|7
+8|-436|NULL|NULL|NULL|NULL|NULL
+9|X'B1DAB2C28D'|-485.86|2.5|-725.41|X'B1DAB2C28D'|5
+10|1|NULL|NULL|NULL|NULL|NULL
+~~~

@@ -1,0 +1,82 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 1, 0)|instr('-7', 'a%b')|replace('-7', 'e', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE 'A%'|'-7' GLOB 'a*'|char(65, 642)|'-7' || 'a%b'|'-7' < 'a%b'|'-7' = 'a%b' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|0|0|Aʂ|-7a%b|1|0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 0, 0)|instr('xi', 'NULL')|replace('xi', '', '_')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE 'A%'|'xi' GLOB 'a*'|char(85, 838)|'xi' || 'NULL'|'xi' < 'NULL'|'xi' = 'NULL' COLLATE NOCASE
+2|XI|xi||0|xi|xi|xi|7869|'xi'|120|0|0|U͆|xiNULL|0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 2, 0)|instr('rho', '42')|replace('rho', 'a', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE 'a%'|'rho' GLOB 'a*'|char(89, 503)|'rho' || '42'|'rho' < '42'|'rho' = '42' COLLATE NOCASE
+3|RHO|rho||0|rho|rho|rho|72686F|'rho'|114|0|0|YǷ|rho42|0|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', -3, 1)|instr('beta', 'señor')|replace('beta', 'e', '_')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE '%'|'beta' GLOB '*[a-m]*'|char(74, 448)|'beta' || 'señor'|'beta' < 'señor'|'beta' = 'señor' COLLATE NOCASE
+4|BETA|beta|e|0|b_ta|beta|eta|62657461|'beta'|98|1|1|Jǀ|betaseñor|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# c0
+~~~

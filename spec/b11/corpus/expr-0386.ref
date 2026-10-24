@@ -1,0 +1,226 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|NULL BETWEEN -477 BETWEEN CASE WHEN c0 THEN id ELSE c2 END AND -785 AND CAST(3 AS INTEGER)|(coalesce(c3, id) < nullif(c2, c1)) BETWEEN (-(c2) & 'zeta') AND CAST((c4 OR c0) AS REAL)
+7|NULL|1
+6|NULL|1
+5|NULL|1
+4|NULL|1
+3|NULL|NULL
+2|NULL|1
+1|NULL|1
+~~~
+# -1|(NOT (x'bb' IS NOT 'alpha') IS NULL)
+-1|1
+~~~
+# id|iif(-(c3 BETWEEN c2 AND x''), abs('phi'), 723.7684)|NULL
+1|723.7684|NULL
+2|723.7684|NULL
+3|723.7684|NULL
+4|0.0|NULL
+5|723.7684|NULL
+6|723.7684|NULL
+7|723.7684|NULL
+~~~
+# iif(iif(NULL, 49.67, x'79b8fb'), abs(5), 9223372036854775807) IS NULL|x'bd22c5c15fa8' IN (iif(typeof(4), -('upsilon'), NULL), x'8df45ca886', 'upsilon')
+0|NULL
+~~~
+# id|id|NOT c1 BETWEEN iif(-565 BETWEEN c0 AND id, nullif(-1, id), 39) AND -(typeof('omega'))
+1|1|NULL
+2|2|NULL
+3|3|1
+4|4|NULL
+5|5|1
+6|6|1
+7|7|NULL
+8|8|NULL
+9|9|1
+10|10|1
+11|11|1
+12|12|1
+13|13|1
+14|14|NULL
+15|15|1
+~~~
+# -31|iif(abs(-2 IS NULL), x'f06cff', NULL)
+-31|NULL
+~~~
+# id|c0|-(3.141592653589793 IN (CASE WHEN c3 THEN x'44' ELSE 525.5738 END, 3.141592653589793, NULL))
+1|X''|-1
+2|NULL|-1
+3|-1.0e+308|-1
+4|pi|-1
+5|953|-1
+6|42|-1
+7|NULL|-1
+8|X'70A5B3A6'|-1
+9|-4|-1
+10|NULL|-1
+11|NULL|-1
+12|NULL|-1
+13|X'87372CCD89'|-1
+14|NULL|-1
+15|X'3FE0B4'|-1
+16|NULL|-1
+17|-1.0e+308|-1
+18|869|-1
+19|a%b|-1
+20|-488|-1
+21|NULL|-1
+22|X'D7DED3878981'|-1
+23|4.500000000000011e-310|-1
+24|NULL|-1
+25|5|-1
+~~~
+# -2.5 IS NULL|iif(-('eta'), 'gamma' IN (x'5785', 2.5, 'sigma'), NULL) IN (NOT CASE WHEN 0 THEN NULL ELSE x'c47811eeb104' END, x'4b17', -66)
+0|NULL
+~~~
+# id|'señor'|c2
+1|señor|0
+2|señor|-971
+3|señor|X'E04623'
+4|señor|486
+5|señor|0
+6|señor|4
+7|señor|0
+8|señor|0
+9|señor|-5
+10|señor|X''
+11|señor|0
+12|señor|X'28FDE3F1'
+13|señor|X'62F85FAE'
+14|señor|X''
+15|señor|-131
+~~~
+# abs(abs((791.0775 <> '42')))|-(NOT NULL BETWEEN CASE WHEN NULL THEN NULL ELSE NULL END AND abs(123456789012))
+1|NULL
+~~~
+# id|CASE WHEN iif(x'e60c9547ec1a', c3, -9223372036854775808) THEN id IS NULL ELSE id IN (x'6a4708443f48', 2.5, 'tau') END IN ((CAST(c3 AS INTEGER) OR CAST(c4 AS BLOB)), x'f8ed43', 'café')|coalesce(abs(abs(c4)), NOT (c2 >> 2))
+1|1|0.0
+2|0|822
+3|0|0.0
+4|NULL|0.0
+5|0|9223372036854775807
+6|0|1
+7|0|NULL
+8|0|0.0
+9|0|0.0
+10|0|2.5
+11|NULL|0.0
+12|0|525.1105
+13|NULL|0.0
+14|1|0.0
+15|0|NULL
+16|NULL|0.0
+17|0|NULL
+18|0|0.0
+19|1|0.0
+20|0|4
+21|0|327
+22|NULL|1
+23|0|0.0
+24|0|94.0
+25|1|0.0
+~~~
+# -4|abs(typeof(CAST('rho' AS TEXT)))
+-4|0.0
+~~~

@@ -1,0 +1,318 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|coalesce(nullif(NULL, c1), c4) BETWEEN abs(id) IS NULL AND CAST(c1 AS BLOB)|c3 BETWEEN 'x_y' AND 'zeta'
+23|0|0
+22|0|0
+21|NULL|0
+20|0|0
+19|1|0
+18|1|0
+17|NULL|0
+16|0|0
+15|NULL|0
+14|NULL|0
+13|NULL|0
+12|NULL|0
+11|0|0
+10|0|0
+9|1|0
+8|0|0
+7|1|0
+6|0|0
+5|1|0
+4|0|0
+3|1|0
+2|0|0
+1|NULL|NULL
+~~~
+# -4 IS NULL|('phi' - NULL)
+0|NULL
+~~~
+# id|NOT nullif(NOT NULL, 'psi' IN (c0, NULL, 214))|typeof('delta')
+1|NULL|text
+2|NULL|text
+3|NULL|text
+4|NULL|text
+5|NULL|text
+6|NULL|text
+7|NULL|text
+8|NULL|text
+9|NULL|text
+10|NULL|text
+11|NULL|text
+12|NULL|text
+13|NULL|text
+14|NULL|text
+15|NULL|text
+16|NULL|text
+17|NULL|text
+18|NULL|text
+19|NULL|text
+20|NULL|text
+21|NULL|text
+22|NULL|text
+23|NULL|text
+~~~
+# x'41fabafefb4c'|CASE WHEN 'über' THEN 'café' IN (NULL, x'598d83', -3) ELSE iif(-513, NULL, -856) END IN (NULL, 0, NULL)
+X'41FABAFEFB4C'|NULL
+~~~
+# id|CASE WHEN -(c1) THEN iif(-90.455, c1 IN (c4, 4, x'67ed'), 1e308) ELSE -(coalesce(c2, c0)) END|'nu'
+23|0|nu
+22|-0.1|nu
+21|0|nu
+20|0|nu
+19|0|nu
+18|-293.42|nu
+17|NULL|nu
+16|0|nu
+15|-1.0|nu
+14|-4.500000000000011e-310|nu
+13|4.0|nu
+12|5.0|nu
+11|0|nu
+10|0|nu
+9|0|nu
+8|0|nu
+7|0|nu
+6|881|nu
+5|-849.0|nu
+4|0|nu
+3|-4.0|nu
+2|0|nu
+1|0|nu
+~~~
+# abs(abs(x'38aefc55ed') BETWEEN x'1da4' AND x'')|iif(coalesce(NULL, -668), x'1e363b' BETWEEN NULL AND x'', x'af12') IS NULL
+0|0
+~~~
+# id|abs(CAST(110.29 AS TEXT))|-(abs(0.1))
+1|110.29|-0.1
+2|110.29|-0.1
+3|110.29|-0.1
+4|110.29|-0.1
+5|110.29|-0.1
+6|110.29|-0.1
+7|110.29|-0.1
+8|110.29|-0.1
+9|110.29|-0.1
+10|110.29|-0.1
+11|110.29|-0.1
+12|110.29|-0.1
+13|110.29|-0.1
+14|110.29|-0.1
+15|110.29|-0.1
+16|110.29|-0.1
+17|110.29|-0.1
+18|110.29|-0.1
+19|110.29|-0.1
+20|110.29|-0.1
+21|110.29|-0.1
+22|110.29|-0.1
+23|110.29|-0.1
+~~~
+# 0|'a%b'
+0|a%b
+~~~
+# id|abs(id) IN (CASE WHEN -895 BETWEEN id AND x'2e' THEN c2 ELSE x'eff4df628e' IS NULL END, NULL, x'')|(c0 / coalesce((id + c2), id IN ('rho', 'phi', -1)))
+19|NULL|NULL
+18|NULL|1.1286666666666667
+17|NULL|NULL
+16|NULL|NULL
+15|NULL|-2.2821333333333334
+14|NULL|-2.3010909090909091
+13|NULL|-0.28869230769230769
+12|NULL|7.0847999999999995
+11|NULL|NULL
+10|NULL|4.8111
+9|NULL|-3.6843999999999669e-14
+8|NULL|NULL
+7|NULL|0.02713406292749658
+6|NULL|NULL
+5|NULL|0.032152238805970151
+4|NULL|NULL
+3|NULL|2.5996666666666668
+2|NULL|-0.0089312573727659168
+1|NULL|26.546
+~~~
+# (NULL IN (NOT -676, 'tau', x'b009db52') || NULL)|x'93'
+NULL|X'93'
+~~~
+# id|CAST(c2 AS INTEGER)|typeof(typeof(abs(c4)))
+23|0|text
+22|0|text
+21|0|text
+20|0|text
+19|NULL|text
+18|293|text
+17|1000|text
+16|0|text
+15|1|text
+14|0|text
+13|-4|text
+12|-5|text
+11|-361|text
+10|0|text
+9|NULL|text
+8|0|text
+7|0|text
+6|NULL|text
+5|849|text
+4|0|text
+3|4|text
+2|0|text
+1|0|text
+~~~
+# (404 | x'69ef') IS NULL IS NULL|coalesce(abs(5), NULL) BETWEEN typeof(NULL) AND NULL
+0|0
+~~~
+# id|ref|CAST(NOT c2 AS BLOB) BETWEEN c4 IN (nullif(c4, c3), -166, -2) AND x'f0fac4' IN (c2, x'4817337db9', 'omicron')
+23|6|0
+22|4|0
+21|NULL|0
+20|4|0
+19|7|NULL
+18|7|0
+17|8|NULL
+16|NULL|0
+15|8|NULL
+14|NULL|0
+13|1|NULL
+12|7|0
+11|7|0
+10|7|0
+9|5|NULL
+8|NULL|0
+7|NULL|0
+6|2|NULL
+5|NULL|0
+4|8|0
+3|7|0
+2|NULL|0
+1|NULL|0
+~~~
+# NULL|abs(1)
+NULL|1
+~~~
+changes: 1
+~~~
+# id|c4
+13|NULL
+15|NULL
+17|NULL
+22|-982
+20|-667.62
+2|-358
+11|-4
+23|-1
+21|0
+9|4.500000000000011e-310
+1|42
+19|319.737
+3|407.63
+14|1000000000000000
+18|日本
+7|X''
+5|X'1D'
+8|X'D0DEB0'
+4|X'DCB9'
+10|X'EB4CEA'
+16|X'ECB9B6858656'
+12|X'F2DD1AF7'
+6|X'FBBE0D4E44'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,104 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 2, 5)|instr('a%b', 'omicron')|replace('a%b', 'é', '')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB '*'|char(74, 855)|'a%b' || 'omicron'|'a%b' < 'omicron'|'a%b' = 'omicron' COLLATE NOCASE
+3|A%B|a%b|%b|0|a%b|a%b|%b|612562|'a%b'|97|0|1|J͗|a%bomicron|1|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 1, 4)|instr('zeta', 'pi')|replace('zeta', 'é', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%a_'|'zeta' GLOB '?'|char(70, 700)|'zeta' || 'pi'|'zeta' < 'pi'|'zeta' = 'pi' COLLATE NOCASE
+4|ZETA|zeta|zeta|0|zeta|zeta|zeta|7A657461|'zeta'|122|0|0|Fʼ|zetapi|0|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', -1, 2)|instr('Lambda', 'Lambda')|replace('Lambda', 'a', 'XY')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%'|'Lambda' GLOB '?'|char(67, 880)|'Lambda' || 'Lambda'|'Lambda' < 'Lambda'|'Lambda' = 'Lambda' COLLATE NOCASE
+6|LAMBDA|lambda|a|1|LXYmbdXY|Lambda|Lambda|4C616D626461|'Lambda'|76|1|0|CͰ|LambdaLambda|0|1
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -3, 3)|instr('alpha', 'omega')|replace('alpha', 'é', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%a_'|'alpha' GLOB '?'|char(82, 579)|'alpha' || 'omega'|'alpha' < 'omega'|'alpha' = 'omega' COLLATE NOCASE
+5|ALPHA|alpha|pha|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|0|RɃ|alphaomega|1|0
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', 4, 1)|instr('phi', 'Ελλάδα')|replace('phi', 'é', 'XY')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '_'|'phi' GLOB '?'|char(84, 454)|'phi' || 'Ελλάδα'|'phi' < 'Ελλάδα'|'phi' = 'Ελλάδα' COLLATE NOCASE
+3|PHI|phi||0|phi|phi|phi|706869|'phi'|112|0|0|Tǆ|phiΕλλάδα|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 4, 1)|instr('alpha', 'omicron')|replace('alpha', 'e', 'XY')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%é%'|'alpha' GLOB '*'|char(83, 748)|'alpha' || 'omicron'|'alpha' < 'omicron'|'alpha' = 'omicron' COLLATE NOCASE
+5|ALPHA|alpha|h|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|Sˬ|alphaomicron|1|0
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+3|2|2.0|2.0|1.0|2|X'89'|2
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|3|3;5;7
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+Lambda|1|3
+café|3|4;5;6
+gamma|1|8
+omicron|1|2
+xi|1|1
+über|1|7
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -2, 2)|instr('-7', 'sigma')|replace('-7', 'a', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE 'A%'|'-7' GLOB '*'|char(86, 830)|'-7' || 'sigma'|'-7' < 'sigma'|'-7' = 'sigma' COLLATE NOCASE
+2|-7|-7|-7|0|-7|-7|-7|2D37|'-7'|45|0|1|V̾|-7sigma|1|0
+~~~

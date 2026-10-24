@@ -1,0 +1,210 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|iif(abs(x''), iif(0, c0, 0), 'chi')|(NOT CASE WHEN id THEN c0 ELSE id END < -(ref))
+18|chi|1
+17|chi|1
+16|chi|1
+15|chi|1
+14|chi|NULL
+13|chi|NULL
+12|chi|1
+11|chi|1
+10|chi|NULL
+9|chi|NULL
+8|chi|1
+7|chi|NULL
+6|chi|1
+5|chi|1
+4|chi|NULL
+3|chi|NULL
+2|chi|NULL
+1|chi|1
+~~~
+# (iif(-('omega'), CAST(499.352 AS INTEGER), 'gamma') >> iif(coalesce(0, 1.0e15), x'495e831963' IN (NULL, NULL, NULL), -3))|'kappa'
+0|kappa
+~~~
+# id|((c0 - '1e3') | NOT c1) BETWEEN 'kappa' AND coalesce(coalesce(c1, c4), c0)|abs(nullif('Ελλάδα', -('psi')))
+1|NULL|0.0
+2|0|0.0
+3|0|0.0
+4|0|0.0
+5|0|0.0
+6|0|0.0
+7|NULL|0.0
+8|NULL|0.0
+9|NULL|0.0
+10|NULL|0.0
+11|NULL|0.0
+12|NULL|0.0
+13|NULL|0.0
+14|0|0.0
+15|NULL|0.0
+16|0|0.0
+~~~
+# 'it''s'|'omega' IN ((-('日本') >= NULL), 361.97, NULL)
+it's|NULL
+~~~
+# id|c1|nullif(c1, coalesce(c4, c0) IS NULL)
+16|theta|theta
+15|NULL|NULL
+14|755|755
+13|tau|tau
+12|X'1B'|X'1B'
+11|601|601
+10|theta|theta
+9|NULL|NULL
+8|NULL|NULL
+7|NULL|NULL
+6|rho|rho
+5|4|4
+4|-1|-1
+3|X'89DA353D'|X'89DA353D'
+2|Ελλάδα|Ελλάδα
+1|NULL|NULL
+~~~
+# 'omicron'|CAST(CASE WHEN 162 THEN '42' ELSE x'f9d1c8' END BETWEEN typeof(357) AND -('beta') AS BLOB)
+omicron|X'30'
+~~~
+# id|-(iif(CAST(ref AS NUMERIC), (c1 >> c0), x'c38af9'))|c1
+1|356|-356.14
+2|0|332.7
+3|NULL|1
+4|NULL|35
+5|0|X'DD5D3324FB'
+6|0|X'D42BF8'
+7|NULL|X'60B1A1D3E349'
+8|NULL|NULL
+9|0|4
+10|0|1e3
+11|0|0
+12|NULL|NULL
+13|NULL|epsilon
+14|NULL|NULL
+15|0|alpha
+16|0|-534.9
+17|1|-1
+18|0|-563.6055
+~~~
+# 3.141592653589793 BETWEEN abs(4) AND -106 BETWEEN 1e-7 AND 627.879 BETWEEN x'3e5d0e69' IS NULL AND typeof(x'7104bb11')|abs('42')
+1|42.0
+~~~
+# id|-(abs(id))|c1
+1|-1|NULL
+2|-2|Ελλάδα
+3|-3|X'89DA353D'
+4|-4|-1
+5|-5|4
+6|-6|rho
+7|-7|NULL
+8|-8|NULL
+9|-9|NULL
+10|-10|theta
+11|-11|601
+12|-12|X'1B'
+13|-13|tau
+14|-14|755
+15|-15|NULL
+16|-16|theta
+~~~
+# 'NULL'|coalesce(nullif(x'4f3e2f0c' IS NULL, -0.0), NULL)
+NULL|NULL
+~~~
+# id|id|c1|c1
+1|5|NULL|X'DD5D3324FB'
+1|11|NULL|0
+2|6|Ελλάδα|X'D42BF8'
+2|14|Ελλάδα|NULL
+2|15|Ελλάδα|alpha
+3|8|X'89DA353D'|NULL
+3|17|X'89DA353D'|-1
+4|1|-1|-356.14
+4|7|-1|X'60B1A1D3E349'
+4|16|-1|-534.9
+4|18|-1|-563.6055
+5|4|4|35
+5|13|4|epsilon
+6|NULL|rho|NULL
+7|NULL|NULL|NULL
+8|3|NULL|1
+8|12|NULL|NULL
+9|NULL|NULL|NULL
+10|NULL|theta|NULL
+11|NULL|601|NULL
+12|NULL|X'1B'|NULL
+13|NULL|tau|NULL
+14|NULL|755|NULL
+15|NULL|NULL|NULL
+16|NULL|theta|NULL
+~~~
+error: near "(": syntax error
+~~~

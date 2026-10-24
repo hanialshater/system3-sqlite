@@ -1,0 +1,211 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 22
+~~~
+changes: 11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|340
+~~~
+# id|c0|c1|ref
+1|0|X'7C'|5
+3|4|NULL|NULL
+4|-244|NULL|NULL
+5|0|NULL|4
+7|1|730|2
+9|1|125|3
+11|0|Ελλάδα|6
+13|NULL| pad |1
+15|0|X'F67C'|8
+17|NULL|NULL|NULL
+19|1|iota|4
+21|0|NULL|NULL
+22|340|NULL|NULL
+~~~
+changes: 13
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|NULL
+~~~
+# id|c0|c1|ref
+23|NULL|NULL|NULL
+22|NULL|NULL|NULL
+19|X'34'|iota|4
+15|X'38'|X'F67C'|8
+11|X'36'|Ελλάδα|6
+8|NULL|NULL|NULL
+7|X'32'|730|2
+6|-2|NULL|NULL
+4|NULL|NULL|NULL
+3|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|X'28A3'
+~~~
+# id|c0|c1|ref
+4|X'559D56'|NULL|NULL
+6|.!|NULL|NULL
+8|NULL|NULL|NULL
+22|NULL|NULL|NULL
+23|X'28A3'|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|NULL
+~~~
+# id|c0|c1|c2
+2|NULL|X'AE27C6'|0
+3|señor|0|NULL
+4|NULL|0|NULL
+5|tau|X'528B46F0A70D'|NULL
+7|-30|518|NULL
+8|-180|X'E31F'| pad 
+9|NULL|0|-270.3
+10|delta| pad |1
+12|NULL|4.500000000000011e-310|2.5
+13|-3|X'1B49'|X'D8'
+14|NULL|X'33D12387C2'|X'0B5C83C47B8B'
+15|NULL|0|NULL
+~~~
+# id|nullif('señor', iif(x'0ddf06', c2, -0.0) BETWEEN NULL AND CASE WHEN 'tau' THEN 'it''s' ELSE c1 END)|c0
+15|señor|NULL
+14|señor|NULL
+13|señor|-3
+12|señor|NULL
+10|señor|delta
+9|señor|NULL
+8|señor|-180
+7|señor|-30
+5|señor|tau
+4|señor|NULL
+3|señor|señor
+2|señor|NULL
+~~~
+# -(nullif(-3, NULL)) IS NULL|'omicron'
+0|omicron
+~~~
+changes: 1
+~~~
+# id|c1
+3|0
+4|0
+9|0
+15|0
+12|4.500000000000011e-310
+7|518
+10| pad 
+13|X'1B49'
+14|X'33D12387C2'
+5|X'528B46F0A70D'
+2|X'AE27C6'
+8|X'E31F'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', 4, 3)|instr('x_y', 'omega')|replace('x_y', 'é', 'XY')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '%'|'x_y' GLOB '?'|char(73, 383)|'x_y' || 'omega'|'x_y' < 'omega'|'x_y' = 'omega' COLLATE NOCASE
+3|X_Y|x_y||0|x_y|x_y|x_y|785F79|'x_y'|120|1|0|Iſ|x_yomega|0|0
+~~~

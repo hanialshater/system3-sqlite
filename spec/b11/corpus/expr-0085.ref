@@ -1,0 +1,192 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c3
+~~~
+# id|CAST(id AS REAL)|NULL
+1|1.0|NULL
+2|2.0|NULL
+3|3.0|NULL
+~~~
+# x'6b'|x'6dbd8941'
+X'6B'|X'6DBD8941'
+~~~
+# id|(CAST(c0 AS TEXT) IS NULL >> 'xi' IN (c3, NULL, 0) IS NULL)|abs(id) IN (CAST(c3 BETWEEN c0 AND ref AS BLOB), 'alpha', NULL)
+1|0|NULL
+2|0|NULL
+3|0|NULL
+~~~
+# typeof(CAST('chi' BETWEEN x'fe54' AND -415 AS NUMERIC))|32 IS NULL
+integer|0
+~~~
+# id|abs(abs(typeof(c1)))|NOT NULL IS NULL
+1|0.0|0
+2|0.0|0
+3|0.0|0
+4|0.0|0
+5|0.0|0
+6|0.0|0
+7|0.0|0
+8|0.0|0
+~~~
+# typeof(NULL)|526
+null|526
+~~~
+# id|(c1 IN ('beta', -557, 821) || id) IS NULL|NULL
+8|1|NULL
+7|0|NULL
+6|1|NULL
+5|0|NULL
+4|0|NULL
+3|0|NULL
+2|0|NULL
+1|0|NULL
+~~~
+# typeof(CASE WHEN NULL THEN 543 ELSE 2.5 END) IS NULL|iif(x'd79f587d', 'café', -9223372036854775808)
+0|-9223372036854775808
+~~~
+# id|typeof(typeof(c2)) IN (x'ffb431e1', NULL, x'6ae5476f')|c3 IN (c0, x'', -549.4220)
+1|NULL|0
+2|NULL|0
+3|NULL|0
+~~~
+# nullif(CASE WHEN 729 THEN 437 ELSE -1e308 END, typeof('MU')) BETWEEN 'rho' IS NULL AND nullif(CASE WHEN 'rho' THEN 5 ELSE x'3ea8a4' END, -1e308 IN ('1e3', x'847cb306', 123456789012))|928
+1|928
+~~~
+# id|CAST(c1 AS REAL) IS NULL|abs(id)
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|1|6
+7|0|7
+8|1|8
+~~~
+# x'b028'|nullif(-128.510, iif(-191, x'd1e8ab', x'73e582') IN (CAST(NULL AS REAL), -865, 370))
+X'B028'|-128.51
+~~~
+changes: 0
+~~~
+# id|c2
+5|NULL
+18|NULL
+19|NULL
+20|NULL
+21|NULL
+23|NULL
+25|NULL
+17|-2
+4|-2.5
+2|-83.432
+12|0.0
+8|1
+1|1.0e-07
+7|2.5
+24|2.5
+22|4.500000000000011e-310
+3|489
+15|769
+11|770
+6|xi
+13|Ελλάδα
+10|X''
+9|X'06D4193BF5'
+14|X'79'
+16|X'9EFB'
+~~~
+# count(*)
+18
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+# id|id|ref|c1
+1|15|2|-283
+2|3|8|a%b
+2|4|8|538.2
+2|20|8|NULL
+2|23|8|0.1
+3|5|3|NULL
+3|8|3|NULL
+3|11|3|NULL
+~~~
+# count(*)
+2
+~~~

@@ -1,0 +1,165 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0|c1|c2|c3
+1|-5.0|-2.5|-45.767|sigma
+2|-5.0|日本|-20.244|NULL
+3|-5.0|NULL|28.386|omicron
+7|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|-9.2233720368547758e+18
+~~~
+# id|c0|c1|c2|c3
+1|-567.3|NULL|NULL|NULL
+2|-5.0|日本|-20.244|NULL
+6|-815.585|NULL|NULL|NULL
+7|-9.2233720368547758e+18|NULL|NULL|NULL
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 2
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0
+7|-649.0
+~~~
+# id|c0|c1|c2|c3
+7|-649.0|NULL|NULL|NULL
+6|-815.585|NULL|NULL|NULL
+2|-5.0|日本|-20.244|NULL
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|-9223372036854775808
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|X'0910'|NULL|upsilon|NULL|1
+2|NULL|delta|921.54|kappa|alpha|6
+3|NULL|0|omicron|-3|NULL|3
+5|9223372036854775807|0|d|NULL|NULL|NULL
+9|0x1F|0|d|NULL|NULL|NULL
+10|-9223372036854775808|0|d|NULL|NULL|NULL
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0|c1|c2|c3
+2|0.0|日本|-20.244|NULL
+4|-491.0|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL
+7|0.0|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|950.0
+~~~
+# id|c0|c1|c2|c3
+1|0.0|NULL|NULL|NULL
+2|0.0|日本|-20.244|NULL
+4|-491.0|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL
+7|0.0|NULL|NULL|NULL
+8|950.0|NULL|NULL|NULL
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|X''
+~~~
+# id|c0|c1|c2|c3|c4|ref
+10|X''|0|d|NULL|NULL|NULL
+9|-5|0|d|NULL|NULL|NULL
+5|-5|0|d|NULL|NULL|NULL
+3|-5|0|omicron|-3|NULL|3
+2|NULL|0|d|NULL|NULL|NULL
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 4, 2)|instr('naïve', 'eta')|replace('naïve', 'é', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '_'|'naïve' GLOB '*[a-m]*'|char(71, 809)|'naïve' || 'eta'|'naïve' < 'eta'|'naïve' = 'eta' COLLATE NOCASE
+5|NAïVE|naïve|ve|0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|G̩|naïveeta|0|0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|X'F98CDE5370'|0|d|NULL|NULL|NULL
+2|NULL|0|d|NULL|NULL|NULL
+3|0.0|0|omicron|-3|NULL|3
+5|0.0|0|d|NULL|NULL|NULL
+9|0.0|0|d|NULL|NULL|NULL
+10|NULL|0|d|NULL|NULL|NULL
+~~~

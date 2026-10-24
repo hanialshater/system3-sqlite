@@ -1,0 +1,127 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', -1, 3)|instr('nu', 'upsilon')|replace('nu', 'a', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%'|'nu' GLOB '?'|char(81, 826)|'nu' || 'upsilon'|'nu' < 'upsilon'|'nu' = 'upsilon' COLLATE NOCASE
+2|NU|nu|u|0|nu|nu|nu|6E75|'nu'|110|1|0|Q̺|nuupsilon|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', -3, 5)|instr('pi', 'iota')|replace('pi', 'é', '_')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%é%'|'pi' GLOB '?'|char(86, 211)|'pi' || 'iota'|'pi' < 'iota'|'pi' = 'iota' COLLATE NOCASE
+2|PI|pi|pi|0|pi|pi|pi|7069|'pi'|112|0|0|VÓ|piiota|0|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 2, 0)|instr('psi', 'pi')|replace('psi', 'e', '_')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE '%a_'|'psi' GLOB '*'|char(66, 437)|'psi' || 'pi'|'psi' < 'pi'|'psi' = 'pi' COLLATE NOCASE
+3|PSI|psi||0|psi|psi|psi|707369|'psi'|112|0|1|BƵ|psipi|0|0
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -2, 2)|instr('日本', 'über')|replace('日本', 'é', '')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '_'|'日本' GLOB '*'|char(78, 956)|'日本' || 'über'|'日本' < 'über'|'日本' = 'über' COLLATE NOCASE
+2|日本|日本|日本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|1|Nμ|日本über|0|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', -2, 2)|instr('sigma', 'phi')|replace('sigma', '', '')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE 'a%'|'sigma' GLOB '*'|char(81, 888)|'sigma' || 'phi'|'sigma' < 'phi'|'sigma' = 'phi' COLLATE NOCASE
+5|SIGMA|sigma|ma|0|sigma|sigma|sigma|7369676D61|'sigma'|115|0|1|Q͸|sigmaphi|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 0, 3)|instr('1e3', '0x1F')|replace('1e3', 'e', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE 'A%'|'1e3' GLOB '?'|char(79, 243)|'1e3' || '0x1F'|'1e3' < '0x1F'|'1e3' = '0x1F' COLLATE NOCASE
+3|1E3|1e3|1e|0|13|1e3|1e3|316533|'1e3'|49|0|0|Oó|1e30x1F|0|0
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 3, 4)|instr('gamma', 'café')|replace('gamma', 'a', 'XY')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE 'A%'|'gamma' GLOB '*[a-m]*'|char(76, 603)|'gamma' || 'café'|'gamma' < 'café'|'gamma' = 'café' COLLATE NOCASE
+5|GAMMA|gamma|mma|0|gXYmmXY|gamma|gamma|67616D6D61|'gamma'|103|0|1|Lɛ|gammacafé|0|0
+~~~
+# id|nullif(-(ref), x'9e0b' IS NULL)|coalesce(coalesce(c0, 0.1 IS NULL), typeof(0))
+1|-8|X'4B'
+2|-1|psi
+3|-1|0
+4|-7|X'09472D3E344D'
+5|-6|NULL
+6|-6|0
+7|-6|4.500000000000011e-310
+8|-4|0
+9|-3|1
+10|-7|-666.1864
+11|-8|-41
+12|-8|0
+13|-8|beta
+14|-2|0.0
+15|-2|X'5F4E'
+16|-2|9223372036854775807
+17|-7|589.515
+18|-6|399
+19|-1|2
+~~~
+# CASE WHEN nullif(typeof(0), -(3)) THEN nullif(nullif(-778, '日本'), 1) ELSE NULL BETWEEN x'' AND typeof(0.1) END|CASE WHEN x'c9c5c1' IS NULL BETWEEN 'theta' BETWEEN -749 AND NULL AND nullif('a%b', -97) THEN CASE WHEN 9223372036854775807 THEN x'' ELSE -516.50 END IS NULL ELSE iif(NOT 0, NULL IN (123456789012, -4, 'delta'), x'd074886da6') END
+NULL|NULL
+~~~

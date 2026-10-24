@@ -1,0 +1,221 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+1|eta
+13|Lambda
+3|MU
+8|naïve
+9|NULL
+10|X'3AAE43389512'
+6|X'8D'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+4|X'B13313'
+5|X'CFEC562FAF'
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+2|2
+6|2
+10|2
+1|3
+4|3
+8|3
+11|3
+5|4
+9|4
+12|5
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 12
+~~~
+changes: 4
+~~~
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+# id|c0
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+# id|c0|c1|ref
+2|0|1.6|2
+3|NULL|13.782|NULL
+5|0|-48.737|4
+6|0|-0.117|2
+8|NULL|21.015|3
+9|0|-13.191|4
+11|0|-33.366|3
+12|NULL|28.326|5
+~~~
+# id|id|c1|c4
+1|1|X'79C7B1EE8123'|X'900C'
+2|2|-285.316|-936
+3|3|615|xi
+4|4|X'B13313'|-5
+5|5|X'CFEC562FAF'|xi
+6|6|NULL|NULL
+7|7|684.43|-138.4
+8|8|-947.171|NULL
+9|9|señor|X'A7B588D1'
+10|10|MU|0.1
+11|11|NULL|X'B57086EE1E91'
+12|12|iota|X'68FDCC40'
+13|13|a%b|1000
+14|14|-1.0e+308|NULL
+15|15|NULL|NULL
+16|16|-2|X'E6'
+17|17|854|-623.78
+18|18|502|x_y
+19|19|NULL|X'A64D954A46'
+20|20|1|-2
+21|21|alpha|NULL
+22|22|NULL|-515.082
+23|23|-792.441|NULL
+~~~
+error: near "(": syntax error
+~~~

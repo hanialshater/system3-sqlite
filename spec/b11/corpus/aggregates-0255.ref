@@ -1,0 +1,178 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+15|15|120|120.0|8.0|1|15|15
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+3|3|6|6.0|2.0|1|3|3
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+15|12|1.0e+308|1.0e+308|8.333333333333333e+306|-9223372036854775808|X''|12
+~~~
+# c0|count(*)|group_concat(id)
+NULL|3|4,5,8
+-9223372036854775808|1|13
+-648|1|10
+-134|1|14
+-5|1|9
+-4|1|3
+1.0e-07|1|11
+4|1|6
+449|1|7
+123456789012|1|12
+1.0e+308|1|15
+日本|1|2
+X''|1|1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+19|19|-1.0e+308|-1.0e+308|-5.2631578947368423e+306|-1.0e+308|X'CA8CDC0B'|16
+~~~
+# c0|count(*)|group_concat(id)
+-1.0e+308|1|9
+-9223372036854775808|1|14
+-595|1|5
+-100.4|1|2
+-5|1|4
+-4|1|1
+0|4|6,8,13,17
+2|1|18
+421.85|1|3
+695.0|1|10
+naïve|1|12
+X'2DF5DB4413BC'|1|16
+X'5760CA3FD80D'|1|11
+X'75A9D68C2F9F'|1|7
+X'B63E23'|1|19
+X'CA8CDC0B'|1|15
+~~~
+# id|id|c3|id
+1|1|omicron|1
+1|2|omicron|2
+1|3|omicron|3
+1|4|omicron|4
+1|5|omicron|5
+1|6|omicron|6
+1|7|omicron|7
+1|8|omicron|8
+1|9|omicron|9
+1|10|omicron|10
+1|11|omicron|11
+1|12|omicron|12
+1|13|omicron|13
+1|14|omicron|14
+1|15|omicron|15
+2|1|-834|1
+2|2|-834|2
+2|3|-834|3
+~~~
+# count(*)
+3
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+3|3|-834.0|-834.0|-278.0|-834|omicron|3
+~~~
+# c3|count(*)|group_concat(id)
+-834|1|2
+4.500000000000011e-310|1|3
+omicron|1|1
+~~~

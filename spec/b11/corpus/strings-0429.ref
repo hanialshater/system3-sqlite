@@ -1,0 +1,129 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 4, 0)|instr(' pad ', 'x_y')|replace(' pad ', 'é', 'XY')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE 'A%'|' pad ' GLOB '?'|char(66, 703)|' pad ' || 'x_y'|' pad ' < 'x_y'|' pad ' = 'x_y' COLLATE NOCASE
+5| PAD | pad ||0| pad |pad| pad |2070616420|' pad '|32|0|0|Bʿ| pad x_y|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 3, 3)|instr('nu', '-7')|replace('nu', 'a', 'XY')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%a_'|'nu' GLOB 'a*'|char(71, 548)|'nu' || '-7'|'nu' < '-7'|'nu' = '-7' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|GȤ|nu-7|0|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 3, 0)|instr('naïve', 'delta')|replace('naïve', 'é', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '_'|'naïve' GLOB '*'|char(65, 669)|'naïve' || 'delta'|'naïve' < 'delta'|'naïve' = 'delta' COLLATE NOCASE
+5|NAïVE|naïve||0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|Aʝ|naïvedelta|0|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', -2, 4)|instr('beta', 'pi')|replace('beta', 'é', 'XY')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE '%'|'beta' GLOB '*'|char(86, 687)|'beta' || 'pi'|'beta' < 'pi'|'beta' = 'pi' COLLATE NOCASE
+4|BETA|beta|ta|0|beta|beta|eta|62657461|'beta'|98|1|1|Vʯ|betapi|1|0
+~~~
+# length('café')|upper('café')|lower('café')|substr('café', 4, 5)|instr('café', 'iota')|replace('café', 'a', 'XY')|trim('café')|ltrim('café', 'ab')|hex('café')|quote('café')|unicode('café')|'café' LIKE '_'|'café' GLOB '?'|char(78, 565)|'café' || 'iota'|'café' < 'iota'|'café' = 'iota' COLLATE NOCASE
+4|CAFé|café|é|0|cXYfé|café|café|636166C3A9|'café'|99|0|0|Nȵ|caféiota|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 3, 3)|instr('alpha', 'chi')|replace('alpha', 'e', 'XY')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '_'|'alpha' GLOB '*'|char(70, 852)|'alpha' || 'chi'|'alpha' < 'chi'|'alpha' = 'chi' COLLATE NOCASE
+5|ALPHA|alpha|pha|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|F͔|alphachi|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|15
+13|15
+11|15
+7|15
+15|15
+9|15
+1|15
+14|15
+3|15
+10|15
+12|15
+8|15
+2|15
+6|15
+5|15
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# ref
+~~~

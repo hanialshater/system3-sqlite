@@ -1,0 +1,239 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0|nullif(c2, abs(ref))
+20|sigma|X''
+19|1000000000000000.0|NULL
+18|NULL|0x1F
+17|-2.5|NULL
+16|NULL|-4
+15|señor|NULL
+14|theta|-9223372036854775808
+13|NULL|café
+12|X'83666ADA89'|1
+11|beta|NULL
+10|0|0.1
+9|361|-81
+8|2.5|42
+7|761.3|X'CB'
+6|a%b|-58
+5|X'405249'|NULL
+4|NULL|NULL
+3|-701.7714|NULL
+2|-975|X'253BF69425'
+1|iota|X'89DB'
+~~~
+# 'upsilon'|NOT NULL IS NULL IN (x'65c4', 1.0e15, x'')
+upsilon|1
+~~~
+# id|typeof(nullif(2, c4 IN (4.5e-310, '0x1F', 'epsilon')))|nullif(NULL, coalesce(abs(c0), c0))
+1|integer|NULL
+2|integer|NULL
+3|integer|NULL
+4|integer|NULL
+5|integer|NULL
+6|integer|NULL
+7|integer|NULL
+8|integer|NULL
+9|integer|NULL
+10|integer|NULL
+11|integer|NULL
+~~~
+# 'beta' IN (NOT 450.4 IS NULL, -297, 5)|abs(x'a0b050f345f7' IN (-5, NULL, 330) IN (NULL IN ('-7', 184.763, NULL), NULL, 4))
+0|NULL
+~~~
+# id|coalesce(-(nullif(NULL, c2)), ref)|NOT NOT 'omega' IN (c0, x'86c57f75dc', NULL)
+1|1|NULL
+2|4|NULL
+3|NULL|NULL
+4|6|NULL
+5|7|NULL
+6|2|NULL
+7|2|NULL
+8|7|NULL
+9|1|NULL
+10|3|NULL
+11|2|NULL
+12|3|NULL
+13|NULL|NULL
+14|8|NULL
+15|8|NULL
+16|7|NULL
+17|NULL|NULL
+18|NULL|NULL
+19|6|NULL
+20|3|NULL
+~~~
+# nullif(4, nullif(coalesce('beta', 'pi'), -1 BETWEEN 'epsilon' AND 155))|abs(565)
+4|565
+~~~
+# id|coalesce(abs(c2), CAST(x'2d05669e' AS BLOB) IN (NOT NULL, 'epsilon', 278))|coalesce(NULL, c3)
+1|0.0|nu
+2|0.0|-623
+3|NULL| pad 
+4|NULL|nu
+5|NULL|-975.26
+6|58|1e3
+7|0.0|X'1C336F5B97'
+8|42|X'9DDB'
+9|81|NULL
+10|0.1|epsilon
+11|NULL|X'6C'
+12|1|X'17AE4291DD'
+13|0.0|X'8C'
+error: integer overflow
+~~~
+# iif(NOT NULL BETWEEN ' pad ' AND 2, NOT NULL IN (nullif(NULL, -1), '', NULL), -462.270)|x''
+-462.27|X''
+~~~
+# id|id|c4|c1
+1|1|-435|-4
+1|9|-435|X'E987'
+2|6|0|nu
+2|7|0|488
+2|11|0|-681
+3|10|860|NULL
+3|12|860|NULL
+3|20|860|-859
+4|2|-5|-199.04
+5|NULL|X'82'|NULL
+6|4|X'9854'|280.8
+6|19|X'9854'|415
+7|5|NULL|Ελλάδα
+7|8|NULL|X'06B03E6E'
+7|16|NULL|X''
+8|14|576|delta
+8|15|576|-921
+9|NULL|chi|NULL
+10|NULL|0|NULL
+11|NULL|X''|NULL
+~~~
+error: near "NULL": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+10|10
+5|5
+7|7
+2|2
+4|4
+6|6
+9|9
+1|1
+11|11
+8|8
+3|3
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# c4
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+-435
+-5
+0
+576
+~~~

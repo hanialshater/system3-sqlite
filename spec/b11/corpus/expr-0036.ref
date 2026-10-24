@@ -1,0 +1,256 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c2
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+# id|CASE WHEN -(typeof(c3)) THEN c3 ELSE coalesce(c3 IN (c4, 'omicron', 'chi'), typeof(NULL)) END|ref
+19|0|2
+18|0|2
+17|0|6
+16|0|6
+15|0|NULL
+14|0|NULL
+13|0|NULL
+12|0|5
+11|1|5
+10|null|2
+9|null|6
+8|null|8
+7|0|7
+6|null|2
+5|0|4
+4|0|NULL
+3|null|NULL
+2|0|4
+1|null|1
+~~~
+# x'7f'|NULL
+X'7F'|NULL
+~~~
+# id|x'1cd8ae5e'|NULL
+1|X'1CD8AE5E'|NULL
+2|X'1CD8AE5E'|NULL
+3|X'1CD8AE5E'|NULL
+4|X'1CD8AE5E'|NULL
+5|X'1CD8AE5E'|NULL
+6|X'1CD8AE5E'|NULL
+7|X'1CD8AE5E'|NULL
+8|X'1CD8AE5E'|NULL
+9|X'1CD8AE5E'|NULL
+10|X'1CD8AE5E'|NULL
+11|X'1CD8AE5E'|NULL
+12|X'1CD8AE5E'|NULL
+13|X'1CD8AE5E'|NULL
+14|X'1CD8AE5E'|NULL
+15|X'1CD8AE5E'|NULL
+16|X'1CD8AE5E'|NULL
+17|X'1CD8AE5E'|NULL
+18|X'1CD8AE5E'|NULL
+19|X'1CD8AE5E'|NULL
+20|X'1CD8AE5E'|NULL
+21|X'1CD8AE5E'|NULL
+22|X'1CD8AE5E'|NULL
+23|X'1CD8AE5E'|NULL
+24|X'1CD8AE5E'|NULL
+25|X'1CD8AE5E'|NULL
+~~~
+# nullif(' pad ', 'naïve' IS NULL) BETWEEN -15 AND iif(CASE WHEN -910.5 THEN 'x_y' ELSE 1e-7 END, x'9b41' IS NULL, '')|((x'817d2b89ffb2' >= 107.6151) < 'MU') IS NULL
+0|0
+~~~
+# id|NULL|-861
+1|NULL|-861
+2|NULL|-861
+3|NULL|-861
+4|NULL|-861
+5|NULL|-861
+6|NULL|-861
+7|NULL|-861
+8|NULL|-861
+9|NULL|-861
+10|NULL|-861
+11|NULL|-861
+12|NULL|-861
+13|NULL|-861
+14|NULL|-861
+15|NULL|-861
+16|NULL|-861
+17|NULL|-861
+18|NULL|-861
+19|NULL|-861
+~~~
+# abs(841.83)|0.1
+841.83|0.1
+~~~
+# id|ref|'tau'
+1|1|tau
+2|4|tau
+~~~
+# 'omega'|nullif(coalesce(4, NULL), coalesce(966, iif(-5, 'upsilon', NULL)))
+omega|4
+~~~
+# id|-(NOT c1)|abs(c3 IS NULL) IN (CASE WHEN CAST(c2 AS BLOB) THEN c0 ELSE c1 END, 544, 'gamma')
+1|-1|0
+2|0|0
+3|-1|0
+4|0|0
+5|0|0
+6|0|0
+7|-1|1
+8|-1|0
+9|0|0
+10|-1|0
+11|0|0
+12|-1|1
+13|0|0
+14|NULL|NULL
+15|NULL|NULL
+16|0|0
+17|NULL|NULL
+18|-1|0
+19|0|1
+20|-1|0
+21|0|0
+22|NULL|NULL
+23|-1|0
+24|0|0
+25|-1|0
+~~~
+# x'2b'|typeof(85)
+X'2B'|integer
+~~~
+# id|nullif(iif(-927.5, c0, x'd451abce6d'), typeof(c0)) IN ((ref >> coalesce(c2, id)), 303, x'8314b0893614')|nullif(coalesce(CASE WHEN -0.0 THEN id ELSE x'86b21dafc8' END, typeof(c1)), CAST(c2 AS TEXT))
+2|0|X'86B21DAFC8'
+1|0|X'86B21DAFC8'
+~~~
+# coalesce(5, 1e308)|typeof(CAST(0 AS NUMERIC)) BETWEEN 9223372036854775807 IN (-591.1919, x'b71047e49b', '') AND 928
+5|0
+~~~
+# id|iif(nullif(CAST(c1 AS TEXT), typeof(x'6fb9')), nullif(NOT id, NOT c0), NULL)|typeof(nullif(c2, ref))
+1|NULL|integer
+2|NULL|integer
+~~~
+# x'9738b1'|NULL
+X'9738B1'|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+~~~
+# id
+1
+2
+~~~
+# id
+1
+2
+~~~
+# c0
+-302
+1
+2
+4
+5
+6
+7
+8
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 4, 1)|instr('nu', 'kappa')|replace('nu', 'e', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'a%'|'nu' GLOB '*'|char(69, 966)|'nu' || 'kappa'|'nu' < 'kappa'|'nu' = 'kappa' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|1|Eφ|nukappa|0|0
+~~~

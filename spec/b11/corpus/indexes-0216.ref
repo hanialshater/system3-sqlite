@@ -1,0 +1,140 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|-4
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|-941.789
+5|0
+18|1.0e-07
+9|3
+11|393
+21|491.1
+7|epsilon
+1|X''
+4|X'473257'
+2|X'85D8'
+16|X'DB36C5E5'
+17|X'E6'
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|936
+~~~
+# id|c0|c1|c2
+1|123456789012|NULL|NULL
+2|X'85D8'|2|-1
+4|X'473257'|NULL|NULL
+6|NULL|café|X'31C968FE23'
+8|NULL|1.0e-07|xi
+9|NULL|NULL|NULL
+10|-351|omega|NULL
+12|-585|150.2|gamma
+14|-4|NULL|pi
+16|X'DB36C5E5'|-861|日本
+18|1.0e-07||-185
+20|NULL|2|zeta
+22|NULL|X'5A'|4
+23|936|NULL|NULL
+~~~

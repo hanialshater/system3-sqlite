@@ -1,0 +1,252 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 0
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|über
+~~~
+# id|c0|c1|c2|c3|c4
+2|1.0e+308|0|d|d|NULL
+4|336.62|0|NULL|1.0e-07|-984
+6|-2|kappa|X'1D7C84450D'|X'CD2C4F'|naïve
+8|249|Ελλάδα|2|633|X'C814D2'
+10|nu|X'FA3EF1'|-5|0x1F|-420
+12|X'63CB0F72'|0|X'D720BE'|4.500000000000011e-310|176
+14|-1|0|NULL|-1|X'8CBA5449'
+16|555|0|447.01|-372|-552.551
+17|über|0|d|d|NULL
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-5
+~~~
+# id|c0|c1|c2|c3|c4
+18|-5|0|d|d|NULL
+17|über|0|d|d|NULL
+14|-1|0|NULL|-1|X'8CBA5449'
+12|X'63CB0F72'|0|X'D720BE'|4.500000000000011e-310|176
+8|integer|Ελλάδα|2|633|X'C814D2'
+6|-2|kappa|X'1D7C84450D'|X'CD2C4F'|naïve
+5|NULL|0|d|d|NULL
+4|-640|0|d|d|NULL
+2|1.0e+308|0|d|d|NULL
+~~~
+changes: 9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|4.500000000000011e-310
+~~~
+# id|c0|c1|c2|c3|c4
+2|0.1|0|d|d|NULL
+4|-4|0|d|d|NULL
+5|-5|0|d|d|NULL
+8|-8|Ελλάδα|2|633|X'C814D2'
+14|-14|0|NULL|-1|X'8CBA5449'
+17|-17|0|d|d|NULL
+18|4.500000000000011e-310|0|d|d|NULL
+~~~
+changes: 7
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|269.17
+~~~
+# id|c0|c1|c2|c3|c4
+2|2|0|d|d|NULL
+3|1.0e-07|0|d|d|NULL
+4|4|0|d|d|NULL
+5|5|0|d|d|NULL
+6|NULL|0|d|d|NULL
+8|8|Ελλάδα|2|633|X'C814D2'
+14|14|0|NULL|-1|X'8CBA5449'
+17|17|0|d|d|NULL
+18|18|0|d|d|NULL
+19|269.17|0|d|d|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|237
+~~~
+# id|c0|c1|c2
+11|237|0|NULL
+10|43|0|4
+8|-178|-252.4|61
+6|434|rho|-116
+5|2|0|NULL
+4|156|3.1415926535897931|-62
+3|-5|0|NULL
+2|-342|X'ADA2E6DA'|290
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+# id|c0
+error: NOT NULL constraint failed: t2.c0
+~~~
+# id|c0|c1|c2
+2|342|X'ADA2E6DA'|290
+3|5|0|NULL
+4|156|3.1415926535897931|-62
+6|434|rho|-116
+8|178|-252.4|61
+10|43|0|4
+11|237|0|NULL
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'57C3'
+~~~
+# id|c0|c1|c2|c3|c4
+2|0|0|d|d|NULL
+3|'�!|0|d|d|NULL
+4|0|0|d|d|NULL
+6|NULL|0|d|d|NULL
+8|-4|0|d|d|NULL
+14|14|0|NULL|-1|X'8CBA5449'
+17|0|0|d|d|NULL
+18|0|0|d|d|NULL
+19|0|0|d|d|NULL
+20|X'57C3'|0|d|d|NULL
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+10|9|0.0|0.0|0.0|d|d|1
+~~~
+# c2|count(*)|group_concat(id)
+NULL|1|14
+d|9|2,3,4,6,8,17,18,19,20
+~~~

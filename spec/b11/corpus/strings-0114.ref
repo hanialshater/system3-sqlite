@@ -1,0 +1,88 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', 1, 1)|instr('upsilon', 'xi')|replace('upsilon', 'e', 'XY')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE 'A%'|'upsilon' GLOB '*'|char(69, 740)|'upsilon' || 'xi'|'upsilon' < 'xi'|'upsilon' = 'xi' COLLATE NOCASE
+7|UPSILON|upsilon|u|0|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|1|Eˤ|upsilonxi|1|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', 2, 5)|instr('0x1F', 'phi')|replace('0x1F', 'e', 'XY')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE '%é%'|'0x1F' GLOB '?'|char(75, 963)|'0x1F' || 'phi'|'0x1F' < 'phi'|'0x1F' = 'phi' COLLATE NOCASE
+4|0X1F|0x1f|x1F|0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|Kσ|0x1Fphi|1|0
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -2, 3)|instr('日本', 'omicron')|replace('日本', 'e', '')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '%é%'|'日本' GLOB '*[a-m]*'|char(81, 830)|'日本' || 'omicron'|'日本' < 'omicron'|'日本' = 'omicron' COLLATE NOCASE
+2|日本|日本|日本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|Q̾|日本omicron|0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 0, 1)|instr('it''s', '1e3')|replace('it''s', 'a', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '_'|'it''s' GLOB 'a*'|char(78, 872)|'it''s' || '1e3'|'it''s' < '1e3'|'it''s' = '1e3' COLLATE NOCASE
+4|IT'S|it's||0|it's|it's|it's|69742773|'it''s'|105|0|0|Nͨ|it's1e3|0|0
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 2, 5)|instr('delta', 'theta')|replace('delta', '', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE '%é%'|'delta' GLOB 'a*'|char(68, 721)|'delta' || 'theta'|'delta' < 'theta'|'delta' = 'theta' COLLATE NOCASE
+5|DELTA|delta|elta|0|delta|delta|delta|64656C7461|'delta'|100|0|0|Dˑ|deltatheta|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', -3, 0)|instr('nu', 'kappa')|replace('nu', '', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'A%'|'nu' GLOB '?'|char(71, 601)|'nu' || 'kappa'|'nu' < 'kappa'|'nu' = 'kappa' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|Gə|nukappa|0|0
+~~~

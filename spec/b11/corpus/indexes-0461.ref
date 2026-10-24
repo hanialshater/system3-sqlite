@@ -1,0 +1,174 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+6|NULL
+7|NULL
+16|NULL
+8|-965.9
+15|-570
+11|4.500000000000011e-310
+12|3
+1|5
+9|iota
+14|naïve
+5|tau
+4|X''
+17|X'098819D4'
+13|X'117BF56478'
+10|X'11AE9B'
+2|X'44D4'
+3|X'5381F5A8C163'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+5|Lambda
+17|it's
+8|rho
+15|X''
+3|X'9D40B6'
+10|X'A02C31A91F9C'
+7|X'A740C74547B4'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-2
+~~~
+# id|c0|c1|c2|c3
+18|-2|NULL|NULL|NULL
+17|X'BCE2'|X'098819D4'|X'47'|it's
+15|X'697B8830'|-570|NULL|X''
+14|-874|naïve|0.1|-556
+13|NULL|X'117BF56478'|1.0e-07|-651
+11|X'DD'|4.500000000000011e-310|-9.2233720368547758e+18|NULL
+10|NULL|X'11AE9B'|0.0|X'A02C31A91F9C'
+9|X'40A56EB98809'|iota|NULL|NULL
+7|sigma|NULL|X'AD085847'|X'A740C74547B4'
+6|X''|NULL|NULL|NULL
+5|xi|tau|-898.242|Lambda
+3|-5|X'5381F5A8C163'|576.6555|X'9D40B6'
+2|-9223372036854775808|X'44D4'|NULL|NULL
+1|NULL|5|-49.0|NULL
+~~~

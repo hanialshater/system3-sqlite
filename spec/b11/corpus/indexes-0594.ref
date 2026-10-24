@@ -1,0 +1,252 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|-235.6
+1|-3
+6|-4
+5|0.1
+12|1.0e+308
+16|2
+3|272
+15|285.5
+4|526.85
+2|alpha
+13|x_y
+7|X'14BA8AEEE402'
+11|X'4AFD3D'
+10|X'5F9B9DD8BC'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+3|NULL
+7|NULL
+1|-678.0
+8|-387.0
+18|-3.0
+4|-2.5
+20|-1.0
+16|0.0
+11|0.1
+14|5.0
+19|829.86
+5|9.2233720368547758e+18
+10| pad 
+17|0x1F
+2|a%b
+6|kappa
+22|rho
+13|señor
+21|x_y
+12|X''
+9|X'61AB48394090'
+15|X'8F5C'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+8|1
+12|1
+2|2
+11|2
+16|2
+23|2
+3|3
+7|4
+10|4
+19|4
+1|5
+5|5
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|-5
+17|0
+6|508.0
+9|67
+11|924.2
+13|iota
+4|naïve
+16|nu
+12|omega
+8|X''
+5|X'0C66'
+1|X'48092BFE'
+14|X'6FD221478E6F'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

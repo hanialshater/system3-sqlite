@@ -1,0 +1,284 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT (ref >= NULL)|x'5998ad'
+1|NULL|X'5998AD'
+2|NULL|X'5998AD'
+3|NULL|X'5998AD'
+4|NULL|X'5998AD'
+5|NULL|X'5998AD'
+6|NULL|X'5998AD'
+7|NULL|X'5998AD'
+8|NULL|X'5998AD'
+9|NULL|X'5998AD'
+10|NULL|X'5998AD'
+11|NULL|X'5998AD'
+12|NULL|X'5998AD'
+13|NULL|X'5998AD'
+14|NULL|X'5998AD'
+15|NULL|X'5998AD'
+16|NULL|X'5998AD'
+17|NULL|X'5998AD'
+18|NULL|X'5998AD'
+19|NULL|X'5998AD'
+20|NULL|X'5998AD'
+21|NULL|X'5998AD'
+22|NULL|X'5998AD'
+23|NULL|X'5998AD'
+~~~
+# CAST(nullif(2 IS NULL, -(NULL)) AS REAL)|'upsilon'
+0.0|upsilon
+~~~
+# id|typeof(1e308) IS NULL BETWEEN c3 IN (c1, 1, '') IN (abs(210.6), -875, -3) AND typeof(CAST(c4 AS TEXT))|c1
+1|1|Ελλάδα
+2|1|upsilon
+3|1|nu
+4|1|
+5|NULL|epsilon
+6|NULL|Ελλάδα
+7|1|NULL
+~~~
+# NOT x'8753'|typeof(NULL IN (iif(NULL, 89.2649, 873), 1.0e15, x'863b9d'))
+1|null
+~~~
+# id|NOT c3 IS NULL|abs(((c2 <> c2) || coalesce(c0, c1)))
+1|1|591.0
+2|1|0.0
+3|1|0.0
+4|1|1.0e+308
+5|1|0.0
+6|1|0.0
+7|1|0.0
+8|1|0.0
+9|1|0.0
+10|1|0.0
+11|1|0.0
+12|1|0.0
+13|1|941.0
+14|1|NULL
+15|1|410.3
+16|1|0.0
+17|1|1.0
+18|1|0.0
+19|1|0.0
+20|1|0.0
+21|1|0.0
+22|1|4.500000000000011e-310
+23|1|2.5
+~~~
+# abs(361)|iif(abs(NULL) IN (1e-7, -232.1020, 'pi'), NULL, NULL)
+361|NULL
+~~~
+# id|CAST(CAST(c0 AS INTEGER) AS BLOB)|abs(c1 IS NULL IS NULL)
+23|X'32'|0
+22|X'30'|0
+21|X'30'|0
+20|X'30'|0
+19|X'2D313531'|0
+18|X'2D383835'|0
+17|X'31'|0
+16|X'30'|0
+15|X'343130'|0
+14|X'30'|0
+13|X'393431'|0
+12|X'2D39323233333732303336383534373735383038'|0
+11|X'30'|0
+10|X'30'|0
+9|X'30'|0
+8|X'2D35'|0
+7|X'30'|0
+6|X'30'|0
+5|X'30'|0
+4|X'39323233333732303336383534373735383037'|0
+3|X'30'|0
+2|X'2D343038'|0
+1|X'353931'|0
+~~~
+# 4.5e-310|nullif((-32 || -3), typeof('MU')) IS NULL
+4.500000000000011e-310|0
+~~~
+# id|-(typeof('alpha') IN (ref, 3, x''))|coalesce(abs(CAST(c3 AS REAL)), id IS NULL)
+1|0|30.079
+2|0|10.248
+3|NULL|0.303
+4|0|0.773
+5|0|4.196
+6|0|47.172
+7|0|40.943
+8|NULL|25.324
+9|0|30.757
+10|NULL|6.818
+11|0|33.979
+12|0|47.397
+13|0|42.819
+14|0|17.513
+15|0|21.233
+16|0|49.053
+17|0|8.659
+18|0|41.931
+19|0|12.009
+20|0|34.506
+21|0|27.947
+22|0|35.667
+23|0|2.024
+~~~
+# NULL|900
+NULL|900
+~~~
+# id|abs(typeof(-9223372036854775808))|(ref IN (NULL, NULL, 'a%b') || typeof(iif(c1, ref, x'71a5df')))
+1|0.0|NULL
+2|0.0|NULL
+3|0.0|NULL
+4|0.0|NULL
+5|0.0|NULL
+6|0.0|NULL
+7|0.0|NULL
+8|0.0|NULL
+9|0.0|NULL
+10|0.0|NULL
+11|0.0|NULL
+12|0.0|NULL
+13|0.0|NULL
+14|0.0|NULL
+15|0.0|NULL
+16|0.0|NULL
+17|0.0|NULL
+18|0.0|NULL
+19|0.0|NULL
+20|0.0|NULL
+21|0.0|NULL
+22|0.0|NULL
+23|0.0|NULL
+~~~
+# 4|typeof('eta')
+4|text
+~~~
+# id|x'2a'|x'4afc'
+1|X'2A'|X'4AFC'
+2|X'2A'|X'4AFC'
+3|X'2A'|X'4AFC'
+4|X'2A'|X'4AFC'
+5|X'2A'|X'4AFC'
+6|X'2A'|X'4AFC'
+7|X'2A'|X'4AFC'
+8|X'2A'|X'4AFC'
+9|X'2A'|X'4AFC'
+10|X'2A'|X'4AFC'
+11|X'2A'|X'4AFC'
+12|X'2A'|X'4AFC'
+13|X'2A'|X'4AFC'
+14|X'2A'|X'4AFC'
+15|X'2A'|X'4AFC'
+16|X'2A'|X'4AFC'
+17|X'2A'|X'4AFC'
+18|X'2A'|X'4AFC'
+19|X'2A'|X'4AFC'
+20|X'2A'|X'4AFC'
+21|X'2A'|X'4AFC'
+22|X'2A'|X'4AFC'
+23|X'2A'|X'4AFC'
+~~~
+# '0x1F'|(CAST((x'daef472420' >> NULL) AS REAL) <> nullif(NULL, CAST(x'87c4c8752619' AS NUMERIC)))
+0x1F|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+7|7
+4|4
+2|2
+3|3
+1|1
+5|5
+6|6
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# c4
+42
+epsilon
+iota
+it's
+tau
+Ελλάδα
+日本
+~~~

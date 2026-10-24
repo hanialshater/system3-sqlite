@@ -1,0 +1,153 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('epsilon')|upper('epsilon')|lower('epsilon')|substr('epsilon', -1, 3)|instr('epsilon', 'phi')|replace('epsilon', 'a', '')|trim('epsilon')|ltrim('epsilon', 'ab')|hex('epsilon')|quote('epsilon')|unicode('epsilon')|'epsilon' LIKE 'A%'|'epsilon' GLOB '*[a-m]*'|char(89, 711)|'epsilon' || 'phi'|'epsilon' < 'phi'|'epsilon' = 'phi' COLLATE NOCASE
+7|EPSILON|epsilon|n|0|epsilon|epsilon|epsilon|657073696C6F6E|'epsilon'|101|0|1|Yˇ|epsilonphi|1|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', -2, 0)|instr('psi', '')|replace('psi', 'a', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE 'a%'|'psi' GLOB 'a*'|char(68, 938)|'psi' || ''|'psi' < ''|'psi' = '' COLLATE NOCASE
+3|PSI|psi||1|psi|psi|psi|707369|'psi'|112|0|0|DΪ|psi|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', -2, 5)|instr('señor', '日本')|replace('señor', 'e', '_')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '%é%'|'señor' GLOB '*[a-m]*'|char(81, 862)|'señor' || '日本'|'señor' < '日本'|'señor' = '日本' COLLATE NOCASE
+5|SEñOR|señor|or|0|s_ñor|señor|señor|7365C3B16F72|'señor'|115|0|1|Q͞|señor日本|1|0
+~~~
+changes: 1
+~~~
+# id|c2
+2|NULL
+8|NULL
+10|NULL
+1|-573.0
+6|-3.0
+5|423.0
+4|441.39
+3|571.5
+7|psi
+9|X'E7E1'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 16
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2|c3
+2|xi!|773|X'A544B9B8A8D5'|-688
+3|-1.0e+308|NULL|phi|1.0e+308
+4|-42|26.2891|X'AEFC0A'|42
+5|-272|NULL|2|272
+7|1.0e+308|-212.8393|rho|-1.0e+308
+8|delta|NULL|NULL|NULL
+9|-524.1|NULL|-4|524.1
+10|NULL|X'303C'|-5|NULL
+12|679.2181|668|9223372036854775807|-679.2181
+13|252|NULL|alpha|-252
+14|496|227.932|X''|-496
+15|NULL|-2.5|alpha|NULL
+16|NULL|NULL|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+3|8
+1|8
+7|8
+4|8
+6|8
+8|8
+5|8
+2|8
+~~~
+# id
+2
+~~~
+# id
+8
+~~~
+# c1
+-5
+0
+337
+ pad 
+X'7D58'
+~~~

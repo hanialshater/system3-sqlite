@@ -1,0 +1,223 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 14
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store REAL value in INTEGER column t1.c0
+~~~
+# id|c0|c1|c2|c3|ref
+2|1|17.977|-28|xi|1
+3|1|12.227|-353|iota|6
+4|NULL|-25.977|-79|upsilon|4
+5|1|-5.683|-157|kappa|5
+7|0|-428.2|73|nu|NULL
+8|NULL|NULL|NULL|NULL|NULL
+9|0|NULL|495|3.1415926535897931|2
+10|1|-13.234|-251||5
+12|0|-46.795|299|it's|5
+13|0|18.021|401|sigma|1
+14|1|-20.806|-311|señor|5
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+# id|c0
+6|NULL
+~~~
+# id|c0|c1
+6|NULL|NULL
+5|381|9.922
+4|230|16.78
+3|-461|-47.627
+2|90|46.101
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+error: cannot store BLOB value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store REAL value in INTEGER column t1.c0
+~~~
+# id|c0|c1|c2|c3|ref
+2|2|17.977|-28|xi|1
+3|1000|NULL|NULL|NULL|NULL
+4|4|-25.977|-79|upsilon|4
+8|NULL|NULL|NULL|NULL|NULL
+10|10|-13.234|-251||5
+12|12|-46.795|299|it's|5
+14|14|-20.806|-311|señor|5
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+15|668
+~~~
+# id|c0|c1|c2|c3|ref
+1|NULL|NULL|NULL|NULL|NULL
+2|0|17.977|-28|xi|1
+4|0|-25.977|-79|upsilon|4
+8|NULL|NULL|NULL|NULL|NULL
+10|0|-13.234|-251||5
+12|0|-46.795|299|it's|5
+14|0|-20.806|-311|señor|5
+15|668|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t1.c0
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+2|0|17.977|-28|xi|1
+6|-962|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL
+12|0|-46.795|299|it's|5
+14|0|-20.806|-311|señor|5
+15|668|NULL|NULL|NULL|NULL
+16|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+7|2
+~~~
+# id|c0|c1
+2|-2|46.101
+4|NULL|NULL
+6|NULL|NULL
+7|2|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store REAL value in INTEGER column t0.c0
+~~~
+# id|c0|c1
+2|-2|46.101
+3|NULL|NULL
+4|NULL|NULL
+6|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|1
+3|1
+4|1
+6|2
+~~~
+# id
+2
+3
+4
+6
+~~~
+# id
+2
+6
+~~~
+# c1
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+9|-5
+~~~
+# id|c0|c1
+2|0|46.101
+4|NULL|NULL
+8|-495|NULL
+9|-5|NULL
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', -2, 3)|instr('MU', 'Ελλάδα')|replace('MU', 'e', '_')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE 'A%'|'MU' GLOB '*[a-m]*'|char(65, 553)|'MU' || 'Ελλάδα'|'MU' < 'Ελλάδα'|'MU' = 'Ελλάδα' COLLATE NOCASE
+2|MU|mu|MU|0|MU|MU|MU|4D55|'MU'|77|0|0|Aȩ|MUΕλλάδα|1|0
+~~~

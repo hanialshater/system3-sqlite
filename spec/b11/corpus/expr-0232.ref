@@ -1,0 +1,174 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(CAST(NULL AS TEXT) IN (id, x'd420532021', NULL) % c3)|abs(nullif(c0, x'39')) BETWEEN nullif(typeof(c2), (NULL = 'sigma')) AND CAST(c0 AS TEXT)
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|NULL
+5|NULL|0
+6|NULL|NULL
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|NULL
+12|NULL|0
+~~~
+# coalesce(-(123456789012), NOT -689.69)|CASE WHEN 'tau' THEN -(iif(NULL, 'psi', -202.20)) ELSE 'nu' IS NULL IS NULL END
+-123456789012|0
+~~~
+# id|CAST(iif(abs('kappa'), c1, 908.2) AS NUMERIC)|x'0bbd12d2'
+10|908.2|X'0BBD12D2'
+9|908.2|X'0BBD12D2'
+8|908.2|X'0BBD12D2'
+7|908.2|X'0BBD12D2'
+6|908.2|X'0BBD12D2'
+5|908.2|X'0BBD12D2'
+4|908.2|X'0BBD12D2'
+3|908.2|X'0BBD12D2'
+2|908.2|X'0BBD12D2'
+1|908.2|X'0BBD12D2'
+~~~
+# CASE WHEN -830.7 THEN typeof(NULL) ELSE x'6231b1e5' END|CASE WHEN x'0fdc' THEN iif(x'', 665, 829.146) ELSE -('42') END BETWEEN NOT x'' AND nullif('pi' IS NULL, NULL)
+null|0
+~~~
+# id|c3|abs(id)
+1|-876|1
+2|NULL|2
+3|NULL|3
+4|über|4
+5|-1.0e+308|5
+6|-506|6
+7|a%b|7
+8|omicron|8
+9|694.6212|9
+10|X'634ADC7C'|10
+11|-7|11
+12|X'B5C11CC65230'|12
+~~~
+# NULL|NOT NULL IN (NULL IN (NULL, 'café', 139) BETWEEN abs(NULL) AND abs(-891), NULL, 940)
+NULL|NULL
+~~~
+# id|coalesce(typeof((c0 % x'4b02f31492')), id)|(CASE WHEN 'pi' THEN c0 ELSE NULL END / c1 IS NULL) IN (abs(c1) IN (CASE WHEN c0 THEN 876 ELSE 'Lambda' END, x'640d674e7b', NULL), 'Lambda', -0.0)
+10|null|NULL
+9|null|NULL
+8|null|NULL
+7|null|NULL
+6|null|NULL
+5|null|NULL
+4|null|NULL
+3|null|NULL
+2|null|NULL
+1|null|NULL
+~~~
+# -(x'b9622331' IS NULL IS NULL)|typeof(NULL BETWEEN NULL AND NULL) BETWEEN (-9223372036854775808 IS NOT x'073b3a98') BETWEEN CAST(-5 AS BLOB) AND abs('kappa') AND typeof(-2.5) IN (abs(NULL), -1e308, 678.48)
+0|NULL
+~~~
+# id|nullif(x'db15e296', abs(c4) IS NULL)|NULL
+12|X'DB15E296'|NULL
+11|X'DB15E296'|NULL
+10|X'DB15E296'|NULL
+9|X'DB15E296'|NULL
+8|X'DB15E296'|NULL
+7|X'DB15E296'|NULL
+6|X'DB15E296'|NULL
+5|X'DB15E296'|NULL
+4|X'DB15E296'|NULL
+3|X'DB15E296'|NULL
+2|X'DB15E296'|NULL
+1|X'DB15E296'|NULL
+~~~
+# abs(x'')|abs(typeof(CAST(927.9 AS TEXT)))
+0.0|0.0
+~~~
+# id|abs(typeof(CAST(c2 AS NUMERIC)))|c3
+1|0.0|-876
+2|0.0|NULL
+3|0.0|NULL
+4|0.0|über
+5|0.0|-1.0e+308
+6|0.0|-506
+7|0.0|a%b
+8|0.0|omicron
+9|0.0|694.6212
+10|0.0|X'634ADC7C'
+11|0.0|-7
+12|0.0|X'B5C11CC65230'
+~~~
+# (NULL <> nullif(x'' IN (NULL, '1e3', -5), abs('Lambda')))|typeof(x'ffcc50004fdf') IN (NULL, x'', x'')
+NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+8|0
+9|2.5
+6|delta
+2|theta
+4|X'2E53BB4833'
+5|X'4E0A03'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

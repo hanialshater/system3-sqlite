@@ -1,0 +1,118 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id IN ('epsilon', -710, x'987fa162ea')|c2
+1|0|NULL
+2|0|NULL
+3|0|a%b
+4|0|2.5
+~~~
+# NOT coalesce(-('NULL'), '日本')|CAST('café' AS REAL)
+1|0.0
+~~~
+# id|typeof(abs(c2)) IN (nullif(c0, (c0 | x'3d24f6b2f7')), x'', -1e308)|abs((coalesce(c0, c3) AND NULL))
+1|NULL|NULL
+2|0|0
+3|0|0
+4|NULL|NULL
+5|0|0
+6|0|0
+7|NULL|0
+8|NULL|NULL
+9|0|0
+10|0|0
+11|NULL|NULL
+~~~
+# x'56ba' IS NULL|NOT NULL IS NULL BETWEEN coalesce(x'94e3', '1e3') AND x'e3'
+0|1
+~~~
+# id|c3|CAST(id AS INTEGER) IN (typeof(NULL) IS NULL, x'ba7b16b130', NULL)
+1|1|NULL
+2|X'E3FE7488CF'|NULL
+3|NULL|NULL
+4|NULL|NULL
+~~~
+# coalesce(-('iota' BETWEEN 'a%b' AND 'Ελλάδα'), iif(coalesce(5, 'MU'), 4, x'a7c4'))|-((x'3a0ada8cf9' BETWEEN -5 AND NULL >= -444 BETWEEN x'bb' AND NULL))
+-1|NULL
+~~~
+# id|-767|iif(-(c0), c1 IS NULL, 'xi') BETWEEN id AND CAST(c3 AS BLOB)
+1|-767|0
+2|-767|1
+3|-767|1
+4|-767|0
+5|-767|1
+6|-767|1
+7|-767|1
+8|-767|0
+9|-767|1
+10|-767|NULL
+11|-767|1
+~~~
+# nullif(NOT (x'9e93fe3ab1f8' & -2.5), NULL)|typeof(typeof(abs(3.141592653589793)))
+1|text
+~~~
+# id|(NULL & typeof(typeof(c1)))|'über'
+1|NULL|über
+2|NULL|über
+3|NULL|über
+4|NULL|über
+5|NULL|über
+6|NULL|über
+7|NULL|über
+8|NULL|über
+9|NULL|über
+10|NULL|über
+11|NULL|über
+~~~
+# -4|CASE WHEN abs(-(NULL)) THEN -4 ELSE -91 IN (-645 IS NULL, '0x1F', 'x_y') END
+-4|0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|X'05800BAF68'
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|-378|NULL|1|2|6
+2|NULL|NULL|NULL|X'E3FE7488CF'|1000000000000000|6
+4|NULL|0.1|2.5|NULL|1000|5
+6|1000000000000000.0|NULL|d|NULL|d|NULL
+7|X'05800BAF68'|NULL|d|NULL|d|NULL
+~~~

@@ -1,0 +1,184 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT NOT CASE WHEN c2 THEN id ELSE c1 END|NULL
+1|1|NULL
+2|1|NULL
+3|1|NULL
+4|NULL|NULL
+5|1|NULL
+6|1|NULL
+7|0|NULL
+8|0|NULL
+9|0|NULL
+10|1|NULL
+11|NULL|NULL
+12|1|NULL
+~~~
+# x'4c74ecd20b8d'|-(CASE WHEN CAST(-1 AS REAL) THEN nullif(1e-7, x'95fc1046') ELSE -581 IN (NULL, 0, x'93') END)
+X'4C74ECD20B8D'|-1.0e-07
+~~~
+# id|(abs('xi' BETWEEN 4.5e-310 AND c1) - abs(abs(-21)))|id
+1|-20|1
+2|-21|2
+3|-21|3
+4|NULL|4
+5|NULL|5
+6|-21|6
+7|-21|7
+8|-21|8
+9|-21|9
+10|-21|10
+11|NULL|11
+12|-21|12
+~~~
+# (-435 || typeof(-869.2 IN (NULL, 1e-7, NULL)))|x'' IS NULL
+-435null|0
+~~~
+# id|typeof(-(x'4d991450' IN (c0, 123456789012, x'')))|(-(abs(NULL)) * NOT typeof(c0))
+12|integer|NULL
+11|integer|NULL
+10|integer|NULL
+9|null|NULL
+8|integer|NULL
+7|null|NULL
+6|integer|NULL
+5|integer|NULL
+4|integer|NULL
+3|integer|NULL
+2|integer|NULL
+1|integer|NULL
+~~~
+# 187.79|1e-7
+187.79|1.0e-07
+~~~
+# id|NULL|coalesce(CASE WHEN 'kappa' THEN c4 ELSE CAST('delta' AS BLOB) END, 1)
+7|NULL|X'64656C7461'
+6|NULL|X'64656C7461'
+5|NULL|X'64656C7461'
+4|NULL|X'64656C7461'
+3|NULL|X'64656C7461'
+2|NULL|X'64656C7461'
+1|NULL|X'64656C7461'
+~~~
+# abs(iif('iota' BETWEEN 880.452 AND -49.264, coalesce(-1e308, NULL), 507))|iif(NULL, -1 IS NULL, -933.237)
+507|-933.237
+~~~
+# id|c1|NOT c2 IN (NULL, 'NULL', 'gamma') IN (-(c2), -329, 650)
+1|X'9D'|NULL
+2|-399.9|NULL
+3|4.0|NULL
+4|NULL|NULL
+5|NULL|NULL
+6|-807.2|NULL
+7|MU|NULL
+8|sigma|NULL
+9|omicron|NULL
+10|iota|NULL
+11|NULL|NULL
+12|624.0|NULL
+~~~
+# -182.22|typeof(-(NULL))
+-182.22|null
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+6|7
+3|7
+1|7
+4|7
+7|7
+5|7
+2|7
+~~~
+# id
+~~~
+# id
+~~~
+# ref
+8
+~~~

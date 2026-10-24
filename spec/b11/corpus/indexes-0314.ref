@@ -1,0 +1,193 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|-49.599
+6|-31.963
+8|-26.812
+9|-25.103
+10|-12.357
+7|-11.749
+17|-9.826
+14|0.448
+12|1.378
+1|8.637
+4|9.627
+5|11.17
+3|16.082
+13|18.012
+2|31.679
+18|38.563
+19|41.014
+16|42.196
+11|46.843
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+16|-559.646
+3|0.0
+6|0
+18|2.5
+5|41
+9|296
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|NULL
+7|NULL
+10|-957
+11|-761
+3|-86
+2|0
+5|2
+8|102
+9|969.8
+12|994.66
+4|9223372036854775807
+6|kappa
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

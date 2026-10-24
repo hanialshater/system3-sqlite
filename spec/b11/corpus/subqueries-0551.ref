@@ -1,0 +1,313 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+17|17
+4|4
+3|3
+1|1
+14|14
+11|11
+15|15
+8|8
+5|5
+10|10
+6|6
+2|2
+9|9
+7|7
+12|12
+13|13
+16|16
+~~~
+# id
+~~~
+# id
+16
+17
+~~~
+# c3
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# id
+~~~
+# c0
+-632.0
+-364.0
+-4
+-2.5
+-2.0
+0
+0.0
+0.0
+0.0
+0.0
+4.500000000000011e-310
+2.5
+4.0
+566.0
+675
+-7
+iota
+it's
+kappa
+naïve
+omega
+señor
+zeta
+日本
+X'2C18AF'
+X'3A80C281'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+~~~
+# c0
+-5
+-2.5
+0
+0.1
+4
+200.98
+643.8
+722
+-117
+0.1
+285.4
+4.500000000000011e-310
+5
+Lambda
+NULL
+beta
+zeta
+X''
+X'34BD'
+X'46'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+16|17
+10|17
+9|17
+6|17
+1|17
+11|17
+4|17
+7|17
+17|17
+13|17
+8|17
+15|17
+3|17
+12|17
+5|17
+14|17
+2|17
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+~~~
+# ref
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+-1.0e+308
+-678
+-617
+-309
+-215.2367
+-1
+1
+1
+1
+2
+2
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

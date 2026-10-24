@@ -1,0 +1,191 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id)
+NULL|4|5,7,8,17
+-2|1|9
+-2.5|1|18
+-23.1134|1|1
+-4|1|6
+-466|1|16
+-600|1|10
+-78|1|11
+-89|1|4
+0|2|12,14
+chi|1|15
+iota|1|2
+naïve|1|3
+X'12'|1|19
+X'89CFC19632'|1|13
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+19|17|379.5040001|379.5040001|22.323764711764706|-511|X'FA6F718AEC'|17
+~~~
+# c2|count(*)|group_concat(id)
+NULL|2|13,15
+-511|1|18
+-199.8857|1|17
+-142|1|8
+0|1|3
+1.0e-07|1|1
+3|1|2
+129|1|10
+284|1|9
+292.3897|1|5
+524|1|16
+ pad |1|11
+Lambda|1|19
+eta|1|4
+it's|1|14
+psi|1|6
+X'5C80C9'|1|12
+X'FA6F718AEC'|1|7
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|4|5;7;8;17
+-2|1|9
+-2.5|1|18
+-23.1134|1|1
+-4|1|6
+-466|1|16
+-600|1|10
+-78|1|11
+-89|1|4
+0|2|12;14
+chi|1|15
+iota|1|2
+naïve|1|3
+X'12'|1|19
+X'89CFC19632'|1|13
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+4|4|18|18.0|4.5|2|7|4
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+19|11|1.0e+308|1.0e+308|9.0909090909090912e+306|-5|X'87A0934F5C'|11
+~~~
+# c4|count(*)|group_concat(id, ';')
+NULL|8|4;6;9;12;16;17;18;19
+-5|1|7
+442.86|1|15
+1.0e+308|1|3
+ pad |1|13
+omicron|1|14
+phi|1|5
+X''|1|1
+X'0026EF'|1|8
+X'1D2A'|1|11
+X'7FA83611'|1|2
+X'87A0934F5C'|1|10
+~~~
+# id|id IS NULL|x'8193cfff7af4'
+1|0|X'8193CFFF7AF4'
+2|0|X'8193CFFF7AF4'
+3|0|X'8193CFFF7AF4'
+4|0|X'8193CFFF7AF4'
+5|0|X'8193CFFF7AF4'
+6|0|X'8193CFFF7AF4'
+7|0|X'8193CFFF7AF4'
+8|0|X'8193CFFF7AF4'
+9|0|X'8193CFFF7AF4'
+10|0|X'8193CFFF7AF4'
+11|0|X'8193CFFF7AF4'
+12|0|X'8193CFFF7AF4'
+13|0|X'8193CFFF7AF4'
+14|0|X'8193CFFF7AF4'
+15|0|X'8193CFFF7AF4'
+16|0|X'8193CFFF7AF4'
+17|0|X'8193CFFF7AF4'
+18|0|X'8193CFFF7AF4'
+19|0|X'8193CFFF7AF4'
+~~~
+# CASE WHEN ('Ελλάδα' < (33 >> 'sigma')) THEN iif((-2.5 >= 'MU'), 874.52, 4.5e-310) ELSE 373.6851 END|x'eaa7e5514d' IN (nullif(54, 453), -417.0301, NULL) IN (-(NULL), 'naïve', 35.7)
+373.6851|NULL
+~~~

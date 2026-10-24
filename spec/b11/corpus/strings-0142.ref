@@ -1,0 +1,126 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', -3, 2)|instr('psi', '0x1F')|replace('psi', 'é', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE '%é%'|'psi' GLOB '*'|char(85, 457)|'psi' || '0x1F'|'psi' < '0x1F'|'psi' = '0x1F' COLLATE NOCASE
+3|PSI|psi|ps|0|psi|psi|psi|707369|'psi'|112|0|1|Uǉ|psi0x1F|0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', -3, 1)|instr('rho', '0x1F')|replace('rho', 'e', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '%'|'rho' GLOB 'a*'|char(77, 606)|'rho' || '0x1F'|'rho' < '0x1F'|'rho' = '0x1F' COLLATE NOCASE
+3|RHO|rho|r|0|rho|rho|rho|72686F|'rho'|114|1|0|Mɞ|rho0x1F|0|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', -2, 1)|instr('Ελλάδα', 'Lambda')|replace('Ελλάδα', 'a', '')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'a%'|'Ελλάδα' GLOB '?'|char(70, 883)|'Ελλάδα' || 'Lambda'|'Ελλάδα' < 'Lambda'|'Ελλάδα' = 'Lambda' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|δ|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|Fͳ|ΕλλάδαLambda|0|0
+~~~
+changes: 21
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|NULL
+~~~
+# id|c0|c1|ref
+1|!|NULL|7
+2|0.0|日本|NULL
+3|0.0|NULL|NULL
+4|2|d|NULL
+6|0.0|1000000000000000.0|2
+7|0.0||3
+8|0.0|NULL|3
+9|0.0|café|4
+11|0.0|NULL|1
+12|0.0|naïve|4
+13|0.0|NULL|NULL
+14|0.0|X''|5
+16|0.0|X''|5
+17|0.0|3|6
+18|0.0|NULL|7
+19|0.0|374.3983|3
+21|0.0|0|NULL
+22|NULL|d|NULL
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|chi
+~~~
+# id|c0|c1|ref
+23|chi|d|NULL
+22|NULL|d|NULL
+18|0.0|NULL|7
+16|0.0|X''|5
+14|0.0|X''|5
+12|0.0|naïve|4
+8|0.0|NULL|3
+6|0.0|1000000000000000.0|2
+4|omega|d|NULL
+3|1000000000000000.0|d|NULL
+2|0.0|日本|NULL
+~~~

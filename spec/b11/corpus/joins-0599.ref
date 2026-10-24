@@ -1,0 +1,111 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c2
+1|1|phi|phi
+1|2|phi|4.500000000000011e-310
+1|3|phi|0
+1|4|phi|0.1
+2|1|4.500000000000011e-310|phi
+2|2|4.500000000000011e-310|4.500000000000011e-310
+2|3|4.500000000000011e-310|0
+2|4|4.500000000000011e-310|0.1
+3|1|0|phi
+3|2|0|4.500000000000011e-310
+3|3|0|0
+3|4|0|0.1
+4|1|0.1|phi
+4|2|0.1|4.500000000000011e-310
+4|3|0.1|0
+4|4|0.1|0.1
+~~~
+# count(*)
+4
+~~~
+# id|id|c2|id
+1|2|phi|2
+1|3|phi|3
+1|4|phi|4
+2|3|4.500000000000011e-310|3
+2|4|4.500000000000011e-310|4
+3|4|0|4
+4|NULL|0.1|NULL
+~~~
+# count(*)
+1
+~~~
+# id|id|id|c3
+1|1|1|NULL
+2|2|2|386.42
+3|3|3|X'AA9D'
+4|4|4|5
+5|NULL|5|NULL
+6|NULL|6|NULL
+7|NULL|7|NULL
+8|NULL|8|NULL
+~~~
+# count(*)
+8
+~~~
+# id|id|id|c0
+1|2|1|201
+1|3|1|NULL
+1|4|1|4
+2|3|2|NULL
+2|4|2|4
+3|4|3|4
+4|NULL|4|NULL
+5|NULL|5|NULL
+6|NULL|6|NULL
+7|NULL|7|NULL
+8|NULL|8|NULL
+~~~
+error: near "(": syntax error
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+2|2|0.0|0.0|0.0|X'F3ED4A81'|X'FDEA855D60'|2
+~~~
+# c1|count(*)|group_concat(id)
+NULL|1|5
+-7|1|7
+X''|1|1
+X'5F40DD'|1|8
+X'76E3ED'|1|6
+X'9ABA19817CA9'|1|3
+X'F3ED4A81'|1|4
+X'FDEA855D60'|1|2
+~~~
+# id|CAST(iif(-(c0), coalesce(NULL, c1), 'tau') AS INTEGER)|x''
+1|0|X''
+2|NULL|X''
+3|0|X''
+4|NULL|X''
+~~~
+# NOT CAST(9 AS INTEGER) IS NULL|nullif(957.90, iif('omega' IS NULL, iif(x'35c87a', x'1aa38257346c', 'theta'), x'9820c055'))
+1|957.9
+~~~

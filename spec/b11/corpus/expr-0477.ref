@@ -1,0 +1,200 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|-(CASE WHEN typeof('日本') THEN c2 ELSE nullif(c1, c2) END)|typeof(c4)
+1|1.0e+308|null
+2|0|blob
+3|-4|real
+4|0|real
+5|0|blob
+6|0|blob
+7|1.0e+308|text
+8|0|null
+9|NULL|blob
+10|NULL|real
+11|NULL|real
+12|NULL|blob
+13|-0.1|text
+14|0|real
+15|-1.0e-07|real
+16|NULL|text
+17|0|real
+~~~
+# nullif(typeof((-554 + x'53fa90e7')), -(iif(886, 'eta', NULL)))|NOT CASE WHEN x'd004c27336a6' IS NULL THEN -413 ELSE NULL END
+integer|NULL
+~~~
+# id|-(c2) IN (coalesce(-259, 'x_y'), '-7', '1e3') IN (abs(c0), NULL, 1)|abs(nullif(c1, c1)) BETWEEN NOT c0 IS NULL AND 1.0e15
+1|NULL|NULL
+2|NULL|NULL
+3|NULL|NULL
+4|1|NULL
+5|1|NULL
+6|1|NULL
+7|1|NULL
+8|1|NULL
+9|1|NULL
+10|1|NULL
+11|NULL|NULL
+12|NULL|NULL
+13|1|NULL
+14|1|NULL
+15|1|NULL
+16|NULL|NULL
+17|NULL|NULL
+~~~
+# CASE WHEN CAST(typeof(NULL) AS TEXT) THEN iif(NULL, 'über', NULL) BETWEEN iif('0x1F', 359.2, 3.141592653589793) AND -898 ELSE iif(iif(-27, x'b70658', -398.754), x'ed21595b89' IS NULL, 'upsilon') END|CAST(CAST(-390.8 BETWEEN x'953d11523c0f' AND NULL AS INTEGER) AS TEXT)
+upsilon|0
+~~~
+# id|NULL BETWEEN id IS NULL IS NULL AND CASE WHEN abs(c4) THEN CASE WHEN c3 THEN c3 ELSE 9223372036854775807 END ELSE nullif(c0, NULL) END|CAST(typeof(c2 BETWEEN c4 AND c2) AS TEXT)
+17|NULL|integer
+16|NULL|null
+15|NULL|integer
+14|NULL|integer
+13|NULL|integer
+12|NULL|integer
+11|NULL|null
+10|NULL|integer
+9|NULL|integer
+8|NULL|null
+7|NULL|integer
+6|NULL|integer
+5|NULL|integer
+4|NULL|integer
+3|NULL|integer
+2|NULL|integer
+1|NULL|null
+~~~
+# typeof(9223372036854775807)|x'b0e5265b'
+integer|X'B0E5265B'
+~~~
+# id|123456789012|abs(CASE WHEN 0 THEN CASE WHEN 'kappa' THEN 93 ELSE 1e308 END ELSE nullif(c4, c2) END)
+1|123456789012|845
+2|123456789012|NULL
+3|123456789012|0.0
+~~~
+# coalesce(iif(x'4ec800f2ae', x'', x'5392'), '42')|NULL
+X'5392'|NULL
+~~~
+# id|c1|abs(NOT -(c0))
+1|-1.0e+308|0
+2|X''|0
+3|4|0
+4|X'CFF4'|1
+5|X'8A3859C2F682'|1
+6|upsilon|1
+7|-1.0e+308|1
+8|X'1866'|1
+9|NULL|1
+10|NULL|1
+11|NULL|0
+12|NULL|0
+13|0.1|1
+14|X'9A'|1
+15|1.0e-07|1
+16|NULL|0
+17|X'0D0AEA'|0
+~~~
+# nullif(NOT NULL, CAST(x'dc863e0d' AS REAL)) IS NULL|x'40fe3e576b30'
+1|X'40FE3E576B30'
+~~~
+# id|coalesce(x'bc8ac9' BETWEEN x'4ec4d6e1' AND c1 BETWEEN (-741 IS x'd4c4552e5589') AND NOT 'iota', c0)|c4 IN ((-425.0 < c1 IS NULL), NULL, x'4b')
+1|1|NULL
+2|1|NULL
+3|1|NULL
+~~~
+# 4|nullif(0.1 IN (5, x'4074', 1e308), CAST('tau' AS BLOB)) IN (typeof(560.690), 'eta', ' pad ')
+4|0
+~~~
+# id|CAST(c4 AS TEXT) IS NULL IN (CAST(c1 AS TEXT), 523.808, -1)|CAST(iif((x'8f' = c3), iif(NULL, -2, x'7be76d8dde'), 172.52) AS REAL)
+1|0|172.52
+2|0|172.52
+3|0|172.52
+4|0|172.52
+5|0|172.52
+6|0|172.52
+7|0|172.52
+8|0|172.52
+9|NULL|172.52
+10|NULL|172.52
+11|NULL|172.52
+12|NULL|172.52
+13|0|172.52
+14|0|172.52
+15|0|172.52
+16|NULL|172.52
+17|0|172.52
+~~~
+# NULL|CAST((-('x_y') * iif(x'78344cead3', 'kappa', 0.1)) AS TEXT)
+NULL|0.0
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+1|X''|NULL|NULL|d|d
+2|!|X'D05CD0'|937.5|X'2A2D9135F1B0'|NULL
+3|X'5D9B84'|upsilon|X'5570859E2A'|NULL|X''
+4|NULL|NULL|NULL|d|d
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

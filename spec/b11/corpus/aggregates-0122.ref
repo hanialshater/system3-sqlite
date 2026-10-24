@@ -1,0 +1,87 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+9|9|45|45.0|5.0|1|9|9
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c4|count(*)|group_concat(id)
+NULL|1|2
+NULL|1|3
+psi|1|4
+X'3A9C7DFF305B'|1|1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|-805.0
+~~~
+# id|c0|c1|c2|c3|c4
+1|X'088D4B18'|1|476.5|X'088D4B18'|X'3A9C7DFF305B'
+2|-5.0|NULL|X'CBC8CF6833'|0.1|NULL
+3|544.0|d|0.0|NULL|NULL
+4|NULL|NULL|kappa|-3|psi
+7|9.2233720368547758e+18|d|0.0|NULL|NULL
+8|-805.0|d|0.0|NULL|NULL
+~~~
+# id|id|ref|id
+1|4|NULL|4
+1|6|NULL|6
+2|3|NULL|3
+3|NULL|2|NULL
+4|NULL|1|NULL
+5|NULL|6|NULL
+6|5|1|5
+6|8|1|8
+6|9|1|9
+~~~
+# count(*)
+9
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+2|1|-5.0|-5.0|-5.0|-5.0|-5.0|1
+~~~
+# c0|count(*)|group_concat(id)
+~~~

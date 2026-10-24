@@ -1,0 +1,180 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c4
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|upsilon
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|sigma|NULL|-204|nu|4
+2|NULL|0x1F|X'4724'|981.176|X'1CA9'|6
+3|X'6EA90EA5'|3.0|32|-935| pad |NULL
+4|1.0|X'44801C50C0'|-972|X'1D5A18'|a%b|2
+6|NULL|-279.0|X'C869CD575F'|-5|X'D31907'|1
+7| pad |X'3868'|598|530|0.0|NULL
+8|zeta|451.17|NULL|beta|271.0|5
+9|beta|NULL|NULL|NULL|0.0|NULL
+11|X'72'|1.0e-07|2|9223372036854775807|0.0|8
+12|X'43EA'|X'E404AB66587A'|X'E4'|X'54151641'|X'978D47112024'|6
+13|epsilon|X'E6C5D6'|sigma|0|303.0|NULL
+14|-7.0|-7.0|kappa|-1|café|1
+16|X'793529E6'|NULL|-9223372036854775808|NULL|-306.0|8
+17|NULL|123456789012.0|eta|X'F11B49311F38'|2.0|8
+18|upsilon|NULL|NULL|NULL|0.0|NULL
+~~~
+changes: 15
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|X''
+~~~
+# id|c0|c1|c2|c3|c4|ref
+19|X''|NULL|NULL|NULL|0.0|NULL
+18|NULL|NULL|NULL|NULL|0.0|NULL
+17|NULL|123456789012.0|eta|X'F11B49311F38'|2.0|8
+14|NULL|-7.0|kappa|-1|café|1
+13|NULL|X'E6C5D6'|sigma|0|303.0|NULL
+11|NULL|1.0e-07|2|9223372036854775807|0.0|8
+9|NULL|NULL|NULL|NULL|0.0|NULL
+7|NULL|X'3868'|598|530|0.0|NULL
+6|NULL|-279.0|X'C869CD575F'|-5|X'D31907'|1
+5|NULL|NULL|NULL|NULL|0.0|NULL
+3|NULL|3.0|32|-935| pad |NULL
+2|NULL|NULL|NULL|NULL|0.0|NULL
+1|NULL|sigma|NULL|-204|nu|4
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|theta
+~~~
+# id|c0|c1
+2|2|x_y
+3|3|X'6A8CFD9B2F'
+4|NULL|beta
+8|NULL|NULL
+9|theta|NULL
+~~~
+# id|id|c0|c1
+2|NULL|2|NULL
+3|NULL|3|NULL
+4|1|NULL|sigma
+8|11|NULL|1.0e-07
+8|17|NULL|123456789012.0
+9|NULL|theta|NULL
+~~~
+# count(*)
+5
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 3, 3)|instr('1e3', 'sigma')|replace('1e3', 'é', '_')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '%é%'|'1e3' GLOB '?'|char(65, 312)|'1e3' || 'sigma'|'1e3' < 'sigma'|'1e3' = 'sigma' COLLATE NOCASE
+3|1E3|1e3|3|0|1e3|1e3|1e3|316533|'1e3'|49|0|0|Aĸ|1e3sigma|1|0
+~~~
+changes: 13
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+20|NULL|NULL|NULL|NULL|0.0|NULL
+19|NULL|NULL|NULL|NULL|0.0|NULL
+18|NULL|NULL|NULL|NULL|0.0|NULL
+17|8.0|123456789012.0|eta|X'F11B49311F38'|2.0|8
+14|1.0|-7.0|kappa|-1|café|1
+13|NULL|X'E6C5D6'|sigma|0|303.0|NULL
+11|8.0|1.0e-07|2|9223372036854775807|0.0|8
+9|NULL|NULL|NULL|NULL|0.0|NULL
+8|NULL|NULL|NULL|NULL|0.0|NULL
+7|NULL|X'3868'|598|530|0.0|NULL
+6|x_y!|-279.0|X'C869CD575F'|-5|X'D31907'|1
+5|NULL|NULL|NULL|NULL|0.0|NULL
+3|NULL|3.0|32|-935| pad |NULL
+2|NULL|NULL|NULL|NULL|0.0|NULL
+1|4.0|sigma|NULL|-204|nu|4
+~~~

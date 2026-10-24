@@ -1,0 +1,172 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+1|NULL
+4|NULL
+5|NULL
+7|1
+10|2
+8| pad 
+3|Lambda
+6|kappa
+2|X'1F1A6722'
+9|X'C6A4C14F1AA8'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c1
+1|1|NULL|X''
+1|12|NULL|NULL
+1|15|NULL|X'C37DCD92867D'
+2|16|-366.0|NULL
+3|NULL|9.2233720368547758e+18|NULL
+4|17|1.0e-07|1
+5|4|phi|289.6275
+5|8|phi|-1.0e+308
+5|13|phi|0.0
+6|7|4.500000000000011e-310|NULL
+6|14|4.500000000000011e-310|270
+7|6|NULL|767
+7|9|NULL|X'FD'
+7|11|NULL|1
+8|2|X'EE1DD8DD9E'|it's
+8|3|X'EE1DD8DD9E'|pi
+8|10|X'EE1DD8DD9E'|X'ACE158CB7A'
+9|NULL|0.0|NULL
+10|NULL|883.47|NULL
+11|NULL|X'61CAD14C'|NULL
+12|NULL|732.0|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|2.5|NULL
+16|NULL|-854.0|NULL
+17|NULL|-4.0|NULL
+~~~
+# count(*)
+17
+~~~
+# id|c3|NULL
+1|psi|NULL
+2|X'57ADD4'|NULL
+3|-840.6|NULL
+4|-119.8|NULL
+5|NULL|NULL
+6|NULL|NULL
+7|señor|NULL
+8|Lambda|NULL
+9|3|NULL
+10|1.0e-07|NULL
+~~~
+# nullif(nullif(635.376, 'eta') IN (iif(x'', 'phi', 'delta'), 41.6057, -189), iif(-227.60 IS NULL, typeof(648), '-7'))|abs(908)
+0|908
+~~~

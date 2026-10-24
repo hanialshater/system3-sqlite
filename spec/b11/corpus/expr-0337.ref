@@ -1,0 +1,275 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref|c2
+1|8|-2
+2|5|1000
+3|4|-311
+4|NULL|X'87E169B5DB'
+5|4|NULL
+6|NULL|978
+7|NULL|42
+8|3|X'76E6B2C40C56'
+9|3|NULL
+10|2|X'EB'
+11|5|9223372036854775807
+12|1|X'56D3787EEE'
+13|8|beta
+14|6|NULL
+~~~
+# CASE WHEN NOT 7 IN ('MU', 'nu', 1) THEN iif((661 % 3.141592653589793), CAST('über' AS NUMERIC), x'5b0742f9') ELSE typeof('zeta' BETWEEN NULL AND x'877f874346ff') END|iif(typeof(1e-7) IN (NOT 293, 397.830, 5), CASE WHEN -1 THEN -711.2120 ELSE 2 END, x'68d26e65')
+0|X'68D26E65'
+~~~
+# id|CAST(nullif(c0, c2) AS NUMERIC) IN (coalesce(-888, CASE WHEN c2 THEN c2 ELSE 1e-7 END), 954.1, 4)|(c2 - CASE WHEN iif(id, c0, 'beta') THEN 9223372036854775807 ELSE abs(c2) END)
+1|0|NULL
+2|0|-9.2233720368547758e+18
+3|0|-9223372036854775622
+4|0|-9223372036854775805
+5|0|-9223372036854775803
+6|0|-9223372036854775382
+7|0|-9223372036854775399
+8|0|-9.2233720368547758e+18
+9|0|-9223372036854775420
+10|0|-9.2233720368547758e+18
+11|0|-9.2233720368547758e+18
+12|0|-9.2233720368547758e+18
+13|0|-9223372036854775544
+14|0|-9223372036854775544
+15|0|-9223372036854775756
+16|0|-9.2233720368547758e+18
+17|0|-9.2233720368547758e+18
+18|0|-9223372036854775593
+19|0|-9223372036854775740
+20|0|-9.2233720368547758e+18
+21|0|-9223372036854775606
+~~~
+# typeof(-(iif(0, x'68', 'zeta')))|abs(nullif('chi', -470.871) IN (-5, x'd4c6fb07', 0))
+integer|0
+~~~
+# id|nullif(-403, coalesce(-966.3795 BETWEEN 'zeta' AND c0, id IN (c1, '', -188.24)))|(iif(c2, c2 IS NULL, 'eta') * iif(x'fd0330', c1, x'8716') BETWEEN -('it''s') AND abs(id))
+1|-403|1
+2|-403|1
+3|-403|1
+4|-403|1
+5|-403|1
+6|-403|1
+7|-403|1
+8|-403|1
+9|-403|1
+10|-403|1
+11|-403|1
+12|-403|1
+13|-403|1
+14|-403|1
+15|-403|1
+16|-403|1
+17|-403|1
+18|-403|1
+19|-403|1
+20|-403|1
+21|-403|1
+~~~
+# NULL|CAST(iif(coalesce(x'cb17', -4), CAST(NULL AS TEXT), NULL) AS INTEGER)
+NULL|NULL
+~~~
+# id|(nullif(CASE WHEN c1 THEN c4 ELSE 'omega' END, coalesce(5, c2)) < typeof(-(c3)))|5
+1|0|5
+2|0|5
+3|0|5
+4|0|5
+5|0|5
+6|1|5
+7|1|5
+8|0|5
+9|0|5
+10|1|5
+11|0|5
+12|NULL|5
+13|0|5
+14|0|5
+~~~
+# typeof(' pad ')|CASE WHEN abs(NOT -704) THEN -(-75) ELSE -320 END
+text|-320
+~~~
+# id|-(typeof(nullif(c4, -989.4588)))|3
+16|0|3
+15|0|3
+14|0|3
+13|0|3
+12|0|3
+11|0|3
+10|0|3
+9|0|3
+8|0|3
+7|0|3
+6|0|3
+5|0|3
+4|0|3
+3|0|3
+2|0|3
+1|0|3
+~~~
+# abs(769.265) BETWEEN CASE WHEN -689.7859 IN (919.6249, 'x_y', x'da4383cf55') THEN '日本' ELSE 'omicron' END AND NULL|-(NULL) BETWEEN 'zeta' AND 'iota' BETWEEN (-(-9223372036854775808) = NULL BETWEEN x'18' AND NULL) AND nullif(CAST(0 AS TEXT), (-890.4 >= -870))
+0|NULL
+~~~
+# id|CAST(c1 BETWEEN coalesce(NULL, -3) AND NOT 0 AS BLOB)|-(c1)
+1|NULL|NULL
+2|NULL|NULL
+3|X'30'|0
+4|X'30'|0
+5|X'30'|0
+6|X'30'|-1000000000000000
+7|X'30'|-1.0e+308
+8|X'30'|-422
+9|NULL|NULL
+10|X'31'|2
+11|X'30'|0
+12|X'30'|-569
+13|NULL|NULL
+14|X'30'|0
+~~~
+# x'60e1e3407a'|929 IN (abs(typeof(NULL)), 378, 'omega')
+X'60E1E3407A'|0
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+3|NULL
+11|NULL
+2|
+1|-435
+10|-78.132
+14|-851
+8|1
+12|4
+5|440
+6|5
+4|797.4443
+7|a%b
+13|alpha
+9|zeta
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

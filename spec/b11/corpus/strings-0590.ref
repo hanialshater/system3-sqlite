@@ -1,0 +1,173 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 1, 2)|instr('chi', 'NULL')|replace('chi', 'é', '_')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '_'|'chi' GLOB 'a*'|char(67, 969)|'chi' || 'NULL'|'chi' < 'NULL'|'chi' = 'NULL' COLLATE NOCASE
+3|CHI|chi|ch|0|chi|chi|chi|636869|'chi'|99|0|0|Cω|chiNULL|0|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', 3, 5)|instr('beta', 'chi')|replace('beta', '', 'XY')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE '%'|'beta' GLOB '*'|char(76, 984)|'beta' || 'chi'|'beta' < 'chi'|'beta' = 'chi' COLLATE NOCASE
+4|BETA|beta|ta|0|beta|beta|eta|62657461|'beta'|98|1|1|LϘ|betachi|1|0
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 3, 3)|instr(' pad ', 'x_y')|replace(' pad ', 'e', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%é%'|' pad ' GLOB 'a*'|char(67, 853)|' pad ' || 'x_y'|' pad ' < 'x_y'|' pad ' = 'x_y' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|0|C͕| pad x_y|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 0, 2)|instr('alpha', ' pad ')|replace('alpha', 'é', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%a_'|'alpha' GLOB '*'|char(86, 871)|'alpha' || ' pad '|'alpha' < ' pad '|'alpha' = ' pad ' COLLATE NOCASE
+5|ALPHA|alpha|a|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|Vͧ|alpha pad |0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', -3, 0)|instr('NULL', ' pad ')|replace('NULL', 'e', '_')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE 'A%'|'NULL' GLOB '*'|char(67, 595)|'NULL' || ' pad '|'NULL' < ' pad '|'NULL' = ' pad ' COLLATE NOCASE
+4|NULL|null||0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|1|Cɓ|NULL pad |0|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 1, 3)|instr('nu', '')|replace('nu', '', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'A%'|'nu' GLOB 'a*'|char(84, 311)|'nu' || ''|'nu' < ''|'nu' = '' COLLATE NOCASE
+2|NU|nu|nu|1|nu|nu|nu|6E75|'nu'|110|0|0|Tķ|nu|0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 3, 3)|instr('rho', 'it''s')|replace('rho', 'e', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '_'|'rho' GLOB '*[a-m]*'|char(79, 832)|'rho' || 'it''s'|'rho' < 'it''s'|'rho' = 'it''s' COLLATE NOCASE
+3|RHO|rho|o|0|rho|rho|rho|72686F|'rho'|114|0|1|Ò|rhoit's|0|0
+~~~
+# id|id|id|ref
+1|11|1|1
+1|15|1|1
+2|5|2|2
+2|8|2|2
+5|12|5|5
+6|3|6|6
+7|1|7|7
+7|9|7|7
+8|4|8|8
+~~~
+# count(*)
+15
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|770.8716
+~~~
+# id|c0|c1|c2
+2|X'684986'|NULL|NULL
+3|X'5707FC3F98'|-12.386|-351
+5|-611!|0.854|-71
+6|X'BC'|-32.467|-148
+8|NULL|25.359|182
+9|-2|17.454|252
+11|über|22.923|-465
+12|X'589A8ED6'|-37.149|235
+14|3|31.805|-198
+15|X'301D'|-30.378|279
+16|770.8716|NULL|NULL
+~~~

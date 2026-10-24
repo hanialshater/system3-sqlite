@@ -1,0 +1,154 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', -2, 0)|instr('chi', 'epsilon')|replace('chi', 'e', '_')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '_'|'chi' GLOB '?'|char(78, 716)|'chi' || 'epsilon'|'chi' < 'epsilon'|'chi' = 'epsilon' COLLATE NOCASE
+3|CHI|chi||0|chi|chi|chi|636869|'chi'|99|0|0|Nˌ|chiepsilon|1|0
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', 2, 2)|instr('über', 'theta')|replace('über', 'e', '')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE 'A%'|'über' GLOB '?'|char(69, 666)|'über' || 'theta'|'über' < 'theta'|'über' = 'theta' COLLATE NOCASE
+4|üBER|über|be|0|übr|über|über|C3BC626572|'über'|252|0|0|Eʚ|übertheta|0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 0, 4)|instr('rho', 'theta')|replace('rho', 'é', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '%a_'|'rho' GLOB '?'|char(77, 976)|'rho' || 'theta'|'rho' < 'theta'|'rho' = 'theta' COLLATE NOCASE
+3|RHO|rho|rho|0|rho|rho|rho|72686F|'rho'|114|0|0|Mϐ|rhotheta|1|0
+~~~
+# id|-4|coalesce((c2 IN (id, x'e840b3', -825.8) >= x'3a3112b970'), -(c1) BETWEEN c0 AND typeof(c2))
+19|-4|NULL
+18|-4|0
+17|-4|0
+16|-4|NULL
+15|-4|0
+14|-4|0
+13|-4|0
+12|-4|0
+11|-4|0
+10|-4|0
+9|-4|0
+8|-4|0
+7|-4|0
+6|-4|0
+5|-4|0
+4|-4|0
+3|-4|0
+2|-4|0
+1|-4|NULL
+~~~
+# NOT CAST(abs('gamma') AS BLOB)|-859
+1|-859
+~~~
+# id|coalesce(c1, c0)|abs(CAST(c0 IS NULL AS INTEGER))
+1|alpha|0
+2|-506|0
+3|-101.868|1
+4|313|1
+5|iota|0
+6|-902|0
+7|267.6|0
+8|X'F07188D1'|0
+9|0|0
+10|971.425|0
+11|epsilon|0
+12|a%b|0
+13|MU|0
+14|2|0
+15|X'99D2F7B4FF64'|0
+16|5|0
+17|X'1F3C18'|0
+18|X'CD9B6CCC14'|0
+19|-836.3596|0
+20|916.334|0
+21|kappa|0
+22|-427.3|1
+23|534|0
+24|1.0e+308|1
+~~~
+# CASE WHEN typeof(-(x'2cf2')) THEN typeof((-2 - 'zeta')) ELSE ('omicron' IN (x'18807141a9f0', 'MU', 9223372036854775807) - 0.1 IS NULL) END|NULL
+0|NULL
+~~~

@@ -1,0 +1,87 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+3|2
+2|2
+~~~
+# id
+1
+2
+~~~
+# id
+~~~
+# c4
+-255.23
+-2.5
+3
+Ελλάδα
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+3|2
+2|2
+~~~
+# id
+1
+2
+3
+~~~
+# id
+1
+2
+3
+~~~
+# id
+2
+3
+tau
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|2
+1|2
+~~~
+# id
+~~~
+# id
+1
+2
+~~~
+# c0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+3|-2.5
+~~~
+# id|c0|c1|c2|c3|c4
+1|1|719|NULL|NULL|-255.23
+2|X''|NULL|NULL|NULL|NULL
+3|-2.5|NULL|NULL|NULL|NULL
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+1|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|3|1;2;3
+~~~

@@ -1,0 +1,162 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 4, 1)|instr('a%b', '1e3')|replace('a%b', 'a', '')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB 'a*'|char(80, 417)|'a%b' || '1e3'|'a%b' < '1e3'|'a%b' = '1e3' COLLATE NOCASE
+3|A%B|a%b||0|%b|a%b|%b|612562|'a%b'|97|0|1|Pơ|a%b1e3|0|0
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', -3, 0)|instr('42', 'delta')|replace('42', 'a', '')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%é%'|'42' GLOB '*'|char(90, 590)|'42' || 'delta'|'42' < 'delta'|'42' = 'delta' COLLATE NOCASE
+2|42|42||0|42|42|42|3432|'42'|52|0|1|ZɎ|42delta|1|0
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', 2, 3)|instr('42', 'eta')|replace('42', 'e', 'XY')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%'|'42' GLOB '*'|char(77, 942)|'42' || 'eta'|'42' < 'eta'|'42' = 'eta' COLLATE NOCASE
+2|42|42|2|0|42|42|42|3432|'42'|52|1|1|Mή|42eta|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+12|9
+11|9
+9|9
+2|2
+13|9
+14|9
+16|9
+6|6
+15|9
+7|7
+4|4
+3|3
+5|5
+10|9
+8|8
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# c0
+-537.8
+-396
+-259
+-211
+-114
+-84
+-3
+-1
+5
+24
+94
+111.49
+236
+~~~
+# id|ref|NOT iif(c3 IS NULL, NULL, -358)
+1|2|0
+2|6|NULL
+3|4|NULL
+4|NULL|0
+5|5|0
+6|3|0
+7|6|0
+8|2|0
+9|6|0
+10|1|0
+~~~
+# abs(NOT CAST(NULL AS TEXT))|coalesce(CASE WHEN nullif(x'', x'02ad5f01') THEN CASE WHEN 'xi' THEN -878.1 ELSE NULL END ELSE -('alpha') END, CASE WHEN 0 THEN nullif('0x1F', x'1e6b3285d2') ELSE typeof(3) END)
+NULL|0
+~~~

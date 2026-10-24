@@ -1,0 +1,155 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+6|NULL
+13|NULL
+15|NULL
+18|NULL
+19|NULL
+16|-960.26
+22|-189.3
+9|-89.232
+25|-3.0
+4|-2.5
+17|2.5
+2|3.0
+23|5.0
+12|130.0
+20|605.0514
+1|9.2233720368547758e+18
+7|Lambda
+24|alpha
+14|chi
+11|nu
+8|x_y
+3|xi
+5|über
+21|X''
+10|X'A4D0031A07B6'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|-2
+16|-2
+2|0
+9|4.500000000000011e-310
+22|1
+24|603.886
+23|658.7
+1|760
+7|123456789012
+10|9223372036854775807
+11|9223372036854775807
+15| pad 
+12|alpha
+4|phi
+25|señor
+17|über
+18|日本
+8|X'54B6C1FBA486'
+3|X'5A'
+21|X'5EB5E6EC'
+14|X'7AE7729E1D91'
+20|X'9DD3B611C8'
+13|X'BB'
+~~~
+# count(*)
+24
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', 1, 5)|instr('日本', 'zeta')|replace('日本', 'e', '_')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '%a_'|'日本' GLOB '?'|char(75, 400)|'日本' || 'zeta'|'日本' < 'zeta'|'日本' = 'zeta' COLLATE NOCASE
+2|日本|日本|日本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|KƐ|日本zeta|0|0
+~~~

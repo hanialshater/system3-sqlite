@@ -1,0 +1,207 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c0
+1|2|123456789012|751
+1|10|123456789012|iota
+1|11|123456789012|3
+2|NULL|5|NULL
+3|9|kappa|-857
+3|13|kappa|-24.668
+4|4|-223|NULL
+4|7|-223|X'6B7AB84D3C4F'
+4|14|-223|5
+5|1|phi|0
+6|NULL|123456789012|NULL
+7|NULL|NULL|NULL
+8|3|NULL|NULL
+8|8|NULL|219
+8|15|NULL|omega
+9|NULL|upsilon|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|id
+1|2|702.5578|2
+1|10|702.5578|10
+1|11|702.5578|11
+2|NULL|-460.9468|NULL
+3|9|eta|9
+3|13|eta|13
+4|4|60|4
+4|7|60|7
+4|14|60|14
+5|1|-251|1
+6|NULL|1.0e+308|NULL
+7|NULL|0|NULL
+8|3|0|3
+8|8|0|8
+8|15|0|15
+9|NULL|-715|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c3|ref
+1|2|NULL|1
+1|10|NULL|1
+1|11|NULL|1
+2|NULL|NULL|NULL
+3|9|1000000000000000.0|3
+3|13|1000000000000000.0|3
+4|4|X'755A2E99'|4
+4|7|X'755A2E99'|4
+4|14|X'755A2E99'|4
+5|1|-4|5
+6|NULL|X'AE11'|NULL
+7|NULL|it's|NULL
+8|3|X'84'|8
+8|8|X'84'|8
+8|15|X'84'|8
+9|NULL|X'A7BFA5A8'|NULL
+10|NULL|X'8932F2'|NULL
+11|NULL|chi|NULL
+12|NULL|chi|NULL
+13|NULL|X'AC960FEF7C2F'|NULL
+14|NULL|-847.5004|NULL
+15|NULL|NULL|NULL
+~~~
+error: near "CASE": syntax error
+~~~
+# id|id|c0|c2
+1|2|0|NULL
+1|10|0|X'AC1196F1'
+1|11|0|-674.6
+2|NULL|751|NULL
+3|9|NULL|-289.924
+3|13|NULL|0.1
+4|4|NULL|NULL
+4|7|NULL|X'8426'
+4|14|NULL|-2.5
+5|1|nu|it's
+6|NULL|NULL|NULL
+7|NULL|X'6B7AB84D3C4F'|NULL
+8|3|219|-920
+8|8|219|X'37B42BA04708'
+8|15|219|-756
+9|NULL|-857|NULL
+10|NULL|iota|NULL
+11|NULL|3|NULL
+12|NULL|NULL|NULL
+13|NULL|-24.668|NULL
+14|NULL|5|NULL
+15|NULL|omega|NULL
+~~~
+error: near ".2": syntax error
+~~~
+# id|id|id|c4
+1|2|1|
+1|10|1|X'DE4C7B78'
+1|11|1|tau
+2|NULL|2|NULL
+3|9|3|53
+3|13|3|upsilon
+4|4|4|-478.112
+4|7|4|psi
+4|14|4|NULL
+5|1|5|NULL
+6|NULL|6|NULL
+7|NULL|7|NULL
+8|3|8|NULL
+8|8|8|café
+8|15|8|0
+9|NULL|9|NULL
+~~~
+error: near "CASE": syntax error
+~~~
+# id|c0|-(abs(c2))
+1|0|0.0
+2|751|NULL
+3|NULL|-920
+4|NULL|NULL
+5|nu|-1.0e+308
+6|NULL|-892
+7|X'6B7AB84D3C4F'|0.0
+8|219|-7.0
+9|-857|-289.924
+10|iota|0.0
+11|3|-674.6
+12|NULL|0.0
+13|-24.668|-0.1
+14|5|-2.5
+15|omega|-756
+~~~
+# nullif(typeof(609.5 BETWEEN 'xi' AND x'40b0c6350e'), 'señor')|nullif(-564, NOT 54)
+integer|-564
+~~~
+changes: 6
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|MU
+~~~
+# id|c0|c1|c2|c3|c4
+9|MU|d|NULL|NULL|NULL
+8|0|NULL|X'B14C030D'|NULL|557
+7|0|NULL|NULL|-3.0|NULL
+6|0|123456789012|NULL|42.0|beta
+5|-5|d|NULL|NULL|NULL
+4|0|-223|X'31873B5D'|X'46B656B36B76'|300
+3|eta|kappa|-460.2|0.0|X'1134102E239C'
+2|0|d|NULL|NULL|NULL
+~~~

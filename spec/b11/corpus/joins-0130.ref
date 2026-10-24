@@ -1,0 +1,135 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c3
+1|NULL|47|NULL
+2|3|862.08|244.07
+2|5|862.08|X'3DA13D7A3A'
+3|NULL|-4|NULL
+4|1|chi|4
+5|NULL|X''|NULL
+6|NULL|-915|NULL
+7|NULL|upsilon|NULL
+8|7|NULL|NULL
+9|NULL|9223372036854775807|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c3|c1
+1|NULL|X'75B6860FE4FF'|NULL
+2|3|X'18D710'|X''
+2|5|X'18D710'|a%b
+3|NULL|-413.0|NULL
+4|1|X'810E1EB30C2A'|X'53'
+5|NULL|-3.0|NULL
+6|NULL|1.0e+308|NULL
+7|NULL|1000.0|NULL
+8|7|Ελλάδα|582
+9|NULL|NULL|NULL
+~~~
+error: near ".0": syntax error
+~~~
+# id|id|c2|id
+1|1|-5|1
+1|2|-5|2
+1|3|-5|3
+1|4|-5|4
+1|5|-5|5
+1|6|-5|6
+1|7|-5|7
+2|1|日本|1
+2|2|日本|2
+2|3|日本|3
+2|4|日本|4
+2|5|日本|5
+2|6|日本|6
+2|7|日本|7
+3|1|1|1
+3|2|1|2
+~~~
+# count(*)
+7
+~~~
+# id|id|id|id
+2|3|2|3
+2|5|2|5
+4|1|4|1
+8|7|8|7
+~~~
+# count(*)
+9
+~~~
+# id|id|c0|c2
+2|3|862.08|1
+2|5|862.08|omega
+4|1|chi|-5
+8|7|NULL|-315
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|id
+2|3|2|3
+2|5|2|5
+4|1|4|1
+8|7|8|7
+~~~
+error: near "(": syntax error
+~~~
+# id|CAST(typeof(id) IS NULL AS BLOB)|NOT -(-549.36)
+9|X'30'|0
+8|X'30'|0
+7|X'30'|0
+6|X'30'|0
+5|X'30'|0
+4|X'30'|0
+3|X'30'|0
+2|X'30'|0
+1|X'30'|0
+~~~
+# coalesce(coalesce('0x1F' IS NULL, -(NULL)), x'')|nullif(abs(5 BETWEEN NULL AND x'1bb6'), CAST(nullif('café', -87) AS TEXT))
+0|NULL
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id)
+NULL|2|3,7
+-9223372036854775808|1|4
+856.13|1|5
+epsilon|1|6
+gamma|1|2
+upsilon|1|1
+~~~

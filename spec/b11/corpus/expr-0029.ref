@@ -1,0 +1,284 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT 4.5e-310|ref
+20|0|4
+19|0|7
+18|0|1
+17|0|NULL
+16|0|4
+15|0|1
+14|0|7
+13|0|3
+12|0|1
+11|0|7
+10|0|7
+9|0|2
+8|0|5
+7|0|2
+6|0|3
+5|0|1
+4|0|8
+3|0|NULL
+2|0|5
+1|0|5
+~~~
+# 'chi'|-428
+chi|-428
+~~~
+# id|abs(c3) IS NULL IN (iif(c2 BETWEEN c2 AND x'', c2 IN (c2, 823, -2.5), x'8df990319819'), 313.1171, 'señor')|CASE WHEN typeof(c2) THEN NOT typeof(x'04fb') ELSE NOT id IN ('omega', 2.5, 1e308) END
+1|0|1
+2|0|1
+3|0|1
+4|0|1
+5|0|1
+6|0|1
+7|0|1
+8|0|1
+9|0|1
+10|0|1
+11|0|1
+12|0|1
+13|0|1
+14|1|1
+15|0|1
+16|1|1
+17|0|1
+18|0|1
+19|0|1
+20|1|1
+21|0|1
+22|1|1
+23|0|1
+24|1|1
+~~~
+# x'07cc0de661'|CASE WHEN 'epsilon' THEN NOT abs(NULL) ELSE typeof(x'') BETWEEN x'4d' AND iif(NULL, NULL, 3) END
+X'07CC0DE661'|0
+~~~
+# id|c2|'it''s'
+1|X'2D90B2E081BF'|it's
+2|NULL|it's
+3|X'5D8FA1BDD6A5'|it's
+4|Ελλάδα|it's
+5|-1|it's
+6|rho|it's
+7|511|it's
+8|Lambda|it's
+9|9223372036854775807|it's
+10|X'3480AB986A'|it's
+11|NULL|it's
+12|NULL|it's
+13|52.0|it's
+14|1.0e+308|it's
+15|NULL|it's
+16|alpha|it's
+17|NULL|it's
+18|epsilon|it's
+19|X''|it's
+20|666.4037|it's
+21|X'C9'|it's
+22|1.0e+308|it's
+23|NULL|it's
+24|123456789012|it's
+~~~
+# -(x'')|coalesce(CAST('café' AS NUMERIC) IS NULL, CASE WHEN NOT -322 THEN nullif(x'd8bf24', x'49') ELSE 329 END)
+0|0
+~~~
+# id|iif(CASE WHEN abs(NULL) THEN (ref / id) ELSE nullif(c0, id) END, 'señor', NULL)|c0
+1|NULL|NULL
+2|señor|21
+3|NULL|X''
+4|NULL|NULL
+5|NULL|NULL
+6|señor|X'3286'
+7|NULL|it's
+8|NULL|NULL
+9|NULL|X''
+10|NULL|X''
+11|NULL|X'7CE8EABB'
+12|NULL|X'21E384'
+13|NULL|X''
+14|NULL|NULL
+15|NULL|delta
+16|señor|-583.9155
+17|señor|936
+18|NULL|NULL
+19|NULL|X''
+20|NULL|NULL
+~~~
+# NOT CAST(79 AS REAL)|x'07f8' IS NULL
+0|0
+~~~
+# id|c2|NULL
+1|X'2D90B2E081BF'|NULL
+2|NULL|NULL
+3|X'5D8FA1BDD6A5'|NULL
+4|Ελλάδα|NULL
+5|-1|NULL
+6|rho|NULL
+7|511|NULL
+8|Lambda|NULL
+9|9223372036854775807|NULL
+10|X'3480AB986A'|NULL
+11|NULL|NULL
+12|NULL|NULL
+13|52.0|NULL
+14|1.0e+308|NULL
+15|NULL|NULL
+16|alpha|NULL
+17|NULL|NULL
+18|epsilon|NULL
+19|X''|NULL
+20|666.4037|NULL
+21|X'C9'|NULL
+22|1.0e+308|NULL
+23|NULL|NULL
+24|123456789012|NULL
+~~~
+# iif(-475.51, NOT abs(NULL), -1)|typeof(0.1)
+NULL|real
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+20|20|210|210.0|10.5|1|20|20
+~~~
+# id|count(*)|group_concat(id)
+~~~

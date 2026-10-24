@@ -1,0 +1,218 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c3|c0
+1|1|NULL|-2
+1|2|NULL|psi
+1|3|NULL|gamma
+1|4|NULL|X'EACDBE6089'
+1|5|NULL|NULL
+1|6|NULL|NULL
+1|7|NULL|it's
+1|8|NULL|855
+1|9|NULL|upsilon
+1|10|NULL|NULL
+1|11|NULL|723.3313
+1|12|NULL|日本
+2|1|Lambda|-2
+2|2|Lambda|psi
+2|3|Lambda|gamma
+2|4|Lambda|X'EACDBE6089'
+2|5|Lambda|NULL
+2|6|Lambda|NULL
+2|7|Lambda|it's
+2|8|Lambda|855
+2|9|Lambda|upsilon
+2|10|Lambda|NULL
+2|11|Lambda|723.3313
+2|12|Lambda|日本
+3|1|NULL|-2
+3|2|NULL|psi
+3|3|NULL|gamma
+3|4|NULL|X'EACDBE6089'
+3|5|NULL|NULL
+3|6|NULL|NULL
+3|7|NULL|it's
+3|8|NULL|855
+3|9|NULL|upsilon
+3|10|NULL|NULL
+3|11|NULL|723.3313
+3|12|NULL|日本
+4|1|569|-2
+4|2|569|psi
+4|3|569|gamma
+4|4|569|X'EACDBE6089'
+4|5|569|NULL
+4|6|569|NULL
+4|7|569|it's
+4|8|569|855
+4|9|569|upsilon
+~~~
+# count(*)
+11
+~~~
+# id|id|c0|c1
+1|1|-2|4
+3|10|gamma|-530
+7|4|it's|-203.291
+7|6|it's|X'DD656E24D672'
+8|3|855|X''
+~~~
+# count(*)
+12
+~~~
+# id|id|id|ref
+1|1|1|1
+2|NULL|2|NULL
+3|10|3|3
+4|NULL|4|NULL
+5|NULL|5|NULL
+6|NULL|6|NULL
+7|4|7|7
+7|6|7|7
+8|3|8|8
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c1|c0
+1|1|4|-2
+2|NULL|-1|NULL
+3|10|X''|NULL
+4|NULL|-203.291|NULL
+5|NULL|1|NULL
+6|NULL|X'DD656E24D672'|NULL
+7|4|X''|X'EACDBE6089'
+7|6|X''|NULL
+8|3|422|gamma
+9|NULL|778|NULL
+10|NULL|-530|NULL
+11|NULL|X'F638DE656DD4'|NULL
+12|NULL|naïve|NULL
+~~~
+error: ambiguous column name: ref
+~~~
+# id|id|c2|ref
+1|1|a%b|1
+3|10|650.0|3
+7|4|648.906|7
+7|6|648.906|7
+8|3|NULL|8
+~~~
+# count(*)
+11
+~~~
+# id|id|c0|id
+1|1|NULL|1
+2|NULL|906|NULL
+3|10|X'F16A'|10
+4|NULL|theta|NULL
+5|NULL|NULL|NULL
+6|NULL|NULL|NULL
+7|4|señor|4
+7|6|señor|6
+8|3|-733|3
+9|NULL|456.44|NULL
+10|NULL|0.1|NULL
+11|NULL|-9223372036854775808|NULL
+~~~
+error: near "(": syntax error
+~~~
+changes: 3
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|epsilon
+~~~
+# id|c0|c1|c2|c3
+1|NULL|x_y|NULL|NULL
+3|-5!|X'AE182FAE'|1000000000000000|NULL
+5|X'CE1F09'|X'B7BA855BCDFE'|señor|-94.59
+7|2|721.7|2|gamma
+8|NULL|NULL|d|NULL
+9|-558|X'B35248'|0|2
+11|NULL|Lambda|X'21401734E3'| pad 
+12|epsilon|NULL|d|NULL
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 1, 5)|instr('gamma', 'gamma')|replace('gamma', 'é', '')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE 'a%'|'gamma' GLOB '*'|char(73, 295)|'gamma' || 'gamma'|'gamma' < 'gamma'|'gamma' = 'gamma' COLLATE NOCASE
+5|GAMMA|gamma|gamma|1|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|1|Iħ|gammagamma|0|1
+~~~

@@ -1,0 +1,121 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+7|7|1544.0|1544.0|220.57142857142858|-1|X'988A9A'|7
+~~~
+# c3|count(*)|group_concat(id, ';')
+-1|1|5
+736|1|6
+809|1|3
+upsilon|1|7
+x_y|1|1
+X''|1|2
+X'988A9A'|1|4
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id, ';')
+-1|1|5
+736|1|6
+809|1|3
+upsilon|1|7
+x_y|1|1
+X''|1|2
+X'988A9A'|1|4
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+2|1|-469|-469.0|-469.0|-469|-469|1
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|2|4;6
+-469|1|1
+-5|1|5
+-3|1|2
+X'CCD9CCFD'|1|3
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+3|3|6|6.0|2.0|1|3|3
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+3|3|0.0|0.0|0.0|MU|omicron|3
+~~~
+# c1|count(*)|group_concat(id, ';')
+~~~
+# id|c1|c0
+1|omicron|NULL
+2|MU|X'91CD'
+3|epsilon|X'DBBB1C3DC768'
+~~~
+# coalesce(NULL, 'theta')|NULL
+theta|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|379
+~~~
+# id|c0|c1|c2|c3|ref
+9|379|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL
+7|2|5|188|upsilon|6
+6|0x1F|X'A1A6521C9FE9'|X'B10F6B'|736|2
+5|9223372036854775807|omicron|-233|-1|3
+3|NULL|0|1.0e+308|809|3
+2|1!|X'32C665B0CDBE'|9223372036854775807|X''|7
+1|-3|NULL|X'64CE30'|x_y|2
+~~~

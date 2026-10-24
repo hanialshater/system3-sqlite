@@ -1,0 +1,206 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+18|18
+19|19
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|epsilon
+3|rho
+5|X'2C818F1CD315'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+17|-2.5
+12|4.500000000000011e-310
+16|1
+19|2.5
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+5|NULL
+6|NULL
+8|NULL
+9|NULL
+16|NULL
+17|NULL
+13|-711.7
+3|-5
+14|-5
+15|586
+7|596
+11|1.0e+308
+12|a%b
+2|pi
+18|psi
+1|upsilon
+19|x_y
+4|X'0D32'
+10|X'62AF509E0A'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|-1.0e+308
+4|-289
+14|-533
+1|-748
+7|-767.4906
+8|3.1415926535897931
+11|519.984
+10|670.03
+13|epsilon
+3|rho
+5|X'2C818F1CD315'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', 1, 5)|instr('über', 'tau')|replace('über', 'e', 'XY')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE 'a%'|'über' GLOB '*[a-m]*'|char(70, 299)|'über' || 'tau'|'über' < 'tau'|'über' = 'tau' COLLATE NOCASE
+4|üBER|über|über|0|übXYr|über|über|C3BC626572|'über'|252|0|1|Fī|übertau|0|0
+~~~

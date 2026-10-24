@@ -1,0 +1,184 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -1, 5)|instr('-7', 'gamma')|replace('-7', 'e', '_')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE 'a%'|'-7' GLOB '*'|char(72, 361)|'-7' || 'gamma'|'-7' < 'gamma'|'-7' = 'gamma' COLLATE NOCASE
+2|-7|-7|7|0|-7|-7|-7|2D37|'-7'|45|0|1|Hũ|-7gamma|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', -1, 2)|instr('naïve', 'x_y')|replace('naïve', 'é', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'A%'|'naïve' GLOB 'a*'|char(86, 999)|'naïve' || 'x_y'|'naïve' < 'x_y'|'naïve' = 'x_y' COLLATE NOCASE
+5|NAïVE|naïve|e|0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|Vϧ|naïvex_y|1|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -2, 0)|instr('-7', 'naïve')|replace('-7', 'é', 'XY')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%é%'|'-7' GLOB 'a*'|char(75, 596)|'-7' || 'naïve'|'-7' < 'naïve'|'-7' = 'naïve' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|0|0|Kɔ|-7naïve|1|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 0, 5)|instr('sigma', 'NULL')|replace('sigma', 'a', '_')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '%é%'|'sigma' GLOB 'a*'|char(78, 921)|'sigma' || 'NULL'|'sigma' < 'NULL'|'sigma' = 'NULL' COLLATE NOCASE
+5|SIGMA|sigma|sigm|0|sigm_|sigma|sigma|7369676D61|'sigma'|115|0|0|NΙ|sigmaNULL|0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 2, 0)|instr('it''s', 'kappa')|replace('it''s', 'e', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE 'A%'|'it''s' GLOB 'a*'|char(67, 928)|'it''s' || 'kappa'|'it''s' < 'kappa'|'it''s' = 'kappa' COLLATE NOCASE
+4|IT'S|it's||0|it's|it's|it's|69742773|'it''s'|105|0|0|CΠ|it'skappa|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 1, 0)|instr('Ελλάδα', 'gamma')|replace('Ελλάδα', 'e', '')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%é%'|'Ελλάδα' GLOB '*'|char(65, 324)|'Ελλάδα' || 'gamma'|'Ελλάδα' < 'gamma'|'Ελλάδα' = 'gamma' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα||0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|1|Ań|Ελλάδαgamma|0|0
+~~~
+changes: 2
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X'9733BEDE6450'
+~~~
+# id|c0|c1|c2|ref
+1|NULL|NULL|4|3
+2|señor|NULL|d|NULL
+3|X'B86B0385'|NULL|d|NULL
+4|X'F56591'|-1|106|1
+5|-280|NULL|-322|3
+7|Ελλάδα|701|2|1
+8|652.2056|naïve|688|NULL
+10|omega|NULL|1000000000000000.0|5
+11|0|2|NULL|2
+13|NULL|X'E410'|NULL|5
+14|NULL|X'35'|42|4
+16|X'DE09'|NULL|NULL|5
+17|Ελλάδα|-897|NULL|NULL
+19||764|0.1|2
+20|X'C294BD8C'|-4|2.5|NULL
+21|X'9733BEDE6450'|NULL|d|NULL
+~~~
+changes: 3
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|NULL
+~~~
+# id|c0|c1|c2
+1|X'D1A478'|X'2B'|0x1F
+2|0|NULL|NULL
+4|0|NULL|X'57E6B681AF'
+5|492|-8|-96
+7|NULL|904.05|alpha
+8|-62.1|0|203
+10|iota|-97.6928|X'63B796073C'
+11|711|kappa|kappa
+13|kappa|X'8B6D'|450
+14|X'B4'|X'D934'|-107
+16|227.6|1000|0.0
+17|NULL|NULL|NULL
+~~~
+# id|id|id|c0
+1|4|1|X'F56591'
+1|7|1|Ελλάδα
+2|11|2|0
+2|19|2|
+4|14|4|NULL
+5|10|5|omega
+5|13|5|NULL
+5|16|5|X'DE09'
+7|NULL|7|NULL
+8|NULL|8|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+~~~
+error: near "CASE": syntax error
+~~~

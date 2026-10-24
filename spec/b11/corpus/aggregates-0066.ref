@@ -1,0 +1,245 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+13|10|1697.06|1697.06|169.706|-2|X'DB9702'|9
+~~~
+# c0|count(*)|group_concat(id)
+NULL|3|1,2,3
+-2|2|5,11
+3|1|9
+200.66|1|4
+533.8|1|7
+963.6|1|12
+Lambda|1|6
+zeta|1|8
+Ελλάδα|1|13
+X'DB9702'|1|10
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+14|12|1089.091|1089.091|90.757583333333329|0|X'E881AD6C'|12
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|2|7;10
+0|1|6
+3|1|12
+127.561|1|4
+958.53|1|9
+a%b|1|13
+alpha|1|5
+pi|1|2
+X'5A34988F04F4'|1|1
+X'9A'|1|14
+X'D4EF3F'|1|3
+X'D9'|1|11
+X'E881AD6C'|1|8
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+13|13|91|91.0|7.0|1|13|13
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+~~~
+# id|id|c0|c0
+1|1|X'5A34988F04F4'|303
+2|2|pi|-330
+3|3|X'D4EF3F'|-358
+4|4|127.561|219
+5|5|alpha|319
+6|6|0|96
+7|7|NULL|-444
+8|8|X'E881AD6C'|-120
+9|9|958.53|-409
+10|10|NULL|-411
+11|11|X'D9'|144
+12|12|3|287
+13|13|a%b|212
+14|14|X'9A'|138
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+22
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+7|7
+10|10
+6|6
+12|12
+4|4
+9|9
+13|13
+5|5
+2|2
+1|1
+14|14
+3|3
+11|11
+8|8
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# c1
+-491
+-466
+-444
+-411
+-409
+-358
+-330
+-120
+-17
+-16
+~~~

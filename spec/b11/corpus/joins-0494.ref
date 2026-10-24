@@ -1,0 +1,262 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|c0
+1|4|1|X'A2'
+1|17|1|NULL
+2|10|2|X'C63AD5E7'
+2|13|2|NULL
+2|15|2|NULL
+3|3|3|1.0
+3|6|3|X'BF'
+4|16|4|NULL
+5|7|5|268.0
+5|14|5|Ελλάδα
+6|1|6|upsilon
+7|2|7|-452.0
+7|8|7|NULL
+8|5|8|kappa
+8|11|8|NULL
+8|12|8|NULL
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+18|NULL|18|NULL
+19|NULL|19|NULL
+~~~
+# count(*)
+11
+~~~
+# id|id|c0|id
+1|1|-802|1
+1|2|-802|2
+1|3|-802|3
+1|4|-802|4
+1|5|-802|5
+1|6|-802|6
+1|7|-802|7
+1|8|-802|8
+1|9|-802|9
+1|10|-802|10
+1|11|-802|11
+1|12|-802|12
+1|13|-802|13
+1|14|-802|14
+1|15|-802|15
+1|16|-802|16
+1|17|-802|17
+~~~
+# count(*)
+13
+~~~
+# id|id|c1|id
+1|4|902|4
+1|17|902|17
+2|10| pad |10
+2|13| pad |13
+2|15| pad |15
+3|3|X'C6819C6B9B'|3
+3|6|X'C6819C6B9B'|6
+4|16|481|16
+5|7|NULL|7
+5|14|NULL|14
+6|1|169.581|1
+7|2|NULL|2
+7|8|NULL|8
+8|5|146|5
+8|11|146|11
+8|12|146|12
+9|NULL|9223372036854775807|NULL
+10|NULL|-4|NULL
+11|NULL|Lambda|NULL
+12|NULL|2|NULL
+13|NULL|1000000000000000.0|NULL
+~~~
+# count(*)
+13
+~~~
+# id|id|c2|id
+1|4|upsilon|4
+1|17|upsilon|17
+2|10|NULL|10
+2|13|NULL|13
+2|15|NULL|15
+3|3|86|3
+3|6|86|6
+4|16|NULL|16
+5|7|X'451D34'|7
+5|14|X'451D34'|14
+6|1|delta|1
+7|2|pi|2
+7|8|pi|8
+8|5|X'E16012'|5
+8|11|X'E16012'|11
+8|12|X'E16012'|12
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c1|c1
+1|4|iota|5
+1|17|iota|176
+2|10|Ελλάδα|café
+2|13|Ελλάδα|X'1B99B6E1AE'
+2|15|Ελλάδα|9223372036854775807
+3|3|-1|-1
+3|6|-1|0
+4|16|5|X'8D5B59'
+5|7|X''|-253.047
+5|14|X''|0
+6|1|0|iota
+7|2|-253.047|Ελλάδα
+7|8|-253.047|-5
+8|5|-5|X''
+8|11|-5|2.5
+8|12|-5|X''
+~~~
+# count(*)
+17
+~~~
+# id|id|c2|c2
+1|4|X'43C19A88'|NULL
+1|17|X'43C19A88'|NULL
+2|10|X'91423B'|MU
+2|13|X'91423B'|0
+2|15|X'91423B'|217
+3|3|24.0801|86
+3|6|24.0801|delta
+4|16|882|0
+5|7|NULL|pi
+5|14|NULL|-764
+6|1|X''|upsilon
+7|2|NULL|NULL
+7|8|NULL|X'E16012'
+8|5|NULL|X'451D34'
+8|11|NULL|-767.1
+8|12|NULL|NULL
+9|NULL|766|NULL
+10|NULL|NULL|NULL
+11|NULL|Ελλάδα|NULL
+12|NULL|X''|NULL
+13|NULL|a%b|NULL
+~~~
+# count(*)
+13
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 2, 0)|instr('tau', 'gamma')|replace('tau', 'é', '_')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%é%'|'tau' GLOB '*[a-m]*'|char(76, 585)|'tau' || 'gamma'|'tau' < 'gamma'|'tau' = 'gamma' COLLATE NOCASE
+3|TAU|tau||0|tau|tau|tau|746175|'tau'|116|0|1|Lɉ|taugamma|0|0
+~~~

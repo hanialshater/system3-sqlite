@@ -1,0 +1,280 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(nullif(2.5, ' pad ') < -(c1)) BETWEEN NULL AND id|typeof((nullif(id, c0) % (c1 - c0)))
+1|NULL|null
+2|NULL|real
+3|NULL|integer
+4|NULL|null
+5|NULL|null
+6|NULL|null
+7|NULL|real
+8|NULL|null
+9|NULL|null
+10|NULL|integer
+11|NULL|integer
+12|NULL|integer
+13|NULL|integer
+14|NULL|null
+15|NULL|null
+16|NULL|integer
+17|NULL|real
+18|NULL|integer
+19|NULL|integer
+20|NULL|null
+21|NULL|integer
+22|NULL|real
+23|NULL|null
+24|NULL|real
+25|NULL|integer
+~~~
+# -(nullif((NULL << -25), -793 BETWEEN x'1a6f' AND x''))|x'a99c83e7'
+NULL|X'A99C83E7'
+~~~
+# id|(typeof(id BETWEEN x'44a572f980' AND ' pad ') AND (-501 BETWEEN 'theta' AND NULL >> 164.86))|abs(CAST(coalesce(c0, 98.521) AS NUMERIC))
+1|0|98.521
+2|0|7
+3|0|985
+4|0|98.521
+5|0|0
+6|0|618.62
+7|0|3.1415926535897931
+8|0|0
+9|0|98.521
+10|0|1000000000000000
+11|0|1000000000000000
+12|0|741
+13|0|2
+14|0|0
+15|0|0
+16|0|164
+17|0|0
+18|0|22
+19|0|0
+20|0|98.521
+21|0|184
+22|0|733.094
+23|0|0
+24|0|0
+25|0|0
+~~~
+# -(3.141592653589793)|coalesce(x'a5', abs(2.5) IS NULL)
+-3.1415926535897931|X'A5'
+~~~
+# id|coalesce(-(NULL IS NULL), c3)|CAST(c1 AS TEXT)
+1|-1|340.694
+2|-1|upsilon
+3|-1|NULL
+4|-1|theta
+5|-1|chi
+6|-1|1000000000000000.0
+7|-1|-1
+8|-1|0.1
+9|-1|gamma
+10|-1|-7
+11|-1|NULL
+12|-1|2
+13|-1|señor
+~~~
+# nullif(x'', CASE WHEN 595 THEN abs(654) ELSE 'kappa' END)|x'9dd7f0b869'
+X''|X'9DD7F0B869'
+~~~
+# id|c1|ref
+1|340.694|NULL
+2|upsilon|7
+3|NULL|NULL
+4|theta|7
+5|chi|NULL
+6|1000000000000000.0|2
+7|-1|2
+8|0.1|2
+9|gamma|NULL
+10|-7|3
+11|NULL|NULL
+12|2|7
+13|señor|5
+~~~
+# typeof(NULL)|-(CAST(CASE WHEN -1e308 THEN 'eta' ELSE 123456789012 END AS INTEGER))
+null|0
+~~~
+# id|NOT CASE WHEN (c1 << -1) THEN CASE WHEN c0 THEN 338.3143 ELSE c0 END ELSE NOT c0 END|c0 BETWEEN iif(CAST(-9223372036854775808 AS NUMERIC), nullif(c0, -9223372036854775808), 'señor') AND x'8cc294b833a0' BETWEEN c0 AND id IS NULL
+1|NULL|1
+2|0|0
+3|1|0
+4|NULL|1
+5|0|0
+6|1|0
+7|1|0
+8|0|0
+9|NULL|1
+10|0|0
+11|1|0
+12|0|0
+13|0|0
+14|0|0
+15|0|0
+16|1|0
+17|1|0
+18|0|0
+19|1|0
+20|NULL|1
+21|1|0
+22|0|0
+23|0|0
+24|1|0
+25|1|0
+~~~
+# abs((nullif('42', 1) * 2.5))|-902
+105.0|-902
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|NULL|340.694|848.66|X'66366D0DC6F6'|NULL
+2|X'C6'|upsilon|NULL|日本|7
+3|X'9F8D3D'|NULL|-744.0|omicron|NULL
+4|X''|theta|X'A2912B874034'|nu|7
+5|42|NULL|NULL|NULL|NULL
+6|NULL|1000000000000000.0|über|psi|2
+7|NULL|-1|X'1530D57B5D'|NULL|2
+8|334.588|NULL|NULL|NULL|NULL
+9|NULL|gamma|X'D29CB51F43'|NULL|NULL
+11|x_y|NULL|9.2233720368547758e+18|NULL|NULL
+12|NULL|2|omega|pi|7
+13|NULL|señor|chi|NULL|5
+14|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|(CASE WHEN NOT c0 THEN c1 IN (c1, 4.5e-310, NULL) ELSE coalesce('', id) END || 466)|NOT abs(c1) IN ((389 < id), NULL, '0x1F')
+1|466|NULL
+2|466|NULL
+3|466|0
+4|466|0
+5|NULL|NULL
+6|466|NULL
+7|466|0
+8|NULL|NULL
+9|466|NULL
+10|466|NULL
+11|466|0
+12|466|NULL
+13|466|NULL
+14|1466|0
+15|NULL|NULL
+16|466|0
+17|1466|NULL
+18|466|NULL
+19|1466|NULL
+20|466|NULL
+21|466|0
+22|466|NULL
+23|1466|0
+24|1466|NULL
+25|1466|NULL
+~~~
+# nullif(abs(1e-7 IN (5, '-7', 0)), CAST(NULL AS TEXT))|'delta'
+0|delta
+~~~

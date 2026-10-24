@@ -1,0 +1,177 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|X'EC4F89CC96'
+~~~
+# id|c0|c1|c2
+11|X'EC4F89CC96'|0.0|NULL
+10|0x1F|916.91|NULL
+8|0.1|0.0|NULL
+6|X''|-74.0|3.1415926535897931
+4|4.0|theta|-244.2001
+2|NULL|4.500000000000011e-310|X'2A433D'
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|naïve
+~~~
+# id|c0|c1|c2
+12|naïve|0.0|NULL
+11|1.0|0.0|NULL
+10|1.0|916.91|NULL
+8|1.0|0.0|NULL
+4|NULL|0.0|NULL
+2|260.0!|4.500000000000011e-310|X'2A433D'
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|-623.787
+~~~
+# id|c0|c1|c2
+2|260.0!|4.500000000000011e-310|X'2A433D'
+5|251.0|0.0|NULL
+10|1.0|916.91|NULL
+11|1.0|0.0|NULL
+12|-623.787|0.0|NULL
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|alpha
+~~~
+# id|c0|c1|c2
+12|alpha|0.0|NULL
+11|0.0|0.0|NULL
+10|0.0|916.91|NULL
+8|NULL|0.0|NULL
+5|0.0|0.0|NULL
+2|1000.0!|4.500000000000011e-310|X'2A433D'
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|rho
+~~~
+# id|c0|c1|c2
+2|4.0!|4.500000000000011e-310|X'2A433D'
+8|NULL|0.0|NULL
+11|0.0|0.0|NULL
+12|alpha|0.0|NULL
+13|rho|0.0|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|kappa
+~~~
+# id|c0|c1|ref
+2|2|5|4
+3|alpha|zeta|2
+4|473|-277|8
+5|-180|-5|8
+6|585|0|NULL
+7|NULL|x_y|6
+8|NULL|X'4C3A'|6
+9|-84|gamma|6
+10|X'49'|1000000000000000|6
+12|-241|-1|7
+13|NULL|0|NULL
+14|kappa|0|NULL
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+4|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id)
+NULL|4|8,11,12,13
+X'2A433D'|1|2
+~~~

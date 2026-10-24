@@ -1,0 +1,229 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 2, 1)|instr('xi', 'zeta')|replace('xi', 'a', '')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE 'A%'|'xi' GLOB 'a*'|char(65, 362)|'xi' || 'zeta'|'xi' < 'zeta'|'xi' = 'zeta' COLLATE NOCASE
+2|XI|xi|i|0|xi|xi|xi|7869|'xi'|120|0|0|AŪ|xizeta|1|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -3, 0)|instr('-7', 'café')|replace('-7', 'é', '_')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%'|'-7' GLOB '?'|char(80, 765)|'-7' || 'café'|'-7' < 'café'|'-7' = 'café' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|1|0|P˽|-7café|1|0
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', 4, 4)|instr('über', 'beta')|replace('über', 'é', '_')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE 'A%'|'über' GLOB '?'|char(68, 502)|'über' || 'beta'|'über' < 'beta'|'über' = 'beta' COLLATE NOCASE
+4|üBER|über|r|0|über|über|über|C3BC626572|'über'|252|0|0|DǶ|überbeta|0|0
+~~~
+changes: 1
+~~~
+# id|c0
+4|-869
+5|-2.5
+2|2
+1|42
+3|omicron
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+5|5
+6|5
+11|5
+13|5
+2|2
+16|5
+1|1
+8|5
+9|5
+14|5
+20|5
+21|5
+22|5
+7|5
+10|5
+3|3
+17|5
+18|5
+19|5
+12|5
+15|5
+4|4
+23|5
+~~~
+# id
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+~~~
+# id
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+~~~
+# c2
+NULL
+-452
+-409.9
+-325
+-172
+-21
+-4
+4.500000000000011e-310
+2
+5
+eta
+omicron
+señor
+theta
+~~~
+changes: 17
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|X'68C3'
+~~~
+# id|c0|c1|c2
+2|0|xi|1000000000000000
+4|0|NULL|885
+5|NULL|NULL|NULL
+6|0|X'67645B'|654
+8|1|NULL|NULL
+10|0|X'3E70EC56FB'|131
+12|0|NULL|0.1
+14|0|X'D28B6B'|sigma
+16|1|X'561A2DD126FE'|NULL
+17|X'68C3'|NULL|NULL
+~~~

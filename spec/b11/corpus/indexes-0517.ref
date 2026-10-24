@@ -1,0 +1,212 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+2|NULL
+5|NULL
+7|-1.0e+308
+1|-12
+3|3.1415926535897931
+4|Lambda
+8|nu
+11|X'008012'
+12|X'19F5BA8D'
+10|X'26975D38D3'
+6|X'407AFA'
+9|X'4DBC'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+12|-789.3
+6| pad 
+4|naïve
+2|rho
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|NULL
+6|NULL
+10|NULL
+11|NULL
+12|NULL
+13|NULL
+9|-9223372036854775808
+7|-66
+1|670
+3|823.76
+8|it's
+2|kappa
+4|X'6A0AB1'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+5|-42.844
+2|-32.295
+8|-26.993
+10|-25.264
+6|-23.114
+3|-21.094
+13|-15.743
+9|-7.791
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|id
+1|2|670|2
+1|3|670|3
+1|4|670|4
+1|5|670|5
+1|6|670|6
+1|7|670|7
+1|8|670|8
+1|9|670|9
+1|10|670|10
+1|11|670|11
+1|12|670|12
+1|13|670|13
+2|3|kappa|3
+2|4|kappa|4
+2|5|kappa|5
+2|6|kappa|6
+2|7|kappa|7
+2|8|kappa|8
+2|9|kappa|9
+2|10|kappa|10
+2|11|kappa|11
+2|12|kappa|12
+2|13|kappa|13
+3|4|823.76|4
+3|5|823.76|5
+3|6|823.76|6
+3|7|823.76|7
+3|8|823.76|8
+3|9|823.76|9
+3|10|823.76|10
+3|11|823.76|11
+3|12|823.76|12
+3|13|823.76|13
+4|5|X'6A0AB1'|5
+4|6|X'6A0AB1'|6
+4|7|X'6A0AB1'|7
+4|8|X'6A0AB1'|8
+4|9|X'6A0AB1'|9
+4|10|X'6A0AB1'|10
+4|11|X'6A0AB1'|11
+4|12|X'6A0AB1'|12
+4|13|X'6A0AB1'|13
+5|6|NULL|6
+5|7|NULL|7
+5|8|NULL|8
+5|9|NULL|9
+5|10|NULL|10
+5|11|NULL|11
+5|12|NULL|12
+~~~
+# count(*)
+13
+~~~

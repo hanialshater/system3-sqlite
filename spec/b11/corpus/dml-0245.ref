@@ -1,0 +1,190 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 9
+~~~
+changes: 10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|zeta
+~~~
+# id|c0|c1|c2|ref
+21|zeta|NULL|NULL|NULL
+20|-680.45|X'3F7E2D3DBE'|680.6|3
+18|-741|-242|NULL|8
+16|-7|X'AF9B'|NULL|5
+14|-741|-24.862|652.0|1
+12|-741|-661.2431|naïve|NULL
+10|1e3|X''|-844.0|4
+8|omega|NULL|NULL|NULL
+6|0.0|NULL|4.0|1
+4|NULL|X'3D4303C50D'|123456789012.0|1
+2|rho!|4|-244.0|6
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X'08'
+~~~
+# id|c0|c1|c2|ref
+2|593|NULL|NULL|NULL
+4|NULL|X'3D4303C50D'|123456789012.0|1
+8|omega|NULL|NULL|NULL
+10|1e3|X''|-844.0|4
+14|-741|-24.862|652.0|1
+16|-7|X'AF9B'|NULL|5
+20|-680.45|X'3F7E2D3DBE'|680.6|3
+21|X'08'|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: NOT NULL constraint failed: t1.c0
+~~~
+# id|c0|c1|c2|ref
+21|X'08'|NULL|NULL|NULL
+14|-741|-24.862|652.0|1
+10|1e3|X''|-844.0|4
+7|NULL|NULL|NULL|NULL
+3|X'C45BACE7EE25'|NULL|NULL|NULL
+2|593|NULL|NULL|NULL
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', -3, 5)|instr('iota', 'zeta')|replace('iota', 'e', 'XY')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE 'A%'|'iota' GLOB 'a*'|char(79, 741)|'iota' || 'zeta'|'iota' < 'zeta'|'iota' = 'zeta' COLLATE NOCASE
+4|IOTA|iota|ota|0|iota|iota|iota|696F7461|'iota'|105|0|0|O˥|iotazeta|1|0
+~~~
+changes: 0
+~~~
+# id|c2
+~~~
+# count(*)
+2
+~~~
+changes: 0
+~~~
+changes: 0
+~~~

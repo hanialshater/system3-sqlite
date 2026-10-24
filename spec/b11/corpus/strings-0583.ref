@@ -1,0 +1,176 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', 2, 3)|instr('42', 'über')|replace('42', '', 'XY')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE 'a%'|'42' GLOB 'a*'|char(81, 907)|'42' || 'über'|'42' < 'über'|'42' = 'über' COLLATE NOCASE
+2|42|42|2|0|42|42|42|3432|'42'|52|0|0|Q΋|42über|1|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 2, 1)|instr('rho', 'chi')|replace('rho', '', '_')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '_'|'rho' GLOB '?'|char(65, 847)|'rho' || 'chi'|'rho' < 'chi'|'rho' = 'chi' COLLATE NOCASE
+3|RHO|rho|h|0|rho|rho|rho|72686F|'rho'|114|0|0|A͏|rhochi|0|0
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', -2, 2)|instr('gamma', 'iota')|replace('gamma', '', 'XY')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE '%a_'|'gamma' GLOB '*[a-m]*'|char(70, 566)|'gamma' || 'iota'|'gamma' < 'iota'|'gamma' = 'iota' COLLATE NOCASE
+5|GAMMA|gamma|ma|0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|1|Fȶ|gammaiota|1|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 4, 1)|instr('omega', '日本')|replace('omega', '', '_')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '_'|'omega' GLOB '?'|char(78, 369)|'omega' || '日本'|'omega' < '日本'|'omega' = '日本' COLLATE NOCASE
+5|OMEGA|omega|g|0|omega|omega|omega|6F6D656761|'omega'|111|0|0|Nű|omega日本|1|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', -1, 3)|instr('omega', 'sigma')|replace('omega', 'a', '_')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '%'|'omega' GLOB 'a*'|char(85, 288)|'omega' || 'sigma'|'omega' < 'sigma'|'omega' = 'sigma' COLLATE NOCASE
+5|OMEGA|omega|a|0|omeg_|omega|omega|6F6D656761|'omega'|111|1|0|UĠ|omegasigma|1|0
+~~~
+# id|id|c2|c0
+1|1|3.1415926535897931|NULL
+1|2|3.1415926535897931|NULL
+1|3|3.1415926535897931|X'2503'
+1|4|3.1415926535897931|NULL
+1|5|3.1415926535897931|-3
+1|6|3.1415926535897931|X'E950FEF8'
+1|7|3.1415926535897931|X''
+1|8|3.1415926535897931|123456789012
+1|9|3.1415926535897931|X'F3B7F6'
+1|10|3.1415926535897931|X'4A52DADA03D6'
+1|11|3.1415926535897931|xi
+1|12|3.1415926535897931|NULL
+1|13|3.1415926535897931|0.0
+1|14|3.1415926535897931|X'C1'
+1|15|3.1415926535897931|über
+1|16|3.1415926535897931|-12
+1|17|3.1415926535897931|X'24256F7E67ED'
+1|18|3.1415926535897931|NULL
+2|1|NULL|NULL
+2|2|NULL|NULL
+2|3|NULL|X'2503'
+2|4|NULL|NULL
+2|5|NULL|-3
+2|6|NULL|X'E950FEF8'
+2|7|NULL|X''
+2|8|NULL|123456789012
+2|9|NULL|X'F3B7F6'
+2|10|NULL|X'4A52DADA03D6'
+2|11|NULL|xi
+2|12|NULL|NULL
+2|13|NULL|0.0
+2|14|NULL|X'C1'
+2|15|NULL|über
+2|16|NULL|-12
+2|17|NULL|X'24256F7E67ED'
+2|18|NULL|NULL
+3|1|café|NULL
+3|2|café|NULL
+3|3|café|X'2503'
+3|4|café|NULL
+3|5|café|-3
+3|6|café|X'E950FEF8'
+3|7|café|X''
+3|8|café|123456789012
+3|9|café|X'F3B7F6'
+3|10|café|X'4A52DADA03D6'
+3|11|café|xi
+3|12|café|NULL
+3|13|café|0.0
+3|14|café|X'C1'
+3|15|café|über
+~~~
+error: ambiguous column name: c2
+~~~

@@ -1,0 +1,229 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-941.8
+~~~
+# id|c0|c1|c2|c3|c4|ref
+11|-941.8|NULL|NULL|NULL|NULL|NULL
+10|NULL|kappa|NULL|NULL|NULL|NULL
+9|-7|NULL|NULL|NULL|NULL|NULL
+8|-385.5032|NULL|NULL|NULL|NULL|NULL
+7|0|Lambda|222.4337|-806|X'84'|NULL
+5|!|405.4|NULL|X'DAA580'|naïve|1
+4|NULL|4.500000000000011e-310|NULL|X'23DF'|NULL|7
+2|X'12'|NULL|902.091|NULL|3.1415926535897931|1
+1|-969.116|501|X'EB96E9D6'|796.189|-969.116|8
+~~~
+changes: 1
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|psi
+~~~
+# id|c0|c1|c2|c3|c4
+1|-211.471|NULL|NULL|NULL|NULL
+2|782!|X'6C59'|MU|-349|-944.1197
+3|2|beta|NULL|684|NULL
+5|1000000000000000|-541|NULL|75.6198|1000
+6|525.35|1.0e+308|-505|X'8755'|pi
+8|naïve|X'2FE903BEB7DF'|-176|X'70B12A'|-538
+9|855|NULL|NULL|-4|NULL
+11|X'C51BC3'|NULL|kappa|NULL|X'A3'
+12|-80|975|966.5786|X'B367CC'|-641
+14|0|X'B236CB'|66|omega|X'A557'
+15|-958|X'EA7D4645E1FC'|NULL|-384|NULL
+17|123456789012|NULL|1000000000000000.0|X''|X'0894869F'
+18|-599.4|eta|3.1415926535897931|1|-234.8394
+19|psi|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|207
+~~~
+# id|c0|c1|c2|c3|c4
+2|2.5|NULL|NULL|NULL|NULL
+3|2|beta|NULL|684|NULL
+6|525.35|1.0e+308|-505|X'8755'|pi
+8|naïve|X'2FE903BEB7DF'|-176|X'70B12A'|-538
+11|X'C51BC3'|NULL|kappa|NULL|X'A3'
+12|-80|975|966.5786|X'B367CC'|-641
+14|0|X'B236CB'|66|omega|X'A557'
+15|-958|X'EA7D4645E1FC'|NULL|-384|NULL
+18|-599.4|eta|3.1415926535897931|1|-234.8394
+19|psi|NULL|NULL|NULL|NULL
+20|207|NULL|NULL|NULL|NULL
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+21|59
+~~~
+# id|c0|c1|c2|c3|c4
+21|59|NULL|NULL|NULL|NULL
+20|42849|NULL|NULL|NULL|NULL
+18|359280.36|eta|3.1415926535897931|1|-234.8394
+15|917764|X'EA7D4645E1FC'|NULL|-384|NULL
+14|0|X'B236CB'|66|omega|X'A557'
+12|-80|975|966.5786|X'B367CC'|-641
+11|0|NULL|kappa|NULL|X'A3'
+8|0|X'2FE903BEB7DF'|-176|X'70B12A'|-538
+6|525.35|1.0e+308|-505|X'8755'|pi
+3|X'5AEE41'|NULL|NULL|NULL|NULL
+2|6.25|NULL|NULL|NULL|NULL
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|-1.0e+308|NULL|902.091|NULL|3.1415926535897931|1
+4|NULL|4.500000000000011e-310|NULL|X'23DF'|NULL|7
+5|upsilon|NULL|NULL|NULL|NULL|NULL
+7|0|Lambda|222.4337|-806|X'84'|NULL
+8|-385.5032|NULL|NULL|NULL|NULL|NULL
+10|NULL|kappa|NULL|NULL|NULL|NULL
+11|-941.8|NULL|NULL|NULL|NULL|NULL
+12||NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|NULL|NULL|NULL|NULL|NULL|NULL
+4|NULL|4.500000000000011e-310|NULL|X'23DF'|NULL|7
+5|̨!|NULL|NULL|NULL|NULL|NULL
+7|0|Lambda|222.4337|-806|X'84'|NULL
+8|-385.5032|NULL|NULL|NULL|NULL|NULL
+10|NULL|kappa|NULL|NULL|NULL|NULL
+12||NULL|NULL|NULL|NULL|NULL
+13|NULL|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+13|NULL|NULL|NULL|NULL|NULL|NULL
+12|NULL|NULL|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL|NULL|NULL
+4|-685|NULL|NULL|NULL|NULL|NULL
+2|NULL|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|iif((NULL <> c1) IN (NOT '', -9223372036854775808, x'97'), CAST(CASE WHEN id THEN c2 ELSE x'fafabbbb' END AS INTEGER), NULL)|abs(123456789012)
+2|NULL|123456789012
+4|NULL|123456789012
+5|NULL|123456789012
+8|NULL|123456789012
+12|NULL|123456789012
+13|NULL|123456789012
+~~~
+# 935.928|iif(nullif(CASE WHEN 0 THEN 'beta' ELSE x'3c02d7cf13' END, CASE WHEN '0x1F' THEN 1e-7 ELSE x'90299538c10e' END), NOT -(-540.5937), 1)
+935.928|1
+~~~

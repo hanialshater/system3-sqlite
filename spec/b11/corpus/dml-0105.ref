@@ -1,0 +1,226 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|-2.5
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|3|NULL|NULL|NULL|NULL|NULL
+3|NULL|694|beta|-8|-828.1119|NULL
+4|4.500000000000011e-310|-1|-910|0x1F|-973.825|7
+5|-748.2294|-1.0e+308|1|-1|-625.11|8
+7|-2|beta|X'EE'|delta|X'8502E634D6'|8
+8|X'CB6279'|NULL|-672.59|488|Ελλάδα|5
+9|562.376|NULL|118|gamma|upsilon|4
+10|X'CACBE8'|NULL|NULL|1|9223372036854775807|3
+12|über|X'FFB40099FA'|3|NULL|chi|8
+13|-1|X'679D26'|698|0|NULL|4
+14|-332|-5|NULL|X'2E71B1DB2213'|NULL|4
+15|X'35'|NULL|日本|X'CC'|café|4
+16|-2.5|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|5
+~~~
+# id|c0|c1|c2|c3|c4
+21|5|d|0|d|NULL
+20|NULL|535|42|X''|-41.193
+18|-7||0|3|-5
+17|0|NULL|-748|-5|X'B94F59EC89'
+15|-4|0|X''|Lambda|alpha
+14|-307|X'12A5328069'|0| pad |1
+12|-1|NULL|0|xi|omicron
+11|über|4|-2|upsilon|NULL
+9|X'D5015724BCAE'|83.7818|naïve|señor|0.1
+8|659|234|1000000000000000|NULL|-5
+6|X'2F'|psi|0|-456.668|270
+5|NULL|d|0|d|NULL
+4|sigma|d|0|d|NULL
+3||-339.6|0.1|744|3
+2|1|epsilon|-2|X'FD36C9'|X'B3DFA8292B22'
+~~~
+changes: 13
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|rho
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|-414|NULL|NULL|NULL|NULL|NULL
+3|NULL|NULL|NULL|NULL|NULL|NULL
+5|0|-1.0e+308|1|-1|-625.11|8
+7|0|beta|X'EE'|delta|X'8502E634D6'|8
+9|0|NULL|118|gamma|upsilon|4
+13|NULL|X'679D26'|698|0|NULL|4
+15|0|NULL|日本|X'CC'|café|4
+16|rho|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|-3
+~~~
+# id|c0|c1|c2|c3|c4|ref
+17|-3|NULL|NULL|NULL|NULL|NULL
+16|X'7FAF650E'|NULL|NULL|NULL|NULL|NULL
+13|X'7FAF650E'|X'679D26'|698|0|NULL|4
+7|X'7FAF650E'|beta|X'EE'|delta|X'8502E634D6'|8
+6|NULL|NULL|NULL|NULL|NULL|NULL
+5|X'7FAF650E'|-1.0e+308|1|-1|-625.11|8
+4|449|NULL|NULL|NULL|NULL|NULL
+2|X'7FAF650E'|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 15
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|zeta
+~~~
+# id|c0|c1|c2|c3|c4
+21|zeta|d|0|d|NULL
+20|535|535|42|X''|-41.193
+18|||0|3|-5
+15|0|0|X''|Lambda|alpha
+14|X'12A5328069'|X'12A5328069'|0| pad |1
+12|NULL|NULL|0|xi|omicron
+11|4|4|-2|upsilon|NULL
+8|234|234|1000000000000000|NULL|-5
+6|psi|psi|0|-456.668|270
+4|1000|d|0|d|NULL
+3|NULL|-339.6|0.1|744|3
+2|epsilon|epsilon|-2|X'FD36C9'|X'B3DFA8292B22'
+~~~
+changes: 12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|755
+~~~
+# id|c0|c1|c2|c3|c4
+2|NULL|epsilon|-2|X'FD36C9'|X'B3DFA8292B22'
+3|NULL|-339.6|0.1|744|3
+6|0!|psi|0|-456.668|270
+8|NULL|234|1000000000000000|NULL|-5
+9|X'03'|d|0|d|NULL
+11|NULL|4|-2|upsilon|NULL
+12|NULL|NULL|0|xi|omicron
+14|NULL|X'12A5328069'|0| pad |1
+15|NULL|0|X''|Lambda|alpha
+18|NULL||0|3|-5
+20|NULL|535|42|X''|-41.193
+21|NULL|d|0|d|NULL
+22|755|d|0|d|NULL
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+12|12|158|158.0|13.166666666666666|2|22|12
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~

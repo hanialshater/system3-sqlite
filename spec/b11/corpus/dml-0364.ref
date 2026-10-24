@@ -1,0 +1,259 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0
+20|1.0e+308
+~~~
+# id|c0|c1
+2|-0.926|naïve
+3|-29.881|omega
+4|-12.613|omega
+5|NULL|omicron
+7|-16.342|naïve
+8|-9.303|MU
+9|19.716|kappa
+10|-19.223|café
+12|-24.012|epsilon
+13|-9.747|455
+14|9.415|Lambda
+15|-8.621|it's
+17|-38.007|tau
+18|22.72| pad 
+19|NULL|upsilon
+20|1.0e+308|NULL
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0
+20|-3.0
+~~~
+# id|c0|c1
+1|534.8|NULL
+3|-29.881|omega
+5|NULL|omicron
+7|-16.342|naïve
+9|19.716|kappa
+13|-9.747|455
+15|-8.621|it's
+17|-38.007|tau
+19|NULL|upsilon
+20|-3.0|NULL
+~~~
+changes: 10
+~~~
+changes: 3
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1
+21|NULL|NULL
+20|0.0|NULL
+19|0.0|upsilon
+17|0.0|tau
+13|0.0|455
+9|124.0|NULL
+7|0.0|naïve
+5|0.0|omicron
+1|0.0|NULL
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 2
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+22|-2.0
+~~~
+# id|c0|c1
+1|0.0|NULL
+7|-939.0|NULL
+9|124.0|NULL
+13|0.0|455
+17|0.0|tau
+19|0.0|upsilon
+21|NULL|NULL
+22|-2.0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|137
+~~~
+# id|c0|c1|c2|c3|ref
+7|137|NULL|NULL|NULL|NULL
+6|-1.0e+308|NULL|NULL|NULL|NULL
+5|delta|3.1415926535897931|X'AB51DA3B6460'|0|2
+4|NULL|-3|1000000000000000|29.03|7
+2|NULL|0x1F|2|NULL|NULL
+1|317.04!|-1|2.5|NULL|5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0|c1
+1|0.0|NULL
+2|514.0|NULL
+7|-939.0|NULL
+9|124.0|NULL
+13|0.0|455
+17|0.0|tau
+19|0.0|upsilon
+21|NULL|NULL
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|nu|-1|2.5|NULL|5
+2|-5!|0x1F|2|NULL|NULL
+5|delta|3.1415926535897931|X'AB51DA3B6460'|0|2
+6|nu|NULL|NULL|NULL|NULL
+7|nu|NULL|NULL|NULL|NULL
+9|0.1|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|iif(c1 IS NULL, c0, NULL)|'-7'
+21|NULL|-7
+19|NULL|-7
+17|NULL|-7
+13|NULL|-7
+9|124.0|-7
+7|-939.0|-7
+2|514.0|-7
+1|0.0|-7
+~~~
+# CAST(NOT NULL AS REAL) IN (NULL, -841, x'')|coalesce(682, coalesce(-(x'c2a3a0a185'), nullif(387.7, NULL)))
+NULL|682
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# ref|count(*)|group_concat(id, ';')
+NULL|5|2;6;7;9;10
+2|1|5
+5|1|1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|7
+2|7
+6|7
+7|7
+9|7
+10|7
+5|7
+~~~
+# id
+1
+2
+5
+6
+7
+9
+10
+~~~
+# id
+1
+2
+6
+9
+10
+~~~
+# c3
+~~~

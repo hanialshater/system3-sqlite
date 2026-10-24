@@ -1,0 +1,230 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|5|0|NULL|NULL|NULL|NULL
+3|,R'!|X'F7E4EA'|0|NULL|-920.547|5
+5|-1.0e+308|X'9570C3DCC9'|gamma|NULL|Ελλάδα|2
+6|NULL|-2|-2.5|-2.5|X'903B9C'|5
+8|zeta|0|-920.4|X'D10D3B211F'|NULL|2
+9|kappa| pad |-349.9|-975|sigma|7
+10|NULL|0|NULL|NULL|NULL|NULL
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|beta
+~~~
+# id|c0|c1|c2
+1|0|-8|NULL
+2|1.0e+308|x_y|0
+4|455.7|X'1D72'|pi
+5|NULL|-633.2|2.5
+6|iota|NULL|NULL
+7|NULL|NULL|X'ADECFBEACF'
+8|naïve|X'7FD1'|3
+9|-2|NULL|NULL
+10|X'4B060359'|NULL|613.01
+11|-1|1.0e-07|NULL
+12|beta|NULL|NULL
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|xi
+~~~
+# id|c0|c1|c2
+13|xi|NULL|NULL
+12|beta|NULL|NULL
+11|-1|1.0e-07|NULL
+10|X'4B060359'|NULL|613.01
+8|naïve|X'7FD1'|3
+7|NULL|NULL|X'ADECFBEACF'
+6|iota|NULL|NULL
+4|455.7|X'1D72'|pi
+3|psi|NULL|NULL
+2|j�!|x_y|0
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|1
+~~~
+# id|c0|c1|c2
+13|1|NULL|NULL
+12|beta|NULL|NULL
+11|-1|1.0e-07|NULL
+10|X'4B060359'|NULL|613.01
+8|naïve|X'7FD1'|3
+7|NULL|NULL|X'ADECFBEACF'
+6|X'E9E2'|NULL|NULL
+4|455.7|X'1D72'|pi
+3|1e3!|NULL|NULL
+2|j�!|x_y|0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|pi
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|5|0|NULL|NULL|NULL|NULL
+3|,R'!|X'F7E4EA'|0|NULL|-920.547|5
+4|NULL|0|NULL|NULL|NULL|NULL
+5|-1.0e+308|X'9570C3DCC9'|gamma|NULL|Ελλάδα|2
+6|NULL|-2|-2.5|-2.5|X'903B9C'|5
+7|-1|0|NULL|NULL|NULL|NULL
+9|kappa| pad |-349.9|-975|sigma|7
+10|NULL|0|NULL|NULL|NULL|NULL
+11|pi|0|NULL|NULL|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|9223372036854775807
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|2|0|NULL|NULL|NULL|NULL
+2|NULL|0|NULL|NULL|NULL|NULL
+3|,R'!|X'F7E4EA'|0|NULL|-920.547|5
+4|X'99'|0|NULL|NULL|NULL|NULL
+5|-1.0e+308|X'9570C3DCC9'|gamma|NULL|Ελλάδα|2
+7|NULL|0|NULL|NULL|NULL|NULL
+9|kappa| pad |-349.9|-975|sigma|7
+10|X'99'|0|NULL|NULL|NULL|NULL
+11|9223372036854775807|0|NULL|NULL|NULL|NULL
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+10|10|76|76.0|7.6|2|13|10
+~~~
+# id|count(*)|group_concat(id)
+2|1|2
+3|1|3
+4|1|4
+6|1|6
+7|1|7
+8|1|8
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+3|3
+4|4
+6|5
+7|6
+8|6
+10|8
+11|9
+12|9
+13|9
+~~~
+# id
+2
+3
+4
+7
+10
+11
+~~~
+# id
+2
+3
+4
+6
+8
+10
+~~~
+# c1
+X'7FD1'
+~~~

@@ -1,0 +1,323 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|5
+~~~
+# id|c0|c1|c2
+2|��!|-904|817
+3|2|812.21|X''
+4|X'F99C15'|NULL|NULL
+6|1.0e+308|sigma|chi
+7|X'77338E9C'|-247.3416|X'B5346851D291'
+8|-541|NULL|NULL
+10|1|X''|X'3E'
+11|pi|1|NULL
+12|X'C72018'|X''|-208
+14|NULL|-1|NULL
+15|alpha|X'B770B66BF5BC'|1.0e+308
+16|X'486DDA6069D0'|0|0
+17|5|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|3.1415926535897931
+~~~
+# id|c0|c1|c2
+18|3.1415926535897931|NULL|NULL
+17|5|NULL|NULL
+16|X'486DDA6069D0'|0|0
+14|NULL|-1|NULL
+12|X'C72018'|X''|-208
+11|pi|1|NULL
+8|-541|NULL|NULL
+7|847.01|NULL|NULL
+6|1.0e+308|sigma|chi
+5|0.0|NULL|NULL
+4|X'F99C15'|NULL|NULL
+3|2|812.21|X''
+2|��!|-904|817
+~~~
+changes: 8
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|X'61'
+~~~
+# id|c0|c1|c2|c3|c4
+15|X'61'|NULL|0|NULL|NULL
+14|1|-4|nu|NULL|NULL
+13|0|-1|X''|X'FD'|eta
+12|0|X'1C00642576AE'|4.500000000000011e-310|18.54|1000000000000000.0
+10|X'F62C686C'|X'68749B72E8'|-1|NULL|señor
+9|beta|NULL|0|NULL|NULL
+8|0|-858|X'9E06440ADBEA'|X'36E1'|1
+7|0|738.2883| pad |NULL|café
+5|NULL|NULL|xi|X'01'|upsilon
+4|-713|NULL|epsilon|NULL|25.19
+3|日本!|0.0|-180.378|3.1415926535897931|über
+2|0|933.61|X'CD'|-2|-105
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|549
+~~~
+# id|c0|c1|c2
+1|NULL|NULL|NULL
+2|��!|-904|817
+3|2|812.21|X''
+4|X'F99C15'|NULL|NULL
+6|-4!|sigma|chi
+7|847.01|NULL|NULL
+8|-541|NULL|NULL
+11|pi|1|NULL
+12|X'C72018'|X''|-208
+14|NULL|-1|NULL
+16|X'486DDA6069D0'|0|0
+18|3.1415926535897931|NULL|NULL
+19|549|NULL|NULL
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|-2
+~~~
+# id|c0|c1|c2|c3|c4
+2|0|933.61|X'CD'|-2|-105
+3|日本!|0.0|-180.378|3.1415926535897931|über
+4|X'6EBC'|NULL|0|NULL|NULL
+5|0|NULL|0|NULL|NULL
+8|0|-858|X'9E06440ADBEA'|X'36E1'|1
+9|beta|NULL|0|NULL|NULL
+12|0|X'1C00642576AE'|4.500000000000011e-310|18.54|1000000000000000.0
+14|1|-4|nu|NULL|NULL
+15|X'61'|NULL|0|NULL|NULL
+16|-2|NULL|0|NULL|NULL
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-189.774
+~~~
+# id|c0|c1|c2|c3|ref
+1|X'DEA63512B51A'|NULL|0|NULL|NULL
+2|2|chi|0|NULL|3
+3|3|5|X'CD53DD'|-4|3
+4|4|X'359E440F'|0|NULL|4
+6|X'5455354C'|NULL|0|NULL|NULL
+7|7|alpha|0x1F|über|1
+8|8|-674|0|977|6
+10|10|NULL|-95|NULL|3
+11|11|NULL|X'C8699A7C272C'|it's|6
+12|12|gamma|747.9|phi|1
+14|14|1.0e-07|0|NULL|6
+15|15|X'1D'|0|108.258|1
+16|16|X'B2CC0583'|X'4F'|3.1415926535897931|1
+18|18|X'1ACD0C7268'|X'056A0F66E1B8'|-301.08|3
+19|19|757|0|NULL|7
+20|20|X'DB'|zeta|-5|5
+21|-189.774|NULL|0|NULL|NULL
+~~~
+# id|id|id|c0
+2|2|2|0
+3|2|3|0
+3|3|3|日本!
+4|2|4|0
+4|3|4|日本!
+4|4|4|X'6EBC'
+5|2|5|0
+5|3|5|日本!
+5|4|5|X'6EBC'
+5|5|5|0
+8|2|8|0
+8|3|8|日本!
+8|4|8|X'6EBC'
+8|5|8|0
+8|8|8|0
+9|2|9|0
+9|3|9|日本!
+9|4|9|X'6EBC'
+9|5|9|0
+9|8|9|0
+9|9|9|beta
+12|2|12|0
+12|3|12|日本!
+12|4|12|X'6EBC'
+~~~
+error: ambiguous column name: c3
+~~~
+# id|id|c1|c2
+1|2|NULL|X'CD'
+1|3|NULL|-180.378
+1|4|NULL|0
+1|5|NULL|0
+1|8|NULL|X'9E06440ADBEA'
+1|9|NULL|0
+1|12|NULL|4.500000000000011e-310
+1|14|NULL|nu
+1|15|NULL|0
+1|16|NULL|0
+2|3|chi|-180.378
+2|4|chi|0
+2|5|chi|0
+2|8|chi|X'9E06440ADBEA'
+2|9|chi|0
+2|12|chi|4.500000000000011e-310
+2|14|chi|nu
+2|15|chi|0
+2|16|chi|0
+3|4|5|0
+3|5|5|0
+3|8|5|X'9E06440ADBEA'
+3|9|5|0
+3|12|5|4.500000000000011e-310
+3|14|5|nu
+~~~
+error: near "(": syntax error
+~~~

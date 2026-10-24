@@ -1,0 +1,115 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|1000
+3|0x1F
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|X'9E'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+4| pad 
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -2, 3)|instr('alpha', 'Ελλάδα')|replace('alpha', '', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE 'A%'|'alpha' GLOB '*'|char(77, 423)|'alpha' || 'Ελλάδα'|'alpha' < 'Ελλάδα'|'alpha' = 'Ελλάδα' COLLATE NOCASE
+5|ALPHA|alpha|ha|0|alpha|alpha|lpha|616C706861|'alpha'|97|1|1|MƧ|alphaΕλλάδα|1|0
+~~~
+# id|id|c1|c0
+1|1|X''|629
+2|2|NULL|-694
+3|3|X'636439AC2F06'|NULL
+4|4|-760|-357.282
+5|5|645|-261.1188
+6|6|2.5|3.1415926535897931
+7|7|42|-3
+8|8|-9223372036854775808|X'9E'
+9|9|-926.58|2.5
+10|10|NULL|-194
+~~~
+# count(*)
+10
+~~~
+# id|-(id)|id IS NULL IS NULL
+1|-1|0
+2|-2|0
+3|-3|0
+4|-4|0
+5|-5|0
+6|-6|0
+7|-7|0
+8|-8|0
+9|-9|0
+10|-10|0
+~~~
+# iif(coalesce(typeof(-4), NOT 762), nullif(x'3aacd4e71a', coalesce('xi', 'nu')), 'über')|nullif(abs(x'467c'), 1 BETWEEN NULL AND 'naïve') IN (NULL, x'e3e600c0b5', NULL)
+über|NULL
+~~~

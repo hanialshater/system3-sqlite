@@ -1,0 +1,244 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|MU
+~~~
+# id|c0|c1|c2|c3|c4
+9|MU|NULL|NULL|NULL|NULL
+8|X'A9E5'|1.0e-07|NULL|NULL|905.878
+6|0|NULL|X'0C15BCDBA168'|3|X''
+4|0|Ελλάδα|NULL|-9223372036854775808|NULL
+2|X'D593F900439C'|NULL|NULL|X''|420
+1|Lambda|NULL|NULL|NULL|NULL
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-7
+~~~
+# id|c0|c1|c2
+21|-7|NULL|NULL
+20|156|-918.7069|NULL
+19||0.0|theta
+18|-50|124.3009|iota
+16|NULL|NULL|beta
+15|381.79|theta|X''
+14|Ελλάδα|NULL|café
+12|840.24|2.0|3.1415926535897931
+11|NULL| pad |X'ECFC69E9'
+10|-3|iota|5
+9|NULL|NULL|NULL
+8|4|X'BE423D7140F4'|NULL
+7|X'63'|NULL|omega
+6|269|X'BD0256A7'|X'1837'
+4|X'BE78'|NULL|1.0e+308
+3|upsilon|1.0|-2.5
+2|café!|-7.0|-4
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+1|-308|NULL|NULL|NULL|NULL
+2|X'D593F900439C'|NULL|NULL|X''|420
+4|NULL|NULL|NULL|NULL|NULL
+6|0|NULL|X'0C15BCDBA168'|3|X''
+9|MU|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-2.5
+~~~
+# id|c0|c1|c2|c3|c4
+11|-2.5|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL
+6|0|NULL|X'0C15BCDBA168'|3|X''
+5|0|NULL|NULL|NULL|NULL
+4|NULL|NULL|NULL|NULL|NULL
+2|X'D593F900439C'|NULL|NULL|X''|420
+~~~
+changes: 0
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|-3.0
+~~~
+# id|c0|c1|c2|c3
+2|-249.0|psi|4|2.5
+3|X'AA'|0|0|0
+4|271.0|0.0|0|MU
+6|X'A642805C'|X'DF61188A'|0|MU
+8|NULL|39|X'D0'|omega
+10|café|theta|-5|it's
+12|sigma|-9223372036854775808|señor|X''
+13|-3.0|0|0|0
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+2|X'D593F900439C'|NULL|NULL|X''|420
+3|0x1F|NULL|NULL|NULL|NULL
+4|NULL|NULL|NULL|NULL|NULL
+6|X''|NULL|X'0C15BCDBA168'|3|X''
+7|X'61D3A56EC2'|NULL|NULL|NULL|NULL
+11|-2.5|NULL|NULL|NULL|NULL
+12|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|nullif(((c2 OR 276) | iif(c3, c3, -290.8372)), coalesce(typeof(2.5), coalesce(x'43', NULL)))|nullif(-452 IN (id, 131.7665, 'Ελλάδα'), c2 BETWEEN NULL AND c1) BETWEEN NOT CAST(0 AS BLOB) AND CAST(c2 IN (id, x'8a', -2) AS TEXT)
+2|3|0
+3|-289|0
+4|-289|0
+6|-289|0
+8|-289|NULL
+10|-289|0
+12|-289|NULL
+13|-289|0
+~~~
+# 'a%b'|(NULL IN (NULL, 0, x'') IN (-(255), NULL, -0.0) & NULL)
+a%b|NULL
+~~~
+# id|c0|NOT CAST(c0 AS BLOB) IN (NOT 123456789012, 'pi', x'42')
+13|-3.0|1
+12|sigma|1
+10|café|1
+8|NULL|NULL
+6|X'A642805C'|1
+4|271.0|1
+3|X'AA'|1
+2|-249.0|1
+~~~
+# x'b270081b'|-311.4
+X'B270081B'|-311.4
+~~~

@@ -1,0 +1,222 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 11
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|733
+~~~
+# id|c0|c1|c2|c3
+1|1|18|X'B542025079A1'|X'0B79CE69'
+2|2|818.199|-405.0962|-4
+3|X''|NULL|NULL|NULL
+4|4|-635.5654|-791.6|X'36DE80'
+6|6|X'5903588831FE'|X''|593.284
+7|7|3.1415926535897931|NULL|NULL
+8|8|1000|X'32F660CB'|
+9|9|upsilon|NULL|NULL
+11|11| pad |NULL|X''
+12|733|NULL|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|
+~~~
+# id|c0|c1|c2|c3
+1|X'73'|NULL|NULL|NULL
+2|NULL|818.199|-405.0962|-4
+4|kappa!|-635.5654|-791.6|X'36DE80'
+7|0|3.1415926535897931|NULL|NULL
+8|0|1000|X'32F660CB'|
+11|0| pad |NULL|X''
+12||NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|992
+~~~
+# id|c0|c1|c2|c3
+1|X'73'|NULL|NULL|NULL
+2|NULL|818.199|-405.0962|-4
+4|kappa!|-635.5654|-791.6|X'36DE80'
+5|-7|NULL|NULL|NULL
+7|0|3.1415926535897931|NULL|NULL
+8|0|1000|X'32F660CB'|
+11|0| pad |NULL|X''
+12|992|NULL|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+11|8
+8|8
+2|8
+7|8
+4|8
+12|8
+5|8
+1|8
+~~~
+# id
+1
+2
+4
+5
+7
+8
+11
+12
+~~~
+# id
+1
+4
+7
+8
+11
+12
+~~~
+# id
+5
+7
+8
+11
+12
+~~~
+changes: 1
+~~~
+# id|c3
+2|-33.6
+3|0
+4|0
+5|746
+1|señor
+6|X'2CB03F'
+7|X'B7912A1B4E'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|id
+1|2|1|2
+1|4|1|4
+1|5|1|5
+1|7|1|7
+1|8|1|8
+1|11|1|11
+1|12|1|12
+2|4|2|4
+2|5|2|5
+~~~
+# count(*)
+8
+~~~

@@ -1,0 +1,162 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1|abs(c1 IS NULL)
+1|NULL|1
+2|X'32BA8E78F0'|0
+3|1|0
+4|1e3|0
+5|kappa|0
+~~~
+# CAST(nullif('epsilon', NULL) AS NUMERIC)|abs(typeof(iif(x'efa8c3b28966', x'0658beced7ea', -655)))
+0|0.0
+~~~
+# id|coalesce(c0, 'naïve') IN (iif(c4, c1, -57), x'a14f', NULL) IN (-(-(-2)), NULL, -210)|c3 BETWEEN NULL AND 1
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|NULL
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|NULL
+11|NULL|0
+12|NULL|0
+13|NULL|0
+14|NULL|NULL
+15|NULL|NULL
+16|NULL|0
+17|NULL|0
+18|NULL|0
+19|NULL|0
+20|NULL|NULL
+21|NULL|NULL
+22|NULL|0
+~~~
+# 'chi'|-437.320
+chi|-437.32
+~~~
+# id|c2|nullif(c0, (NOT 583 - nullif(x'41', c0)))
+1|-31.539|delta
+2|-19.397|nu
+3|22.696|epsilon
+4|1.0e-07|Ελλάδα
+5|-33.249|xi
+6|36.174|theta
+7|25.392|zeta
+8|-6.515|naïve
+9|3.923|zeta
+10|-7.854|-7
+11|-0.007|epsilon
+12|2.943|nu
+13|-8.295|beta
+14|11.383|Lambda
+15|9.516|omicron
+16|42.04|xi
+17|-13.486|gamma
+18|16.62|42
+19|39.957|epsilon
+20|-25.771|NULL
+21|22.112|sigma
+22|18.317|café
+~~~
+# coalesce(x'50', 0.1)|NULL
+X'50'|NULL
+~~~
+changes: 1
+~~~
+# id|c2
+1|X'8FB76F48DE'
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

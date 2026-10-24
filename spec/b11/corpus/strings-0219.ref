@@ -1,0 +1,141 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', 3, 2)|instr('phi', 'upsilon')|replace('phi', 'a', 'XY')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '%é%'|'phi' GLOB '*[a-m]*'|char(82, 941)|'phi' || 'upsilon'|'phi' < 'upsilon'|'phi' = 'upsilon' COLLATE NOCASE
+3|PHI|phi|i|0|phi|phi|phi|706869|'phi'|112|0|1|Rέ|phiupsilon|1|0
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', 3, 5)|instr('upsilon', 'psi')|replace('upsilon', 'a', 'XY')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE '_'|'upsilon' GLOB '*'|char(70, 332)|'upsilon' || 'psi'|'upsilon' < 'psi'|'upsilon' = 'psi' COLLATE NOCASE
+7|UPSILON|upsilon|silon|2|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|1|FŌ|upsilonpsi|0|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 0, 1)|instr('nu', 'sigma')|replace('nu', 'e', 'XY')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%é%'|'nu' GLOB '*[a-m]*'|char(79, 344)|'nu' || 'sigma'|'nu' < 'sigma'|'nu' = 'sigma' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|OŘ|nusigma|1|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', -3, 4)|instr('chi', 'tau')|replace('chi', 'é', '')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE 'A%'|'chi' GLOB '*[a-m]*'|char(66, 646)|'chi' || 'tau'|'chi' < 'tau'|'chi' = 'tau' COLLATE NOCASE
+3|CHI|chi|chi|0|chi|chi|chi|636869|'chi'|99|0|1|Bʆ|chitau|1|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', -1, 0)|instr('omega', 'xi')|replace('omega', 'e', '')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '%'|'omega' GLOB '?'|char(76, 933)|'omega' || 'xi'|'omega' < 'xi'|'omega' = 'xi' COLLATE NOCASE
+5|OMEGA|omega||0|omga|omega|omega|6F6D656761|'omega'|111|1|0|LΥ|omegaxi|1|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 1, 5)|instr('psi', 'MU')|replace('psi', 'a', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE 'a%'|'psi' GLOB '?'|char(73, 975)|'psi' || 'MU'|'psi' < 'MU'|'psi' = 'MU' COLLATE NOCASE
+3|PSI|psi|psi|0|psi|psi|psi|707369|'psi'|112|0|0|IϏ|psiMU|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 0, 4)|instr('1e3', 'zeta')|replace('1e3', '', '_')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE 'A%'|'1e3' GLOB '*[a-m]*'|char(88, 704)|'1e3' || 'zeta'|'1e3' < 'zeta'|'1e3' = 'zeta' COLLATE NOCASE
+3|1E3|1e3|1e3|0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Xˀ|1e3zeta|1|0
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

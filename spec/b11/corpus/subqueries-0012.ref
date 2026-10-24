@@ -1,0 +1,155 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+4|4
+5|5
+6|6
+7|7
+1|1
+8|8
+2|2
+~~~
+# id
+~~~
+# id
+~~~
+# id
+3
+4
+5
+6
+7
+8
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+7|13
+9|13
+12|13
+1|13
+4|13
+3|13
+11|13
+6|13
+10|13
+13|13
+2|13
+5|13
+8|13
+~~~
+# id
+~~~
+# id
+11
+12
+13
+~~~
+# c1
+-979
+-5
+0
+2
+261
+9223372036854775807
+
+omicron
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+6|6
+8|8
+7|7
+3|3
+4|4
+5|5
+1|1
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c2
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+12|12|78|78.0|6.5|1|12|12
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~

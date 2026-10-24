@@ -1,0 +1,213 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 8
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|über
+~~~
+# id|c0|c1|c2|ref
+2|0.0|x_y|X'2AAECF15'|6
+3|X'9461249D04'|NULL|NULL|NULL
+4|4.0|-983.5|café|4
+5|NULL|NULL|0|NULL
+7|2.0|chi|0|2
+8|6.0|1.0e+308|799.2|6
+9|4.0|787|NULL|4
+10|4.0|-682.859|X'D2C90D'|4
+12|X'886D0406'|NULL|1.0e-07|NULL
+13|über|NULL|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|eta
+~~~
+# id|c0|c1|c2|ref
+13|eta|NULL|NULL|NULL
+12|0.0|NULL|1.0e-07|NULL
+10|0.0|-682.859|X'D2C90D'|4
+8|0.0|1.0e+308|799.2|6
+5|xi|NULL|NULL|NULL
+4|0.0|-983.5|café|4
+2|-1.0!|x_y|X'2AAECF15'|6
+~~~
+changes: 7
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|NULL
+~~~
+# id|c0|c1|c2|ref
+2|291.0|x_y|X'2AAECF15'|6
+4|upsilon|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL
+6|NULL|NULL|NULL|NULL
+8|831.0|1.0e+308|799.2|6
+10|291.0|-682.859|X'D2C90D'|4
+12|291.0|NULL|1.0e-07|NULL
+13|NULL|NULL|NULL|NULL
+14|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1
+10|NULL|0
+9|1000000000000000.0|pi
+8|-40.6904|630
+6|beta|über
+5|NULL|0
+3|theta|0
+2|123456789012|581.3
+1|X'7279A2563B02'|0
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|X'AC5A87'
+~~~
+# id|c0|c1
+2|123456789012|581.3
+3|theta|0
+5|NULL|0
+6|chi|0
+8|-40.6904|630
+9|1000000000000000.0|pi
+10|NULL|0
+11|X'AC5A87'|0
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+15|9|103.5|103.5|11.5|-7.0|X'FD'|9
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|6|1;2;8;11;12;14
+-7.0|1|9
+-5.0|1|7
+-2.0|1|13
+117.5|1|3
+beta|1|10
+X'498AF9'|1|6
+X'9FCA76'|1|4
+X'BE'|1|15
+X'FD'|1|5
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

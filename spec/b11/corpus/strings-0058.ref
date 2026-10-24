@@ -1,0 +1,115 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', -3, 2)|instr('x_y', 'chi')|replace('x_y', 'é', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '%é%'|'x_y' GLOB '?'|char(78, 562)|'x_y' || 'chi'|'x_y' < 'chi'|'x_y' = 'chi' COLLATE NOCASE
+3|X_Y|x_y|x_|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|NȲ|x_ychi|0|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 0, 4)|instr('psi', 'upsilon')|replace('psi', 'é', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE 'A%'|'psi' GLOB '*'|char(89, 911)|'psi' || 'upsilon'|'psi' < 'upsilon'|'psi' = 'upsilon' COLLATE NOCASE
+3|PSI|psi|psi|0|psi|psi|psi|707369|'psi'|112|0|1|YΏ|psiupsilon|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 1, 2)|instr('alpha', 'sigma')|replace('alpha', 'é', '_')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%'|'alpha' GLOB 'a*'|char(67, 223)|'alpha' || 'sigma'|'alpha' < 'sigma'|'alpha' = 'sigma' COLLATE NOCASE
+5|ALPHA|alpha|al|0|alpha|alpha|lpha|616C706861|'alpha'|97|1|1|Cß|alphasigma|1|0
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 0, 5)|instr('gamma', 'psi')|replace('gamma', 'e', '')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE 'a%'|'gamma' GLOB 'a*'|char(89, 571)|'gamma' || 'psi'|'gamma' < 'psi'|'gamma' = 'psi' COLLATE NOCASE
+5|GAMMA|gamma|gamm|0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|0|YȻ|gammapsi|1|0
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 4, 4)|instr('a%b', '1e3')|replace('a%b', 'e', '_')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE 'a%'|'a%b' GLOB '*'|char(67, 630)|'a%b' || '1e3'|'a%b' < '1e3'|'a%b' = '1e3' COLLATE NOCASE
+3|A%B|a%b||0|a%b|a%b|%b|612562|'a%b'|97|1|1|Cɶ|a%b1e3|0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', -3, 4)|instr('NULL', 'NULL')|replace('NULL', 'é', '_')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE 'a%'|'NULL' GLOB '*'|char(88, 721)|'NULL' || 'NULL'|'NULL' < 'NULL'|'NULL' = 'NULL' COLLATE NOCASE
+4|NULL|null|ULL|1|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|1|Xˑ|NULLNULL|0|1
+~~~
+# id|id|id|c1
+1|11|1|490
+1|18|1|-441
+1|21|1|-370
+2|NULL|2|NULL
+3|17|3|1e3
+~~~
+# count(*)
+3
+~~~
+changes: 10
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|988.58
+~~~
+# id|c0|c1|ref
+21|988.58|NULL|NULL
+20|2.5|upsilon|NULL
+19|2.5|über|7
+17|49|1e3|3
+16|X''|NULL|NULL
+14|49|386.87|4
+13|NULL|naïve|NULL
+11|49|490|1
+10|delta|NULL|5
+8|778.11|NULL|6
+7|49|-20|NULL
+5|42|theta|NULL
+4|-462.862|X''|5
+2|-349.3!|sigma|NULL
+1|NULL|NULL|NULL
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~

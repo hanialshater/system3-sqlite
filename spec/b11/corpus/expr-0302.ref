@@ -1,0 +1,210 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CASE WHEN CAST(NULL AS INTEGER) THEN CAST(c0 IS NULL AS TEXT) ELSE NOT id IS NULL END|abs(coalesce('über', NULL IS NULL))
+1|1|0.0
+2|1|0.0
+3|1|0.0
+4|1|0.0
+5|1|0.0
+6|1|0.0
+7|1|0.0
+8|1|0.0
+9|1|0.0
+10|1|0.0
+11|1|0.0
+~~~
+# 484|typeof(NOT -(x'8259b25aa2'))
+484|integer
+~~~
+# id|-(-(id BETWEEN c1 AND NULL))|NOT abs(NOT 'señor')
+11|NULL|0
+10|0|0
+9|NULL|0
+8|0|0
+7|NULL|0
+6|0|0
+5|NULL|0
+4|0|0
+3|NULL|0
+2|NULL|0
+1|0|0
+~~~
+# -3|(CAST(CASE WHEN NULL THEN x'0aadd3b651' ELSE NULL END AS NUMERIC) <> -5)
+-3|NULL
+~~~
+# id|('omega' - id)|NOT iif(c1, c1, x'e097ed09')
+1|-1|1
+2|-2|1
+3|-3|0
+4|-4|1
+5|-5|1
+6|-6|1
+7|-7|0
+8|-8|1
+9|-9|0
+10|-10|1
+11|-11|0
+~~~
+# (nullif(abs(NULL), NULL) & nullif('42', ('Ελλάδα' AND -97)))|coalesce(iif(-480, typeof(582.325), 222), 'zeta')
+NULL|real
+~~~
+# id|((c0 IN (x'aaf311187526', -3, 'über') IS NOT 'MU') = NOT NOT 'pi')|NOT id
+22|0|0
+21|0|0
+20|0|0
+19|0|0
+18|0|0
+17|0|0
+16|0|0
+15|0|0
+14|0|0
+13|0|0
+12|0|0
+11|0|0
+10|0|0
+9|0|0
+8|0|0
+7|0|0
+6|0|0
+5|0|0
+4|0|0
+3|0|0
+2|0|0
+1|0|0
+~~~
+# iif(NOT 3, CASE WHEN x'67' THEN NOT 'iota' ELSE coalesce('zeta', x'4a956199051d') END, NULL)|CASE WHEN NOT 'über' IS NULL THEN 72 ELSE -(NULL) IN (iif(-560.551, x'', -0.0), -92, x'40ac3ab94c69') END
+NULL|72
+~~~
+# id|nullif(-3, ref) IN (NOT id, 'tau', -1e308) IS NULL|id
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|0|6
+7|0|7
+8|0|8
+9|0|9
+10|0|10
+11|0|11
+~~~
+# iif(iif(x'24b3', CASE WHEN x'b8819347f168' THEN NULL ELSE -302 END, NULL), 'NULL', 'señor')|abs(-(123456789012 IS NULL))
+señor|0
+~~~
+# id|id|ref|c2
+1|1|8|821
+1|2|8|upsilon
+1|3|8|X'718F0F2C406F'
+1|4|8|0.1
+1|5|8|2
+1|6|8|Lambda
+1|7|8|X''
+1|8|8|-1.0e+308
+1|9|8|86.6988
+1|10|8|X''
+1|11|8|pi
+2|1|4|821
+2|2|4|upsilon
+2|3|4|X'718F0F2C406F'
+2|4|4|0.1
+2|5|4|2
+2|6|4|Lambda
+2|7|4|X''
+2|8|4|-1.0e+308
+2|9|4|86.6988
+2|10|4|X''
+2|11|4|pi
+3|1|1|821
+3|2|1|upsilon
+3|3|1|X'718F0F2C406F'
+3|4|1|0.1
+3|5|1|2
+3|6|1|Lambda
+3|7|1|X''
+3|8|1|-1.0e+308
+3|9|1|86.6988
+3|10|1|X''
+3|11|1|pi
+4|1|1|821
+4|2|1|upsilon
+4|3|1|X'718F0F2C406F'
+4|4|1|0.1
+4|5|1|2
+4|6|1|Lambda
+~~~
+error: near "CASE": syntax error
+~~~

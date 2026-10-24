@@ -1,0 +1,86 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', -2, 5)|instr('a%b', ' pad ')|replace('a%b', 'e', 'XY')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '%'|'a%b' GLOB '*'|char(71, 573)|'a%b' || ' pad '|'a%b' < ' pad '|'a%b' = ' pad ' COLLATE NOCASE
+3|A%B|a%b|%b|0|a%b|a%b|%b|612562|'a%b'|97|1|1|GȽ|a%b pad |0|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', -2, 0)|instr('0x1F', '0x1F')|replace('0x1F', 'é', 'XY')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE 'A%'|'0x1F' GLOB '?'|char(70, 968)|'0x1F' || '0x1F'|'0x1F' < '0x1F'|'0x1F' = '0x1F' COLLATE NOCASE
+4|0X1F|0x1f||1|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|Fψ|0x1F0x1F|0|1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', -3, 3)|instr(' pad ', 'nu')|replace(' pad ', 'é', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '_'|' pad ' GLOB '*[a-m]*'|char(75, 716)|' pad ' || 'nu'|' pad ' < 'nu'|' pad ' = 'nu' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|1|Kˌ| pad nu|1|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 0, 5)|instr('-7', 'phi')|replace('-7', 'e', '_')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%a_'|'-7' GLOB '*[a-m]*'|char(74, 653)|'-7' || 'phi'|'-7' < 'phi'|'-7' = 'phi' COLLATE NOCASE
+2|-7|-7|-7|0|-7|-7|-7|2D37|'-7'|45|0|0|Jʍ|-7phi|1|0
+~~~
+# length('café')|upper('café')|lower('café')|substr('café', 1, 0)|instr('café', 'Ελλάδα')|replace('café', 'a', '')|trim('café')|ltrim('café', 'ab')|hex('café')|quote('café')|unicode('café')|'café' LIKE '%'|'café' GLOB '*[a-m]*'|char(86, 607)|'café' || 'Ελλάδα'|'café' < 'Ελλάδα'|'café' = 'Ελλάδα' COLLATE NOCASE
+4|CAFé|café||0|cfé|café|café|636166C3A9|'café'|99|1|1|Vɟ|caféΕλλάδα|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -1, 2)|instr('alpha', 'omicron')|replace('alpha', 'e', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%a_'|'alpha' GLOB '*'|char(79, 362)|'alpha' || 'omicron'|'alpha' < 'omicron'|'alpha' = 'omicron' COLLATE NOCASE
+5|ALPHA|alpha|a|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|OŪ|alphaomicron|1|0
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', 2, 1)|instr('42', 'phi')|replace('42', '', 'XY')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%é%'|'42' GLOB '*[a-m]*'|char(81, 277)|'42' || 'phi'|'42' < 'phi'|'42' = 'phi' COLLATE NOCASE
+2|42|42|2|0|42|42|42|3432|'42'|52|0|0|Qĕ|42phi|1|0
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+6|4|-812.2645|-812.2645|-203.066125|-966|X'85'|4
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|2|3;4
+-966|1|1
+-442.8|1|6
+596.5355|1|5
+X'85'|1|2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+5|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+~~~
+# id
+5
+~~~
+# c0
+~~~
+# id|nullif(x'1bf8', NOT CASE WHEN id THEN NULL ELSE c0 END)|iif(x'36a0b64788', c0, NULL)
+5|X'1BF8'|omega
+4|X'1BF8'|NULL
+3|X'1BF8'|NULL
+2|X'1BF8'|343.97
+1|X'1BF8'|-636
+~~~
+# iif(NULL, typeof(x''), x'')|typeof(582)
+X''|integer
+~~~

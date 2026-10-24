@@ -1,0 +1,202 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c1
+1|1| pad |-719
+2|2|1.0e+308|X'70'
+3|3|0|696
+4|4|café|X'2A60AF5262DA'
+5|5|47|NULL
+6|6|NULL|kappa
+7|7|naïve|X'8A95'
+8|8|NULL|-813
+9|9|0|-171
+10|10|X''|NULL
+11|11|X'6B73CEAD80'|X'737A155F5D6B'
+12|12|NULL|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c0|c1
+1|1|NULL|-719
+2|2|-1.0e+308|X'70'
+3|3|4.500000000000011e-310|696
+4|4|0.1|X'2A60AF5262DA'
+5|5|MU|NULL
+6|6|NULL|kappa
+7|7|2|X'8A95'
+8|8|X'146357'|-813
+~~~
+# count(*)
+24
+~~~
+# id|id|c1|c1
+1|1|-719|-719
+2|1|X'70'|-719
+2|2|X'70'|X'70'
+3|1|696|-719
+3|2|696|X'70'
+3|3|696|696
+4|1|X'2A60AF5262DA'|-719
+4|2|X'2A60AF5262DA'|X'70'
+4|3|X'2A60AF5262DA'|696
+4|4|X'2A60AF5262DA'|X'2A60AF5262DA'
+5|1|NULL|-719
+5|2|NULL|X'70'
+5|3|NULL|696
+5|4|NULL|X'2A60AF5262DA'
+5|5|NULL|NULL
+6|1|kappa|-719
+6|2|kappa|X'70'
+6|3|kappa|696
+6|4|kappa|X'2A60AF5262DA'
+6|5|kappa|NULL
+6|6|kappa|kappa
+7|1|X'8A95'|-719
+7|2|X'8A95'|X'70'
+7|3|X'8A95'|696
+7|4|X'8A95'|X'2A60AF5262DA'
+7|5|X'8A95'|NULL
+7|6|X'8A95'|kappa
+7|7|X'8A95'|X'8A95'
+8|1|-813|-719
+8|2|-813|X'70'
+8|3|-813|696
+8|4|-813|X'2A60AF5262DA'
+8|5|-813|NULL
+8|6|-813|kappa
+8|7|-813|X'8A95'
+8|8|-813|-813
+9|1|-171|-719
+9|2|-171|X'70'
+~~~
+# count(*)
+24
+~~~
+# id|id|id|c0
+1|1|1|NULL
+2|2|2|-1.0e+308
+3|3|3|4.500000000000011e-310
+4|4|4|0.1
+5|5|5|MU
+6|6|6|NULL
+7|7|7|2
+8|8|8|X'146357'
+9|9|9|X'7FB1CDE65F'
+10|10|10|731
+11|11|11|3
+12|12|12|X'A8A3F253'
+~~~
+# count(*)
+12
+~~~
+# id|id|c1|c0
+1|1|-719|NULL
+2|2|X'70'|-1.0e+308
+3|3|696|4.500000000000011e-310
+4|4|X'2A60AF5262DA'|0.1
+5|5|NULL|MU
+6|6|kappa|NULL
+7|7|X'8A95'|2
+8|8|-813|X'146357'
+9|9|-171|X'7FB1CDE65F'
+10|10|NULL|731
+11|11|X'737A155F5D6B'|3
+12|12|NULL|X'A8A3F253'
+13|13|430|NULL
+14|14|NULL|-903
+15|15|theta|174.3
+16|16|NULL|X'FB54'
+17|17|it's|NULL
+18|18|NULL|-3
+19|19|-186|X'03414CF6A68E'
+20|20|5|X'E037C307D8'
+21|21|955|X'91823BFA94'
+22|22|NULL|-7
+23|23|NULL|NULL
+24|24|-7|X'C8728BDA9D'
+~~~
+# count(*)
+24
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+12|12|78|78.0|6.5|1|12|12
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', -1, 1)|instr('omicron', 'xi')|replace('omicron', 'e', '')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE '%é%'|'omicron' GLOB 'a*'|char(68, 833)|'omicron' || 'xi'|'omicron' < 'xi'|'omicron' = 'xi' COLLATE NOCASE
+7|OMICRON|omicron|n|0|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|0|0|D́|omicronxi|1|0
+~~~

@@ -1,0 +1,288 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 16
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|X'4A86E1'
+~~~
+# id|c0|c1
+2|NULL|436
+4|NULL|NULL
+6|NULL|x_y
+8|NULL|NULL
+10|NULL|4
+12|NULL|-11.927
+14|NULL|X''
+16|NULL|X'31CA18A73E'
+17|X'4A86E1'|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|tau
+~~~
+# id|c0|c1
+2|NULL|436
+4|NULL|NULL
+5|NULL|NULL
+8|NULL|NULL
+10|NULL|4
+14|NULL|X''
+16|NULL|X'31CA18A73E'
+17|X'4A86E1'|NULL
+18|tau|NULL
+~~~
+changes: 9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|X'2398B961'
+~~~
+# id|c0|c1
+2|NULL|436
+5|NULL|NULL
+6|301|NULL
+10|NULL|4
+14|NULL|X''
+17|NULL|NULL
+18|NULL|NULL
+19|X'2398B961'|NULL
+~~~
+changes: 6
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|-2
+~~~
+# id|c0|c1
+5|wv·YÃ!|NULL
+8|-880|NULL
+17|17|NULL
+19|19|NULL
+20|-2|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|NULL
+~~~
+# id|c0|c1
+2|se√±or|NULL
+5|wv·YÃ!|NULL
+17|17|NULL
+19|19|NULL
+20|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'905DAAABDB0D'
+~~~
+# id|c0|c1
+20|X'905DAAABDB0D'|NULL
+19|19|NULL
+17|17|NULL
+5|wv·YÃ!|NULL
+3|258|NULL
+2|se√±or|NULL
+1|0|NULL
+~~~
+changes: 21
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|296.898
+~~~
+# id|c0|c1|c2
+1|748|217|NULL
+2|.2Éc;!|epsilon|1.0e-07
+3|NULL|NULL|NULL
+5|748|X'E7056877'|-882.663
+6|748|gamma|Êó•Êú¨
+7|748|chi|48.833
+9|748|X'ABBF723DA267'|NULL
+10|748|NULL|78.67
+11|748|X'678D'|X'EC1A54EB92'
+13|748|NULL|1.0
+14|748|X'87'|42.0
+15|748|NULL|X'19C0E8'
+17|748|-305.211|X'57C198'
+18|748|NULL|-300.0
+19|748|0.0|X'57D1F6E5'
+21|748|chi|-65.04
+22|296.898|NULL|NULL
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'1F'
+~~~
+# id|c0|c1
+1|0|NULL
+2|NULL|NULL
+3|258|NULL
+5|wv·YÃ!|NULL
+7|zeta|NULL
+17|17|NULL
+19|19|NULL
+20|X'1F'|NULL
+~~~

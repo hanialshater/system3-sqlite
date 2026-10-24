@@ -1,0 +1,273 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c1
+1|18|-969|X''
+1|21|-969|0
+2|2|NULL|X'1471D699'
+2|3|NULL|it's
+2|16|NULL|señor
+2|20|NULL|1000
+4|4|gamma|3
+~~~
+# count(*)
+9
+~~~
+# id|id|ref|ref
+1|18|NULL|1
+1|21|NULL|1
+2|2|2|2
+2|3|2|2
+2|16|2|2
+2|20|2|2
+3|NULL|2|NULL
+4|4|4|4
+4|8|4|4
+4|14|4|4
+5|9|NULL|5
+5|11|NULL|5
+5|13|NULL|5
+6|NULL|NULL|NULL
+7|10|NULL|7
+7|15|NULL|7
+8|22|4|8
+9|NULL|5|NULL
+10|NULL|7|NULL
+11|NULL|5|NULL
+12|NULL|NULL|NULL
+13|NULL|5|NULL
+14|NULL|4|NULL
+15|NULL|7|NULL
+16|NULL|2|NULL
+17|NULL|NULL|NULL
+18|NULL|1|NULL
+19|NULL|NULL|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c1|id
+1|18|a%b|18
+1|21|a%b|21
+2|2|X'1471D699'|2
+2|3|X'1471D699'|3
+2|16|X'1471D699'|16
+2|20|X'1471D699'|20
+4|4|3|4
+4|8|3|8
+4|14|3|14
+5|9|-1.0e+308|9
+5|11|-1.0e+308|11
+5|13|-1.0e+308|13
+7|10|X'C3AF6A69'|10
+7|15|X'C3AF6A69'|15
+8|22|0|22
+~~~
+# count(*)
+22
+~~~
+# id|id|ref|c1
+1|1|NULL|a%b
+1|2|NULL|X'1471D699'
+1|3|NULL|it's
+1|4|NULL|3
+1|5|NULL|-1.0e+308
+1|6|NULL|-166.1
+1|7|NULL|X'C3AF6A69'
+1|8|NULL|0
+1|9|NULL|9223372036854775807
+1|10|NULL|3.1415926535897931
+1|11|NULL|0
+1|12|NULL|0
+1|13|NULL|omicron
+1|14|NULL|-765
+1|15|NULL|0
+1|16|NULL|señor
+1|17|NULL|-475.3
+1|18|NULL|X''
+1|19|NULL|1.0e-07
+1|20|NULL|1000
+1|21|NULL|0
+1|22|NULL|X''
+2|1|2|a%b
+2|2|2|X'1471D699'
+2|3|2|it's
+2|4|2|3
+2|5|2|-1.0e+308
+2|6|2|-166.1
+2|7|2|X'C3AF6A69'
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c0
+1|18|X'7DAC'|NULL
+1|21|X'7DAC'|123456789012
+2|2|NULL|NULL
+2|3|NULL|-937
+2|16|NULL|omicron
+2|20|NULL|1
+3|NULL|-937|NULL
+4|4|delta|delta
+4|8|delta|-1.0e+308
+4|14|delta|NULL
+5|9|-326.6915|5
+5|11|-326.6915|X'56'
+5|13|-326.6915|0.1
+6|NULL|659.826|NULL
+7|10|NULL|-60.38
+7|15|NULL|-840.28
+8|22|-1.0e+308|rho
+9|NULL|5|NULL
+10|NULL|-60.38|NULL
+11|NULL|X'56'|NULL
+12|NULL|NULL|NULL
+13|NULL|0.1|NULL
+14|NULL|NULL|NULL
+15|NULL|-840.28|NULL
+16|NULL|omicron|NULL
+17|NULL|4|NULL
+18|NULL|NULL|NULL
+~~~
+# count(*)
+4
+~~~
+# id|id|id|id
+1|18|1|18
+1|21|1|21
+2|2|2|2
+2|3|2|3
+2|16|2|16
+2|20|2|20
+3|NULL|3|NULL
+4|4|4|4
+4|8|4|8
+4|14|4|14
+5|9|5|9
+5|11|5|11
+5|13|5|13
+6|NULL|6|NULL
+7|10|7|10
+7|15|7|15
+8|22|8|22
+9|NULL|9|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|c0
+1|18|1|NULL
+1|21|1|123456789012
+2|2|2|NULL
+2|3|2|-937
+2|16|2|omicron
+2|20|2|1
+3|NULL|3|NULL
+4|4|4|delta
+4|8|4|-1.0e+308
+4|14|4|NULL
+5|9|5|5
+5|11|5|X'56'
+5|13|5|0.1
+6|NULL|6|NULL
+7|10|7|-60.38
+7|15|7|-840.28
+8|22|8|rho
+9|NULL|9|NULL
+~~~
+error: near "-": syntax error
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+error: integer overflow
+~~~
+# c1|count(*)|group_concat(id)
+NULL|3|2,6,9
+~~~
+changes: 1
+~~~
+# id|c1
+5|-1.0e+308
+14|-765
+17|-475.3
+6|-166.1
+8|0
+11|0
+12|0
+15|0
+21|0
+19|1.0e-07
+4|3
+10|3.1415926535897931
+20|1000
+9|9223372036854775807
+1|a%b
+~~~
+# count(*)
+22
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

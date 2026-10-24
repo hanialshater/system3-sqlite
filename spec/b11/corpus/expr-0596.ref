@@ -1,0 +1,182 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|-2|CAST(CASE WHEN c1 THEN c0 ELSE -9223372036854775808 END AS NUMERIC) BETWEEN 236 AND (nullif(id, -609) < nullif(-82.2838, -277))
+1|-2|0
+2|-2|0
+3|-2|0
+~~~
+# coalesce(NULL, x'0648') IS NULL|-(NULL) IN (NULL, 737.9, 2.5)
+0|NULL
+~~~
+# id|coalesce((coalesce(id, c0) % typeof(NULL)), nullif(id, iif(-1e308, 567, -38.3)))|NOT -(ref) BETWEEN c0 AND ref
+1|1|1
+2|2|NULL
+3|3|1
+~~~
+# 1e-7|-47.02
+1.0e-07|-47.02
+~~~
+# id|(x'a7884035' BETWEEN c0 AND -(105.296) * iif(c1, '日本', 'NULL'))|' pad '
+16|0| pad 
+15|0| pad 
+14|0| pad 
+13|0| pad 
+12|0| pad 
+11|0| pad 
+10|0| pad 
+9|0| pad 
+8|0| pad 
+7|0| pad 
+6|0| pad 
+5|0| pad 
+4|0| pad 
+3|0| pad 
+2|0| pad 
+1|0| pad 
+~~~
+# ''|NULL
+|NULL
+~~~
+# id|x'a25b'|nullif(typeof(ref), 'kappa' IN (id, NULL, 4)) IN (c0, 0.1, -639.200)
+3|X'A25B'|0
+2|X'A25B'|NULL
+1|X'A25B'|0
+~~~
+# NOT (719 * CASE WHEN -152.94 THEN NULL ELSE 805 END)|'x_y'
+NULL|x_y
+~~~
+# id|CASE WHEN 2 THEN typeof(876.4675) ELSE c1 END|c1
+1|real|117.4
+2|real|X'E435'
+3|real|X'C3D2DA'
+4|real|4
+5|real|X''
+6|real|NULL
+7|real|psi
+8|real|NULL
+9|real|iota
+10|real|pi
+11|real|2
+12|real|NULL
+13|real|X''
+14|real|359
+15|real|-2
+16|real|phi
+~~~
+# -656.06|coalesce(-(CAST(NULL AS TEXT)), abs(' pad '))
+-656.06|0.0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+6|6
+8|8
+12|12
+15|15
+11|11
+4|4
+1|1
+14|14
+9|9
+16|15
+10|10
+7|7
+5|5
+13|13
+3|3
+2|2
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+15
+16
+~~~
+# c0
+~~~

@@ -1,0 +1,92 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 4, 4)|instr('zeta', 'phi')|replace('zeta', 'a', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE 'a%'|'zeta' GLOB '*'|char(80, 580)|'zeta' || 'phi'|'zeta' < 'phi'|'zeta' = 'phi' COLLATE NOCASE
+4|ZETA|zeta|a|0|zet|zeta|zeta|7A657461|'zeta'|122|0|1|PɄ|zetaphi|0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 4, 3)|instr('NULL', 'theta')|replace('NULL', 'é', '_')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%é%'|'NULL' GLOB '*[a-m]*'|char(66, 284)|'NULL' || 'theta'|'NULL' < 'theta'|'NULL' = 'theta' COLLATE NOCASE
+4|NULL|null|L|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|BĜ|NULLtheta|1|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -3, 0)|instr('theta', 'NULL')|replace('theta', '', '')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE 'a%'|'theta' GLOB 'a*'|char(90, 219)|'theta' || 'NULL'|'theta' < 'NULL'|'theta' = 'NULL' COLLATE NOCASE
+5|THETA|theta||0|theta|theta|theta|7468657461|'theta'|116|0|0|ZÛ|thetaNULL|0|0
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', 2, 0)|instr('日本', 'rho')|replace('日本', '', 'XY')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE 'a%'|'日本' GLOB '?'|char(75, 370)|'日本' || 'rho'|'日本' < 'rho'|'日本' = 'rho' COLLATE NOCASE
+2|日本|日本||0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|KŲ|日本rho|0|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 1, 0)|instr('sigma', 'tau')|replace('sigma', 'a', '')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '_'|'sigma' GLOB '*[a-m]*'|char(89, 523)|'sigma' || 'tau'|'sigma' < 'tau'|'sigma' = 'tau' COLLATE NOCASE
+5|SIGMA|sigma||0|sigm|sigma|sigma|7369676D61|'sigma'|115|0|1|Yȋ|sigmatau|1|0
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|0x1F
+~~~
+# id|c0|c1|c2
+2|-5|NULL|X'D4C1'
+3|-2.0|NULL|-13
+4|42!|-2.5|NULL
+6|X'C9F95002'|NULL|NULL
+7|X'CEBAB2BE'|737|X'813BD47A'
+8|0x1F|NULL|NULL
+~~~

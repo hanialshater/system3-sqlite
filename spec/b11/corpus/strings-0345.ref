@@ -1,0 +1,62 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', -3, 0)|instr('42', 'señor')|replace('42', 'é', '')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '_'|'42' GLOB '*[a-m]*'|char(89, 464)|'42' || 'señor'|'42' < 'señor'|'42' = 'señor' COLLATE NOCASE
+2|42|42||0|42|42|42|3432|'42'|52|0|0|Yǐ|42señor|1|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 4, 3)|instr('tau', '-7')|replace('tau', 'e', '_')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '_'|'tau' GLOB 'a*'|char(83, 768)|'tau' || '-7'|'tau' < '-7'|'tau' = '-7' COLLATE NOCASE
+3|TAU|tau||0|tau|tau|tau|746175|'tau'|116|0|0|S̀|tau-7|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 3, 2)|instr('señor', 'Ελλάδα')|replace('señor', '', '')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '_'|'señor' GLOB '*[a-m]*'|char(77, 537)|'señor' || 'Ελλάδα'|'señor' < 'Ελλάδα'|'señor' = 'Ελλάδα' COLLATE NOCASE
+5|SEñOR|señor|ño|0|señor|señor|señor|7365C3B16F72|'señor'|115|0|1|Mș|señorΕλλάδα|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 3, 0)|instr('naïve', '')|replace('naïve', 'a', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'A%'|'naïve' GLOB '?'|char(80, 836)|'naïve' || ''|'naïve' < ''|'naïve' = '' COLLATE NOCASE
+5|NAïVE|naïve||1|nïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|P̈́|naïve|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 1, 4)|instr('1e3', 'tau')|replace('1e3', 'a', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE 'A%'|'1e3' GLOB '*'|char(82, 967)|'1e3' || 'tau'|'1e3' < 'tau'|'1e3' = 'tau' COLLATE NOCASE
+3|1E3|1e3|1e3|0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Rχ|1e3tau|1|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 3, 2)|instr('psi', 'MU')|replace('psi', 'a', '')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE 'A%'|'psi' GLOB '*[a-m]*'|char(87, 357)|'psi' || 'MU'|'psi' < 'MU'|'psi' = 'MU' COLLATE NOCASE
+3|PSI|psi|i|0|psi|psi|psi|707369|'psi'|112|0|1|Wť|psiMU|0|0
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

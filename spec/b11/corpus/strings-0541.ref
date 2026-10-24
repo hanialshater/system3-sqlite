@@ -1,0 +1,218 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', 2, 2)|instr('42', 'it''s')|replace('42', 'é', '')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%a_'|'42' GLOB 'a*'|char(76, 726)|'42' || 'it''s'|'42' < 'it''s'|'42' = 'it''s' COLLATE NOCASE
+2|42|42|2|0|42|42|42|3432|'42'|52|0|0|L˖|42it's|1|0
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', -3, 5)|instr('iota', 'phi')|replace('iota', 'a', '_')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE '%a_'|'iota' GLOB '?'|char(89, 235)|'iota' || 'phi'|'iota' < 'phi'|'iota' = 'phi' COLLATE NOCASE
+4|IOTA|iota|ota|0|iot_|iota|iota|696F7461|'iota'|105|0|0|Yë|iotaphi|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 1, 2)|instr('naïve', 'kappa')|replace('naïve', 'e', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%é%'|'naïve' GLOB '*[a-m]*'|char(75, 978)|'naïve' || 'kappa'|'naïve' < 'kappa'|'naïve' = 'kappa' COLLATE NOCASE
+5|NAïVE|naïve|na|0|naïv_|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|Kϒ|naïvekappa|0|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -2, 3)|instr('theta', 'über')|replace('theta', 'e', '')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%'|'theta' GLOB '?'|char(76, 328)|'theta' || 'über'|'theta' < 'über'|'theta' = 'über' COLLATE NOCASE
+5|THETA|theta|ta|0|thta|theta|theta|7468657461|'theta'|116|1|0|Lň|thetaüber|1|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 4, 3)|instr('omega', 'epsilon')|replace('omega', 'e', '')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE 'A%'|'omega' GLOB 'a*'|char(75, 587)|'omega' || 'epsilon'|'omega' < 'epsilon'|'omega' = 'epsilon' COLLATE NOCASE
+5|OMEGA|omega|ga|0|omga|omega|omega|6F6D656761|'omega'|111|0|0|Kɋ|omegaepsilon|0|0
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|3
+~~~
+# id|c0|c1
+2|NULL|X'64081462DD'
+3|naïve!|897
+4|NULL|X''
+6|4|NULL
+7|X'2BF860EAF1CD'|NULL
+8|NULL|280.9881
+10|NULL|psi
+11|NULL|x_y
+12|X'B4C33E85'|X'0F3F3034A8'
+14|-261.7085|NULL
+15|-355|172
+16|708.31|-194
+18|-141|3.1415926535897931
+19|zeta|-3
+20|0x1F|X'6F'
+22|NULL|254
+23||388
+24|3|NULL
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 0, 5)|instr('nu', '日本')|replace('nu', 'a', 'XY')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'A%'|'nu' GLOB '*'|char(77, 847)|'nu' || '日本'|'nu' < '日本'|'nu' = '日本' COLLATE NOCASE
+2|NU|nu|nu|0|nu|nu|nu|6E75|'nu'|110|0|1|M͏|nu日本|1|0
+~~~
+# id|id|id|c3
+2|12|2|750.0
+3|19|3|9.2233720368547758e+18
+4|13|4|NULL
+4|22|4|-5.0
+6|2|6|337.0
+6|4|6|café
+6|8|6|-2.5
+6|10|6|upsilon
+6|18|6|1.0e+308
+6|20|6|1.0e-07
+7|17|7|X'918E737A50'
+8|1|8|NULL
+8|9|8|-398.0
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+18|NULL|18|NULL
+19|NULL|19|NULL
+20|NULL|20|NULL
+22|NULL|22|NULL
+23|NULL|23|NULL
+24|NULL|24|NULL
+~~~
+error: near "(": syntax error
+~~~

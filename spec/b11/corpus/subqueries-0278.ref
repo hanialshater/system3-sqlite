@@ -1,0 +1,206 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+4|4
+5|5
+7|7
+8|8
+3|3
+6|6
+~~~
+# id
+3
+4
+5
+6
+7
+8
+~~~
+# id
+7
+8
+~~~
+# c0
+-695
+0
+3
+X''
+X'78'
+X'7F'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+5|5
+4|4
+2|2
+1|1
+7|7
+8|8
+3|3
+6|6
+~~~
+# id
+~~~
+# id
+8
+~~~
+# c2
+NULL
+-586
+-288
+0
+2
+2.5
+10.0
+115.46
+701.0
+706.3694
+café
+X''
+X'DAF5'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+4|4
+7|7
+1|1
+8|8
+2|2
+5|5
+3|3
+6|6
+~~~
+# id
+3
+4
+5
+6
+7
+8
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# ref
+2
+3
+6
+7
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+8|8
+7|8
+6|8
+5|8
+4|8
+3|8
+2|8
+1|8
+~~~
+# id
+2
+3
+5
+6
+~~~
+# id
+6
+7
+8
+~~~
+# ref
+1
+2
+5
+-917
+0x1F
+1.0e-07
+591
+X'4DB8'
+X'E58054067B'
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', -3, 4)|instr('señor', 'upsilon')|replace('señor', 'e', 'XY')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE 'A%'|'señor' GLOB '*'|char(88, 552)|'señor' || 'upsilon'|'señor' < 'upsilon'|'señor' = 'upsilon' COLLATE NOCASE
+5|SEñOR|señor|ñor|0|sXYñor|señor|señor|7365C3B16F72|'señor'|115|0|1|XȨ|señorupsilon|1|0
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|X''
+~~~
+# id|c0|c1|c2|c3|ref
+1|1000000000000000.0|0|-917|NULL|NULL
+2|0.0|2|NULL|NULL|NULL
+4|
+�l�!|2.5|1.0e-07|X''|5
+5|0.0|X''|X'E58054067B'|369.67|1
+7|0.0|-288|NULL|4.500000000000011e-310|5
+8|0.0|-586|591|-3|2
+9|-387.0|NULL|NULL|NULL|NULL
+10|X''|NULL|NULL|NULL|NULL
+~~~

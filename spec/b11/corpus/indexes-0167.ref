@@ -1,0 +1,340 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+8|-1
+2|0
+3|572
+4|Lambda
+10|Lambda
+5|日本
+11|X'19818A4E9C2D'
+9|X'31A18478'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14| pad 
+15|-1.0e+308
+8|-2.5
+5|-4
+2|-9
+6|0x1F
+9|404
+3|421.04
+17|5
+1|866
+12|eta
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|NULL
+4|NULL
+3|-488
+7|1.0e-07
+9|2
+10|2.5
+5|240.6971
+6|chi
+8|chi
+2|señor
+11|X'6F0F'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+14|alpha
+16|café
+6|chi
+15|theta
+3|upsilon
+12|Ελλάδα
+1|X''
+7|X'1A'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|11
+11|11
+7|11
+9|11
+8|11
+6|11
+2|11
+5|11
+3|11
+10|11
+1|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+9223372036854775807
+1.0e+308
+Lambda
+chi
+nu
+omega
+~~~
+changes: 1
+~~~
+# id|c1
+8|NULL
+9|NULL
+13|NULL
+10|-335
+4|-293
+2|0
+17|0
+5|1
+11|268
+14|alpha
+16|café
+6|chi
+15|theta
+3|upsilon
+12|Ελλάδα
+1|X''
+7|X'1A'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT abs(x'22bbd30e5f' IS NULL)|-(2.5)
+11|1|-2.5
+10|1|-2.5
+9|1|-2.5
+8|1|-2.5
+7|1|-2.5
+6|1|-2.5
+5|1|-2.5
+4|1|-2.5
+3|1|-2.5
+2|1|-2.5
+1|1|-2.5
+~~~
+# NOT typeof(0 BETWEEN -354 AND 1e308)|1
+1|1
+~~~

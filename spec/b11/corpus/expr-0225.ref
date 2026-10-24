@@ -1,0 +1,173 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|typeof(CASE WHEN c0 IN (c0, x'aec2d4', -447) THEN c0 ELSE c0 END)|-(CAST(-251 AS BLOB))
+1|real|251
+2|real|251
+3|null|251
+4|text|251
+5|text|251
+6|text|251
+7|real|251
+8|null|251
+9|null|251
+10|text|251
+11|text|251
+12|real|251
+13|real|251
+14|text|251
+15|null|251
+16|blob|251
+17|null|251
+18|null|251
+19|null|251
+20|text|251
+21|blob|251
+22|blob|251
+23|real|251
+24|real|251
+~~~
+error: unrecognized token: "x'x'"
+~~~
+# id|typeof(id) IN (NOT c0, NULL, '1e3')|-(CAST(id IN (123456789012, -96, x'85') AS NUMERIC))
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+13|NULL|0
+~~~
+# iif(nullif('', nullif(328.5, -3)), 'pi', '')|'-7'
+|-7
+~~~
+# id|iif(NOT typeof(x'a9a3d3d9'), typeof(-513.4 BETWEEN x'29' AND 'gamma'), NULL)|452.6 BETWEEN ref AND x'038c6cf47e' IS NULL IS NULL
+1|integer|0
+2|integer|0
+3|integer|0
+4|integer|0
+5|integer|0
+6|integer|0
+7|integer|0
+8|integer|0
+9|integer|0
+10|integer|0
+11|integer|0
+12|integer|0
+13|integer|0
+~~~
+# abs(CAST((NULL < 'alpha') AS REAL))|nullif('x_y', x'134463')
+NULL|x_y
+~~~
+changes: 13
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|-7.0
+~~~
+# id|c0|c1|ref
+1|X'A8'|2|NULL
+3|X'A8'|3|3
+4|pi|d|NULL
+5|X'A8'|2|NULL
+6|-580.0|d|NULL
+7|X'A8'|NULL|6
+9|X'A8'|X'CB8210F7E1'|5
+11|X'A8'|kappa|2
+13|X'A8'|2.5|1
+14|-7.0|d|NULL
+~~~

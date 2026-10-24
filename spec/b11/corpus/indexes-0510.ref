@@ -1,0 +1,230 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+8|1
+13|1
+14|1
+19|1
+2|2
+5|2
+6|4
+9|4
+10|4
+15|4
+18|4
+4|5
+1|6
+12|7
+11|8
+16|8
+17|8
+21|8
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+~~~
+# count(*)
+22
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|-9223372036854775808
+17|-11
+11|-7
+19|1
+20|2.5
+4|3.1415926535897931
+12|105
+18|255
+13|257
+7|682
+3|885.973
+2|927.8
+1|1.0e+308
+8|Lambda
+22|a%b
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+22
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', -1, 0)|instr('über', 'über')|replace('über', 'a', 'XY')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE '_'|'über' GLOB '*[a-m]*'|char(87, 815)|'über' || 'über'|'über' < 'über'|'über' = 'über' COLLATE NOCASE
+4|üBER|über||1|über|über|über|C3BC626572|'über'|252|0|1|W̯|überüber|0|1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+21|18|-1.0e+308|-1.0e+308|-5.5555555555555553e+306|-1.0e+308|X'DB81FA4DB835'|18
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|3|1;17;18
+-1.0e+308|1|5
+-3|1|11
+348|1|12
+541|1|21
+797.98|1|8
+1000|1|6
+1000000000000000|1|2
+0x1F|1|14
+Lambda|1|16
+alpha|1|4
+eta|1|3
+xi|1|13
+X'0C'|1|15
+X'2CCD77CF'|1|10
+X'3ADA06'|1|7
+X'CD37FA'|1|9
+X'D9D6C98CC0'|1|19
+X'DB81FA4DB835'|1|20
+~~~

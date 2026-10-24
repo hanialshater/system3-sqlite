@@ -1,0 +1,64 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', -3, 0)|instr('MU', '')|replace('MU', 'e', '_')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE 'a%'|'MU' GLOB '*'|char(86, 566)|'MU' || ''|'MU' < ''|'MU' = '' COLLATE NOCASE
+2|MU|mu||1|MU|MU|MU|4D55|'MU'|77|0|1|Vȶ|MU|0|0
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', -2, 1)|instr('phi', 'omega')|replace('phi', 'a', '_')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '_'|'phi' GLOB 'a*'|char(88, 860)|'phi' || 'omega'|'phi' < 'omega'|'phi' = 'omega' COLLATE NOCASE
+3|PHI|phi|h|0|phi|phi|phi|706869|'phi'|112|0|0|X͜|phiomega|0|0
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', -2, 0)|instr('omicron', 'naïve')|replace('omicron', 'e', 'XY')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE '_'|'omicron' GLOB '*'|char(85, 873)|'omicron' || 'naïve'|'omicron' < 'naïve'|'omicron' = 'naïve' COLLATE NOCASE
+7|OMICRON|omicron||0|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|0|1|Uͩ|omicronnaïve|0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', -2, 1)|instr('it''s', 'Lambda')|replace('it''s', '', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%a_'|'it''s' GLOB '*'|char(76, 357)|'it''s' || 'Lambda'|'it''s' < 'Lambda'|'it''s' = 'Lambda' COLLATE NOCASE
+4|IT'S|it's|'|0|it's|it's|it's|69742773|'it''s'|105|0|1|Lť|it'sLambda|0|0
+~~~
+# id|'chi'|coalesce(NULL, id)
+1|chi|1
+2|chi|2
+3|chi|3
+4|chi|4
+5|chi|5
+6|chi|6
+7|chi|7
+~~~
+# 87.5 IS NULL|nullif(-(('Ελλάδα' & 966.8732)), 123456789012 IN (338 IN (-262, NULL, -1), '', 123456789012))
+0|0
+~~~
+# id|c1|coalesce(c1, (abs(id) = x'c21efd18d7'))
+1|X'002D120378'|X'002D120378'
+2|xi|xi
+3|X''|X''
+4|-518.027|-518.027
+5|-356.4|-356.4
+6|NULL|0
+7|NULL|0
+~~~
+# 123456789012|843
+123456789012|843
+~~~

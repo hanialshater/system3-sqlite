@@ -1,0 +1,176 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|a%b
+12|alpha
+5|café
+6|chi
+10|chi
+4|delta
+19|gamma
+8|iota
+18|iota
+1|Lambda
+13|pi
+2|señor
+20|sigma
+9|über
+14|日本
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+6|-9223372036854775808
+7|-47
+4|3.1415926535897931
+11|5
+12|530.942
+10|842
+5|theta
+9|xi
+8|日本
+1|X'0712'
+13|X'7643366E'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|20
+2|20
+3|20
+4|20
+5|20
+6|20
+7|20
+8|20
+9|20
+10|20
+11|20
+12|20
+13|20
+14|20
+15|20
+16|20
+17|20
+18|20
+19|20
+20|20
+~~~
+# id
+6
+~~~
+# id
+20
+~~~
+# c1
+~~~

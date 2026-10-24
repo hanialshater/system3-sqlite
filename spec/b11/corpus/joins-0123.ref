@@ -1,0 +1,216 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c0
+1|1|NULL|1.0e-07
+2|1|NULL|1.0e-07
+2|2|NULL|0
+3|1|NULL|1.0e-07
+3|2|NULL|0
+3|3|NULL|X'5B3DD3E7EB52'
+4|1|-7|1.0e-07
+4|2|-7|0
+4|3|-7|X'5B3DD3E7EB52'
+4|4|-7|X'D7A59010'
+5|1|-521.46|1.0e-07
+5|2|-521.46|0
+5|3|-521.46|X'5B3DD3E7EB52'
+5|4|-521.46|X'D7A59010'
+5|5|-521.46|epsilon
+6|1|-377|1.0e-07
+6|2|-377|0
+6|3|-377|X'5B3DD3E7EB52'
+6|4|-377|X'D7A59010'
+6|5|-377|epsilon
+6|6|-377|-2.5
+7|1|X'328BBFFF'|1.0e-07
+7|2|X'328BBFFF'|0
+7|3|X'328BBFFF'|X'5B3DD3E7EB52'
+7|4|X'328BBFFF'|X'D7A59010'
+7|5|X'328BBFFF'|epsilon
+7|6|X'328BBFFF'|-2.5
+7|7|X'328BBFFF'|-303
+8|1|sigma|1.0e-07
+8|2|sigma|0
+8|3|sigma|X'5B3DD3E7EB52'
+8|4|sigma|X'D7A59010'
+8|5|sigma|epsilon
+8|6|sigma|-2.5
+8|7|sigma|-303
+8|8|sigma|-5
+~~~
+# count(*)
+6
+~~~
+# id|id|c3|c3
+1|1|-704.0|-704.0
+1|2|-704.0|0
+1|3|-704.0|Ελλάδα
+1|4|-704.0|NULL
+1|5|-704.0|-447.9998
+1|6|-704.0|NULL
+1|7|-704.0|X''
+1|8|-704.0|4.500000000000011e-310
+1|9|-704.0|NULL
+1|10|-704.0|X'CB'
+1|11|-704.0|NULL
+1|12|-704.0|pi
+1|13|-704.0|xi
+1|14|-704.0|-363.55
+1|15|-704.0|日本
+1|16|-704.0|X'E822DC'
+1|17|-704.0|NULL
+1|18|-704.0|X'8DB05E76BC'
+1|19|-704.0|3
+1|20|-704.0|-1.0e+308
+1|21|-704.0|X'0BD3'
+1|22|-704.0|2.5
+1|23|-704.0|X'CE82'
+2|1|0|-704.0
+2|2|0|0
+2|3|0|Ελλάδα
+2|4|0|NULL
+2|5|0|-447.9998
+2|6|0|NULL
+~~~
+# count(*)
+23
+~~~
+# id|id|c0|c0
+1|1|1.0e-07|1.0e-07
+2|2|0|0
+3|3|X'5B3DD3E7EB52'|X'5B3DD3E7EB52'
+4|4|X'D7A59010'|X'D7A59010'
+5|5|epsilon|epsilon
+6|6|-2.5|-2.5
+7|7|-303|-303
+8|8|-5|-5
+9|9|X'2E9606'|X'2E9606'
+10|10|0|0
+11|11|gamma|gamma
+12|12|0|0
+13|13|-687|-687
+14|14|0|0
+15|15|nu|nu
+16|16|psi|psi
+17|17|157.1387|157.1387
+18|18|0|0
+19|19|0|0
+20|20|1.0e+308|1.0e+308
+21|21|0.0|0.0
+22|22|0|0
+23|23|xi|xi
+~~~
+error: near "CASE": syntax error
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', -3, 0)|instr('señor', 'Ελλάδα')|replace('señor', '', '_')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE 'A%'|'señor' GLOB '*[a-m]*'|char(90, 868)|'señor' || 'Ελλάδα'|'señor' < 'Ελλάδα'|'señor' = 'Ελλάδα' COLLATE NOCASE
+5|SEñOR|señor||0|señor|señor|señor|7365C3B16F72|'señor'|115|0|1|Zͤ|señorΕλλάδα|1|0
+~~~
+changes: 23
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|2
+~~~
+# id|c0|c1|c2|c3|c4
+1|real|418.174|NULL|-704.0|388.0
+2|827|d|NULL|NULL|NULL
+3|null|1000|NULL|Ελλάδα|NULL
+4|null|NULL|243.4591|NULL|NULL
+6|delta!|410|NULL|NULL|9223372036854775807
+7|integer|173|0|X''|-402
+8|real|-593.7051|-9223372036854775808|4.500000000000011e-310|-2.5
+9|blob|X'9EE7B6E2'|-601.075|NULL|X''
+11|integer|NULL|160.481|NULL|0
+12|integer|338|X'D59CADBE4DA5'|pi|-1
+13|null|X'91EC88457DA1'|-948|xi|NULL
+14|text|X'3C1E29E4B8'|delta|-363.55|MU
+16|integer|señor|über|X'E822DC'|-5
+17|integer|NULL|NULL|NULL|-367
+18|integer|3.1415926535897931|465.15|X'8DB05E76BC'|9223372036854775807
+19|blob|X'8CA277'|X'857C80'|3|X'CCDD8A04A9'
+21|real|275.08|NULL|X'0BD3'|-651.9982
+22|blob|it's|NULL|2.5|X'64D6BFCF2F90'
+23|integer|alpha|NULL|X'CE82'|123456789012
+24|2|d|NULL|NULL|NULL
+~~~

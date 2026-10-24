@@ -1,0 +1,226 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|ref
+10|NULL|NULL|NULL
+9|alpha|NULL|NULL
+8|0|1.0e-07|6
+7|Lambda|X'F10D96'|8
+6|-3|café|8
+4|-894.9031|NULL|5
+3|0|-967.18|1
+2|3.1415926535897931|X'5891B1CF'|7
+1|NULL|-274|3
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+20|NULL|NULL|NULL|NULL|d|NULL
+19|NULL|it's|NULL|-1.0e+308|467.2|NULL
+18|NULL|NULL|-765|-4.0|X'12BBC0DC96AF'|2
+17|NULL|-576|sigma|psi|-7|6
+15|NULL|NULL|zeta|NULL|NULL|2
+14|NULL|X'4A'|über|X'7569'|beta|7
+13|NULL|-9223372036854775808|xi|delta|NULL|7
+11|NULL|delta|2.5|4.0|NULL|1
+10|NULL|X'F8AB'|9223372036854775807|X'1F22E5'|x_y|7
+9|-275.397|NULL|NULL|NULL|d|NULL
+7|NULL|471.1372|epsilon|NULL|X'CE5D'|3
+6|NULL|X'64'|X'6FC7'|phi|X'1487A76E9C'|NULL
+5|NULL|5|X''|nu|NULL|5
+3|pi!|-9223372036854775808|5|3.0|4|7
+2|NULL|-758.6|NULL|X'A1542D95'|NULL|8
+1|NULL|1.0e+308|3.1415926535897931|-604.86|-4|2
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|-2
+~~~
+# id|c0|c1|c2
+8|-2|NULL|NULL
+7|NULL|1|NULL
+5|-213!|X''|123456789012
+4|X'6C9C9C'|768|X'F6CC9D27'
+3|X'CA3602FD8E'|X'6AB89F'|1.0e+308
+2|-428|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|152
+~~~
+# id|c0|c1|ref
+2|0|X'5891B1CF'|7
+3|0x1F|NULL|NULL
+4|0|NULL|5
+5|968.7393|NULL|NULL
+6|0|café|8
+8|0|1.0e-07|6
+10|NULL|NULL|NULL
+11|152|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|16
+2|16
+5|16
+6|16
+7|16
+10|16
+11|16
+13|16
+14|16
+15|16
+17|16
+18|16
+19|16
+20|16
+9|16
+3|16
+~~~
+# id
+~~~
+# id
+2
+6
+10
+14
+19
+20
+~~~
+# c1
+NULL
+-9223372036854775808
+-758.6
+-576
+5
+471.1372
+1.0e+308
+delta
+it's
+X'4A'
+X'64'
+X'F8AB'
+~~~
+# id|NULL|abs(typeof(c0)) IS NULL
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+8|NULL|0
+10|NULL|0
+11|NULL|0
+~~~
+# (CAST(-862 AS TEXT) < -55) BETWEEN CASE WHEN 146 THEN typeof(NULL) ELSE 'chi' BETWEEN 'tau' AND -786 END AND nullif(CASE WHEN -9223372036854775808 THEN 552 ELSE -366 END, ('xi' || -4))|CAST(780.3271 AS INTEGER)
+0|780
+~~~

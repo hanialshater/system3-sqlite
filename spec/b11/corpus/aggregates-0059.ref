@@ -1,0 +1,233 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+15|14|123456790224.31641|123456790224.31641|8818342158.8797436|-79|X'DD894130F8'|13
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|1|4
+-79|1|8
+-41.3836|1|9
+0|1|5
+4|1|3
+251|1|2
+391.7|1|13
+686|1|15
+123456789012|1|10
+naïve|1|12
+omicron|1|6
+psi|1|14
+X''|2|1;11
+X'DD894130F8'|1|7
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id)
+NULL|2|1,6
+-957|1|11
+-879|1|2
+-482.3|1|3
+-409|1|9
+-1|1|4
+1|1|13
+4|1|8
+eta|1|12
+omega|1|7
+zeta|1|5
+X'82E891'|1|10
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+13|13|91|91.0|7.0|1|13|13
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+15|14|123456790224.31641|123456790224.31641|8818342158.8797436|-79|X'DD894130F8'|13
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|1|4
+-79|1|8
+-41.3836|1|9
+0|1|5
+4|1|3
+251|1|2
+391.7|1|13
+686|1|15
+123456789012|1|10
+naïve|1|12
+omicron|1|6
+psi|1|14
+X''|2|1;11
+X'DD894130F8'|1|7
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|4|2;6;7;9
+-2.5|1|10
+154|1|8
+542.4286|1|3
+sigma|1|13
+upsilon|1|4
+X''|1|5
+X'5343F6860D'|1|11
+X'7BA39C6274'|1|1
+X'96E01D'|1|12
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+15|15|120|120.0|8.0|1|15|15
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+13|13|123456789530.054|123456789530.054|9496676117.6964607||X'32F01B11'|13
+~~~
+# c1|count(*)|group_concat(id)
+|1|13
+-480.146|1|11
+0|1|1
+123456789012|1|8
+4.500000000000011e-310|1|12
+996.2|1|2
+chi|1|6
+iota|1|10
+theta|1|5
+x_y|1|7
+X'10'|1|4
+X'2289B075AD'|1|3
+X'32F01B11'|1|9
+~~~
+# id|id|c0|c0
+1|5|X''|X''
+2|1|251|X'7BA39C6274'
+2|8|251|154
+4|10|NULL|-2.5
+5|7|0|NULL
+6|9|omicron|NULL
+6|11|omicron|X'5343F6860D'
+7|6|X'DD894130F8'|NULL
+7|12|X'DD894130F8'|X'96E01D'
+8|3|-79|542.4286
+~~~
+# count(*)
+15
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|13
+4|13
+13|13
+5|13
+1|13
+8|13
+10|13
+7|13
+9|13
+11|13
+6|13
+12|13
+3|13
+~~~
+# id
+~~~
+# id
+13
+~~~
+# c4
+-7
+0
+2.5
+theta
+x_y
+X'357FD4'
+X'6A560C'
+~~~
+changes: 1
+~~~
+# id|c0
+1|X''
+11|X''
+7|X'DD894130F8'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

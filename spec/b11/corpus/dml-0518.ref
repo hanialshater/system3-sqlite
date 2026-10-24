@@ -1,0 +1,200 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|3
+~~~
+# id|c0|c1|c2|c3|c4
+2|omega|-149|0.0|Lambda|Lambda
+3|0x1F|-242|naïve|chi|naïve
+4|theta|162|-48|psi|0x1F
+5|iota!|-91|-565|über|xi
+6|-691|NULL|NULL|0|d
+7|delta|483|-720.4|psi|tau
+8|beta|490|-385.45|café|beta
+9|nu|-374|NULL|eta|theta
+10|über|459|X'6E37AA91BC'|naïve|Lambda
+12|kappa|201|846.813|it's|delta
+13|upsilon|-47|871|日本|-7
+14|epsilon|229|über|a%b|café
+15|upsilon|312|X'31'|beta|sigma
+17|rho|97|5|pi|sigma
+18|rho|202|naïve|upsilon|pi
+19|epsilon|274|-4|beta|1e3
+20|MU|131|460.168|Lambda|gamma
+21|3|NULL|NULL|0|d
+~~~
+changes: 7
+~~~
+changes: 4
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+# id|c0|c1|c2|c3|ref
+2|-37.017|4|-202|X'7FB61822D3'|4
+3|0.0|-464|-8.0204|Lambda|NULL
+5|0.0|-193|-182|123456789012|4
+6|26.532|201|café|iota|NULL
+8|0.0|-390|a%b|NULL|1
+9|0.0|-252|475|1.0e+308|7
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|-2
+~~~
+# id|c0|c1|c2|c3|c4
+22|-2|NULL|NULL|0|d
+21|3|NULL|NULL|0|d
+19|epsilon|274|-4|beta|1e3
+18|rho|202|naïve|upsilon|pi
+17|rho|97|5|pi|sigma
+14|epsilon|229|über|a%b|café
+13|upsilon|-47|871|日本|-7
+12|kappa|201|846.813|it's|delta
+9|nu|-374|NULL|eta|theta
+8|beta|490|-385.45|café|beta
+7|delta|483|-720.4|psi|tau
+6|-691|NULL|NULL|0|d
+5|-25|NULL|NULL|0|d
+4|theta|162|-48|psi|0x1F
+3|-7|NULL|NULL|0|d
+2|omega|-149|0.0|Lambda|Lambda
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+# id|c0
+error: cannot store BLOB value in REAL column t1.c0
+~~~
+# id|c0|c1|c2|c3|ref
+9|NULL|-252|475|1.0e+308|7
+8|NULL|-390|a%b|NULL|1
+5|NULL|-193|-182|123456789012|4
+3|NULL|-464|-8.0204|Lambda|NULL
+2|NULL|4|-202|X'7FB61822D3'|4
+~~~
+changes: 16
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+2|MU!|-149|0.0|Lambda|Lambda
+4|text|162|-48|psi|0x1F
+5|text|NULL|NULL|0|d
+7|NULL|NULL|NULL|0|d
+8|text|490|-385.45|café|beta
+13|text|-47|871|日本|-7
+14|text|229|über|a%b|café
+17|text|97|5|pi|sigma
+19|text|274|-4|beta|1e3
+22|text|NULL|NULL|0|d
+23|NULL|NULL|NULL|0|d
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+5|5|27|27.0|5.4|2|9|5
+~~~
+# id|count(*)|group_concat(id, ';')
+2|1|2
+3|1|3
+5|1|5
+8|1|8
+9|1|9
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 1, 0)|instr('eta', '日本')|replace('eta', 'é', 'XY')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '_'|'eta' GLOB '*[a-m]*'|char(86, 283)|'eta' || '日本'|'eta' < '日本'|'eta' = '日本' COLLATE NOCASE
+3|ETA|eta||0|eta|eta|eta|657461|'eta'|101|0|1|Vě|eta日本|1|0
+~~~

@@ -1,0 +1,147 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(abs(c1) % (iif(c1, c0, 'psi') <> c0))|c0
+1|NULL|0
+2|NULL|1000000000000000.0
+3|0|-651
+4|NULL|X'6EBC'
+5|NULL|-225
+6|NULL|über
+7|0.0|x_y
+8|NULL|NULL
+9|NULL|1.0e-07
+10|NULL|NULL
+11|NULL|263.2979
+12|NULL|137
+13|NULL|-714
+14|0.0|0
+15|0.0|-859
+16|NULL|NULL
+17|NULL|X'202D'
+18|NULL|NULL
+19|0.0|omicron
+20|NULL|-1
+21|0.0|omicron
+22|NULL|851
+23|NULL|rho
+~~~
+# coalesce(typeof(NULL), x'65')|typeof(x'')
+null|blob
+~~~
+# id|c0|-(nullif(coalesce(id, id), nullif(x'dfc85d783721', id)))
+1|0|-1
+2|1000000000000000.0|-2
+3|-651|-3
+4|X'6EBC'|-4
+5|-225|-5
+6|über|-6
+7|x_y|-7
+8|NULL|-8
+9|1.0e-07|-9
+10|NULL|-10
+11|263.2979|-11
+12|137|-12
+13|-714|-13
+14|0|-14
+15|-859|-15
+16|NULL|-16
+17|X'202D'|-17
+18|NULL|-18
+19|omicron|-19
+20|-1|-20
+21|omicron|-21
+22|851|-22
+23|rho|-23
+~~~
+# 3|iif(NOT typeof('gamma'), ('xi' IS NOT CAST(NULL AS REAL)), -643.3830)
+3|1
+~~~
+# id|typeof(c0) IN (-(c2), 'MU', 959) IN (c2, NULL, NULL)|coalesce(-(c1), c0) BETWEEN iif(id IN ('iota', 9223372036854775807, -2.5), c3 IN (x'59', NULL, x'c044'), 870.2708) AND 976.30 BETWEEN NULL AND c2 IN (coalesce(NULL, NULL), 'NULL', 4.5e-310)
+1|NULL|NULL
+2|NULL|NULL
+3|NULL|NULL
+4|NULL|NULL
+5|NULL|NULL
+6|NULL|NULL
+7|NULL|NULL
+8|NULL|NULL
+9|NULL|NULL
+10|NULL|NULL
+~~~
+# 'eta'|x'99d44a768f'
+eta|X'99D44A768F'
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', 0, 4)|instr('iota', '')|replace('iota', '', 'XY')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE '%a_'|'iota' GLOB 'a*'|char(77, 570)|'iota' || ''|'iota' < ''|'iota' = '' COLLATE NOCASE
+4|IOTA|iota|iot|1|iota|iota|iota|696F7461|'iota'|105|0|0|MȺ|iota|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -1, 4)|instr('1e3', 'upsilon')|replace('1e3', 'a', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE 'a%'|'1e3' GLOB '*[a-m]*'|char(79, 536)|'1e3' || 'upsilon'|'1e3' < 'upsilon'|'1e3' = 'upsilon' COLLATE NOCASE
+3|1E3|1e3|3|0|1e3|1e3|1e3|316533|'1e3'|49|0|1|OȘ|1e3upsilon|1|0
+~~~

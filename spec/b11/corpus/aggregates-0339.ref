@@ -1,0 +1,159 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|2|2;8
+-417|1|11
+-3|1|6
+0|1|7
+1.0e-07|1|1
+47.7|1|10
+306|1|4
+123456789012|1|5
+1000000000000000|1|9
+eta|1|3
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+7|7|1000123456788945.8|1000123456788945.8|142874779541277.97|-417|1000000000000000|7
+~~~
+# c0|count(*)|group_concat(id)
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+15|15|120|120.0|8.0|1|15|15
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|11
+10|11
+11|11
+8|11
+6|11
+7|11
+4|11
+5|11
+3|11
+1|11
+9|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+11
+~~~
+# id
+-4
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+41.3509
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+15|14|-805.3|-805.3|-57.521428571428565|-1|X'05975C2FF2C2'|13
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|1|7
+-1|2|3;15
+-297|1|13
+-4|1|1
+-631.4|1|12
+-689|1|4
+19|1|6
+4|1|11
+42.0|1|9
+753.1|1|10
+a%b|1|2
+alpha|1|14
+epsilon|1|5
+X'05975C2FF2C2'|1|8
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+11|9|1000123456788945.8|1000123456788945.8|111124828532105.08|-417|eta|9
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|2|2;8
+-417|1|11
+-3|1|6
+0|1|7
+1.0e-07|1|1
+47.7|1|10
+306|1|4
+123456789012|1|5
+1000000000000000|1|9
+eta|1|3
+~~~

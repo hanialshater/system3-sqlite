@@ -1,0 +1,190 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 15
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|-649
+~~~
+# id|c0|c1|c2|ref
+1|4.0|日本|gamma|4
+2|8.0|NULL|eta|8
+3|2.0|0.1|X''|2
+4|7.0|X''|947.532|7
+6|�q!|767.799|X'359A915AD0'|1
+7|3.0|-5|X''|3
+8|NULL|NULL|NULL|NULL
+9|NULL|-26.2|676.3284|NULL
+11|8.0|3|-9223372036854775808|8
+12|6.0|NULL|NULL|6
+13|4.0|X'CFFCA7C09076'|-150|4
+14|NULL|711|NULL|NULL
+15|-649|NULL|NULL|NULL
+~~~
+changes: 13
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|NULL
+~~~
+# id|c0|c1|c2|ref
+1|0|日本|gamma|4
+2|0|NULL|eta|8
+3|kappa|NULL|NULL|NULL
+4|0|X''|947.532|7
+7|858|NULL|NULL|NULL
+8|0|NULL|NULL|NULL
+11|0|3|-9223372036854775808|8
+13|0|X'CFFCA7C09076'|-150|4
+14|0|711|NULL|NULL
+15|NULL|NULL|NULL|NULL
+~~~
+changes: 18
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|X'F15575'
+~~~
+# id|c0|c1
+1|integer|X'9B7DAC7C9F78'
+3|integer|953
+5|-7!|-146
+7|-1|NULL
+9|null|NULL
+11|integer|X'BDF6D8480A9F'
+13|integer|X'E61084C9'
+15|integer|1
+17|integer|954.324
+18|X'F15575'|NULL
+~~~
+changes: 4
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-479
+~~~
+# id|c0|c1
+1|integer|X'9B7DAC7C9F78'
+2|-75.188|NULL
+3|X'F1C7FD'|NULL
+5|-146|-146
+7|-1|NULL
+11|integer|X'BDF6D8480A9F'
+13|integer|X'E61084C9'
+17|954.324|954.324
+18|-479|NULL
+~~~
+# id|iif(CASE WHEN c1 THEN CASE WHEN c1 THEN 'pi' ELSE 701 END ELSE iif(c2, c0, NULL) END, coalesce(c2, ref) IN (typeof(c1), NULL, 'sigma'), -2)|coalesce(c0 IN (-984.67, 0, x'39ddda') IN (-976, 123456789012, -178), (-(id) % typeof(1e308)))
+1|-2|0
+2|-2|0
+3|-2|0
+4|-2|0
+7|-2|0
+8|-2|0
+11|-2|0
+13|-2|0
+14|-2|0
+15|-2|NULL
+~~~
+# -(NOT x'fa5b92' IN (60, -89, -2))|-5
+-1|-5
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+10|9|858.0|858.0|95.333333333333329|0|kappa|3
+~~~
+# c0|count(*)|group_concat(id)
+NULL|1|15
+0|7|1,2,4,8,11,13,14
+858|1|7
+kappa|1|3
+~~~

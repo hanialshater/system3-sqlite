@@ -1,0 +1,376 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 22
+~~~
+changes: 11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|-346
+~~~
+# id|c0|c1
+2|X'9D9336'|42
+3|X'3E'|NULL
+4|223.59|NULL
+6|X'9D9336'|pi
+8|X'9D9336'|1000000000000000
+10|X'9D9336'|462.67
+12|X'9D9336'|-28.09
+14|X'9D9336'|日本
+16|X'9D9336'|2
+18|X'9D9336'|X'8E5864'
+20|X'9D9336'|NULL
+22|X'9D9336'|psi
+23|-346|NULL
+~~~
+changes: 9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|46.897
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|2|NULL|NULL|NULL|NULL|NULL
+2|NULL|X'4CFF6A9F2347'|609.66|NULL|X''|NULL
+3|0|X'9D7B105B62FE'|epsilon|X''|136.1646|3
+4|0|X'8DC90672'|X''|señor|5.0|2
+6|0|NULL|3.0|251|X'27247B409152'|5
+7|0|0|X'2DAD2F'|X''|NULL|4
+8|0|X'779FF6'|NULL|naïve|X'E7CD74E2'|4
+9|300|NULL|NULL|NULL|NULL|NULL
+10|0|1000|NULL|-872|3.1415926535897931|4
+11|3|epsilon|señor|NULL|X'856DDD'|NULL
+12|0|X'2FB59CC8FBC3'|X'5466E157F9AB'|NULL|señor|4
+13|46.897|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 13
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|NULL
+~~~
+# id|c0|c1
+2|42|42
+3|NULL|NULL
+4|1e3|NULL
+5|223.9|NULL
+6|0.0|pi
+10|462.67|462.67
+14|0.0|日本
+18|0.0|X'8E5864'
+22|0.0|psi
+23|NULL|NULL
+24|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|282.4
+~~~
+# id|c0|c1
+2|42|42
+3|NULL|NULL
+4|1e3|NULL
+5|omega|NULL
+6|0.0|pi
+8|NULL|NULL
+10|462.67|462.67
+14|0.0|日本
+18|0.0|X'8E5864'
+22|0.0|psi
+23|NULL|NULL
+24|NULL|NULL
+25|282.4|NULL
+~~~
+changes: 12
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|0
+~~~
+# id|c0|c1|c2|c3|c4|ref
+13|0|NULL|NULL|NULL|NULL|NULL
+12|0|X'2FB59CC8FBC3'|X'5466E157F9AB'|NULL|señor|4
+11|0|epsilon|señor|NULL|X'856DDD'|NULL
+10|0|1000|NULL|-872|3.1415926535897931|4
+8|0|X'779FF6'|NULL|naïve|X'E7CD74E2'|4
+7|0|0|X'2DAD2F'|X''|NULL|4
+6|NULL|NULL|3.0|251|X'27247B409152'|5
+4|0|X'8DC90672'|X''|señor|5.0|2
+3|it's|NULL|NULL|NULL|NULL|NULL
+2|0|X'4CFF6A9F2347'|609.66|NULL|X''|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|-331
+~~~
+# id|c0|c1
+1|NULL|NULL
+2|42|42
+3|NULL|NULL
+4|1e3|NULL
+5|omega|NULL
+8|NULL|NULL
+10|462.67|462.67
+14|0.0|日本
+18|0.0|X'8E5864'
+22|0.0|psi
+23|NULL|NULL
+24|NULL|NULL
+25|282.4|NULL
+26|-331|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|0.0
+~~~
+# id|c0|c1|c2|c3
+1|NULL|NULL|NULL|NULL
+2|1e3|-630|NULL|rho
+3|542.6204|0.1|-2.0|1.0e-07
+5|NULL|999.9723|X''|2.5
+6|-5|NULL|NULL|NULL
+8|142.119|-7|NULL|2
+9|56.122|X'0CF6C00F'|omega|epsilon
+11|X'931A38AD4C7D'|-276.558|0.0|NULL
+12|1.0e+308|42|delta|-276.3309
+14|459|X'6A5FDC3325'|x_y|215
+15|alpha|-550.3156|X'6A'|NULL
+17|X'C66B0F80'|xi|0x1F|NULL
+18|NULL|naïve|kappa|X'1BEF91'
+19|0.0|NULL|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+17|8
+11|7
+15|8
+2|2
+12|7
+3|3
+14|8
+8|6
+9|6
+19|9
+6|5
+1|1
+5|5
+18|9
+~~~
+# id
+1
+2
+3
+5
+8
+14
+18
+~~~
+# id
+3
+6
+8
+9
+12
+14
+17
+18
+~~~
+# id
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+1
+2
+3
+5
+6
+8
+9
+11
+12
+14
+15
+17
+18
+~~~
+changes: 1
+~~~
+# id|c0
+6|-5
+19|0.0
+9|56.122
+8|142.119
+14|459
+3|542.6204
+12|1.0e+308
+2|1e3
+15|alpha
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

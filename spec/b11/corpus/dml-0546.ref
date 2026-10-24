@@ -1,0 +1,187 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 20
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|nu
+~~~
+# id|c0|c1|c2|c3
+20|nu|NULL|0|NULL
+19|-40.96|NULL|-4|zeta
+18|-40.96|X'9AC8D959'|5|-1
+17|-40.96|1000000000000000.0|X'B346AA1584'|2
+16|-40.96|chi|nu|NULL
+14|-40.96|252|4|-1.0e+308
+13|-40.96|X'6F'|2.5|30.6194
+12|-40.96|1.0e+308|4|3
+11|-40.96|X'D936805F8135'|X''|NULL
+9|X'41279B089F'|NULL|0|NULL
+8|-40.96|X'53D91F30'|X'3F67'|X'32AC256B'
+7|-40.96|X'F0769A9F'|X'05'|X'176685'
+6|3!|95|-7|X'29126D728C'
+4|-40.96|-148|-5|-3
+3|-40.96|a%b|148|tau
+2|-40.96|X''|omicron| pad 
+1|-40.96|X''|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|theta
+~~~
+# id|c0|c1|c2|ref
+1|94|819.85|587|NULL
+2|-2.5|-2|0|3
+3|NULL|NULL|日本|5
+4|NULL|NULL|0|NULL
+5|NULL|sigma|-754|3
+6|X'623A12ECA68D'|-9223372036854775808|omicron|7
+9|199.353|NULL|0|NULL
+10|theta|NULL|0|NULL
+~~~
+changes: 8
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|469.9
+~~~
+# id|c0|c1|c2|ref
+2|-2|-2|0|3
+4|-481.09!|NULL|0|NULL
+6|-6|-9223372036854775808|omicron|7
+7|X''|NULL|0|NULL
+10|-10|NULL|0|NULL
+11|469.9|NULL|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|alpha
+~~~
+# id|c0|c1|c2|c3
+7|alpha|0|0.0|NULL
+6|X'31DA'|0|0.0|NULL
+3|X'BD'|0|X'F4AF26'|9223372036854775807
+2|X'BF8DB981'|-279|pi|-216.1
+1|2d~�!|iota|X'E8'|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|phi
+~~~
+# id|c0|c1|c2|c3
+1|9223372036854775807|0|0.0|NULL
+2|日本|-279|pi|-216.1
+3|日本|0|X'F4AF26'|9223372036854775807
+5|X'2B'|0|0.0|NULL
+6|日本|0|0.0|NULL
+7|phi|0|0.0|NULL
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', -1, 1)|instr('NULL', 'Lambda')|replace('NULL', 'e', 'XY')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE 'a%'|'NULL' GLOB 'a*'|char(82, 534)|'NULL' || 'Lambda'|'NULL' < 'Lambda'|'NULL' = 'Lambda' COLLATE NOCASE
+4|NULL|null|L|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|RȖ|NULLLambda|0|0
+~~~
+# id|c0 BETWEEN coalesce(c0, c3) AND NULL BETWEEN (c0 = id BETWEEN 984.5 AND NULL) AND c1|-(NULL IS NULL)
+1|NULL|-1
+2|NULL|-1
+3|NULL|-1
+5|NULL|-1
+6|NULL|-1
+7|NULL|-1
+~~~
+# 340|CAST(typeof(CASE WHEN -657.4429 THEN 'x_y' ELSE 3.8694 END) AS REAL)
+340|0.0
+~~~

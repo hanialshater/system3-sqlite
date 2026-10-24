@@ -1,0 +1,171 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 0, 4)|instr('xi', 'delta')|replace('xi', '', 'XY')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE 'a%'|'xi' GLOB '?'|char(82, 403)|'xi' || 'delta'|'xi' < 'delta'|'xi' = 'delta' COLLATE NOCASE
+2|XI|xi|xi|0|xi|xi|xi|7869|'xi'|120|0|0|RƓ|xidelta|0|0
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', 4, 0)|instr('MU', 'xi')|replace('MU', '', '')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE 'a%'|'MU' GLOB 'a*'|char(85, 849)|'MU' || 'xi'|'MU' < 'xi'|'MU' = 'xi' COLLATE NOCASE
+2|MU|mu||0|MU|MU|MU|4D55|'MU'|77|0|0|U͑|MUxi|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 1, 4)|instr('pi', 'x_y')|replace('pi', 'é', 'XY')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%é%'|'pi' GLOB '*'|char(69, 585)|'pi' || 'x_y'|'pi' < 'x_y'|'pi' = 'x_y' COLLATE NOCASE
+2|PI|pi|pi|0|pi|pi|pi|7069|'pi'|112|0|1|Eɉ|pix_y|1|0
+~~~
+# length('epsilon')|upper('epsilon')|lower('epsilon')|substr('epsilon', -1, 4)|instr('epsilon', 'psi')|replace('epsilon', '', 'XY')|trim('epsilon')|ltrim('epsilon', 'ab')|hex('epsilon')|quote('epsilon')|unicode('epsilon')|'epsilon' LIKE '%a_'|'epsilon' GLOB '*[a-m]*'|char(76, 457)|'epsilon' || 'psi'|'epsilon' < 'psi'|'epsilon' = 'psi' COLLATE NOCASE
+7|EPSILON|epsilon|n|2|epsilon|epsilon|epsilon|657073696C6F6E|'epsilon'|101|0|1|Lǉ|epsilonpsi|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+10|10
+2|2
+20|10
+13|10
+9|9
+18|10
+17|10
+8|8
+6|6
+5|5
+4|4
+3|3
+19|10
+15|10
+12|10
+7|7
+16|10
+14|10
+11|10
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# id
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# id
+4
+6
+7
+~~~
+changes: 0
+~~~
+changes: 10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+21|NULL|NULL|NULL|d|NULL|NULL
+20|tau|0|NULL|478|omicron|1
+18|NULL|rho|X'0A'|1.0e+308|X'B7A7F01FDC8F'|2
+16|NULL|-902.2727|a%b|NULL|323|6
+14|598.77|omega|NULL|0|NULL|6
+12|X'7716DBE9'|NULL|NULL|-2|NULL|4
+10|3|-2.5|-44|NULL|pi|NULL
+8|-742|NULL|X'A955FBBEF6'|epsilon|1.0e-07|2
+6|NULL|NULL|psi|34.0452|0.1|2
+5|Ελλάδα|NULL|NULL|d|NULL|NULL
+4|NULL|3|0|X'0ABA3DCAA8C5'|alpha|2
+2|NULL|529|alpha|-5|NULL|NULL
+1|X'231AFD'|NULL|NULL|d|NULL|NULL
+~~~

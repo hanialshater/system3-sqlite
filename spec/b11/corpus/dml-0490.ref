@@ -1,0 +1,311 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|0.0
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|integer|0|2|X'F8EB97B4'|X'50BD'|6
+2|3.0|0|0|NULL|0|NULL
+3|�!|0|0|NULL|X'4DBB0B6BD4C7'|1
+4|integer|café|pi|597|5|8
+5|0.0|0|0|NULL|0|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|NULL
+~~~
+# id|c0|c1|c2|c3
+1|NULL|392|905.9|señor
+2|NULL|X'930043'|alpha|NULL
+3|5!|Ελλάδα|4.500000000000011e-310|-343
+4|-320.6|2|a%b|NULL
+6|3|NULL|X''|X'A7D39989'
+7|2|epsilon|-4|415
+8|NULL|über|-634|662
+9|NULL|NULL|0|NULL
+11|5|1.0e+308|naïve|naïve
+12|X'63'|NULL||0
+13|chi|xi|0|gamma
+14|-6|X'2B309F0127'|-530.9|café
+15|NULL|NULL|0|NULL
+~~~
+changes: 13
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|1.0e+308
+~~~
+# id|c0|c1|c2|c3
+1|NULL|NULL|0|NULL
+2|NULL|X'930043'|alpha|NULL
+3|delta|NULL|0|NULL
+4|NULL|2|a%b|NULL
+6|X'A7D39989'|NULL|X''|X'A7D39989'
+7|415|epsilon|-4|415
+8|662|über|-634|662
+11|naïve|1.0e+308|naïve|naïve
+12|0|NULL||0
+14|café|X'2B309F0127'|-530.9|café
+15|NULL|NULL|0|NULL
+16|1.0e+308|NULL|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|995
+~~~
+# id|c0|c1|c2|c3
+1|NULL|NULL|0|NULL
+2|NULL|X'930043'|alpha|NULL
+3|delta|NULL|0|NULL
+4|NULL|2|a%b|NULL
+6|X'A7D39989'|NULL|X''|X'A7D39989'
+7|415|epsilon|-4|415
+8|X'A408BFDB284D'|NULL|0|NULL
+11|naïve|1.0e+308|naïve|naïve
+12|0|NULL||0
+14|café|X'2B309F0127'|-530.9|café
+16|1.0e+308|NULL|0|NULL
+17|995|NULL|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|X'450E4FDA76'
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|0|2|X'F8EB97B4'|X'50BD'|6
+2|3.0|0|0|NULL|0|NULL
+3|�!|0|0|NULL|X'4DBB0B6BD4C7'|1
+4|NULL|0|0|NULL|0|NULL
+5|X'450E4FDA76'|0|0|NULL|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|X'90'
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|0|2|X'F8EB97B4'|X'50BD'|6
+2|3.0|0|0|NULL|0|NULL
+4|NULL|0|0|NULL|0|NULL
+5|a%b!|0|0|NULL|0|NULL
+6|X'37ED5E103A59'|0|0|NULL|0|NULL
+7|X'90'|0|0|NULL|0|NULL
+~~~
+changes: 6
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|X'5DEE1ED6'
+~~~
+# id|c0|c1|c2|c3|c4|ref
+7|X'5DEE1ED6'|0|0|NULL|0|NULL
+6|0.0|0|0|NULL|0|NULL
+4|NULL|0|0|NULL|0|NULL
+3|X'AD8D518812AB'|0|0|NULL|0|NULL
+2|0.0|0|0|NULL|0|NULL
+1|NULL|0|0|NULL|0|NULL
+~~~
+changes: 1
+~~~
+# id|c3
+7|NULL
+12|NULL
+16|NULL
+6|-9223372036854775808
+22|-309.6565
+4|-4
+18|-3
+5|4.500000000000011e-310
+14|2
+3|119.2
+21|927
+9|-7
+2|sigma
+15|Ελλάδα
+20|X''
+19|X'0C54'
+8|X'2FBE'
+11|X'511D5D'
+17|X'53F96178'
+13|X'6B9CA1669BEF'
+10|X'6EA0'
+1|X'70C7BC6E'
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+7|6
+6|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+1
+2
+3
+4
+6
+7
+~~~
+# id
+4
+~~~
+# c3
+NULL
+1
+2
+3
+4
+6
+7
+~~~
+# id|id|c0|c2
+1|1|NULL|0
+2|2|0.0|alpha
+3|3|X'AD8D518812AB'|0
+4|4|NULL|a%b
+6|6|0.0|X''
+7|7|X'5DEE1ED6'|-4
+~~~
+error: near "(": syntax error
+~~~

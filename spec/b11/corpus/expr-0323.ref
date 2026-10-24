@@ -1,0 +1,266 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|coalesce(c1, iif(x'187273eb' IS NULL, (c3 & NULL), x'521a85'))|c0
+1|X'521A85'|NULL
+2|omicron|X'8B6D4E5E19'
+3|764|NULL
+4|-3|13.66
+5|1000000000000000|-9223372036854775808
+6|-4|NULL
+7|X'521A85'|x_y
+8|365.377|901.697
+9|omicron|0.1
+10|kappa|beta
+11|X'521A85'|X'B9B44D07BC'
+~~~
+# x'0a'|CAST(x'' AS REAL)
+X'0A'|0.0
+~~~
+# id|coalesce(-(nullif(id, 129.5)), (c0 IN (x'eafa', NULL, 5) IS NOT 1e-7))|(CAST('NULL' AS BLOB) AND c3 IN (id, 'gamma', 'theta') IS NULL)
+1|-1|0
+2|-2|0
+3|-3|0
+4|-4|0
+5|-5|0
+6|-6|0
+7|-7|0
+8|-8|0
+9|-9|0
+10|-10|0
+11|-11|0
+~~~
+# nullif(3, CASE WHEN 2.5 THEN -629 ELSE NULL END) IN (x'82e4ba104c92', -649.98, 'naïve')|iif('epsilon', iif('日本', 'it''s', -183) IN (x'be39b363d9c8', NULL, 'omicron'), 'phi')
+0|phi
+~~~
+# id|iif(x'da1a', id, 'café')|(id IS id) IS NULL IN (2.5, 'alpha', x'4cd3')
+10|café|0
+9|café|0
+8|café|0
+7|café|0
+6|café|0
+5|café|0
+4|café|0
+3|café|0
+2|café|0
+1|café|0
+~~~
+# x'67dbfd3f6f26' BETWEEN 3.141592653589793 AND iif(CAST(4.5e-310 AS REAL), x'' IS NULL, 869)|-(x'7941ef5b4b0b' IS NULL)
+0|0
+~~~
+# id|-((c3 << abs('phi')))|CASE WHEN c3 THEN typeof(CAST('x_y' AS INTEGER)) ELSE typeof(-(c0)) END
+1|346|integer
+2|0|integer
+3|0|null
+4|0|real
+5|-58|integer
+6|641|integer
+7|-5|integer
+8|-1|integer
+9|-347|integer
+10|484|integer
+11|0|integer
+~~~
+# NULL|1.0e15 IN ('nu' IS NULL, -845, 3) BETWEEN -3 AND abs('omicron')
+NULL|1
+~~~
+# id|iif(id, c1, 1)|(-909 | NOT NOT x'31d2ef')
+11|NULL|-909
+10|kappa|-909
+9|omicron|-909
+8|365.377|-909
+7|NULL|-909
+6|-4|-909
+5|1000000000000000|-909
+4|-3|-909
+3|764|-909
+2|omicron|-909
+1|NULL|-909
+~~~
+# CAST(typeof(NULL) AS REAL)|abs(abs('it''s'))
+0.0|0.0
+~~~
+# id|CASE WHEN typeof(325) THEN (coalesce(id, NULL) - NULL BETWEEN id AND id) ELSE -(typeof(id)) END|1
+1|0|1
+2|0|1
+3|0|1
+4|0|1
+5|0|1
+6|0|1
+7|0|1
+8|0|1
+9|0|1
+10|0|1
+~~~
+# NOT x'' BETWEEN NULL AND -515 IN (-3 BETWEEN '-7' AND 'delta', 627, NULL)|x'81ae8528'
+0|X'81AE8528'
+~~~
+# id|c1|(c1 AND CASE WHEN c1 THEN iif('phi', c0, NULL) ELSE typeof(x'42d85834544c') END)
+1|NULL|0
+2|omicron|0
+3|764|NULL
+4|-3|NULL
+5|1000000000000000|NULL
+6|-4|NULL
+7|NULL|0
+8|365.377|NULL
+9|omicron|0
+10|kappa|0
+11|NULL|0
+~~~
+# NULL|typeof(coalesce(-(x'ca45854ccb'), nullif(NULL, 'Lambda')))
+NULL|integer
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|11
+7|11
+11|11
+6|11
+4|11
+8|11
+3|11
+5|11
+10|11
+2|11
+9|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# c0
+NULL
+-9223372036854775808
+-703.8894
+-645.0
+-381.0
+-111.0
+0.1
+13.66
+901.697
+beta
+eta
+señor
+x_y
+X''
+X'252688'
+X'43837DAD'
+X'8B6D4E5E19'
+X'B9B44D07BC'
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|-521
+~~~
+# id|c0|c1|c2|c3
+1|NULL|NULL|X''|-346
+2|X'092875'|d|NULL|NULL
+4|13.66|-3|-381.0|beta
+5|-9223372036854775808|1000000000000000|-645.0|58
+6|-298|d|NULL|NULL
+7|x_y|NULL|NULL|5
+8|901.697|365.377|-111.0|1
+10|beta|kappa|eta|-484
+11|X'B9B44D07BC'|NULL|-703.8894|0
+12|-521|d|NULL|NULL
+~~~

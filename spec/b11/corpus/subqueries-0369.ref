@@ -1,0 +1,434 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+3|20
+4|20
+16|20
+18|20
+12|20
+1|20
+9|20
+2|20
+17|20
+7|20
+20|20
+13|20
+11|20
+10|20
+19|20
+5|20
+8|20
+14|20
+15|20
+6|20
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# c2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# id
+~~~
+# c3
+日本
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+5|5
+8|8
+7|7
+3|3
+4|4
+6|6
+1|1
+~~~
+# id
+1
+2
+4
+6
+7
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c2
+-5
+-2.5
+0.0
+1
+1
+2
+3
+4
+5
+6
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+5|5
+8|8
+7|7
+3|3
+4|4
+6|6
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c4
+NULL
+
+-3
+-7
+-78
+0
+123456789012
+2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+4|4
+2|2
+6|6
+3|3
+8|8
+7|7
+5|5
+1|1
+~~~
+# id
+1
+4
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# id
+4
+5
+6
+7
+8
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+5|5
+8|8
+7|7
+3|3
+4|4
+6|6
+1|1
+~~~
+# id
+1
+2
+3
+4
+7
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c4
+NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|20
+6|20
+7|20
+9|20
+10|20
+11|20
+12|20
+4|20
+5|20
+1|20
+17|20
+13|20
+3|20
+14|20
+19|20
+20|20
+8|20
+16|20
+18|20
+15|20
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# id
+19
+20
+~~~
+# c0
+~~~
+changes: 20
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X'662E71'
+~~~
+# id|c0|c1|c2
+1|4.0|NULL|NULL
+2|NULL|NULL|alpha
+3|NULL|kappa|日本
+4|NULL|-692|X'E746D21FC6'
+5|4.0!|0|NULL
+7|NULL|NULL|café
+8|NULL|X'489828C21CDF'|997.3
+9|NULL|NULL|0
+10|NULL|NULL|33
+12|NULL|NULL|-3
+13|NULL|epsilon|NULL
+14|0.0|omega|X'00D9'
+15|NULL|X'DF5E0676CA'|-78
+17|NULL|793.373|
+18|NULL|X'CC60'|X'AF71B8'
+19|NULL|zeta|NULL
+20|NULL|X''|x_y
+21|X'662E71'|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|18
+2|18
+3|18
+4|18
+5|18
+7|18
+8|18
+9|18
+10|18
+12|18
+13|18
+14|18
+15|18
+17|18
+18|18
+19|18
+20|18
+21|18
+~~~
+# id
+1
+2
+3
+4
+5
+7
+8
+9
+10
+12
+13
+14
+15
+17
+18
+19
+20
+21
+~~~
+# id
+4
+9
+14
+20
+21
+~~~
+# id
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+~~~
+# id|id|c1|c1
+1|1|NULL|NULL
+2|2|NULL|NULL
+3|3|kappa|kappa
+4|4|-692|-692
+5|5|0|0
+7|7|NULL|NULL
+8|8|X'489828C21CDF'|X'489828C21CDF'
+9|9|NULL|NULL
+10|10|NULL|NULL
+12|12|NULL|NULL
+13|13|epsilon|epsilon
+14|14|omega|omega
+15|15|X'DF5E0676CA'|X'DF5E0676CA'
+17|17|793.373|793.373
+18|18|X'CC60'|X'CC60'
+19|19|zeta|zeta
+20|20|X''|X''
+21|21|NULL|NULL
+~~~
+error: near "NOT": syntax error
+~~~

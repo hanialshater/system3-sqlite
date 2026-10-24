@@ -1,0 +1,118 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 0, 1)|instr('gamma', 'Lambda')|replace('gamma', '', '_')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE 'a%'|'gamma' GLOB '*'|char(80, 979)|'gamma' || 'Lambda'|'gamma' < 'Lambda'|'gamma' = 'Lambda' COLLATE NOCASE
+5|GAMMA|gamma||0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|1|Pϓ|gammaLambda|0|0
+~~~
+# length('')|upper('')|lower('')|substr('', 2, 2)|instr('', 'MU')|replace('', '', 'XY')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE 'A%'|'' GLOB '*[a-m]*'|char(75, 453)|'' || 'MU'|'' < 'MU'|'' = 'MU' COLLATE NOCASE
+0||||0|||||''|NULL|0|0|Kǅ|MU|1|0
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', -1, 5)|instr('delta', ' pad ')|replace('delta', '', 'XY')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE 'A%'|'delta' GLOB '?'|char(79, 681)|'delta' || ' pad '|'delta' < ' pad '|'delta' = ' pad ' COLLATE NOCASE
+5|DELTA|delta|a|0|delta|delta|delta|64656C7461|'delta'|100|0|0|Oʩ|delta pad |0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 0, 4)|instr('rho', 'chi')|replace('rho', '', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '%é%'|'rho' GLOB 'a*'|char(67, 602)|'rho' || 'chi'|'rho' < 'chi'|'rho' = 'chi' COLLATE NOCASE
+3|RHO|rho|rho|0|rho|rho|rho|72686F|'rho'|114|0|0|Cɚ|rhochi|0|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 3, 4)|instr('omega', 'chi')|replace('omega', 'e', 'XY')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '%a_'|'omega' GLOB '?'|char(90, 726)|'omega' || 'chi'|'omega' < 'chi'|'omega' = 'chi' COLLATE NOCASE
+5|OMEGA|omega|ega|0|omXYga|omega|omega|6F6D656761|'omega'|111|0|0|Z˖|omegachi|0|0
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', 3, 3)|instr('phi', 'xi')|replace('phi', 'é', 'XY')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '_'|'phi' GLOB '*[a-m]*'|char(81, 983)|'phi' || 'xi'|'phi' < 'xi'|'phi' = 'xi' COLLATE NOCASE
+3|PHI|phi|i|0|phi|phi|phi|706869|'phi'|112|0|1|Qϗ|phixi|1|0
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT nullif(coalesce(x'', c0), coalesce(1, c0))|c1
+1|1|X''
+2|1|-2
+3|1|1000000000000000
+4|1|NULL
+5|1|X'6313'
+6|1|X'66E7'
+7|1|X'A48C'
+8|1|X'64A6A66802C8'
+9|1|-576
+10|1|-943
+11|1|430
+12|1|0
+13|1|X''
+14|1|X'45B9D4489A3C'
+~~~
+# NULL BETWEEN NULL AND coalesce('delta', 'naïve') BETWEEN CASE WHEN 'upsilon' THEN 'epsilon' ELSE x'c04ea9cf80' END AND 'Lambda'|(typeof(NULL) AND iif(2, NULL, x'76e4')) IN (-(NULL), 'phi', 'tau')
+NULL|NULL
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+9|8|1000000000001741.5|1000000000001741.5|125000000000217.69|-3|pi|8
+~~~
+# c3|count(*)|group_concat(id, ';')
+~~~

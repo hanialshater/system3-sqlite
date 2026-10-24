@@ -1,0 +1,250 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(CASE WHEN (NULL < x'97fb') THEN '42' ELSE coalesce(id, c2) END / typeof(c1))|-(CASE WHEN -2.5 THEN x'4f38' ELSE c0 END IS NULL)
+20|NULL|0
+19|NULL|0
+18|NULL|0
+17|NULL|0
+16|NULL|0
+15|NULL|0
+14|NULL|0
+13|NULL|0
+12|NULL|0
+11|NULL|0
+10|NULL|0
+9|NULL|0
+8|NULL|0
+7|NULL|0
+6|NULL|0
+5|NULL|0
+4|NULL|0
+3|NULL|0
+2|NULL|0
+1|NULL|0
+~~~
+# nullif(CASE WHEN coalesce(x'b970bf8a', 333) THEN NULL BETWEEN 436 AND NULL ELSE -(-394.045) END, coalesce(-798.6536, x'924dc206'))|abs(CAST((2.5 IS 'omicron') AS NUMERIC))
+394.045|0
+~~~
+# id|'beta'|iif(id, id, NULL)
+1|beta|1
+2|beta|2
+3|beta|3
+4|beta|4
+5|beta|5
+6|beta|6
+7|beta|7
+8|beta|8
+9|beta|9
+10|beta|10
+11|beta|11
+12|beta|12
+13|beta|13
+14|beta|14
+15|beta|15
+~~~
+# 2.5|CASE WHEN 2 IS NULL THEN nullif(1.0e15 BETWEEN x'a52942b74d' AND 'epsilon', nullif(-254, -82)) ELSE x'43b720' BETWEEN -(81.9) AND abs(-0.0) END
+2.5|0
+~~~
+# id|CASE WHEN typeof(c3) THEN CAST(c1 AS BLOB) ELSE c0 IN (NULL, 488, x'9ab4fb6253') END IS NULL|nullif(CASE WHEN c2 THEN -(c2) ELSE abs(NULL) END, NOT -(x''))
+1|1|NULL
+2|1|NULL
+3|1|NULL
+4|1|NULL
+5|1|3
+6|1|NULL
+7|1|566
+8|1|NULL
+9|1|1.0e+308
+10|1|2
+11|1|NULL
+12|1|856
+13|1|NULL
+14|1|102.883
+15|1|926
+16|1|NULL
+17|1|NULL
+18|1|NULL
+19|1|NULL
+20|1|NULL
+~~~
+# -(CAST('theta' AS INTEGER) IS NULL)|nullif(NULL, 4) IS NULL IN ((x'44' <> NULL) BETWEEN x'090224429275' IN ('omega', '42', -2) AND CAST(x'5b16c130' AS INTEGER), 836, 123456789012)
+0|NULL
+~~~
+# id|(iif(1, CAST(c1 AS BLOB), x'9220ac') + -(-(id)))|nullif(x'2e1933fc' BETWEEN -(x'23b5ce5b186b') AND NOT NULL, c0)
+1|-6|NULL
+2|2|NULL
+3|3|NULL
+4|4|NULL
+5|5|NULL
+6|NULL|NULL
+7|7|NULL
+8|9|NULL
+9|9|NULL
+10|11|NULL
+11|NULL|NULL
+12|12|NULL
+13|NULL|NULL
+14|14|NULL
+15|15|NULL
+~~~
+# -0.0|typeof(x'aa' IN (NULL, 'NULL', 'eta') IS NULL)
+0.0|integer
+~~~
+# id|CASE WHEN id THEN iif(c0 IS NULL, coalesce(x'36e195302a', c2), x'6fb5') ELSE CASE WHEN id THEN CAST(c1 AS BLOB) ELSE x'7c1081' IS NULL END END|typeof(-(nullif(id, c1)))
+13|X'6FB5'|integer
+12|X'6FB5'|integer
+11|X'6FB5'|integer
+10|X'6FB5'|integer
+9|X'6FB5'|integer
+8|X'6FB5'|integer
+7|X'6FB5'|integer
+6|X'6FB5'|integer
+5|X'6FB5'|integer
+4|X'6FB5'|integer
+3|X'6FB5'|integer
+2|X'6FB5'|integer
+1|X'36E195302A'|integer
+~~~
+# nullif(CAST(nullif('theta', 'xi') AS INTEGER), NOT 'iota' IS NULL)|coalesce((-5 IS NULL IS NOT CAST('zeta' AS INTEGER)), abs(x'fcda02') BETWEEN 'nu' IS NULL AND x'b46a')
+0|0
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+~~~
+# id
+~~~
+# id
+~~~
+# c1
+eta
+gamma
+pi
+日本
+X''
+X'A3'
+~~~

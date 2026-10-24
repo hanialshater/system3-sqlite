@@ -1,0 +1,296 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 14
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|X'C56E47A7'
+~~~
+# id|c0|c1|c2|ref
+2|NULL|0|d|NULL
+3|0|X''|NULL|NULL
+4|604|-604|X'B88D69'|7
+6|über!|0|374.0|6
+7|0|a%b|848.7|NULL
+8|-825|825|X'BD963762A5'|1
+10|-201|201|NULL|3
+11|2.5|-2.5|X'FA2FE74C'|1
+12|-1000000000000000|1000000000000000|X'4D7D'|5
+14|3|-3|1.0|2
+15|X'C56E47A7'|0|d|NULL
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|
+~~~
+# id|c0|c1
+21||NULL
+20|0.0|X'0FFF'
+19|0.0|-132
+18|0.0|-617
+16|0.0|MU
+15|0.0|omega
+14|0.0|epsilon
+12|0.0|delta
+11|0.0|Ελλάδα
+10|0.0|MU
+9|Lambda|NULL
+8|0.0|266.5
+7|0.0|epsilon
+6|0.0|pi
+4|NULL|-504
+3|0.0|X'E46FCD'
+2|0.0|delta
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2|ref
+16|NULL|0|d|NULL
+15|0|0|d|NULL
+14|0|-3|1.0|2
+12|0|1000000000000000|X'4D7D'|5
+11|0|-2.5|X'FA2FE74C'|1
+8|0|825|X'BD963762A5'|1
+6|�Y�!|0|374.0|6
+3|0|X''|NULL|NULL
+2|0|0|d|NULL
+1|pi|0|d|NULL
+~~~
+changes: 1
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-929.427
+~~~
+# id|c0|c1
+1|-4.0|NULL
+2|0.0|delta
+4|-504.0|-504
+6|0.0|pi
+8|0.0|266.5
+10|0.0|MU
+12|0.0|delta
+14|0.0|epsilon
+16|0.0|MU
+18|0.0|-617
+20|0.0|X'0FFF'
+21|-929.427|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2|ref
+1|rho|0|d|NULL
+2|0|0|d|NULL
+3|0|X''|NULL|NULL
+6|1000000000000000.0!|0|374.0|6
+11|0|-2.5|X'FA2FE74C'|1
+14|0|-3|1.0|2
+15|0|0|d|NULL
+16|NULL|0|d|NULL
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1
+2|-3.0!|delta
+4|1.0|NULL
+6|0.0|pi
+8|-266.5|266.5
+10|0.0|MU
+12|0.0|delta
+14|0.0|epsilon
+16|0.0|MU
+18|617.0|-617
+20|0.0|X'0FFF'
+21|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|it's
+~~~
+# id|c0|c1|c2|ref
+2|d|0|d|NULL
+3|0.1!|X''|NULL|NULL
+6|374.0|0|374.0|6
+8|alpha|0|d|NULL
+11|X'FA2FE74C'|-2.5|X'FA2FE74C'|1
+14|1.0|-3|1.0|2
+15|d|0|d|NULL
+16|d|0|d|NULL
+17|it's|0|d|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+11|9
+2|9
+8|9
+15|9
+16|9
+17|9
+6|9
+14|9
+3|9
+~~~
+# id
+2
+3
+6
+8
+11
+14
+15
+16
+17
+~~~
+# id
+2
+14
+15
+16
+~~~
+# id
+~~~
+changes: 1
+~~~
+# id|id
+2|2
+4|4
+6|6
+8|8
+10|10
+12|12
+14|14
+16|16
+18|18
+20|20
+21|21
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 2, 4)|instr('tau', 'señor')|replace('tau', 'e', 'XY')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%é%'|'tau' GLOB '?'|char(84, 583)|'tau' || 'señor'|'tau' < 'señor'|'tau' = 'señor' COLLATE NOCASE
+3|TAU|tau|au|0|tau|tau|tau|746175|'tau'|116|0|0|Tɇ|tauseñor|0|0
+~~~

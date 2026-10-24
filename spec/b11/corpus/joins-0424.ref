@@ -1,0 +1,288 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c4
+1|1|NULL|-806
+1|2|NULL|-768.6
+1|3|NULL|señor
+1|4|NULL|363
+1|5|NULL|-780
+1|6|NULL|249
+2|1|X'B321C1E8'|-806
+2|2|X'B321C1E8'|-768.6
+2|3|X'B321C1E8'|señor
+2|4|X'B321C1E8'|363
+2|5|X'B321C1E8'|-780
+2|6|X'B321C1E8'|249
+3|1|-137.0|-806
+3|2|-137.0|-768.6
+3|3|-137.0|señor
+3|4|-137.0|363
+3|5|-137.0|-780
+3|6|-137.0|249
+4|1|NULL|-806
+4|2|NULL|-768.6
+4|3|NULL|señor
+4|4|NULL|363
+4|5|NULL|-780
+4|6|NULL|249
+5|1|325.0|-806
+5|2|325.0|-768.6
+5|3|325.0|señor
+5|4|325.0|363
+5|5|325.0|-780
+5|6|325.0|249
+6|1|café|-806
+6|2|café|-768.6
+6|3|café|señor
+6|4|café|363
+6|5|café|-780
+6|6|café|249
+7|1|alpha|-806
+7|2|alpha|-768.6
+7|3|alpha|señor
+7|4|alpha|363
+7|5|alpha|-780
+7|6|alpha|249
+8|1|569.838|-806
+~~~
+# count(*)
+9
+~~~
+# id|id|id|c3
+1|2|1|X'F44C'
+1|3|1|0.1
+1|4|1|-2
+1|5|1|phi
+1|6|1|X'849DC4A275B1'
+2|3|2|0.1
+2|4|2|-2
+2|5|2|phi
+2|6|2|X'849DC4A275B1'
+3|4|3|-2
+3|5|3|phi
+3|6|3|X'849DC4A275B1'
+4|5|4|phi
+4|6|4|X'849DC4A275B1'
+5|6|5|X'849DC4A275B1'
+6|NULL|6|NULL
+~~~
+# count(*)
+5
+~~~
+# id|id|id|c3
+1|1|1|-318
+2|2|2|X'F44C'
+3|3|3|0.1
+4|4|4|-2
+5|5|5|phi
+6|6|6|X'849DC4A275B1'
+~~~
+# count(*)
+6
+~~~
+# id|id|c1|c1
+1|1|NULL|NULL
+1|2|NULL|-5
+1|3|NULL|NULL
+1|4|NULL|450
+1|5|NULL|NULL
+1|6|NULL|388
+2|1|alpha|NULL
+2|2|alpha|-5
+2|3|alpha|NULL
+2|4|alpha|450
+2|5|alpha|NULL
+2|6|alpha|388
+3|1|629.7613|NULL
+3|2|629.7613|-5
+3|3|629.7613|NULL
+3|4|629.7613|450
+3|5|629.7613|NULL
+3|6|629.7613|388
+4|1|sigma|NULL
+4|2|sigma|-5
+4|3|sigma|NULL
+4|4|sigma|450
+4|5|sigma|NULL
+4|6|sigma|388
+5|1|NULL|NULL
+5|2|NULL|-5
+5|3|NULL|NULL
+5|4|NULL|450
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c1|c3
+1|2|NULL|X'F44C'
+1|3|NULL|0.1
+1|4|NULL|-2
+1|5|NULL|phi
+1|6|NULL|X'849DC4A275B1'
+2|3|-5|0.1
+2|4|-5|-2
+2|5|-5|phi
+2|6|-5|X'849DC4A275B1'
+3|4|NULL|-2
+3|5|NULL|phi
+3|6|NULL|X'849DC4A275B1'
+4|5|450|phi
+4|6|450|X'849DC4A275B1'
+5|6|NULL|X'849DC4A275B1'
+~~~
+# count(*)
+6
+~~~
+# id|id|c0|c2
+1|1|X'D51231'|X''
+1|2|X'D51231'|-129
+1|3|X'D51231'|theta
+1|4|X'D51231'|NULL
+1|5|X'D51231'|delta
+1|6|X'D51231'|-1
+2|1|0|X''
+2|2|0|-129
+2|3|0|theta
+2|4|0|NULL
+2|5|0|delta
+2|6|0|-1
+3|1|NULL|X''
+3|2|NULL|-129
+3|3|NULL|theta
+3|4|NULL|NULL
+3|5|NULL|delta
+3|6|NULL|-1
+4|1|4.500000000000011e-310|X''
+4|2|4.500000000000011e-310|-129
+4|3|4.500000000000011e-310|theta
+4|4|4.500000000000011e-310|NULL
+4|5|4.500000000000011e-310|delta
+4|6|4.500000000000011e-310|-1
+5|1|3|X''
+5|2|3|-129
+5|3|3|theta
+5|4|3|NULL
+5|5|3|delta
+5|6|3|-1
+6|1|psi|X''
+6|2|psi|-129
+~~~
+# count(*)
+16
+~~~
+# id|id|c1|id
+1|1|NULL|1
+1|2|NULL|2
+1|3|NULL|3
+1|4|NULL|4
+1|5|NULL|5
+1|6|NULL|6
+2|1|X'B321C1E8'|1
+2|2|X'B321C1E8'|2
+2|3|X'B321C1E8'|3
+2|4|X'B321C1E8'|4
+2|5|X'B321C1E8'|5
+2|6|X'B321C1E8'|6
+3|1|-137.0|1
+3|2|-137.0|2
+3|3|-137.0|3
+3|4|-137.0|4
+3|5|-137.0|5
+3|6|-137.0|6
+4|1|NULL|1
+4|2|NULL|2
+4|3|NULL|3
+4|4|NULL|4
+4|5|NULL|5
+4|6|NULL|6
+5|1|325.0|1
+5|2|325.0|2
+5|3|325.0|3
+5|4|325.0|4
+5|5|325.0|5
+5|6|325.0|6
+6|1|café|1
+6|2|café|2
+6|3|café|3
+6|4|café|4
+6|5|café|5
+6|6|café|6
+~~~
+# count(*)
+9
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 1, 1)|instr('sigma', 'psi')|replace('sigma', 'é', 'XY')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE 'a%'|'sigma' GLOB '?'|char(85, 541)|'sigma' || 'psi'|'sigma' < 'psi'|'sigma' = 'psi' COLLATE NOCASE
+5|SIGMA|sigma|s|0|sigma|sigma|sigma|7369676D61|'sigma'|115|0|0|Uȝ|sigmapsi|0|0
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+6|6|-1742.6|-1742.6|-290.43333333333334|-806|señor|6
+~~~
+# c4|count(*)|group_concat(id)
+~~~

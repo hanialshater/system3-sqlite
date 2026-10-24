@@ -1,0 +1,202 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+13|-1
+16|-1
+11|-15
+8|-234.9778
+6|0
+19|1
+17|1.0e-07
+5|1000000000000000.0
+14|3
+12|4.500000000000011e-310
+15|4.500000000000011e-310
+18|830.51
+2|974
+3|alpha
+9|señor
+4|x_y
+7|X'5685'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+6|0
+19|1
+17|1.0e-07
+5|1000000000000000.0
+14|3
+12|4.500000000000011e-310
+15|4.500000000000011e-310
+18|830.51
+2|974
+3|alpha
+9|señor
+4|x_y
+7|X'5685'
+20|X'B883F3'
+10|X'D1A752'
+1|X'F9E96BA7'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|NULL
+8|NULL
+11|NULL
+12|NULL
+13|NULL
+14|NULL
+1|-523
+6|0x1F
+5|123456789012
+9|350.752
+16|4
+2|918
+15|Lambda
+3|phi
+7|psi
+17|Ελλάδα
+19|X'5A23158D'
+20|X'78B2E9ED5D7F'
+18|X'912FC32D697F'
+10|X'E559'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 2, 5)|instr(' pad ', 'pi')|replace(' pad ', '', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%'|' pad ' GLOB '*[a-m]*'|char(88, 232)|' pad ' || 'pi'|' pad ' < 'pi'|' pad ' = 'pi' COLLATE NOCASE
+5| PAD | pad |pad |0| pad |pad| pad |2070616420|' pad '|32|1|1|Xè| pad pi|1|0
+~~~
+changes: 20
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-145.9
+~~~
+# id|c0|c1|c2
+21|-145.9|NULL|NULL
+20|NULL|NULL|X'B883F3'
+18|0|0|830.51
+17|X'4607D9F0'|X'4607D9F0'|1.0e-07
+15|1|1|4.500000000000011e-310
+14|5|5|3
+12|theta|theta|4.500000000000011e-310
+11|-17.243|-17.243|-15
+9|-523|-523|señor
+8|123456789012|NULL|NULL
+6|NULL|NULL|0
+5|5|5|1000000000000000.0
+4|Lambda|NULL|NULL
+3|X'541AC299'|X'541AC299'|alpha
+2|0|0|974
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 4, 4)|instr('alpha', 'epsilon')|replace('alpha', 'é', 'XY')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%é%'|'alpha' GLOB '*[a-m]*'|char(71, 798)|'alpha' || 'epsilon'|'alpha' < 'epsilon'|'alpha' = 'epsilon' COLLATE NOCASE
+5|ALPHA|alpha|ha|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|G̞|alphaepsilon|1|0
+~~~

@@ -1,0 +1,157 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+1|NULL
+11|NULL
+13|NULL
+14|NULL
+3|-1.0e+308
+7|-9223372036854775808
+10|-482
+20|-66
+5|-2
+12|-2
+2|2
+19|3.1415926535897931
+16|179
+8|123456789012
+15|naïve
+6|omicron
+18|X''
+9|X'5E'
+4|X'A294D0'
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+8|-362
+3|-1
+5|0
+4|3.1415926535897931
+14|643
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 2, 1)|instr('alpha', 'beta')|replace('alpha', 'e', '_')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%'|'alpha' GLOB 'a*'|char(71, 205)|'alpha' || 'beta'|'alpha' < 'beta'|'alpha' = 'beta' COLLATE NOCASE
+5|ALPHA|alpha|l|0|alpha|alpha|lpha|616C706861|'alpha'|97|1|1|GÍ|alphabeta|1|0
+~~~
+changes: 14
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|X'3650'
+~~~
+# id|c0|c1|ref
+15|X'3650'|NULL|NULL
+14|0|643|4
+12|0|NULL|5
+11|0|chi|6
+10|0|X'74D43249623A'|8
+8|0|-362|6
+7|0|upsilon|3
+6|NULL|NULL|NULL
+5|X'AC757FBEDAA5'|NULL|NULL
+4|0|3.1415926535897931|6
+3|0|-1|5
+2|0|NULL|7
+~~~

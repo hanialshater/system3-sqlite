@@ -1,0 +1,169 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c3
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 4, 2)|instr('a%b', 'theta')|replace('a%b', 'a', 'XY')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB '?'|char(65, 946)|'a%b' || 'theta'|'a%b' < 'theta'|'a%b' = 'theta' COLLATE NOCASE
+3|A%B|a%b||0|XY%b|a%b|%b|612562|'a%b'|97|0|0|Aβ|a%btheta|1|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -2, 2)|instr('theta', 'tau')|replace('theta', 'e', 'XY')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%é%'|'theta' GLOB '?'|char(68, 681)|'theta' || 'tau'|'theta' < 'tau'|'theta' = 'tau' COLLATE NOCASE
+5|THETA|theta|ta|0|thXYta|theta|theta|7468657461|'theta'|116|0|0|Dʩ|thetatau|0|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', -1, 0)|instr('Lambda', 'psi')|replace('Lambda', '', 'XY')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%é%'|'Lambda' GLOB 'a*'|char(66, 711)|'Lambda' || 'psi'|'Lambda' < 'psi'|'Lambda' = 'psi' COLLATE NOCASE
+6|LAMBDA|lambda||0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|0|0|Bˇ|Lambdapsi|1|0
+~~~
+# id|coalesce(id IN (c0, x'8739', NULL), typeof(c2)) IS NULL|coalesce(x'38d861', c0) IS NULL IN (iif(0.1 IN (c0, -30, NULL), c2 BETWEEN c1 AND id, '42'), NULL, 'x_y')
+1|0|NULL
+2|0|NULL
+3|0|NULL
+4|0|NULL
+5|0|NULL
+6|0|NULL
+7|0|NULL
+8|0|NULL
+9|0|NULL
+10|0|NULL
+11|0|NULL
+12|0|NULL
+13|0|NULL
+14|0|NULL
+15|0|NULL
+16|0|NULL
+17|0|NULL
+18|0|NULL
+~~~
+# -416.29|CASE WHEN -5 THEN 'alpha' IN (1e-7, 204.6005, NULL) ELSE abs(x'a3ac22') END IS NULL
+-416.29|1
+~~~
+changes: 0
+~~~
+# id|c3
+5|555
+4|875.8
+8|123456789012
+9|9223372036854775807
+10|beta
+17|gamma
+14|omicron
+1|sigma
+11|X''
+6|X'D1C0'
+~~~
+# count(*)
+13
+~~~
+changes: 0
+~~~
+changes: 0
+~~~

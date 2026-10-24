@@ -1,0 +1,253 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+18|NULL
+5|0x1F
+13|1e3
+7|café
+14|café
+9|eta
+4|iota
+6|it's
+12|psi
+17|psi
+3|rho
+8|señor
+1|sigma
+16|tau
+10|theta
+15|theta
+2|xi
+11|日本
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+5|0x1F
+13|1e3
+7|café
+14|café
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+9| pad 
+5|-7
+17|1e3
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+5|0x1F
+13|1e3
+7|café
+14|café
+9|eta
+4|iota
+6|it's
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+2|105
+14|beta
+12|café
+7|upsilon
+8|X'147DD8AF'
+16|X'2511B0DA68'
+6|X'3A8C6AD615'
+3|X'9E'
+13|X'C4'
+15|X'DC6E03'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+18|NULL
+13|1e3
+7|café
+14|café
+9|eta
+4|iota
+6|it's
+12|psi
+17|psi
+3|rho
+8|señor
+1|sigma
+16|tau
+10|theta
+15|theta
+2|xi
+11|日本
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+18|18|-7.0|-7.0|-0.3888888888888889|-7|Ελλάδα|16
+~~~
+# c0|count(*)|group_concat(id, ';')
+phi|3|4;5;9
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+19|4
+~~~
+# id|c0|c1|c2
+19|4|NULL|d
+18|0|kappa|NULL
+17|Lambda|1e3|psi
+16|epsilon|señor|tau
+14|sigma|pi|café
+13|xi|eta|1e3
+12|beta|über|psi
+11|MU|epsilon|日本
+9|phi| pad |eta
+8|señor|beta|señor
+7|über|zeta|café
+6|x_y|café|it's
+4|phi|NULL|iota
+3|NULL|NULL|d
+2|Ελλάδα|omega|xi
+1|psi|theta|sigma
+~~~

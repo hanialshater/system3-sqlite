@@ -1,0 +1,94 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|id
+1|4|-35.208|4
+1|5|-35.208|5
+1|6|-35.208|6
+1|7|-35.208|7
+2|NULL|-9.259|NULL
+3|1|11.576|1
+~~~
+# count(*)
+3
+~~~
+# id|id|id|c1
+1|4|1|über
+1|5|1|X'04B43E8D'
+1|6|1|0
+1|7|1|0
+2|NULL|2|NULL
+3|1|3|517
+~~~
+error: near "x'5b1eab'": syntax error
+~~~
+# id|id|c1|ref
+1|1|21.126|3
+1|2|21.126|5
+1|3|21.126|NULL
+1|4|21.126|1
+1|5|21.126|1
+1|6|21.126|1
+1|7|21.126|1
+2|1|15.706|3
+2|2|15.706|5
+2|3|15.706|NULL
+2|4|15.706|1
+2|5|15.706|1
+2|6|15.706|1
+2|7|15.706|1
+3|1|-23.273|3
+3|2|-23.273|5
+3|3|-23.273|NULL
+~~~
+# count(*)
+3
+~~~
+# id|id|c0|c2
+1|4|X'5866'|-777.0
+1|5|X'5866'|eta
+1|6|X'5866'|1000000000000000.0
+1|7|X'5866'|2.0
+2|NULL|X'6D'|NULL
+3|1|X'3EE57649'|0.0
+4|NULL|X''|NULL
+5|2|2.5|716.0
+6|NULL|NULL|NULL
+7|NULL|3|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|ref|c0
+1|4|3|X''
+1|5|3|2.5
+1|6|3|NULL
+1|7|3|3
+3|1|NULL|X'5866'
+5|2|1|X'6D'
+~~~
+error: near "-": syntax error
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', -3, 1)|instr('0x1F', '0x1F')|replace('0x1F', 'e', '_')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE 'a%'|'0x1F' GLOB '*[a-m]*'|char(67, 432)|'0x1F' || '0x1F'|'0x1F' < '0x1F'|'0x1F' = '0x1F' COLLATE NOCASE
+4|0X1F|0x1f|x|1|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|Cư|0x1F0x1F|0|1
+~~~

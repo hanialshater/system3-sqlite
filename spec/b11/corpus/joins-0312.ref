@@ -1,0 +1,204 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|ref|ref
+1|16|7|1
+2|NULL|7|NULL
+3|7|5|3
+4|NULL|NULL|NULL
+5|3|1|5
+5|18|1|5
+5|19|1|5
+6|4|6|6
+6|5|6|6
+6|17|6|6
+7|2|5|7
+7|8|5|7
+7|13|5|7
+8|6|2|8
+8|9|2|8
+8|12|2|8
+9|NULL|2|NULL
+10|NULL|1|NULL
+11|NULL|1|NULL
+~~~
+# count(*)
+6
+~~~
+# id|id|c1|id
+1|16|9223372036854775807|16
+3|7|X'AEA4AC'|7
+5|3|NULL|3
+5|18|NULL|18
+5|19|NULL|19
+6|4|NULL|4
+6|5|NULL|5
+6|17|NULL|17
+7|2|-62|2
+7|8|-62|8
+7|13|-62|13
+8|6|902|6
+8|9|902|9
+8|12|902|12
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|c1
+1|16|1|NULL
+2|NULL|2|NULL
+3|7|3|-62
+4|NULL|4|NULL
+5|3|5|X'AEA4AC'
+5|18|5|X''
+5|19|5|1000000000000000.0
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|c1
+1|1|1|9223372036854775807
+1|2|1|0.1
+1|3|1|X'AEA4AC'
+1|4|1|-1.0e+308
+1|5|1|NULL
+1|6|1|NULL
+1|7|1|-62
+1|8|1|902
+1|9|1|chi
+1|10|1|señor
+1|11|1|X'20'
+1|12|1|phi
+1|13|1|4
+1|14|1|alpha
+1|15|1|-273
+1|16|1|NULL
+1|17|1|167.39
+1|18|1|X''
+1|19|1|1000000000000000.0
+2|1|2|9223372036854775807
+2|2|2|0.1
+2|3|2|X'AEA4AC'
+2|4|2|-1.0e+308
+2|5|2|NULL
+2|6|2|NULL
+2|7|2|-62
+2|8|2|902
+2|9|2|chi
+2|10|2|señor
+2|11|2|X'20'
+2|12|2|phi
+2|13|2|4
+2|14|2|alpha
+2|15|2|-273
+2|16|2|NULL
+~~~
+error: near "x'ff344766'": syntax error
+~~~
+# id|typeof(CASE WHEN CAST(1.0e15 AS INTEGER) THEN abs(ref) ELSE id END)|iif(CAST(nullif(c2, ref) AS TEXT), -630 IN (332.9, x'ba7fa583a4', -546) IS NULL, -310)
+1|null|-310
+2|integer|0
+3|integer|-310
+4|integer|-310
+5|integer|0
+6|integer|-310
+7|integer|-310
+8|integer|-310
+9|integer|-310
+10|null|0
+11|null|-310
+12|integer|-310
+13|integer|-310
+14|null|-310
+15|null|0
+16|integer|-310
+17|integer|-310
+18|integer|-310
+19|integer|0
+~~~
+# coalesce(583.1976 BETWEEN 5 BETWEEN 0.1 AND x'd2c77e6ddd' AND -65, abs(NOT x''))|x'712fc997b9d2'
+0|X'712FC997B9D2'
+~~~
+# id|id|c2|id
+1|16|pi|16
+2|NULL|NULL|NULL
+3|7|4.500000000000011e-310|7
+4|NULL|1.0e+308|NULL
+5|3|kappa|3
+5|18|kappa|18
+~~~
+error: near "(": syntax error
+~~~

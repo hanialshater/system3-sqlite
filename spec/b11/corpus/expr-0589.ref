@@ -1,0 +1,218 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1|-('x_y' BETWEEN id AND c2)
+17|147.0|-1
+16|xi|0
+15|1.0|NULL
+14|X'2E'|-1
+13|-885.0|0
+12|NULL|0
+11|X'12'|0
+10|NULL|-1
+9|X''|NULL
+8|-121.9|0
+7|X'BD06E7742E'|0
+6|-1.0e+308|0
+5|X'A936FB6BFF'|-1
+4|NULL|NULL
+3|X'D1D0C99B'|-1
+2|a%b|NULL
+1|X'DED170'|0
+~~~
+# 'omega'|x'7d51'
+omega|X'7D51'
+~~~
+# id|nullif(-(c0), CASE WHEN nullif('chi', NULL) THEN abs(c2) ELSE CAST(5 AS BLOB) END)|c0
+1|0|chi
+2|9.2233720368547758e+18|-9223372036854775808
+3|-811|811
+4|-241|241
+5|394|-394
+6|-561.21|561.21
+7|0|0
+8|0|psi
+9|NULL|NULL
+10|0|pi
+11|348.0509|-348.0509
+12|0|omicron
+13|NULL|NULL
+14|-0.1|0.1
+15|-5|5
+16|3|-3
+17|NULL|NULL
+~~~
+# 'señor'|typeof(NULL)
+señor|null
+~~~
+# id|('kappa' < CASE WHEN NOT id THEN CASE WHEN c0 THEN id ELSE c2 END ELSE iif(c1, 'Lambda', NULL) END)|c0
+1|NULL|chi
+2|NULL|-9223372036854775808
+3|NULL|811
+4|0|241
+5|NULL|-394
+6|NULL|561.21
+7|NULL|0
+8|0|psi
+9|0|NULL
+10|NULL|pi
+11|0|-348.0509
+12|NULL|omicron
+13|NULL|NULL
+14|NULL|0.1
+15|NULL|5
+16|NULL|-3
+17|NULL|NULL
+~~~
+# NOT nullif(2.5, -293 BETWEEN NULL AND x'4b638e3f')|nullif((-4 + '-7'), 1e-7) IS NULL
+0|0
+~~~
+# id|id|ref|c2
+1|2|4|-753
+1|3|4|NULL
+1|4|4|0.1
+1|5|4|894
+1|6|4|-58.5
+~~~
+error: near "(": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+7|7
+6|6
+1|1
+11|11
+2|2
+5|5
+12|12
+8|8
+3|3
+4|4
+9|9
+10|10
+~~~
+# id
+~~~
+# id
+~~~
+# ref
+NULL
+-9223372036854775808
+-394
+-348.0509
+-3
+0
+0.1
+1
+1
+1
+3
+4
+4
+5
+6
+7
+7
+8
+8
+241
+561.21
+811
+chi
+~~~

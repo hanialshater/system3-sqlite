@@ -1,0 +1,285 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|ref|c2
+1|3|2|X'F74F066D'
+1|7|2|2.0
+1|13|2|-787.95
+1|14|2|X'88'
+1|20|2|1.0
+2|1|NULL|NULL
+2|8|NULL|omega
+2|9|NULL|NULL
+2|15|NULL|X'E73905BBA1'
+3|NULL|1|NULL
+4|11|NULL|NULL
+4|19|NULL|NULL
+5|10|NULL|-119.31
+6|16|7|-608.0
+6|18|7|X'4787D9CA'
+7|6|1|NULL
+7|17|1|NULL
+8|21|2|X'5C3B2203'
+9|NULL|2|NULL
+10|NULL|5|NULL
+11|NULL|4|NULL
+12|NULL|NULL|NULL
+13|NULL|1|NULL
+14|NULL|1|NULL
+15|NULL|2|NULL
+16|NULL|6|NULL
+17|NULL|7|NULL
+18|NULL|6|NULL
+19|NULL|4|NULL
+20|NULL|1|NULL
+21|NULL|8|NULL
+~~~
+# count(*)
+21
+~~~
+# id|id|c3|c2
+1|3|señor|X'F74F066D'
+1|7|señor|2.0
+1|13|señor|-787.95
+1|14|señor|X'88'
+1|20|señor|1.0
+2|1|NULL|NULL
+2|8|NULL|omega
+2|9|NULL|NULL
+2|15|NULL|X'E73905BBA1'
+3|NULL|NULL|NULL
+4|11|X'3FF24F22'|NULL
+4|19|X'3FF24F22'|NULL
+5|10|X'7C'|-119.31
+6|16|NULL|-608.0
+~~~
+# count(*)
+16
+~~~
+# id|id|c3|c2
+1|3|-668.9|X'F74F066D'
+1|7|-668.9|2.0
+1|13|-668.9|-787.95
+1|14|-668.9|X'88'
+1|20|-668.9|1.0
+2|1|über|NULL
+2|8|über|omega
+2|9|über|NULL
+2|15|über|X'E73905BBA1'
+3|NULL|-9223372036854775808|NULL
+4|11|NULL|NULL
+4|19|NULL|NULL
+5|10|NULL|-119.31
+6|16|café|-608.0
+6|18|café|X'4787D9CA'
+7|6|858.24|NULL
+7|17|858.24|NULL
+8|21|3|X'5C3B2203'
+9|NULL|9223372036854775807|NULL
+10|NULL|4|NULL
+11|NULL|X'09BB93B9E670'|NULL
+12|NULL|X'8A7B90C0'|NULL
+13|NULL|-472|NULL
+14|NULL|NULL|NULL
+15|NULL|X''|NULL
+16|NULL|rho|NULL
+17|NULL|NULL|NULL
+18|NULL|X'3EC626'|NULL
+19|NULL|4.500000000000011e-310|NULL
+20|NULL|NULL|NULL
+21|NULL|X'6E'|NULL
+~~~
+error: near ".2": syntax error
+~~~
+# id|id|c2|id
+1|3|3.1415926535897931|3
+1|7|3.1415926535897931|7
+1|13|3.1415926535897931|13
+1|14|3.1415926535897931|14
+1|20|3.1415926535897931|20
+2|1|0.1|1
+2|8|0.1|8
+2|9|0.1|9
+2|15|0.1|15
+3|NULL|-949|NULL
+4|11|X'F9D5'|11
+4|19|X'F9D5'|19
+5|10|NULL|10
+6|16|X'5579'|16
+6|18|X'5579'|18
+7|6|X'F6'|6
+7|17|X'F6'|17
+8|21|-992|21
+9|NULL|NULL|NULL
+10|NULL|NULL|NULL
+11|NULL|0|NULL
+12|NULL|5|NULL
+13|NULL|sigma|NULL
+14|NULL|NULL|NULL
+15|NULL|NULL|NULL
+16|NULL|X'8E2F'|NULL
+~~~
+# count(*)
+16
+~~~
+# id|id|c3|c0
+1|3|-668.9|830
+1|7|-668.9|psi
+1|13|-668.9|NULL
+1|14|-668.9|sigma
+1|20|-668.9|9223372036854775807
+2|1|über|NULL
+2|8|über|-218
+2|9|über|2
+2|15|über|phi
+3|NULL|-9223372036854775808|NULL
+4|11|NULL|NULL
+4|19|NULL|X''
+5|10|NULL|X'5D'
+6|16|café|NULL
+6|18|café|-593
+7|6|858.24| pad 
+7|17|858.24|NULL
+8|21|3|3.1415926535897931
+9|NULL|9223372036854775807|NULL
+10|NULL|4|NULL
+11|NULL|X'09BB93B9E670'|NULL
+12|NULL|X'8A7B90C0'|NULL
+13|NULL|-472|NULL
+14|NULL|NULL|NULL
+15|NULL|X''|NULL
+16|NULL|rho|NULL
+17|NULL|NULL|NULL
+18|NULL|X'3EC626'|NULL
+19|NULL|4.500000000000011e-310|NULL
+~~~
+# count(*)
+21
+~~~
+# id|id|c2|c3
+1|3|NULL|-9223372036854775808
+1|7|NULL|858.24
+1|13|NULL|-472
+1|14|NULL|NULL
+1|20|NULL|NULL
+2|1|NULL|-668.9
+2|8|NULL|3
+2|9|NULL|9223372036854775807
+2|15|NULL|X''
+4|11|-5.0|X'09BB93B9E670'
+4|19|-5.0|4.500000000000011e-310
+5|10|X''|4
+6|16|NULL|rho
+6|18|NULL|X'3EC626'
+7|6|2.0|café
+7|17|2.0|NULL
+8|21|omega|X'6E'
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|id
+1|3|1|3
+1|7|1|7
+1|13|1|13
+1|14|1|14
+1|20|1|20
+2|1|2|1
+2|8|2|8
+2|9|2|9
+2|15|2|15
+3|NULL|3|NULL
+4|11|4|11
+4|19|4|19
+5|10|5|10
+6|16|6|16
+~~~
+# count(*)
+16
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', -1, 5)|instr('naïve', '0x1F')|replace('naïve', 'e', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%'|'naïve' GLOB '*'|char(80, 384)|'naïve' || '0x1F'|'naïve' < '0x1F'|'naïve' = '0x1F' COLLATE NOCASE
+5|NAïVE|naïve|e|0|naïv|naïve|naïve|6E61C3AF7665|'naïve'|110|1|1|Pƀ|naïve0x1F|0|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+16|12|-Inf|-Inf|-Inf|-1.0e+308|xi|11
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|4|8;12;13;14
+-1.0e+308|2|7;15
+~~~

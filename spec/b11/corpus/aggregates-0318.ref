@@ -1,0 +1,160 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+14|11|123456789484.74001|123456789484.74001|11223344498.612728|-411|X'FEED45'|11
+~~~
+# c1|count(*)|group_concat(id)
+NULL|3|7,9,11
+-411|1|14
+4.500000000000011e-310|1|10
+0.1|1|6
+883.64|1|4
+123456789012|1|3
+beta|1|2
+kappa|1|1
+tau|1|13
+über|1|12
+X''|1|5
+X'FEED45'|1|8
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+14|13|70.065999999999988|70.065999999999988|5.3896923076923065|-41.404|47.482|13
+~~~
+# c3|count(*)|group_concat(id)
+NULL|1|7
+-41.404|1|9
+-37.062|1|14
+-34.753|1|11
+-22.55|1|4
+-9.788|1|12
+1.626|1|3
+9.315|1|10
+24.836|1|13
+30.786|1|1
+30.906|1|5
+32.571|1|6
+38.101|1|8
+47.482|1|2
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+14|13|70.065999999999988|70.065999999999988|5.3896923076923065|-41.404|47.482|13
+~~~
+# c3|count(*)|group_concat(id, ';')
+NULL|1|7
+-41.404|1|9
+-37.062|1|14
+-34.753|1|11
+-22.55|1|4
+-9.788|1|12
+1.626|1|3
+9.315|1|10
+24.836|1|13
+30.786|1|1
+30.906|1|5
+32.571|1|6
+38.101|1|8
+47.482|1|2
+~~~
+# id|CASE WHEN c1 THEN c4 ELSE -1e308 END|'it''s'
+1|-1.0e+308|it's
+2|-1.0e+308|it's
+3|-8.771|it's
+4|27.346|it's
+5|-1.0e+308|it's
+6|37.306|it's
+7|-1.0e+308|it's
+8|-1.0e+308|it's
+9|-1.0e+308|it's
+10|-39.495|it's
+11|-1.0e+308|it's
+12|-1.0e+308|it's
+13|-1.0e+308|it's
+14|17.091|it's
+~~~
+# typeof(coalesce(NULL, NULL) IN (-322 IN (NULL, NULL, x'd67b5ebb1a8e'), 'omicron', x'64'))|coalesce(NOT NULL IN ('omicron', 'iota', 3.545), -112 IN (CAST('phi' AS INTEGER), NULL, x'ac865f9428ee'))
+null|NULL
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+14|11|123456789484.74001|123456789484.74001|11223344498.612728|-411|X'FEED45'|11
+~~~
+# c1|count(*)|group_concat(id)
+NULL|3|7,9,11
+-411|1|14
+4.500000000000011e-310|1|10
+0.1|1|6
+883.64|1|4
+123456789012|1|3
+beta|1|2
+kappa|1|1
+tau|1|13
+über|1|12
+X''|1|5
+X'FEED45'|1|8
+~~~

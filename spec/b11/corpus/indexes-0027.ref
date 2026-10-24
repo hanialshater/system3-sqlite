@@ -1,0 +1,111 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CASE WHEN id THEN c0 ELSE -212 END|(CASE WHEN CAST(-9223372036854775808 AS INTEGER) THEN NOT id ELSE abs(id) END | NOT nullif(id, c0))
+1|X'BE'|0
+2|NULL|0
+3|theta|0
+~~~
+# coalesce('-7' BETWEEN 686 AND -2, 'iota') IN (typeof(NOT NULL), -413, 5)|NULL IS NULL
+0|1
+~~~

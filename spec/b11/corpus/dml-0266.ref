@@ -1,0 +1,218 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 25
+~~~
+changes: 13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|
+~~~
+# id|c0|c1|c2|c3
+25||NULL|d|NULL
+24|0|NULL|1.0e-07|phi
+22|0|1.0e-07|NULL|nu
+20|0|X'CB'|beta|302
+18|0|-303|-3|5
+16|NULL|X''|alpha|4.500000000000011e-310
+14|0|X'7A'|1.0e+308|NULL
+12|NULL|NULL|NULL|607.8431
+10|NULL|NULL|553.848|chi
+8|0|X'6A9223D25D'|-2.5|NULL
+6|NULL|NULL|日本|X'CD54926CED'
+4|NULL|X'7B450BEA9560'|X''|-912
+2|-457|NULL|d|NULL
+~~~
+changes: 1
+~~~
+changes: 12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|2
+~~~
+# id|c0|c1|c2|c3
+5|kappa|NULL|d|NULL
+9|X'CEDCB143DA'|NULL|d|NULL
+25||NULL|d|NULL
+26|2|NULL|d|NULL
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|283.991
+~~~
+# id|c0|c1|c2|c3|c4
+1|NULL|d|NULL|NULL|NULL
+2|NULL|3.1415926535897931|NULL|NULL|NULL
+3|NULL|NULL|-818.519|eta|387
+4|NULL|d|NULL|NULL|NULL
+5|503|NULL|psi|NULL|X'76'
+7|X''|2|X''|0x1F|-17
+8|X'29'|NULL|X'A65000336D4D'|-2|omega
+9|9223372036854775807|NULL|1.0e+308|NULL|X'F04C294595'
+10|3|NULL|X'69C534'|X'F1DC7D6BCBE4'|-782
+11|283.991|d|NULL|NULL|NULL
+~~~
+changes: 4
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+27|-480
+~~~
+# id|c0|c1|c2|c3
+27|-480|NULL|d|NULL
+26|-4|NULL|d|NULL
+7|NULL|NULL|d|NULL
+2|X'A78FBC6753'|NULL|d|NULL
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|X''
+~~~
+# id|c0|c1|c2|c3|c4
+2|X'696E7465676572'|3.1415926535897931|NULL|NULL|NULL
+3|X'696E7465676572'|NULL|-818.519|eta|387
+5|X'696E7465676572'|NULL|psi|NULL|X'76'
+6|-2|d|NULL|NULL|NULL
+8|X'696E7465676572'|NULL|X'A65000336D4D'|-2|omega
+9|123456789012|d|NULL|NULL|NULL
+11|X'696E7465676572'|d|NULL|NULL|NULL
+12|X''|d|NULL|NULL|NULL
+~~~

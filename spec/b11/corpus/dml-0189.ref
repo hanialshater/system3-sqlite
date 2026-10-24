@@ -1,0 +1,195 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|358
+~~~
+# id|c0|c1|c2|ref
+1|X'A0699538'|NULL|-9.2233720368547758e+18|3
+2|X'6EFAA04593FD'|NULL|d|NULL
+3|Ελλάδα!|X'25'|252.9|3
+4|358|NULL|d|NULL
+~~~
+changes: 7
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|-706.738
+~~~
+# id|c0|c1
+1|NULL|946.0
+2|NULL|-1.0e+308
+4|NULL|NULL
+5|NULL|-463.0
+7|NULL|0.0
+8|psi|NULL
+10|NULL|0x1F
+11|X'78'|-1.0
+12|-706.738|NULL
+~~~
+changes: 2
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|NULL
+~~~
+# id|c0|c1|c2|ref
+1|-7|NULL|d|NULL
+2|X'6EFAA04593FD'|NULL|d|NULL
+4|358|NULL|d|NULL
+6|-368.2837|NULL|d|NULL
+7|NULL|NULL|d|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|ref
+2|X'6EFAA04593FD'|NULL|d|NULL
+4|358|NULL|d|NULL
+6|-5!|NULL|d|NULL
+7|NULL|NULL|d|NULL
+9|-212|NULL|d|NULL
+10|NULL|NULL|d|NULL
+~~~
+changes: 9
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|NULL
+~~~
+# id|c0|c1
+13|NULL|NULL
+12|1|NULL
+10|1|0x1F
+9|rho|NULL
+8|1|NULL
+4|1|NULL
+2|1|-1.0e+308
+1|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|NULL
+~~~
+# id|c0|c1
+1|-423|NULL
+2|0|-1.0e+308
+4|0|NULL
+8|0|NULL
+9|X'5B982B'|NULL
+10|0|0x1F
+12|0|NULL
+13|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|-539
+~~~
+# id|c0|c1
+1|X'0B'|NULL
+2|1|-1.0e+308
+4|1|NULL
+5|-1.0e+308|NULL
+8|1|NULL
+10|1|0x1F
+12|1|NULL
+13|-539|NULL
+~~~
+changes: 1
+~~~
+# id|id
+2|2
+4|4
+6|6
+7|7
+9|9
+10|10
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -1, 1)|instr('1e3', 'upsilon')|replace('1e3', 'é', 'XY')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '_'|'1e3' GLOB '?'|char(89, 455)|'1e3' || 'upsilon'|'1e3' < 'upsilon'|'1e3' = 'upsilon' COLLATE NOCASE
+3|1E3|1e3|3|0|1e3|1e3|1e3|316533|'1e3'|49|0|0|YǇ|1e3upsilon|1|0
+~~~

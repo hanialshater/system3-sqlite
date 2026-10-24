@@ -1,0 +1,294 @@
+changes: 0
+~~~
+error: cannot store REAL value in INTEGER column t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+6|NULL
+7|NULL
+11|NULL
+12|NULL
+13|NULL
+16|NULL
+18|NULL
+14|-566
+19|-288
+2|-1
+15|580
+4|delta
+3|nu
+17|nu
+10|omega
+8|X''
+5|X'1BBAD4C6F2'
+1|X'1E3AFBFB'
+9|X'CC9A'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+5|9223372036854775807
+6|gamma
+14|omega
+17|pi
+9|X'08A746DB'
+15|X'5B'
+10|X'8F'
+16|X'D3C43D02'
+8|X'E2'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+1|NULL
+3|x_y
+2|X'651DCC89B37E'
+~~~
+# count(*)
+2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+4|1
+10|1
+11|1
+15|1
+5|3
+17|3
+19|3
+8|5
+16|5
+1|6
+7|6
+3|7
+13|8
+14|8
+18|8
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+17|17|-74.195|-74.195|-4.3644117647058822|-49.567|45.575|17
+~~~
+# c2|count(*)|group_concat(id)
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+2|2|8.1415926535897931|8.1415926535897931|4.0707963267948966|3.1415926535897931|5|2
+~~~
+# c4|count(*)|group_concat(id, ';')
+0|1|3
+3.1415926535897931|1|1
+5|1|2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+5|5
+14|14
+7|7
+16|16
+4|4
+6|6
+1|1
+3|3
+2|2
+12|12
+18|18
+9|9
+19|19
+8|8
+10|10
+11|11
+13|13
+15|15
+17|17
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# c3
+~~~

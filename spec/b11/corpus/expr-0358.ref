@@ -1,0 +1,189 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|-4 IS NULL|id
+9|0|9
+8|0|8
+7|0|7
+6|0|6
+5|0|5
+4|0|4
+3|0|3
+2|0|2
+1|0|1
+~~~
+# 123456789012|nullif((coalesce(-1e308, NULL) << coalesce(x'412d', x'b2eb70941333')), NULL)
+123456789012|-9223372036854775808
+~~~
+# id|'psi'|typeof(CAST(CASE WHEN 'zeta' THEN c0 ELSE 1.0e15 END AS BLOB))
+1|psi|blob
+2|psi|blob
+3|psi|blob
+4|psi|blob
+5|psi|blob
+6|psi|blob
+7|psi|blob
+8|psi|blob
+9|psi|blob
+10|psi|blob
+11|psi|blob
+12|psi|blob
+13|psi|blob
+14|psi|blob
+15|psi|blob
+16|psi|blob
+17|psi|blob
+18|psi|blob
+19|psi|blob
+20|psi|blob
+~~~
+# NOT NULL BETWEEN 5 AND x'31' BETWEEN 2 AND NULL BETWEEN coalesce(NULL, 130.0) AND -939.805|CAST(x'' AS NUMERIC)
+NULL|0
+~~~
+# id|NOT CASE WHEN id IN (c0, NULL, 'naïve') THEN iif(NULL, c1, x'784348d2') ELSE 'zeta' IN (-875.964, NULL, -2) END|-((CAST(id AS TEXT) AND -651.4 IS NULL))
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+13|NULL|0
+14|NULL|0
+15|NULL|0
+16|NULL|0
+17|NULL|0
+18|NULL|0
+19|NULL|0
+20|NULL|0
+~~~
+# CAST((-1 / -('eta')) AS BLOB)|CAST(NULL AS NUMERIC)
+NULL|NULL
+~~~
+# id|c1|abs(abs(nullif(NULL, c1)))
+9|-869.658|NULL
+8|-237|NULL
+7|-675|NULL
+6|299.9|NULL
+5|X'897A1774AF'|NULL
+4|967|NULL
+3|-5|NULL
+2|0.1|NULL
+1|X'7BC9055CA2C7'|NULL
+~~~
+# -(x'ff37' BETWEEN 'it''s' AND -1) IN (NOT x'cfe0b7fee8' IN (CASE WHEN 'pi' THEN 'xi' ELSE -1e308 END, NULL, NULL), x'60', -5)|'delta'
+NULL|delta
+~~~
+# id|coalesce(coalesce(c1, c0), 887.59)|NOT typeof(nullif(c1, -2.5))
+1|2.5|1
+2|X'233C'|1
+3|sigma|1
+4|887.59|1
+5|-509|1
+6|X'AD5A6C2F'|1
+7|2|1
+8|omicron|1
+9|1e3|1
+10|Ελλάδα|1
+11|1.0e-07|1
+12|psi|1
+13|nu|1
+14|3|1
+15|X'67'|1
+16|-9223372036854775808|1
+17|X'6C'|1
+18|-758.27|1
+19|0.1|1
+20|gamma|1
+~~~
+# NOT CAST(-('-7') AS NUMERIC)|coalesce(nullif(CAST(0.1 AS BLOB), iif(x'15989bc8752e', 3, -212)), abs(typeof(2.5)))
+0|X'302E31'
+~~~
+# id|id|c0|c0
+1|6|2.5|-7
+1|7|2.5|2.5
+1|9|2.5|X'E5B6E505'
+1|14|2.5|3
+1|19|2.5|nu
+2|NULL|naïve|NULL
+3|NULL|4|NULL
+4|5|X''|-482
+4|13|X''|-7
+4|18|X''|iota
+5|4|X'1C'|NULL
+6|10|0.0|NULL
+6|11|0.0|0x1F
+7|3|-606|X'6CEC9B2DC967'
+8|1|NULL|
+8|12|NULL|-595
+8|16|NULL|naïve
+8|17|NULL|-4
+8|20|NULL|NULL
+9|NULL|678|NULL
+~~~
+error: near "(": syntax error
+~~~

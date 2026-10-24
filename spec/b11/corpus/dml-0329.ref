@@ -1,0 +1,182 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|señor
+~~~
+# id|c0|c1|c2
+2|-3!|X'F12482C343DE'|5
+3|NULL|NULL|-2
+5|NULL|-2|X'7BEB0ECA'
+6|NULL|1e3|eta
+8|NULL|870|NULL
+9|X'FC17'|NULL|NULL
+10|señor|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-766
+~~~
+# id|c0|c1|c2
+2|0|X'F12482C343DE'|5
+3|1|NULL|-2
+5|0|-2|X'7BEB0ECA'
+6|NULL|NULL|NULL
+9|1|NULL|NULL
+10|1|NULL|NULL
+11|-766|NULL|NULL
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|NULL|NULL|419|upsilon|7
+3|801|590.42|2|X'0CDD26'|7
+5|389|X'F076'|X'D2C410BF'|X''|NULL
+6|-888.8376|NULL|NULL|NULL|NULL
+7|-7|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|253
+~~~
+# id|c0|c1|c2|c3|ref
+3|-4|590.42|2|X'0CDD26'|7
+4|NULL|NULL|NULL|NULL|NULL
+6|-4|NULL|NULL|NULL|NULL
+7|-4|NULL|NULL|NULL|NULL
+8|-4|NULL|NULL|NULL|NULL
+9|alpha|NULL|NULL|NULL|NULL
+10|253|NULL|NULL|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-526.4995
+~~~
+# id|c0|c1|c2|c3|ref
+2|-409.8182|NULL|NULL|NULL|NULL
+3|NULL|590.42|2|X'0CDD26'|7
+4|-353!|NULL|NULL|NULL|NULL
+7|NULL|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL
+9|NULL|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL
+11|-526.4995|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|X'4BD326B82F55'
+~~~
+# id|c0|c1|c2
+12|X'4BD326B82F55'|NULL|NULL
+11|-766|NULL|NULL
+10|1|NULL|NULL
+9|1|NULL|NULL
+7|phi|NULL|NULL
+6|NULL|NULL|NULL
+5|�>V!|-2|X'7BEB0ECA'
+3|1|NULL|-2
+2|0|X'F12482C343DE'|5
+~~~
+changes: 1
+~~~
+# id|ref
+3|7
+~~~
+# count(*)
+1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c1
+2|NULL|5|NULL
+3|NULL|-2|NULL
+5|NULL|X'7BEB0ECA'|NULL
+6|NULL|NULL|NULL
+7|3|NULL|590.42
+9|NULL|NULL|NULL
+10|NULL|NULL|NULL
+11|NULL|NULL|NULL
+12|NULL|NULL|NULL
+~~~
+# count(*)
+9
+~~~

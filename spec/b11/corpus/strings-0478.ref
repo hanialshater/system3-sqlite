@@ -1,0 +1,99 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 2, 4)|instr('chi', '1e3')|replace('chi', 'a', '')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE 'A%'|'chi' GLOB 'a*'|char(90, 736)|'chi' || '1e3'|'chi' < '1e3'|'chi' = '1e3' COLLATE NOCASE
+3|CHI|chi|hi|0|chi|chi|chi|636869|'chi'|99|0|0|Zˠ|chi1e3|0|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -1, 3)|instr('theta', 'delta')|replace('theta', 'é', 'XY')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%a_'|'theta' GLOB '*'|char(65, 859)|'theta' || 'delta'|'theta' < 'delta'|'theta' = 'delta' COLLATE NOCASE
+5|THETA|theta|a|0|theta|theta|theta|7468657461|'theta'|116|0|1|A͛|thetadelta|0|0
+~~~
+# length('')|upper('')|lower('')|substr('', -2, 1)|instr('', 'sigma')|replace('', 'e', '')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '%é%'|'' GLOB '?'|char(66, 392)|'' || 'sigma'|'' < 'sigma'|'' = 'sigma' COLLATE NOCASE
+0||||0|||||''|NULL|0|0|Bƈ|sigma|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 3, 0)|instr('nu', 'omega')|replace('nu', 'e', '')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'A%'|'nu' GLOB '?'|char(85, 457)|'nu' || 'omega'|'nu' < 'omega'|'nu' = 'omega' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|Uǉ|nuomega|1|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', -2, 5)|instr('tau', 'xi')|replace('tau', 'a', '_')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%'|'tau' GLOB 'a*'|char(90, 212)|'tau' || 'xi'|'tau' < 'xi'|'tau' = 'xi' COLLATE NOCASE
+3|TAU|tau|au|0|t_u|tau|tau|746175|'tau'|116|1|0|ZÔ|tauxi|1|0
+~~~
+# length('epsilon')|upper('epsilon')|lower('epsilon')|substr('epsilon', -1, 5)|instr('epsilon', 'x_y')|replace('epsilon', 'é', 'XY')|trim('epsilon')|ltrim('epsilon', 'ab')|hex('epsilon')|quote('epsilon')|unicode('epsilon')|'epsilon' LIKE '%a_'|'epsilon' GLOB 'a*'|char(84, 440)|'epsilon' || 'x_y'|'epsilon' < 'x_y'|'epsilon' = 'x_y' COLLATE NOCASE
+7|EPSILON|epsilon|n|0|epsilon|epsilon|epsilon|657073696C6F6E|'epsilon'|101|0|0|TƸ|epsilonx_y|1|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+20|18|1.0e+308|1.0e+308|5.5555555555555553e+306|-523.0|X'EFDB'|17
+~~~
+# c0|count(*)|group_concat(id)
+NULL|2|4,5
+-523.0|1|14
+-4.5005|1|9
+-4.0|1|18
+-3.0|1|6
+4.500000000000011e-310|1|7
+4.0|1|19
+5.0|1|10
+956.9178|1|15
+974.432|1|1
+986.0|1|11
+1.0e+308|1|16
+MU|1|12
+eta|1|17
+X''|2|2,20
+X'08B130'|1|13
+X'27B21FA75F20'|1|3
+X'EFDB'|1|8
+~~~

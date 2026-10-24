@@ -1,0 +1,174 @@
+changes: 0
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 15
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0
+16|-1.0e+308
+~~~
+# id|c0|c1|c2|c3|c4
+2|NULL|it's|254|-10.938|123456789012
+3|NULL|3|-474|37.512|-158
+4|NULL|-621|-243|-39.692|X'D59361EA'
+5|NULL|NULL|-285|-43.933|880
+6|-456.26|NULL|NULL|NULL|NULL
+7|NULL|NULL|247|-27.335|X'5051726AE5'
+8|NULL|1000000000000000.0|-171|23.515|583
+9|NULL|-700|-182|-2.713|rho
+10|NULL|NULL|-455|-11.767|-252
+12|NULL|NULL|108|-26.457|1
+13|NULL|3.1415926535897931|389|38.103|123456789012
+14|NULL|X'CB06438D0FCC'|-468|-34.61|306.35
+15|NULL|-190|130|-31.201|NULL
+16|-1.0e+308|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|-621.0
+~~~
+# id|c0|c1|c2|c3|c4
+1|733.0|NULL|NULL|NULL|NULL
+2|NULL|it's|254|-10.938|123456789012
+4|NULL|-621|-243|-39.692|X'D59361EA'
+6|-456.26|NULL|NULL|NULL|NULL
+8|NULL|1000000000000000.0|-171|23.515|583
+10|NULL|NULL|-455|-11.767|-252
+12|NULL|NULL|108|-26.457|1
+14|NULL|X'CB06438D0FCC'|-468|-34.61|306.35
+16|-1.0e+308|NULL|NULL|NULL|NULL
+17|-621.0|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0|c1|c2|c3|c4
+1|733.0|NULL|NULL|NULL|NULL
+2|NULL|it's|254|-10.938|123456789012
+4|NULL|-621|-243|-39.692|X'D59361EA'
+8|NULL|1000000000000000.0|-171|23.515|583
+10|NULL|NULL|-455|-11.767|-252
+14|NULL|X'CB06438D0FCC'|-468|-34.61|306.35
+16|-1.0e+308|NULL|NULL|NULL|NULL
+17|-621.0|NULL|NULL|NULL|NULL
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 4, 0)|instr('gamma', 'tau')|replace('gamma', 'e', '')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE '%'|'gamma' GLOB '?'|char(83, 812)|'gamma' || 'tau'|'gamma' < 'tau'|'gamma' = 'tau' COLLATE NOCASE
+5|GAMMA|gamma||0|gamma|gamma|gamma|67616D6D61|'gamma'|103|1|0|S̬|gammatau|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+14|14
+10|10
+8|8
+4|4
+2|2
+16|16
+17|17
+1|1
+~~~
+# id
+4
+16
+~~~
+# id
+1
+2
+4
+8
+10
+14
+16
+17
+~~~
+# c1
+~~~

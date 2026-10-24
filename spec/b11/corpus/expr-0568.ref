@@ -1,0 +1,190 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|x'a870ab' BETWEEN c0 AND nullif(c1, nullif(NULL, c0))|ref
+1|0|NULL
+2|NULL|8
+3|0|3
+4|NULL|8
+5|NULL|5
+6|0|6
+7|0|5
+8|0|NULL
+9|NULL|5
+10|NULL|4
+11|0|7
+12|0|2
+13|NULL|5
+14|0|1
+15|0|NULL
+~~~
+# NULL|iif('theta' IS NULL, 'a%b', x'972e9b')
+NULL|X'972E9B'
+~~~
+# id|iif(nullif(id, NULL), ((c0 << c1) / (c0 % id)), -1e308)|CASE WHEN c0 THEN id ELSE NOT typeof(id) END
+15|NULL|15
+14|100.55555555555556|14
+13|NULL|13
+12|1.0|12
+11|243.0|11
+10|1.0|10
+9|NULL|1
+8|NULL|8
+7|0.0|7
+6|36723688367718.398|6
+5|1.0|5
+4|253.0|4
+3|NULL|1
+2|NULL|1
+1|NULL|1
+~~~
+# nullif(CAST('iota' AS TEXT), -0.0)|-(iif(NULL, nullif(-911, NULL), NULL))
+iota|NULL
+~~~
+# id|(CASE WHEN id THEN nullif(c2, ref) ELSE CASE WHEN ref THEN c1 ELSE 0 END END || typeof(c1))|ref
+1|1.0e-07real|NULL
+2|-4null|8
+3|-2real|3
+4|NULL|8
+5|877.6791null|5
+6|4.500000000000011e-310blob|6
+7|NULL|5
+8|NULL|NULL
+9|NULL|5
+10|2.5null|4
+11|)æ¦ðûúreal|7
+12|NULL|2
+13|0null|5
+14|¤EÖ€real|1
+15|685real|NULL
+~~~
+# NULL|(coalesce(4.5e-310, -9223372036854775808) | NOT -(NULL))
+NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+15|12|265.0|265.0|22.083333333333332|4.500000000000011e-310|X'852E4ABDB5'|11
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|3|8;13;15
+4.500000000000011e-310|1|2
+1|1|9
+40|1|6
+224|1|7
+0x1F|1|10
+it's|1|14
+rho|2|1;4
+sigma|1|11
+X''|1|5
+X'7E80'|1|12
+X'852E4ABDB5'|1|3
+~~~

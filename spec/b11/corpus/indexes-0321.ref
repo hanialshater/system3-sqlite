@@ -1,0 +1,266 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+4|NULL
+8|NULL
+12|NULL
+15|NULL
+20|NULL
+23|1
+2|2
+7|2
+1|3
+10|3
+14|3
+18|3
+24|3
+6|4
+16|4
+17|4
+5|5
+11|5
+22|6
+3|8
+9|8
+13|8
+19|8
+21|8
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|-887.48
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|-938.526
+7|3.0
+6|3.1415926535897931
+2|118.0
+4|MU
+5|pi
+8|X'5B24015DE84E'
+1|X'D5AD49'
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+2| pad 
+4|beta
+7|kappa
+5|psi
+3|X'41D0'
+8|X'E59C'
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+1|-786.1
+20|-659
+11|-2.5
+22|9
+21|339
+5|880.98
+19|1000000000000000
+6|9223372036854775807
+24|kappa
+18|naïve
+4|x_y
+12|X''
+23|X'223D38AAE3FC'
+14|X'3125B9D850F8'
+10|X'5D3D0ED01F'
+17|X'96'
+3|X'A4406D9566E8'
+8|X'B295'
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', 4, 0)|instr('MU', 'omicron')|replace('MU', 'a', '_')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE '%'|'MU' GLOB '*[a-m]*'|char(73, 239)|'MU' || 'omicron'|'MU' < 'omicron'|'MU' = 'omicron' COLLATE NOCASE
+2|MU|mu||0|MU|MU|MU|4D55|'MU'|77|1|0|Iï|MUomicron|1|0
+~~~
+changes: 1
+~~~
+# id|c0
+18|NULL
+19|NULL
+20|-6.0
+11|-5.0
+16|0.0
+12|0.1
+6|2.0
+14|4.0
+5|5.0
+9|42.0
+13|201.0
+4|gamma
+7|nu
+10|omicron
+17|pi
+2|X''
+15|X'2E4E8D'
+3|X'3322EF7878'
+8|X'5A4463'
+1|X'EF'
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

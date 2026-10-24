@@ -1,0 +1,140 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -1, 2)|instr('日本', '42')|replace('日本', '', '_')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '_'|'日本' GLOB 'a*'|char(82, 242)|'日本' || '42'|'日本' < '42'|'日本' = '42' COLLATE NOCASE
+2|日本|日本|本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|Rò|日本42|0|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 0, 2)|instr('pi', 'a%b')|replace('pi', 'é', 'XY')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE 'A%'|'pi' GLOB 'a*'|char(89, 623)|'pi' || 'a%b'|'pi' < 'a%b'|'pi' = 'a%b' COLLATE NOCASE
+2|PI|pi|p|0|pi|pi|pi|7069|'pi'|112|0|0|Yɯ|pia%b|0|0
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', -3, 5)|instr('MU', '日本')|replace('MU', 'a', 'XY')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE 'a%'|'MU' GLOB 'a*'|char(74, 973)|'MU' || '日本'|'MU' < '日本'|'MU' = '日本' COLLATE NOCASE
+2|MU|mu|MU|0|MU|MU|MU|4D55|'MU'|77|0|0|Jύ|MU日本|1|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 1, 2)|instr('zeta', 'Ελλάδα')|replace('zeta', 'a', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE 'a%'|'zeta' GLOB '*'|char(71, 438)|'zeta' || 'Ελλάδα'|'zeta' < 'Ελλάδα'|'zeta' = 'Ελλάδα' COLLATE NOCASE
+4|ZETA|zeta|ze|0|zet|zeta|zeta|7A657461|'zeta'|122|0|1|Gƶ|zetaΕλλάδα|1|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 1, 5)|instr('sigma', 'MU')|replace('sigma', 'a', '_')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '%é%'|'sigma' GLOB '*[a-m]*'|char(84, 306)|'sigma' || 'MU'|'sigma' < 'MU'|'sigma' = 'MU' COLLATE NOCASE
+5|SIGMA|sigma|sigma|0|sigm_|sigma|sigma|7369676D61|'sigma'|115|0|1|TĲ|sigmaMU|0|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', -1, 4)|instr('tau', 'MU')|replace('tau', 'é', '')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%'|'tau' GLOB '?'|char(90, 247)|'tau' || 'MU'|'tau' < 'MU'|'tau' = 'MU' COLLATE NOCASE
+3|TAU|tau|u|0|tau|tau|tau|746175|'tau'|116|1|0|Z÷|tauMU|0|0
+~~~
+# id|nullif(c0, -5) IS NULL|'tau'
+1|0|tau
+2|0|tau
+3|0|tau
+4|1|tau
+5|0|tau
+6|0|tau
+7|0|tau
+8|0|tau
+9|0|tau
+10|1|tau
+11|0|tau
+~~~
+# (((-990 IS NOT 'Lambda') OR abs(x'530c5269d1')) <> nullif(-769.856 BETWEEN NULL AND 'zeta', nullif(NULL, -326)))|NOT NULL IN (x'f648809f', NULL, x'cf7e')
+NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+14|NULL|NULL|NULL|NULL|NULL|NULL
+13|0|632|-102.0|NULL|X'3756'|1
+12|0|-4|1000000000000000.0||iota|5
+11|0|-2|-784.0|-2|-437|2
+9|0|-3|Ελλάδα|2|X'F1B5'|7
+8|0|920.0|-7.0|X'D5BF'|NULL|5
+7|500|gamma|4.500000000000011e-310|X'4D374031ED15'|339|NULL
+6|2.5|X'2EB3AD4BBA'|Ελλάδα|NULL|9223372036854775807|7
+5|NULL|NULL|NULL|NULL|NULL|NULL
+4|0|0.1|X'0F8665BB25A9'|X'3FE0'|-208|2
+3|0|1|NULL|186.24|NULL|5
+2|eta|Ελλάδα|X'78883B'|201|alpha|1
+1|-1.0e+308!|señor|-719.4|X'1ADA'|3|NULL
+~~~

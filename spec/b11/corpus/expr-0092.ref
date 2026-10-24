@@ -1,0 +1,122 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|typeof(nullif(3, x'17a18c'))|coalesce(CASE WHEN typeof(c1) THEN coalesce(c0, c0) ELSE NULL END, c0 BETWEEN c2 AND id)
+15|integer|0
+14|integer|1
+13|integer|0
+12|integer|0
+11|integer|0
+10|integer|NULL
+9|integer|0
+8|integer|0
+7|integer|0
+6|integer|0
+5|integer|0
+4|integer|0
+3|integer|0
+2|integer|0
+1|integer|0
+~~~
+# (CAST(CAST(NULL AS TEXT) AS REAL) * coalesce(abs(NULL), -424))|'beta'
+NULL|beta
+~~~
+# id|coalesce((id IS NOT c0) IS NULL, nullif(nullif(c2, x'fcd80e9686'), x'd773b322'))|c0
+1|0|NULL
+2|0|972
+3|0|-5
+4|0|NULL
+~~~
+# CASE WHEN abs(0.1) THEN -(NULL) ELSE ('42' IS 749.54) END|CAST((x'157c51' IS x'22de231bca') AS NUMERIC)
+NULL|0
+~~~
+# id|typeof(x'c55b')|CAST(coalesce(-579.2079, id) AS INTEGER) IN (CAST(coalesce(-600, id) AS BLOB), x'57c4', NULL)
+1|blob|NULL
+2|blob|NULL
+3|blob|NULL
+4|blob|NULL
+5|blob|NULL
+6|blob|NULL
+7|blob|NULL
+8|blob|NULL
+9|blob|NULL
+10|blob|NULL
+11|blob|NULL
+12|blob|NULL
+13|blob|NULL
+14|blob|NULL
+15|blob|NULL
+~~~
+# NOT -142|abs(typeof(typeof(NULL)))
+0|0.0
+~~~
+# id|abs('nu')|NOT c2
+4|0.0|1
+3|0.0|0
+2|0.0|1
+1|0.0|0
+~~~
+# CAST(CASE WHEN ('it''s' IS NOT 1) THEN NULL ELSE -(x'') END AS REAL)|-446 IN ('pi', 623, -388)
+NULL|0
+~~~
+# id|id|c2|c0
+1|2|343|972
+1|3|343|-5
+1|4|343|NULL
+2|3|NULL|-5
+2|4|NULL|NULL
+3|4|omega|NULL
+4|NULL|4.500000000000011e-310|NULL
+5|NULL|NULL|NULL
+6|NULL|NULL|NULL
+7|NULL|X'B87ABC2616'|NULL
+8|NULL|-9223372036854775808|NULL
+9|NULL|4.447|NULL
+10|NULL|NULL|NULL
+11|NULL|1.0e+308|NULL
+12|NULL|iota|NULL
+13|NULL|señor|NULL
+14|NULL|0.1|NULL
+15|NULL|-2.5|NULL
+~~~
+error: near "(": syntax error
+~~~

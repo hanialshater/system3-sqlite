@@ -1,0 +1,205 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 7
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|5
+~~~
+# id|c0|c1|ref
+26|5|NULL|NULL
+25|1.0e+308|X'3CEA23'|7
+23|x_y|-940|NULL
+22|X'D0DBA3597526'|2.5|NULL
+21|1|X'C4C0'|8
+19|0.0|alpha|5
+18|Ελλάδα|3|6
+17|NULL|X'D4D6D6DF060E'|2
+15|X'D0DBA3597526'|NULL|NULL
+14|rho|NULL|7
+13|NULL|NULL|4
+11|X''|123456789012|6
+10|X'014A931A20'|-7|5
+9|NULL|4.500000000000011e-310|7
+7|X''|NULL|NULL
+6|0!|-333|8
+5|X'D0DBA3597526'|X'FBBA4629'|NULL
+3|rho|3.1415926535897931|3
+2|X'6B18C3411F'|X''|2
+1|X'D0DBA3597526'|5|NULL
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|0x1F
+~~~
+# id|c0|c1|c2|c3
+2|NULL|NULL|eta|NULL
+3|123456789012|beta|NULL|NULL
+4|0|226.15|psi|X''
+5|-587|NULL|NULL|NULL
+7|X'75144F'|zeta|-2|-1.0e+308
+8|NULL|X''|X'D9F489C3'|-1
+9||NULL|0|-812
+10|X'D842'|0x1F|NULL|epsilon
+11|0x1F|NULL|NULL|NULL
+~~~
+changes: 9
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|NULL
+~~~
+# id|c0|c1|c2|c3
+12|NULL|NULL|NULL|NULL
+11|-11|NULL|NULL|NULL
+10|-10|0x1F|NULL|epsilon
+9|-9|NULL|0|-812
+8|703.3|NULL|NULL|NULL
+7|-7|zeta|-2|-1.0e+308
+6|-104|NULL|NULL|NULL
+5|-5|NULL|NULL|NULL
+3|-3|beta|NULL|NULL
+2|-2|NULL|eta|NULL
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|NULL
+~~~
+# id|c0|c1|c2|c3
+12|NULL|NULL|NULL|NULL
+11|NULL|NULL|NULL|NULL
+10|NULL|0x1F|NULL|epsilon
+8|NULL|NULL|NULL|NULL
+7|NULL|zeta|-2|-1.0e+308
+5|NULL|NULL|NULL|NULL
+2|X'378A4FD6'|NULL|NULL|NULL
+1|946|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|-2
+~~~
+# id|c0|c1|c2|c3
+13|-2|NULL|NULL|NULL
+12|NULL|NULL|NULL|NULL
+11|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL
+7|NULL|zeta|-2|-1.0e+308
+6|nu|NULL|NULL|NULL
+2|NULL|NULL|NULL|NULL
+1|946|NULL|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

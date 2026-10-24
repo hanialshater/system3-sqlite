@@ -1,0 +1,89 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c2
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 3, 5)|instr('nu', 'psi')|replace('nu', 'e', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '_'|'nu' GLOB '?'|char(78, 946)|'nu' || 'psi'|'nu' < 'psi'|'nu' = 'psi' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|Nβ|nupsi|1|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', -1, 2)|instr('beta', 'iota')|replace('beta', '', '')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE '%'|'beta' GLOB 'a*'|char(68, 229)|'beta' || 'iota'|'beta' < 'iota'|'beta' = 'iota' COLLATE NOCASE
+4|BETA|beta|a|0|beta|beta|eta|62657461|'beta'|98|1|0|Då|betaiota|1|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 1, 0)|instr('Lambda', 'chi')|replace('Lambda', 'é', '_')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%'|'Lambda' GLOB '*[a-m]*'|char(66, 254)|'Lambda' || 'chi'|'Lambda' < 'chi'|'Lambda' = 'chi' COLLATE NOCASE
+6|LAMBDA|lambda||0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|1|1|Bþ|Lambdachi|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 4, 0)|instr('naïve', ' pad ')|replace('naïve', '', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%é%'|'naïve' GLOB '?'|char(89, 566)|'naïve' || ' pad '|'naïve' < ' pad '|'naïve' = ' pad ' COLLATE NOCASE
+5|NAïVE|naïve||0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|Yȶ|naïve pad |0|0
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 3, 0)|instr('eta', 'beta')|replace('eta', 'e', '')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '_'|'eta' GLOB '?'|char(69, 968)|'eta' || 'beta'|'eta' < 'beta'|'eta' = 'beta' COLLATE NOCASE
+3|ETA|eta||0|ta|eta|eta|657461|'eta'|101|0|0|Eψ|etabeta|0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 2, 3)|instr('it''s', 'nu')|replace('it''s', '', '')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%'|'it''s' GLOB '*[a-m]*'|char(81, 680)|'it''s' || 'nu'|'it''s' < 'nu'|'it''s' = 'nu' COLLATE NOCASE
+4|IT'S|it's|t's|0|it's|it's|it's|69742773|'it''s'|105|1|1|Qʨ|it'snu|1|0
+~~~
+changes: 1
+~~~
+# id|c2
+1|-881.5312
+2|1.0e-07
+3|300.649
+4|356.192
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

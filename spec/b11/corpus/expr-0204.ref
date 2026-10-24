@@ -1,0 +1,182 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c2
+~~~
+error: cannot store BLOB value in INTEGER column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|nullif(id, abs(CASE WHEN -919 THEN c1 ELSE c3 END))|typeof(CASE WHEN coalesce(c3, NULL) THEN CAST(c1 AS INTEGER) ELSE 2.5 END)
+1|1|integer
+2|2|integer
+3|3|integer
+4|4|integer
+5|5|integer
+6|6|integer
+7|7|integer
+8|8|integer
+9|9|integer
+10|10|integer
+11|11|integer
+error: integer overflow
+~~~
+# 732|-1 IS NULL
+732|0
+~~~
+# id|iif(-(c2) IS NULL, CAST(c2 AS TEXT) IN (CASE WHEN ref THEN ref ELSE c3 END, -2, -737), 'beta')|CAST(c1 IN (c0, NULL, 'café') AS TEXT)
+1|beta|NULL
+2|beta|NULL
+3|beta|NULL
+4|beta|NULL
+5|beta|NULL
+6|beta|NULL
+7|beta|NULL
+8|beta|NULL
+9|beta|NULL
+10|beta|NULL
+11|beta|NULL
+12|beta|NULL
+13|beta|NULL
+14|beta|NULL
+15|beta|NULL
+~~~
+# '42' IS NULL|'eta' BETWEEN (NULL * '日本') BETWEEN 685.3 AND -199.7 AND coalesce(coalesce(x'7917be79', NULL), 97.22)
+0|NULL
+~~~
+# id|abs(nullif(ref, ref)) IN (-(typeof('NULL')), x'216ea8', 568)|abs(CASE WHEN iif(247.07, 4.5e-310, 629) THEN x'' ELSE NOT c2 END)
+1|NULL|0.0
+2|NULL|0.0
+3|NULL|0.0
+4|NULL|0.0
+5|NULL|0.0
+6|NULL|0.0
+7|NULL|0.0
+8|NULL|0.0
+9|NULL|0.0
+10|NULL|0.0
+11|NULL|0.0
+12|NULL|0.0
+13|NULL|0.0
+14|NULL|0.0
+15|NULL|0.0
+~~~
+# 'omega'|nullif(x'20ca878702', 465.49)
+omega|X'20CA878702'
+~~~
+# id|c3|NOT c1
+1|1.0e-07|0
+2|NULL|0
+3|1.0e+308|0
+4|X'DAE3196F4ED0'|0
+5|-647|NULL
+6|867|1
+7|NULL|0
+8|X'DDE6A898EE'|NULL
+9|it's|1
+10|109.9|1
+11|2.5|1
+12|X''|0
+~~~
+# 'phi'|-(nullif(-568.3, 'eta')) IN (x'ff' BETWEEN (NULL << 2.5) AND coalesce(NULL, NULL), 766, 'x_y')
+phi|NULL
+~~~
+# id|'it''s'|coalesce((c2 % 1e308), CAST(-(231) AS REAL))
+1|it's|-231.0
+2|it's|0.0
+3|it's|-231.0
+4|it's|0.0
+5|it's|0.0
+6|it's|-231.0
+7|it's|123456789012.0
+8|it's|0.0
+9|it's|0.0
+10|it's|3.0
+11|it's|-231.0
+12|it's|452.0
+13|it's|0.0
+~~~
+# 1|coalesce((iif(-901, 1e-7, -698) = nullif('naïve', x'95ea98')), -756.0258)
+1|0
+~~~

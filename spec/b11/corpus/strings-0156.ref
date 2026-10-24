@@ -1,0 +1,118 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 4, 4)|instr('tau', 'gamma')|replace('tau', 'é', '')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%é%'|'tau' GLOB 'a*'|char(71, 583)|'tau' || 'gamma'|'tau' < 'gamma'|'tau' = 'gamma' COLLATE NOCASE
+3|TAU|tau||0|tau|tau|tau|746175|'tau'|116|0|0|Gɇ|taugamma|0|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', 3, 1)|instr('kappa', '日本')|replace('kappa', 'e', '_')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '%'|'kappa' GLOB '*'|char(87, 253)|'kappa' || '日本'|'kappa' < '日本'|'kappa' = '日本' COLLATE NOCASE
+5|KAPPA|kappa|p|0|kappa|kappa|kappa|6B61707061|'kappa'|107|1|1|Wý|kappa日本|1|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 1, 5)|instr('1e3', 'sigma')|replace('1e3', 'é', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '_'|'1e3' GLOB 'a*'|char(86, 907)|'1e3' || 'sigma'|'1e3' < 'sigma'|'1e3' = 'sigma' COLLATE NOCASE
+3|1E3|1e3|1e3|0|1e3|1e3|1e3|316533|'1e3'|49|0|0|V΋|1e3sigma|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', -3, 0)|instr('pi', 'tau')|replace('pi', 'é', '_')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%a_'|'pi' GLOB '*[a-m]*'|char(77, 389)|'pi' || 'tau'|'pi' < 'tau'|'pi' = 'tau' COLLATE NOCASE
+2|PI|pi||0|pi|pi|pi|7069|'pi'|112|0|1|Mƅ|pitau|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 4, 2)|instr('pi', 'MU')|replace('pi', '', '')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%'|'pi' GLOB '*[a-m]*'|char(66, 811)|'pi' || 'MU'|'pi' < 'MU'|'pi' = 'MU' COLLATE NOCASE
+2|PI|pi||0|pi|pi|pi|7069|'pi'|112|1|1|B̫|piMU|0|0
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+18|18
+19|19
+20|20
+21|21
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -2, 0)|instr('theta', 'beta')|replace('theta', '', 'XY')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%'|'theta' GLOB 'a*'|char(88, 296)|'theta' || 'beta'|'theta' < 'beta'|'theta' = 'beta' COLLATE NOCASE
+5|THETA|theta||0|theta|theta|theta|7468657461|'theta'|116|1|0|XĨ|thetabeta|0|0
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', 3, 1)|instr('omicron', 'pi')|replace('omicron', 'a', 'XY')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE '%é%'|'omicron' GLOB 'a*'|char(69, 898)|'omicron' || 'pi'|'omicron' < 'pi'|'omicron' = 'pi' COLLATE NOCASE
+7|OMICRON|omicron|i|0|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|0|0|E΂|omicronpi|1|0
+~~~

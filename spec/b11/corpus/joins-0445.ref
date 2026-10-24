@@ -1,0 +1,241 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c3|c1
+1|2|-32|481
+3|5|NULL|X'B5CF'
+3|8|NULL|X'D608A736'
+3|9|NULL|0
+5|6|459|0
+6|3|357|-535.472
+~~~
+error: near "CASE": syntax error
+~~~
+# id|id|c0|c2
+1|2|X'3E887218'|X'B0FE9E47'
+2|NULL|NULL|NULL
+3|5|802.4823|536
+3|8|802.4823|2.5
+3|9|802.4823|theta
+4|NULL|907.649|NULL
+5|6|NULL|X'4751493D9A'
+6|3|NULL|-120.5
+7|NULL|X'BF69'|NULL
+8|7|tau|-4
+9|NULL|62|NULL
+~~~
+error: near ".992": syntax error
+~~~
+# id|id|c0|c0
+1|2|X'3E887218'|NULL
+2|NULL|NULL|NULL
+3|5|802.4823|NULL
+3|8|802.4823|tau
+3|9|802.4823|62
+4|NULL|907.649|NULL
+5|6|NULL|NULL
+6|3|NULL|802.4823
+7|NULL|X'BF69'|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c2|ref
+1|2|NULL|1
+3|5|331|3
+3|8|331|3
+3|9|331|3
+5|6|iota|5
+6|3|NULL|6
+8|7|NULL|8
+~~~
+# count(*)
+14
+~~~
+# id|id|c2|c2
+1|1|eta|94.491
+1|2|eta|X'B0FE9E47'
+1|3|eta|-120.5
+1|4|eta|NULL
+1|5|eta|536
+1|6|eta|X'4751493D9A'
+1|7|eta|-4
+1|8|eta|2.5
+1|9|eta|theta
+2|1|delta|94.491
+2|2|delta|X'B0FE9E47'
+2|3|delta|-120.5
+2|4|delta|NULL
+2|5|delta|536
+2|6|delta|X'4751493D9A'
+2|7|delta|-4
+2|8|delta|2.5
+2|9|delta|theta
+3|1|pi|94.491
+3|2|pi|X'B0FE9E47'
+3|3|pi|-120.5
+3|4|pi|NULL
+3|5|pi|536
+3|6|pi|X'4751493D9A'
+3|7|pi|-4
+3|8|pi|2.5
+3|9|pi|theta
+4|1|rho|94.491
+4|2|rho|X'B0FE9E47'
+4|3|rho|-120.5
+4|4|rho|NULL
+4|5|rho|536
+4|6|rho|X'4751493D9A'
+4|7|rho|-4
+4|8|rho|2.5
+4|9|rho|theta
+5|1|it's|94.491
+5|2|it's|X'B0FE9E47'
+5|3|it's|-120.5
+5|4|it's|NULL
+5|5|it's|536
+5|6|it's|X'4751493D9A'
+5|7|it's|-4
+5|8|it's|2.5
+5|9|it's|theta
+6|1|gamma|94.491
+6|2|gamma|X'B0FE9E47'
+6|3|gamma|-120.5
+6|4|gamma|NULL
+6|5|gamma|536
+6|6|gamma|X'4751493D9A'
+6|7|gamma|-4
+6|8|gamma|2.5
+6|9|gamma|theta
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c2|c1
+1|1|NULL|pi
+1|2|NULL|481
+1|3|NULL|-535.472
+1|4|NULL|X''
+1|5|NULL|X'B5CF'
+1|6|NULL|0
+1|7|NULL|0.1
+1|8|NULL|X'D608A736'
+1|9|NULL|0
+2|1|-810|pi
+2|2|-810|481
+2|3|-810|-535.472
+2|4|-810|X''
+2|5|-810|X'B5CF'
+2|6|-810|0
+2|7|-810|0.1
+2|8|-810|X'D608A736'
+2|9|-810|0
+3|1|331|pi
+3|2|331|481
+3|3|331|-535.472
+3|4|331|X''
+3|5|331|X'B5CF'
+3|6|331|0
+3|7|331|0.1
+3|8|331|X'D608A736'
+3|9|331|0
+4|1|-954.7308|pi
+4|2|-954.7308|481
+4|3|-954.7308|-535.472
+4|4|-954.7308|X''
+4|5|-954.7308|X'B5CF'
+4|6|-954.7308|0
+4|7|-954.7308|0.1
+4|8|-954.7308|X'D608A736'
+4|9|-954.7308|0
+5|1|iota|pi
+5|2|iota|481
+5|3|iota|-535.472
+5|4|iota|X''
+5|5|iota|X'B5CF'
+5|6|iota|0
+5|7|iota|0.1
+5|8|iota|X'D608A736'
+5|9|iota|0
+6|1|NULL|pi
+6|2|NULL|481
+6|3|NULL|-535.472
+~~~
+# count(*)
+5
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+9|9|-54.371999999999979|-54.371999999999979|-6.0413333333333306|-535.472|X'D608A736'|8
+~~~
+# c1|count(*)|group_concat(id, ';')
+-535.472|1|3
+0|2|6;9
+0.1|1|7
+481|1|2
+pi|1|1
+X''|1|4
+X'B5CF'|1|5
+X'D608A736'|1|8
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', -2, 3)|instr('Ελλάδα', '0x1F')|replace('Ελλάδα', 'a', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%a_'|'Ελλάδα' GLOB '?'|char(67, 364)|'Ελλάδα' || '0x1F'|'Ελλάδα' < '0x1F'|'Ελλάδα' = '0x1F' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|δα|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|CŬ|Ελλάδα0x1F|0|0
+~~~

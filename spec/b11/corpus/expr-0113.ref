@@ -1,0 +1,181 @@
+changes: 0
+~~~
+error: cannot store REAL value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t0.c1
+~~~
+changes: 0
+~~~
+error: cannot store BLOB value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|typeof(abs(NOT id))|-((NOT c2 + nullif(2, c0)))
+17|integer|0
+16|integer|0
+15|integer|0
+14|integer|0
+13|integer|0
+12|integer|0
+11|integer|0
+10|integer|0
+9|integer|0
+8|integer|0
+7|integer|0
+6|integer|0
+5|integer|0
+4|integer|0
+3|integer|0
+2|integer|0
+1|integer|0
+~~~
+# nullif(CASE WHEN 'chi' IS NULL THEN abs(NULL) ELSE nullif(4.5e-310, -1e308) END, abs(CAST(717 AS REAL)))|(abs(-3) < 280.0) BETWEEN coalesce(-4, NOT 'a%b') AND 123456789012
+4.500000000000011e-310|1
+~~~
+# id|typeof(CASE WHEN iif(NULL, c2, 1) THEN CAST(c0 AS INTEGER) ELSE 800 BETWEEN x'a3e9c8' AND c0 END)|x'43f56e'
+6|integer|X'43F56E'
+5|integer|X'43F56E'
+4|integer|X'43F56E'
+3|integer|X'43F56E'
+2|integer|X'43F56E'
+1|integer|X'43F56E'
+~~~
+# 0|nullif(CASE WHEN nullif('señor', x'30b6d5') THEN -(272.711) ELSE x'2caa5c23bb' END, iif(coalesce(-1, 'sigma'), (NULL + -978), -422.1036))
+0|X'2CAA5C23BB'
+~~~
+# id|id|NOT 'alpha'
+1|1|1
+2|2|1
+3|3|1
+4|4|1
+5|5|1
+6|6|1
+~~~
+# abs(NOT 'rho' IS NULL)|(x'b9ac20d6da' >> -75.9) IS NULL
+1|0
+~~~
+# id|CASE WHEN c1 THEN nullif(NOT c0, c4) ELSE 0 IN (-(id), x'4db11568aa13', 'café') END|NOT -1
+1|0|0
+2|0|0
+3|0|0
+4|0|0
+5|0|0
+6|0|0
+7|0|0
+8|0|0
+9|0|0
+10|0|0
+11|0|0
+12|0|0
+13|0|0
+14|0|0
+15|0|0
+16|0|0
+17|0|0
+~~~
+# x'0740f53ffef4'|CASE WHEN x'9d06826c' THEN 0.1 ELSE coalesce(-2.5, 286.45) END
+X'0740F53FFEF4'|-2.5
+~~~
+# id|nullif(iif(id, CAST(c0 AS BLOB), NULL), c2)|coalesce(2 IS NULL, coalesce(c1, c2) IS NULL)
+1|X'2D312E30652B333038'|0
+2|X'2D39323233333732303336383534373735383038'|0
+3|X'2D323830'|0
+4|X'2D32'|0
+5|X'31'|0
+6|X'3335342E3232'|0
+7|X'4D55'|0
+8|X'313937'|0
+9|X'35'|0
+10|X'30783146'|0
+11|X''|0
+~~~
+# 'epsilon'|x'0d64b5'
+epsilon|X'0D64B5'
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

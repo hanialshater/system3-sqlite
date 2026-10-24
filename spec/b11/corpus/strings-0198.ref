@@ -1,0 +1,60 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', -1, 5)|instr('naïve', 'omicron')|replace('naïve', '', 'XY')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '_'|'naïve' GLOB '?'|char(74, 500)|'naïve' || 'omicron'|'naïve' < 'omicron'|'naïve' = 'omicron' COLLATE NOCASE
+5|NAïVE|naïve|e|0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|JǴ|naïveomicron|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', -3, 1)|instr('naïve', 'theta')|replace('naïve', 'e', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%a_'|'naïve' GLOB '?'|char(66, 221)|'naïve' || 'theta'|'naïve' < 'theta'|'naïve' = 'theta' COLLATE NOCASE
+5|NAïVE|naïve|ï|0|naïv_|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|BÝ|naïvetheta|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', -1, 1)|instr('Ελλάδα', 'zeta')|replace('Ελλάδα', 'é', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%a_'|'Ελλάδα' GLOB '*'|char(75, 563)|'Ελλάδα' || 'zeta'|'Ελλάδα' < 'zeta'|'Ελλάδα' = 'zeta' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|α|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|1|Kȳ|Ελλάδαzeta|0|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', 1, 1)|instr('kappa', 'delta')|replace('kappa', '', '_')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '%a_'|'kappa' GLOB 'a*'|char(86, 458)|'kappa' || 'delta'|'kappa' < 'delta'|'kappa' = 'delta' COLLATE NOCASE
+5|KAPPA|kappa|k|0|kappa|kappa|kappa|6B61707061|'kappa'|107|0|0|VǊ|kappadelta|0|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 1, 4)|instr('zeta', 'sigma')|replace('zeta', 'e', 'XY')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%é%'|'zeta' GLOB '*'|char(88, 275)|'zeta' || 'sigma'|'zeta' < 'sigma'|'zeta' = 'sigma' COLLATE NOCASE
+4|ZETA|zeta|zeta|0|zXYta|zeta|zeta|7A657461|'zeta'|122|0|1|Xē|zetasigma|0|0
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

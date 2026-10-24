@@ -1,0 +1,156 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+11|11|-9.2233720368547758e+18|-9.2233720368547758e+18|-8.3848836698679782e+17|-1|X'3FAFC4'|11
+~~~
+# c0|count(*)|group_concat(id)
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+9|6|123456789580.76801|123456789580.76801|20576131596.794666|-52|X'A355'|6
+~~~
+# c4|count(*)|group_concat(id)
+NULL|3|1,7,11
+-52|1|10
+-3|1|5
+0|1|4
+4.500000000000011e-310|1|3
+2.5|1|9
+618.268|1|6
+123456789012|1|8
+X'A355'|1|2
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|1|12
+-974|1|15
+-121|1|1
+-3|1|2
+3.1415926535897931|1|17
+1000000000000000|1|3
+9223372036854775807|2|9;10
+0x1F|1|8
+iota|1|7
+NULL|1|4
+señor|1|14
+日本|1|19
+X''|1|11
+X'2516'|1|18
+X'4BCBB2'|1|5
+X'5D10'|1|13
+X'632416'|1|6
+X'EB03600EBB69'|1|16
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id)
+NULL|1|12
+-974|1|15
+-121|1|1
+-3|1|2
+3.1415926535897931|1|17
+1000000000000000|1|3
+9223372036854775807|2|9,10
+0x1F|1|8
+iota|1|7
+NULL|1|4
+señor|1|14
+日本|1|19
+X''|1|11
+X'2516'|1|18
+X'4BCBB2'|1|5
+X'5D10'|1|13
+X'632416'|1|6
+X'EB03600EBB69'|1|16
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id)
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|-2
+~~~
+# id|c0|c1|c2|c3|c4
+2|NULL|-664|-9223372036854775808|café|X'A355'
+3|NULL|-1|1000000000000000.0|NULL|4.500000000000011e-310
+4|707.6|d|NULL|NULL|NULL
+6|-458!|X'348A5E8FD1'|2.5|X'95'|618.268
+7|NULL|449.032|123456789012|NULL|NULL
+8|NULL|rho|-1.0e+308|5|123456789012
+10|NULL|X'CB'|4|X'B3E49CD8FC'|-52
+11|NULL|195|123456789012|3.1415926535897931|NULL
+12|-2|d|NULL|NULL|NULL
+~~~

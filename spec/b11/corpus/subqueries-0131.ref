@@ -1,0 +1,356 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+7|17
+15|17
+1|17
+8|17
+14|17
+11|17
+3|17
+13|17
+10|17
+16|17
+9|17
+4|17
+12|17
+6|17
+17|17
+5|17
+2|17
+~~~
+# id
+~~~
+# id
+15
+16
+17
+~~~
+# id
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+5|5
+6|6
+1|1
+4|4
+3|3
+2|2
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# c1
+255.59
+chi
+delta
+omicron
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+5|17
+8|17
+10|17
+12|17
+17|17
+3|17
+11|17
+9|17
+15|17
+16|17
+2|17
+14|17
+6|17
+1|17
+4|17
+13|17
+7|17
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# id
+17
+~~~
+# ref
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+-1.0e+308
+-74
+0
+2
+2
+2
+2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+5|17
+6|17
+12|17
+7|17
+16|17
+10|17
+14|17
+9|17
+11|17
+15|17
+17|17
+1|17
+2|17
+3|17
+4|17
+8|17
+13|17
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+~~~
+# c1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+7|17
+15|17
+1|17
+8|17
+14|17
+11|17
+3|17
+13|17
+10|17
+16|17
+9|17
+4|17
+12|17
+6|17
+17|17
+5|17
+2|17
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+NULL
+-9223372036854775808
+1
+2
+2.5
+3
+4
+5
+6
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+6|6
+5|5
+3|3
+1|1
+4|4
+~~~
+# id
+1
+~~~
+# id
+~~~
+# c2
+2
+6
+7
+8
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+6|6
+2|2
+3|3
+4|4
+5|5
+1|1
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# c3
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id|c2|(NOT NOT x'3e' << NOT c4)
+1|855.1621|0
+2|a%b|NULL
+3|X'C0BD3DB990'|0
+4|sigma|0
+5|260|0
+6|9223372036854775807|NULL
+~~~
+# 119.916|nullif(CASE WHEN NULL IN ('rho', NULL, -166) THEN iif('x_y', 123456789012, 865) ELSE -2 END, coalesce(CAST('delta' AS TEXT), 'NULL'))
+119.916|-2
+~~~

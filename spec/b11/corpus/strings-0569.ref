@@ -1,0 +1,86 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', -3, 2)|instr('señor', 'Lambda')|replace('señor', 'a', '_')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE 'a%'|'señor' GLOB '?'|char(76, 580)|'señor' || 'Lambda'|'señor' < 'Lambda'|'señor' = 'Lambda' COLLATE NOCASE
+5|SEñOR|señor|ño|0|señor|señor|señor|7365C3B16F72|'señor'|115|0|0|LɄ|señorLambda|0|0
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', -3, 0)|instr('phi', 'x_y')|replace('phi', 'é', '')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '%'|'phi' GLOB 'a*'|char(80, 251)|'phi' || 'x_y'|'phi' < 'x_y'|'phi' = 'x_y' COLLATE NOCASE
+3|PHI|phi||0|phi|phi|phi|706869|'phi'|112|1|0|Pû|phix_y|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 3, 1)|instr('Ελλάδα', 'beta')|replace('Ελλάδα', 'é', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'a%'|'Ελλάδα' GLOB '*'|char(67, 457)|'Ελλάδα' || 'beta'|'Ελλάδα' < 'beta'|'Ελλάδα' = 'beta' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|λ|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|1|Cǉ|Ελλάδαbeta|0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', -2, 5)|instr('it''s', '-7')|replace('it''s', 'é', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE 'A%'|'it''s' GLOB '?'|char(69, 578)|'it''s' || '-7'|'it''s' < '-7'|'it''s' = '-7' COLLATE NOCASE
+4|IT'S|it's|'s|0|it's|it's|it's|69742773|'it''s'|105|0|0|Eɂ|it's-7|0|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -2, 0)|instr('alpha', '')|replace('alpha', 'a', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%a_'|'alpha' GLOB '*'|char(83, 989)|'alpha' || ''|'alpha' < ''|'alpha' = '' COLLATE NOCASE
+5|ALPHA|alpha||1|lph|alpha|lpha|616C706861|'alpha'|97|0|1|Sϝ|alpha|0|0
+~~~
+# length('café')|upper('café')|lower('café')|substr('café', -2, 2)|instr('café', 'iota')|replace('café', 'é', 'XY')|trim('café')|ltrim('café', 'ab')|hex('café')|quote('café')|unicode('café')|'café' LIKE '%é%'|'café' GLOB '*'|char(90, 395)|'café' || 'iota'|'café' < 'iota'|'café' = 'iota' COLLATE NOCASE
+4|CAFé|café|fé|0|cafXY|café|café|636166C3A9|'café'|99|1|1|ZƋ|caféiota|1|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 0, 0)|instr('rho', '0x1F')|replace('rho', 'e', '')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '%'|'rho' GLOB '*'|char(72, 480)|'rho' || '0x1F'|'rho' < '0x1F'|'rho' = '0x1F' COLLATE NOCASE
+3|RHO|rho||0|rho|rho|rho|72686F|'rho'|114|1|1|HǠ|rho0x1F|0|0
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

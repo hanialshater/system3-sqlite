@@ -1,0 +1,213 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|-(NOT id)|c1
+1|0|NULL
+2|0|2.5
+3|0|2
+4|0|-864
+5|0|NULL
+6|0|
+~~~
+# CAST(CAST(NULL AS TEXT) AS BLOB)|(x'3706ada7' AND abs(-(x'')))
+NULL|0
+~~~
+# id|NOT -('0x1F')|-1
+1|1|-1
+2|1|-1
+3|1|-1
+4|1|-1
+5|1|-1
+6|1|-1
+7|1|-1
+8|1|-1
+9|1|-1
+10|1|-1
+11|1|-1
+12|1|-1
+13|1|-1
+~~~
+# iif(NULL, CASE WHEN 'psi' THEN NOT NULL ELSE abs(x'30f7') END, NULL)|nullif(iif(x'e94f', 'Lambda', 'theta'), 'Lambda')
+NULL|theta
+~~~
+# id|-((id % id) BETWEEN CASE WHEN id THEN x'' ELSE NULL END AND id)|0
+1|0|0
+2|0|0
+3|0|0
+4|0|0
+5|0|0
+6|0|0
+7|0|0
+8|0|0
+9|0|0
+10|0|0
+11|0|0
+12|0|0
+13|0|0
+~~~
+# CAST(typeof(coalesce(59, x'3d00b85856')) AS BLOB)|x'e0dfb119c2'
+X'696E7465676572'|X'E0DFB119C2'
+~~~
+# id|c1|(-(c1 IS NULL) <> abs(c0) IN (827, x'7b74', NULL))
+1|NULL|NULL
+2|chi|NULL
+3|X'8C36358C10'|NULL
+4|MU|NULL
+5|5|NULL
+6|X''|NULL
+7|-5|NULL
+8|456|NULL
+9|-1|NULL
+10|5|NULL
+11|X'F553'|NULL
+12|X'9F6124AA49'|NULL
+13|X'7B'|NULL
+~~~
+# CASE WHEN abs(972) THEN abs(NULL) ELSE abs('1e3') END IN (-(0), -996.5, NULL)|'upsilon'
+NULL|upsilon
+~~~
+# id|coalesce(coalesce(2.5, 'it''s') BETWEEN c1 AND c1, c0)|coalesce(nullif(NULL IN ('alpha', '42', 953), c0), iif('omicron', CAST(x'33ac4b3e1fb9' AS TEXT), NULL))
+1|599.26|NULL
+2|0|NULL
+3|0|NULL
+4|0|NULL
+5|0|NULL
+6|0|NULL
+7|0|NULL
+8|0|NULL
+9|0|NULL
+10|0|NULL
+11|0|NULL
+12|0|NULL
+13|0|NULL
+~~~
+# (1.0e15 % nullif(NOT 767.1509, iif(x'3bb0', 152, -5)))|CAST(abs(NULL) AS BLOB)
+NULL|NULL
+~~~
+# id|id BETWEEN CASE WHEN x'ec6b00' THEN -(id) ELSE 434 END AND (id << id) IS NULL|(coalesce(CASE WHEN id THEN id ELSE c0 END, ('0x1F' IS id)) OR NULL BETWEEN NULL AND c0)
+13|0|1
+12|0|1
+11|0|1
+10|0|1
+9|0|1
+8|0|1
+7|0|1
+6|0|1
+5|0|1
+4|0|1
+3|0|1
+2|0|1
+1|0|1
+~~~
+# CAST(CAST(NULL AS NUMERIC) AS BLOB)|abs('nu')
+NULL|0.0
+~~~
+# id|coalesce(iif(1.0e15, c1, x'72b443') IN (NOT 972, 'omicron', 1e-7), NULL IN (-1e308, 'Ελλάδα', x'a2d3b22df724') IS NULL)|c2
+1|1|NULL
+2|0|NULL
+3|0|X''
+4|0|0.1
+5|1|562.518
+6|0|NULL
+~~~
+# -('Lambda')|nullif(coalesce(NOT x'b9', -3), iif(-('omega'), CAST(x'9f498421e806' AS TEXT), 366))
+0|1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id)
+NULL|2|1,5
+|1|6
+-864|1|4
+2|1|3
+2.5|1|2
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 1, 1)|instr('delta', '1e3')|replace('delta', '', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE '%a_'|'delta' GLOB '*[a-m]*'|char(89, 742)|'delta' || '1e3'|'delta' < '1e3'|'delta' = '1e3' COLLATE NOCASE
+5|DELTA|delta|d|0|delta|delta|delta|64656C7461|'delta'|100|0|1|Y˦|delta1e3|0|0
+~~~
+# id|id|c1|c0
+1|1|42|NULL
+1|2|42|-5.0
+1|3|42|2.5
+1|4|42|9.2233720368547758e+18
+1|5|42|X'8EE466561E'
+1|6|42|theta
+2|1|nu|NULL
+2|2|nu|-5.0
+2|3|nu|2.5
+2|4|nu|9.2233720368547758e+18
+2|5|nu|X'8EE466561E'
+2|6|nu|theta
+3|1|5|NULL
+3|2|5|-5.0
+3|3|5|2.5
+3|4|5|9.2233720368547758e+18
+3|5|5|X'8EE466561E'
+3|6|5|theta
+4|1|alpha|NULL
+4|2|alpha|-5.0
+4|3|alpha|2.5
+4|4|alpha|9.2233720368547758e+18
+4|5|alpha|X'8EE466561E'
+4|6|alpha|theta
+5|1|-9223372036854775808|NULL
+5|2|-9223372036854775808|-5.0
+5|3|-9223372036854775808|2.5
+5|4|-9223372036854775808|9.2233720368547758e+18
+~~~
+error: near ".637": syntax error
+~~~

@@ -1,0 +1,192 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|kappa
+~~~
+# id|c0|c1|c2|c3|c4|ref
+10|kappa|NULL|NULL|NULL|NULL|NULL
+9|X'1BB2'||-41.44|NULL|omega|1
+8|X'1BB2'|2.5|naïve|NULL|-3|4
+6|X'1BB2'|X'A255'|229.7177|2.5|NULL|3
+5|X'1BB2'|NULL|-7|rho|X'823FF8'|8
+3|X'1BB2'|X''|X'3ACF921F'|NULL|X''|1
+2|E!|NULL|746|X'017F21'|-1.0e+308|NULL
+1|678.37|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|-851
+~~~
+# id|c0|c1|c2
+1|X'CAA2'|3.1415926535897931|omicron
+3|532|tau|xi
+4|naïve|NULL|d
+5|9223372036854775807|it's|NULL
+7|-3|NULL|X'00'
+9|0|NULL|d
+11|X'6495'|4|-5
+13|X''|NULL|NULL
+15|X''|-295|-2.5
+17|NULL|epsilon|X'3F'
+19|-1|X''|0
+20|-851|NULL|d
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-401
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|E!|NULL|746|X'017F21'|-1.0e+308|NULL
+3|1|NULL|NULL|NULL|NULL|NULL
+6|X'1BB2'|X'A255'|229.7177|2.5|NULL|3
+8|X'1BB2'|2.5|naïve|NULL|-3|4
+10|kappa|NULL|NULL|NULL|NULL|NULL
+11|-401|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|id|c0|c1
+1|2|chi|NULL
+1|3|chi|NULL
+1|6|chi|X'A255'
+1|8|chi|2.5
+1|10|chi|NULL
+1|11|chi|NULL
+2|2|xi|NULL
+2|3|xi|NULL
+2|6|xi|X'A255'
+2|8|xi|2.5
+2|10|xi|NULL
+2|11|xi|NULL
+3|2| pad |NULL
+3|3| pad |NULL
+3|6| pad |X'A255'
+3|8| pad |2.5
+3|10| pad |NULL
+3|11| pad |NULL
+4|2|zeta|NULL
+4|3|zeta|NULL
+4|6|zeta|X'A255'
+4|8|zeta|2.5
+4|10|zeta|NULL
+4|11|zeta|NULL
+5|2|gamma|NULL
+5|3|gamma|NULL
+5|6|gamma|X'A255'
+5|8|gamma|2.5
+5|10|gamma|NULL
+5|11|gamma|NULL
+6|2|upsilon|NULL
+6|3|upsilon|NULL
+6|6|upsilon|X'A255'
+6|8|upsilon|2.5
+6|10|upsilon|NULL
+6|11|upsilon|NULL
+7|2|1e3|NULL
+7|3|1e3|NULL
+7|6|1e3|X'A255'
+7|8|1e3|2.5
+7|10|1e3|NULL
+7|11|1e3|NULL
+~~~
+# count(*)
+7
+~~~

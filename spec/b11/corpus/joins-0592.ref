@@ -1,0 +1,173 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c2
+1|6|600|X'58493B'
+2|NULL|kappa|NULL
+3|1|-5|X'86C9B2A8BCAC'
+3|12|-5|NULL
+4|7|phi|rho
+4|11|phi|-1
+5|8|-287|über
+6|9|X'28A170F383'|X''
+7|4|0| pad 
+8|NULL|X'4B2E'|NULL
+9|NULL|X''|NULL
+10|NULL|X'6B'|NULL
+11|NULL|261.22|NULL
+~~~
+# count(*)
+13
+~~~
+# id|id|c1|c1
+1|6|xi|-2.5
+2|NULL|-1.0e+308|NULL
+3|1||xi
+3|12||omega
+4|7|1|-1
+4|11|1|-1
+5|8|-378|X'BE635EEF'
+6|9|-2.5|X'D65B33AC'
+7|4|-1|1
+8|NULL|X'BE635EEF'|NULL
+9|NULL|X'D65B33AC'|NULL
+10|NULL|9223372036854775807|NULL
+11|NULL|-1|NULL
+12|NULL|omega|NULL
+13|NULL|NULL|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c2|c0
+1|6|994.5|X'28A170F383'
+2|NULL|-7|NULL
+3|1|X'626BBE'|600
+3|12|X'626BBE'|1000
+4|7|über|0
+4|11|über|261.22
+5|8|9223372036854775807|X'4B2E'
+6|9|X'F2B622'|X''
+7|4|NULL|phi
+8|NULL|-720|NULL
+~~~
+# count(*)
+8
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+19|19|190|190.0|10.0|1|19|19
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+16|1|16
+17|1|17
+18|1|18
+19|1|19
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,115 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 2, 5)|instr('xi', 'señor')|replace('xi', '', '')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%a_'|'xi' GLOB '?'|char(85, 287)|'xi' || 'señor'|'xi' < 'señor'|'xi' = 'señor' COLLATE NOCASE
+2|XI|xi|i|0|xi|xi|xi|7869|'xi'|120|0|0|Uğ|xiseñor|0|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', -3, 0)|instr('0x1F', 'MU')|replace('0x1F', 'é', 'XY')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE '%'|'0x1F' GLOB 'a*'|char(89, 831)|'0x1F' || 'MU'|'0x1F' < 'MU'|'0x1F' = 'MU' COLLATE NOCASE
+4|0X1F|0x1f||0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|1|0|Y̿|0x1FMU|1|0
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', 2, 1)|instr('42', 'señor')|replace('42', 'a', 'XY')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%é%'|'42' GLOB 'a*'|char(74, 233)|'42' || 'señor'|'42' < 'señor'|'42' = 'señor' COLLATE NOCASE
+2|42|42|2|0|42|42|42|3432|'42'|52|0|0|Jé|42señor|1|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 2, 2)|instr('Lambda', 'rho')|replace('Lambda', 'e', 'XY')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE 'A%'|'Lambda' GLOB '?'|char(68, 992)|'Lambda' || 'rho'|'Lambda' < 'rho'|'Lambda' = 'rho' COLLATE NOCASE
+6|LAMBDA|lambda|am|0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|0|0|DϠ|Lambdarho|1|0
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', 0, 1)|instr('iota', 'delta')|replace('iota', 'e', 'XY')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE '_'|'iota' GLOB '?'|char(66, 999)|'iota' || 'delta'|'iota' < 'delta'|'iota' = 'delta' COLLATE NOCASE
+4|IOTA|iota||0|iota|iota|iota|696F7461|'iota'|105|0|0|Bϧ|iotadelta|0|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -2, 4)|instr('-7', 'delta')|replace('-7', '', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%é%'|'-7' GLOB '*[a-m]*'|char(90, 527)|'-7' || 'delta'|'-7' < 'delta'|'-7' = 'delta' COLLATE NOCASE
+2|-7|-7|-7|0|-7|-7|-7|2D37|'-7'|45|0|0|Zȏ|-7delta|1|0
+~~~
+changes: 1
+~~~
+# id|c3
+3|NULL
+10|NULL
+11|NULL
+18|NULL
+13|-67
+4|-5
+8|0.0
+5|1
+6|359.35
+16|392
+7|559
+1|café
+15|nu
+14|omega
+12|theta
+2|upsilon
+9|X'627DAF'
+17|X'979FDE'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

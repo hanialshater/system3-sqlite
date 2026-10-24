@@ -1,0 +1,180 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CASE WHEN abs(iif(533.72, x'882de19da94e', 2.5)) THEN (typeof(id) AND coalesce(x'c1', c1)) ELSE NOT coalesce(c1, c3) END|abs(CASE WHEN c1 THEN c3 ELSE -295.2 END) BETWEEN (c1 IS NULL % abs(NULL)) AND 'psi'
+6|NULL|1
+5|1|1
+4|1|1
+3|0|1
+2|1|1
+1|NULL|1
+~~~
+# coalesce(coalesce('it''s' IS NULL, 'pi' IS NULL), NOT NULL IS NULL)|NULL
+0|NULL
+~~~
+# id|id IN (c1, 'theta', x'b0') BETWEEN c1 AND CAST(c0 AS TEXT) IN (nullif(-882 IN (x'36c042', 400, 5), ref), 1e308, 'x_y')|x'fa'
+15|NULL|X'FA'
+14|1|X'FA'
+13|0|X'FA'
+12|1|X'FA'
+11|1|X'FA'
+10|1|X'FA'
+9|1|X'FA'
+8|1|X'FA'
+7|NULL|X'FA'
+6|1|X'FA'
+5|1|X'FA'
+4|NULL|X'FA'
+3|1|X'FA'
+2|1|X'FA'
+1|1|X'FA'
+~~~
+# abs(typeof(896.113))|coalesce(x'02947372', (54 % ' pad '))
+0.0|X'02947372'
+~~~
+# id|coalesce(c0, typeof(x'fb7ee362') BETWEEN NOT x'3ca47900a962' AND NOT c1)|c1 BETWEEN c1 AND NULL BETWEEN c1 AND c1 IS NULL IN ('tau', -53, 1e308)
+1|sigma|0
+2|2.5|0
+3|0|0
+4|-2.5|0
+5|-594.7|0
+6|X'3818'|0
+7|X'C382C303'|0
+~~~
+# CAST(coalesce(x'' BETWEEN -4 AND 892, -(-268)) AS TEXT)|x''
+0|X''
+~~~
+# id|nullif(id, NULL)|NOT 5 IS NULL IS NULL
+1|1|1
+2|2|1
+3|3|1
+4|4|1
+5|5|1
+6|6|1
+7|7|1
+8|8|1
+9|9|1
+10|10|1
+11|11|1
+12|12|1
+13|13|1
+14|14|1
+15|15|1
+~~~
+# -(('zeta' IS NOT 1)) IS NULL|abs((-1e308 IS NOT 'señor')) BETWEEN nullif(x'adcadba99d36' IN (-0.0, -259.2607, x'35fc7518ead1'), nullif(2.5, 4)) AND x'9e12f2072a82' IS NULL
+0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+6|6
+5|6
+4|6
+3|6
+2|6
+1|6
+~~~
+# id
+1
+2
+4
+5
+6
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# c0
+~~~
+# id|id|c1|id
+1|2|2|2
+1|3|2|3
+1|4|2|4
+1|5|2|5
+1|6|2|6
+2|3| pad |3
+2|4| pad |4
+2|5| pad |5
+2|6| pad |6
+3|4|694|4
+3|5|694|5
+3|6|694|6
+4|5|NULL|5
+4|6|NULL|6
+5|6|123456789012|6
+6|NULL|763.3586|NULL
+7|NULL|NULL|NULL
+8|NULL|X'EB407621DD'|NULL
+9|NULL|123456789012|NULL
+10|NULL|X'EC1C53C5'|NULL
+11|NULL|9223372036854775807|NULL
+12|NULL|3.1415926535897931|NULL
+13|NULL|-944|NULL
+14|NULL|823|NULL
+15|NULL|NULL|NULL
+~~~
+# count(*)
+9
+~~~

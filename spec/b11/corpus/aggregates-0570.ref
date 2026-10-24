@@ -1,0 +1,180 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+11|11|-1.0e+308|-1.0e+308|-9.0909090909090912e+306|-1.0e+308|X'D30BA3'|8
+~~~
+# c3|count(*)|group_concat(id)
+0|3|2,8,11
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+7|7|118.517|118.517|16.931|-31.336|49.562|7
+~~~
+# c1|count(*)|group_concat(id, ';')
+-31.336|1|7
+-8.735|1|2
+21.448|1|1
+22.921|1|4
+27.05|1|3
+37.607|1|5
+49.562|1|6
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+11|11|66|66.0|6.0|1|11|11
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+10|10|65|65.0|6.5|2|11|10
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+4|4
+5|5
+3|3
+2|2
+1|1
+7|7
+6|6
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# c0
+~~~
+# id|(CASE WHEN c2 THEN iif(343, NULL, 'Lambda') ELSE nullif(c2, id) END <> CAST(CASE WHEN c0 THEN c3 ELSE c3 END AS REAL))|CASE WHEN nullif(NULL IN (c0, 9223372036854775807, ' pad '), NULL IS NULL) THEN 1 ELSE -(c3) END
+11|NULL|0
+10|NULL|0
+9|NULL|-3.1415926535897931
+8|NULL|0
+7|NULL|0
+6|1|0
+5|NULL|-3.1415926535897931
+4|NULL|0
+3|NULL|0
+2|1|0
+1|NULL|1.0e+308
+~~~
+# (iif(CAST(164 AS REAL), '', NULL) * CAST(abs(-3) AS INTEGER))|-219.4728
+0|-219.4728
+~~~

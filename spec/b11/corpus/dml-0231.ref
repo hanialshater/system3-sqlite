@@ -1,0 +1,219 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c1
+~~~
+changes: 14
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|886
+~~~
+# id|c0|c1|c2|c3|c4
+2|-157.7405|4|-853|NULL|0
+4|-157.7405|zeta|NULL|nu|-2.5
+5|X''|NULL|NULL|NULL|NULL
+6|-157.7405|X'699B335E63'|764|9223372036854775807|147
+8|-157.7405|-257||-912|9223372036854775807
+9|it's|NULL|NULL|NULL|NULL
+10|-157.7405|omicron|X'31B1492665B3'|NULL|X'8A'
+12|-157.7405|-2.5|X'9139'|895|131
+14|-157.7405|X'47D46F'|0.1|X'B2666C25'|naïve
+15|886|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+# id|c0
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+# id|c0|c1
+9|295|946.61
+7|-56|nu
+5|381|-3
+3|-289|5
+1|48|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+# id|c0
+8|-1
+~~~
+# id|c0|c1
+3|-289|5
+7|-56|nu
+8|-1|NULL
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+# id|c0
+error: NOT NULL constraint failed: t0.c0
+~~~
+# id|c0|c1
+3|-4|5
+7|-4|nu
+~~~
+changes: 10
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|-357
+~~~
+# id|c0|c1|c2|c3|c4
+16|-357|NULL|NULL|NULL|NULL
+15|X'EDBBB50F8D'|NULL|NULL|NULL|NULL
+9|X'EDBBB50F8D'|NULL|NULL|NULL|NULL
+5|X'EDBBB50F8D'|NULL|NULL|NULL|NULL
+3|948.8532|NULL|NULL|NULL|NULL
+2|beta|NULL|NULL|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+12|12
+1|12
+6|12
+8|12
+10|12
+7|12
+4|12
+5|12
+11|12
+3|12
+2|12
+9|12
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# c2
+0
+4
+9223372036854775807
+MU
+beta
+~~~

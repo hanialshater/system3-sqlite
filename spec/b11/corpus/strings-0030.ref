@@ -1,0 +1,116 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 4, 1)|instr('it''s', 'nu')|replace('it''s', 'a', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '_'|'it''s' GLOB '?'|char(72, 244)|'it''s' || 'nu'|'it''s' < 'nu'|'it''s' = 'nu' COLLATE NOCASE
+4|IT'S|it's|s|0|it's|it's|it's|69742773|'it''s'|105|0|0|Hô|it'snu|1|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -3, 2)|instr('kappa', 'señor')|replace('kappa', 'e', 'XY')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '%é%'|'kappa' GLOB '*[a-m]*'|char(85, 877)|'kappa' || 'señor'|'kappa' < 'señor'|'kappa' = 'señor' COLLATE NOCASE
+5|KAPPA|kappa|pp|0|kappa|kappa|kappa|6B61707061|'kappa'|107|0|1|Uͭ|kappaseñor|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 3, 5)|instr('naïve', ' pad ')|replace('naïve', 'e', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'a%'|'naïve' GLOB '*'|char(68, 888)|'naïve' || ' pad '|'naïve' < ' pad '|'naïve' = ' pad ' COLLATE NOCASE
+5|NAïVE|naïve|ïve|0|naïv_|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|D͸|naïve pad |0|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 4, 4)|instr('Lambda', 'x_y')|replace('Lambda', 'a', '_')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%'|'Lambda' GLOB '*[a-m]*'|char(73, 463)|'Lambda' || 'x_y'|'Lambda' < 'x_y'|'Lambda' = 'x_y' COLLATE NOCASE
+6|LAMBDA|lambda|bda|0|L_mbd_|Lambda|Lambda|4C616D626461|'Lambda'|76|1|1|IǏ|Lambdax_y|1|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 3, 0)|instr('alpha', 'naïve')|replace('alpha', 'e', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%é%'|'alpha' GLOB '*[a-m]*'|char(66, 734)|'alpha' || 'naïve'|'alpha' < 'naïve'|'alpha' = 'naïve' COLLATE NOCASE
+5|ALPHA|alpha||0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|B˞|alphanaïve|1|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', 1, 5)|instr('0x1F', 'rho')|replace('0x1F', '', '')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE '_'|'0x1F' GLOB '*[a-m]*'|char(69, 200)|'0x1F' || 'rho'|'0x1F' < 'rho'|'0x1F' = 'rho' COLLATE NOCASE
+4|0X1F|0x1f|0x1F|0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|EÈ|0x1Frho|1|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -2, 3)|instr('theta', 'phi')|replace('theta', '', 'XY')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '_'|'theta' GLOB 'a*'|char(71, 391)|'theta' || 'phi'|'theta' < 'phi'|'theta' = 'phi' COLLATE NOCASE
+5|THETA|theta|ta|0|theta|theta|theta|7468657461|'theta'|116|0|0|GƇ|thetaphi|0|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+22|21|32.108000000000004|32.108000000000004|1.5289523809523811|-47.665|47.039|21
+~~~
+# c0|count(*)|group_concat(id, ';')
+~~~

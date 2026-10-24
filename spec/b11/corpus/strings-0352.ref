@@ -1,0 +1,112 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 4, 5)|instr('pi', 'tau')|replace('pi', 'a', 'XY')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%a_'|'pi' GLOB 'a*'|char(89, 434)|'pi' || 'tau'|'pi' < 'tau'|'pi' = 'tau' COLLATE NOCASE
+2|PI|pi||0|pi|pi|pi|7069|'pi'|112|0|0|YƲ|pitau|1|0
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', -2, 2)|instr(' pad ', 'xi')|replace(' pad ', 'é', '_')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '_'|' pad ' GLOB '?'|char(83, 790)|' pad ' || 'xi'|' pad ' < 'xi'|' pad ' = 'xi' COLLATE NOCASE
+5| PAD | pad |d |0| pad |pad| pad |2070616420|' pad '|32|0|0|S̖| pad xi|1|0
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', 4, 0)|instr('phi', 'delta')|replace('phi', 'a', '_')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE '%a_'|'phi' GLOB 'a*'|char(80, 381)|'phi' || 'delta'|'phi' < 'delta'|'phi' = 'delta' COLLATE NOCASE
+3|PHI|phi||0|phi|phi|phi|706869|'phi'|112|0|0|PŽ|phidelta|0|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -1, 1)|instr('kappa', 'café')|replace('kappa', 'a', '')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE 'A%'|'kappa' GLOB '*[a-m]*'|char(82, 560)|'kappa' || 'café'|'kappa' < 'café'|'kappa' = 'café' COLLATE NOCASE
+5|KAPPA|kappa|a|0|kpp|kappa|kappa|6B61707061|'kappa'|107|0|1|RȰ|kappacafé|0|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -1, 4)|instr('alpha', 'NULL')|replace('alpha', 'e', 'XY')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%é%'|'alpha' GLOB '*[a-m]*'|char(81, 378)|'alpha' || 'NULL'|'alpha' < 'NULL'|'alpha' = 'NULL' COLLATE NOCASE
+5|ALPHA|alpha|a|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|Qź|alphaNULL|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 3, 3)|instr('señor', 'chi')|replace('señor', 'e', 'XY')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '_'|'señor' GLOB '*[a-m]*'|char(72, 475)|'señor' || 'chi'|'señor' < 'chi'|'señor' = 'chi' COLLATE NOCASE
+5|SEñOR|señor|ñor|0|sXYñor|señor|señor|7365C3B16F72|'señor'|115|0|1|HǛ|señorchi|0|0
+~~~
+# id|id|c3|c2
+1|1|622.49|710.39
+1|2|622.49|5
+1|3|622.49|X'AB'
+1|4|622.49|NULL
+1|5|622.49|NULL
+1|6|622.49|zeta
+1|7|622.49|NULL
+1|8|622.49|0x1F
+1|9|622.49|NULL
+1|10|622.49|NULL
+1|11|622.49|715
+1|12|622.49|NULL
+1|13|622.49|NULL
+1|14|622.49|NULL
+1|15|622.49|433
+1|16|622.49|Lambda
+1|17|622.49|NULL
+1|18|622.49|NULL
+1|19|622.49|3
+~~~
+# count(*)
+0
+~~~

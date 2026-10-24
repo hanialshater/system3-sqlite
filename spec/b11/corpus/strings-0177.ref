@@ -1,0 +1,101 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 3, 4)|instr('it''s', 'phi')|replace('it''s', '', '_')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE 'a%'|'it''s' GLOB 'a*'|char(70, 663)|'it''s' || 'phi'|'it''s' < 'phi'|'it''s' = 'phi' COLLATE NOCASE
+4|IT'S|it's|'s|0|it's|it's|it's|69742773|'it''s'|105|0|0|Fʗ|it'sphi|1|0
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', -2, 2)|instr('upsilon', 'Ελλάδα')|replace('upsilon', 'é', '_')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE '%a_'|'upsilon' GLOB '?'|char(65, 227)|'upsilon' || 'Ελλάδα'|'upsilon' < 'Ελλάδα'|'upsilon' = 'Ελλάδα' COLLATE NOCASE
+7|UPSILON|upsilon|on|0|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|0|Aã|upsilonΕλλάδα|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 4, 3)|instr('nu', 'café')|replace('nu', 'e', 'XY')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%é%'|'nu' GLOB '?'|char(71, 689)|'nu' || 'café'|'nu' < 'café'|'nu' = 'café' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|0|Gʱ|nucafé|0|0
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|X'32CE'
+~~~
+# id|c0|c1
+1|-3|NULL
+2|-814|-3
+3||-583.691
+4|NULL|日本
+5|-273|NULL
+6|NULL|chi
+7|895.0022|123456789012
+8|NULL|NULL
+9|X'647AA986'|NULL
+11|X'B0D864CFCC'|-1
+12|epsilon|NULL
+13|1.0e+308|-1
+14|X'32CE'|NULL
+~~~

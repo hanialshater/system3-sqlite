@@ -1,0 +1,196 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|27
+~~~
+# id|c0|c1|c2|c3|c4
+1|NULL|NULL|NULL|0|NULL
+2|NULL|-5|-644.44|3|1.0e+308
+3|-7|-3|NULL|0|omicron
+4|über|X'1E0053'|NULL|4|X'07'
+6|42!|NULL|2|tau|-73
+7|X'6E'|X'B7C8AF'|X'94C294D8CA'|0.1|X'70AC'
+8|123456789012|90.35|2|X'346C86B9'|X'454ABBF5A388'
+9|NULL|X'FAA9857A'|-503|5|X'4726391DFF22'
+11|X'679674AA8F43'|X'98127D48E4'|382.2|X'7A9B91B236'|-420
+12|X'9D'|X''|1|-2.5|gamma
+13|-4|-935.5158|NULL|X'720EE8'|278
+14|NULL|0.0|NULL|omega|日本
+15|27|NULL|NULL|0|NULL
+~~~
+changes: 13
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|X'997F0C'
+~~~
+# id|c0|c1|c2|c3|c4
+15|X'997F0C'|NULL|NULL|0|NULL
+14|1|0.0|NULL|omega|日本
+12|1|X''|1|-2.5|gamma
+9|NULL|NULL|NULL|0|NULL
+8|1|90.35|2|X'346C86B9'|X'454ABBF5A388'
+6|1|NULL|2|tau|-73
+5|NULL|NULL|NULL|0|NULL
+4|1|X'1E0053'|NULL|4|X'07'
+2|1|-5|-644.44|3|1.0e+308
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|X'32801893'
+~~~
+# id|c0|c1|c2|c3|c4
+2|1|-5|-644.44|3|1.0e+308
+3|31|NULL|NULL|0|NULL
+5|NULL|NULL|NULL|0|NULL
+6|X'A1BB'|NULL|NULL|0|NULL
+8|1|90.35|2|X'346C86B9'|X'454ABBF5A388'
+9|NULL|NULL|NULL|0|NULL
+12|1|X''|1|-2.5|gamma
+14|1|0.0|NULL|omega|日本
+15|X'997F0C'|NULL|NULL|0|NULL
+16|X'32801893'|NULL|NULL|0|NULL
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|日本
+~~~
+# id|c0|c1|c2|c3
+1|chi|NULL|d|d
+2|4|omega|-989|Lambda
+4|NULL|gamma|phi|1.0e-07
+5|日本|NULL|d|d
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|1000
+~~~
+# id|c0|c1|c2|c3
+2|X'7F3EC271'|NULL|d|d
+4|0|gamma|phi|1.0e-07
+6|-1|NULL|d|d
+7|1000|NULL|d|d
+~~~
+changes: 10
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+16|NULL|NULL|NULL|0|NULL
+15|NULL|NULL|NULL|0|NULL
+14|NULL|0.0|NULL|omega|日本
+12|NULL|X''|1|-2.5|gamma
+9|NULL|NULL|NULL|0|NULL
+8|NULL|90.35|2|X'346C86B9'|X'454ABBF5A388'
+5|NULL|NULL|NULL|0|NULL
+4|X'8D'|NULL|NULL|0|NULL
+3|NULL|NULL|NULL|0|NULL
+2|NULL|-5|-644.44|3|1.0e+308
+~~~
+changes: 10
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|5
+~~~
+# id|c0|c1|c2|c3|c4
+17|5|NULL|NULL|0|NULL
+16|0|NULL|NULL|0|NULL
+14|0|0.0|NULL|omega|日本
+12|0|X''|1|-2.5|gamma
+9|0|NULL|NULL|0|NULL
+8|0|90.35|2|X'346C86B9'|X'454ABBF5A388'
+4|0|NULL|NULL|0|NULL
+3|NULL|NULL|NULL|0|NULL
+2|0|-5|-644.44|3|1.0e+308
+1|0|NULL|NULL|0|NULL
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', 2, 1)|instr('theta', 'sigma')|replace('theta', 'e', '_')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '_'|'theta' GLOB '*'|char(88, 317)|'theta' || 'sigma'|'theta' < 'sigma'|'theta' = 'sigma' COLLATE NOCASE
+5|THETA|theta|h|0|th_ta|theta|theta|7468657461|'theta'|116|0|1|XĽ|thetasigma|0|0
+~~~

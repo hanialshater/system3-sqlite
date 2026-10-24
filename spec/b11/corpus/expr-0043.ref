@@ -1,0 +1,269 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+# id|abs(typeof(typeof(id)))|c2
+1|0.0|2.5
+2|0.0|X'D7CA1E'
+3|0.0|X'CD18B4AB'
+4|0.0|X'63A16A'
+5|0.0|0
+6|0.0|0
+7|0.0|0
+8|0.0|X'F5BD0E145733'
+9|0.0|X'CA'
+10|0.0|X''
+11|0.0|gamma
+12|0.0|señor
+13|0.0|0
+14|0.0|it's
+15|0.0| pad 
+16|0.0|X'02E8F1F1'
+~~~
+# 'upsilon'|coalesce(coalesce(NULL, NULL), x'ac7cdb1b62') IN (typeof(iif('zeta', 'xi', 'tau')), 191.228, x'5c08')
+upsilon|0
+~~~
+# id|1|-196
+1|1|-196
+2|1|-196
+3|1|-196
+4|1|-196
+5|1|-196
+6|1|-196
+7|1|-196
+8|1|-196
+9|1|-196
+10|1|-196
+11|1|-196
+12|1|-196
+13|1|-196
+14|1|-196
+15|1|-196
+16|1|-196
+~~~
+error: unrecognized token: "x'NULL'"
+~~~
+# id|c1|abs(abs(typeof(c0)))
+1|-2|0.0
+2|123456789012|0.0
+3|-2|0.0
+4|X''|0.0
+5|xi|0.0
+6|827|0.0
+7|nu|0.0
+8|-160|0.0
+9|NULL|0.0
+10||0.0
+~~~
+# 1.0e15|coalesce(NULL, -459.5)
+1000000000000000.0|-459.5
+~~~
+# id|c2|iif(nullif(443.56, c2), CAST(abs(id) AS INTEGER), NULL)
+1|2.5|1
+2|X'D7CA1E'|2
+3|X'CD18B4AB'|3
+4|X'63A16A'|4
+5|0|5
+6|0|6
+7|0|7
+8|X'F5BD0E145733'|8
+9|X'CA'|9
+10|X''|10
+11|gamma|11
+12|señor|12
+13|0|13
+14|it's|14
+15| pad |15
+16|X'02E8F1F1'|16
+~~~
+# CAST(iif('', NULL IN (NULL, 98, NULL), -247.722) AS REAL)|-782
+-247.722|-782
+~~~
+# id|NOT iif(NULL, 'zeta' BETWEEN id AND id, 784.06)|id
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|0|6
+7|0|7
+8|0|8
+9|0|9
+10|0|10
+~~~
+# nullif(typeof(typeof(-283)), NULL)|NOT CAST(x'' AS BLOB)
+text|1
+~~~
+# id|-2.5|id
+1|-2.5|1
+2|-2.5|2
+3|-2.5|3
+4|-2.5|4
+5|-2.5|5
+6|-2.5|6
+7|-2.5|7
+8|-2.5|8
+9|-2.5|9
+10|-2.5|10
+~~~
+# NULL IN (CASE WHEN NULL THEN CASE WHEN 'MU' THEN 'eta' ELSE 'pi' END ELSE abs(509) END, '日本', x'649433096c')|abs(abs(iif(NULL, 'pi', x'cb2fddacb580')))
+NULL|0.0
+~~~
+# id|nullif(c1, NOT c2 BETWEEN c1 AND -5)|abs(CAST(CAST(NULL AS REAL) AS BLOB))
+1|-2|NULL
+2|123456789012|NULL
+3|-2|NULL
+4|X''|NULL
+5|xi|NULL
+6|827|NULL
+7|nu|NULL
+8|-160|NULL
+9|NULL|NULL
+10||NULL
+~~~
+# typeof('rho')|iif((CAST('omega' AS REAL) IS NOT typeof(x'64')), CASE WHEN 4 IS NULL THEN x'b623e1' BETWEEN 'epsilon' AND NULL ELSE CAST('phi' AS NUMERIC) END, 3)
+text|0
+~~~
+# id|CAST(coalesce(c2, 746) AS REAL)|c2 BETWEEN c0 AND c0 IN (nullif(c0, c0), -1e308, -993.93) IN (c2, NULL, -4)
+10|746.0|NULL
+9|0.0|NULL
+8|746.0|NULL
+7|0.0|NULL
+6|4.0|NULL
+5|4.0|NULL
+4|-576.0|NULL
+3|5.0|NULL
+2|0.0|NULL
+1|1.0|NULL
+~~~
+# iif(iif(NOT 'iota', x'', -1e308), NULL, 0)|CASE WHEN 891 THEN CASE WHEN -(x'') THEN NOT 2.5 ELSE nullif(2.5, 'über') END ELSE CAST(x'4ef2b1114f' IS NULL AS TEXT) END
+0|2.5
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|16
+2|16
+3|16
+4|16
+5|16
+6|16
+7|16
+8|16
+9|16
+10|16
+11|16
+12|16
+13|16
+14|16
+15|16
+16|16
+~~~
+# id
+1
+5
+10
+11
+12
+~~~
+# id
+14
+15
+16
+~~~
+# c1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+13|16
+16|16
+3|16
+15|16
+6|16
+14|16
+11|16
+4|16
+8|16
+2|16
+7|16
+10|16
+9|16
+12|16
+1|16
+5|16
+~~~
+# id
+1
+3
+4
+5
+6
+9
+10
+12
+13
+14
+15
+16
+~~~
+# id
+~~~
+# c3
+-1
+0
+4.500000000000011e-310
+NULL
+~~~

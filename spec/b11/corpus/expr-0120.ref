@@ -1,0 +1,184 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0|-(coalesce(NULL, ref)) IN (CAST(iif(c4, c2, NULL) AS REAL), NULL, 3.141592653589793)
+7|X''|NULL
+6|omicron|NULL
+5|1e3|NULL
+4| pad |NULL
+3|0|NULL
+2|beta|NULL
+1|-268|NULL
+~~~
+# nullif(4.5e-310, abs(NULL))|NOT -1e308
+4.500000000000011e-310|0
+~~~
+# id|typeof(-(x'cb17' IS NULL))|-(c4 IS NULL BETWEEN CAST(c1 AS NUMERIC) AND c0)
+1|integer|0
+2|integer|0
+3|integer|-1
+4|integer|0
+5|integer|-1
+6|integer|-1
+7|integer|NULL
+~~~
+# CASE WHEN NULL THEN iif(CASE WHEN 'chi' THEN NULL ELSE '42' END, -(NULL), 168) ELSE -(typeof(NULL)) END|-2.5
+0|-2.5
+~~~
+# id|NOT typeof(abs(c1))|(c4 >> c3)
+1|1|7904
+2|1|2
+3|1|-4
+4|1|0
+5|1|NULL
+6|1|NULL
+7|1|NULL
+~~~
+# NOT abs(771.4403 BETWEEN -347.213 AND x'2bde')|'it''s'
+0|it's
+~~~
+# id|c1|id IS NULL
+1|9223372036854775807|0
+2|9223372036854775807|0
+3|X'817AC5BEA3'|0
+4|0|0
+5|Lambda|0
+6|MU|0
+7|phi|0
+8|0|0
+9|0|0
+10|0|0
+11|alpha|0
+12|a%b|0
+13|X'9E6F51'|0
+14|652|0
+15|-445|0
+16|Lambda|0
+17|926.204|0
+18|X'80'|0
+19|alpha|0
+20|NULL|0
+21|alpha|0
+22|5|0
+23|42|0
+~~~
+# typeof(x'4da3f8aa091c')|2
+blob|2
+~~~
+# id|(c3 << (c4 >= iif(c1, ref, 'theta')))|typeof(NOT c4 IN ('', NULL, 'café'))
+1|-4|null
+2|NULL|null
+3|NULL|null
+4|5|null
+5|NULL|null
+6|NULL|null
+7|NULL|null
+~~~
+# coalesce(typeof(-(x'69a1')), 4)|typeof(nullif(461, CASE WHEN x'a08439d859' THEN 778.64 ELSE x'' END))
+integer|integer
+~~~
+# id|c2|(iif(3.141592653589793, c0, NULL) | ' pad ' IN (9223372036854775807, 'eta', 360)) IS NULL
+1|-335.819|1
+2|4|0
+3|-386.06|0
+4|X'73C6'|0
+5|288|0
+6|NULL|0
+7|X''|1
+8|señor|1
+9|459|1
+10|-655|0
+11|NULL|1
+12|119.8|0
+13|NULL|1
+14|delta|1
+15|NULL|1
+16|X'9CC187'|0
+17|delta|0
+18|X'21D6EC6F'|0
+19|chi|1
+20|NULL|0
+21|4|1
+22|-175.39|0
+23|-1|0
+~~~
+# 2 IS NULL IS NULL|NOT 2
+0|0
+~~~
+changes: 1
+~~~
+# id|c3
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id, ';')
+~~~

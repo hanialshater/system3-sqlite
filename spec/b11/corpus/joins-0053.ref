@@ -1,0 +1,323 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|c0
+1|21|1|9.846
+2|2|2|X''
+2|17|2|923.2461
+3|5|3|0
+3|6|3|4
+3|7|3|0
+3|12|3|2.5
+4|4|4|x_y
+4|11|4|558.442
+4|16|4|123456789012
+5|NULL|5|NULL
+6|8|6|X'6BC17019'
+6|13|6|Ελλάδα
+7|22|7|upsilon
+8|10|8|X'DA273E'
+8|20|8|739.6027
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+18|NULL|18|NULL
+19|NULL|19|NULL
+20|NULL|20|NULL
+21|NULL|21|NULL
+22|NULL|22|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|id|id
+1|21|1|21
+2|2|2|2
+2|17|2|17
+3|5|3|5
+3|6|3|6
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|id
+1|21|1|21
+2|2|2|2
+2|17|2|17
+3|5|3|5
+3|6|3|6
+3|7|3|7
+3|12|3|12
+4|4|4|4
+4|11|4|11
+4|16|4|16
+5|NULL|5|NULL
+6|8|6|8
+6|13|6|13
+7|22|7|22
+8|10|8|10
+8|20|8|20
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+18|NULL|18|NULL
+19|NULL|19|NULL
+20|NULL|20|NULL
+21|NULL|21|NULL
+22|NULL|22|NULL
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c2|id
+1|21|X'A1CFC90EA5'|21
+2|2|-348.5|2
+2|17|-348.5|17
+3|5|4|5
+3|6|4|6
+3|7|4|7
+3|12|4|12
+4|4|261|4
+4|11|261|11
+4|16|261|16
+5|NULL|x_y|NULL
+6|8|-350|8
+6|13|-350|13
+7|22|0.1|22
+8|10|NULL|10
+8|20|NULL|20
+9|NULL|NULL|NULL
+10|NULL|NULL|NULL
+11|NULL|omicron|NULL
+12|NULL|upsilon|NULL
+13|NULL|-328|NULL
+14|NULL|X'EF451B93'|NULL
+15|NULL|1|NULL
+16|NULL|339|NULL
+17|NULL|-990|NULL
+18|NULL|X'CE9D'|NULL
+19|NULL|kappa|NULL
+20|NULL|NULL|NULL
+21|NULL|X''|NULL
+22|NULL|-10|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c1
+1|21|NULL|X''
+2|2|it's|591
+2|17|it's|zeta
+3|5|señor|3.1415926535897931
+3|6|señor|sigma
+3|7|señor|592
+3|12|señor|X'C4'
+4|4|-2.5|NULL
+4|11|-2.5|647.19
+4|16|-2.5|9223372036854775807
+5|NULL|-2|NULL
+6|8|-631|NULL
+6|13|-631|Lambda
+7|22|NULL|NULL
+8|10|X'CA2B'|-120.99
+8|20|X'CA2B'|9223372036854775807
+9|NULL|über|NULL
+10|NULL|NULL|NULL
+11|NULL|833|NULL
+12|NULL|NULL|NULL
+13|NULL|X'72F786'|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|coalesce(x'6da1e8d925', nullif(950 BETWEEN ref AND id, ref))|NOT ref
+1|X'6DA1E8D925'|NULL
+2|X'6DA1E8D925'|0
+3|X'6DA1E8D925'|NULL
+4|X'6DA1E8D925'|0
+5|X'6DA1E8D925'|0
+6|X'6DA1E8D925'|0
+7|X'6DA1E8D925'|0
+8|X'6DA1E8D925'|0
+9|X'6DA1E8D925'|NULL
+10|X'6DA1E8D925'|0
+11|X'6DA1E8D925'|0
+12|X'6DA1E8D925'|0
+13|X'6DA1E8D925'|0
+14|X'6DA1E8D925'|NULL
+15|X'6DA1E8D925'|NULL
+16|X'6DA1E8D925'|0
+17|X'6DA1E8D925'|0
+18|X'6DA1E8D925'|NULL
+19|X'6DA1E8D925'|NULL
+20|X'6DA1E8D925'|0
+21|X'6DA1E8D925'|0
+22|X'6DA1E8D925'|0
+~~~
+# abs(x'383c9b3a610d')|NULL
+8.0|NULL
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+23|14|-1143.1309999999999|-1143.1309999999999|-81.65221428571428|-2|X'CA2B'|14
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|9|1;7;10;12;16;18;20;22;23
+-2|1|5
+-2.5|1|4
+-3|1|21
+-563|1|14
+-631|1|6
+-677.631|1|15
+-97|1|19
+0|1|17
+833|1|11
+it's|1|2
+señor|1|3
+über|1|9
+X'72F786'|1|13
+X'CA2B'|1|8
+~~~

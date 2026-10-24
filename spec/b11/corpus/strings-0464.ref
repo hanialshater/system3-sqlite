@@ -1,0 +1,92 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -2, 3)|instr('theta', '-7')|replace('theta', 'e', '')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%é%'|'theta' GLOB 'a*'|char(66, 970)|'theta' || '-7'|'theta' < '-7'|'theta' = '-7' COLLATE NOCASE
+5|THETA|theta|ta|0|thta|theta|theta|7468657461|'theta'|116|0|0|Bϊ|theta-7|0|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 3, 1)|instr('-7', 'alpha')|replace('-7', 'é', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%a_'|'-7' GLOB '*[a-m]*'|char(84, 784)|'-7' || 'alpha'|'-7' < 'alpha'|'-7' = 'alpha' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|0|0|T̐|-7alpha|1|0
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', 1, 0)|instr('omicron', '-7')|replace('omicron', 'e', '')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE 'A%'|'omicron' GLOB '*'|char(87, 388)|'omicron' || '-7'|'omicron' < '-7'|'omicron' = '-7' COLLATE NOCASE
+7|OMICRON|omicron||0|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|0|1|WƄ|omicron-7|0|0
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', 3, 4)|instr('omicron', 'omicron')|replace('omicron', 'a', 'XY')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE '%'|'omicron' GLOB '?'|char(68, 481)|'omicron' || 'omicron'|'omicron' < 'omicron'|'omicron' = 'omicron' COLLATE NOCASE
+7|OMICRON|omicron|icro|1|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|1|0|Dǡ|omicronomicron|0|1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 3, 5)|instr(' pad ', 'chi')|replace(' pad ', '', '_')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%a_'|' pad ' GLOB 'a*'|char(86, 992)|' pad ' || 'chi'|' pad ' < 'chi'|' pad ' = 'chi' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|0|VϠ| pad chi|1|0
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|2|251|X'06BE1B41'|sigma|1
+3|X'27ECBF3A'|176.3|phi|1.0e-07|6
+5|)!|NULL|X''|0.1|NULL
+7|96.986|0|X'82'|5|4
+9|191|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|id|c0|c2
+1|1|2|X'06BE1B41'
+3|NULL|X'27ECBF3A'|NULL
+5|NULL|)!|NULL
+7|NULL|96.986|NULL
+9|NULL|191|NULL
+10|NULL|NULL|NULL
+~~~
+error: near "(": syntax error
+~~~

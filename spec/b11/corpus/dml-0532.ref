@@ -1,0 +1,289 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-2
+~~~
+# id|c0|c1
+1|228|upsilon
+2|eta|NULL
+3|X'324A77D4717B'|MU
+5|659|X'4E053FB3'
+6|NULL|NULL
+7|-123.6|-123.6
+9|NULL|über
+11|808.3832|NULL
+13|Lambda|X'71DE935B2E48'
+15|1.0e-07|1.0e-07
+17|255|X'07'
+18|-2|NULL
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|362.2
+~~~
+# id|c0|c1|c2|c3|c4
+15|362.2|NULL|d|NULL|NULL
+14|-5|1.0e+308|0|NULL|X'7D04DC'
+12|NULL|NULL|X'937A'|X'6C'|-3.0
+11|NULL|NULL|psi|NULL|NULL
+9|2.5|3|-608.955|0x1F|X'84A1603026'
+8|480|0x1F|0|-120|NULL
+6|omega|1.0e+308|X'B61D'|-33.4|NULL
+5|NULL|-1|-709|NULL|NULL
+3|0|NULL|1000000000000000.0|3|X'F3261E'
+2|NULL|NULL|d|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|X'BE2AA486'
+~~~
+# id|c0|c1|c2|c3|c4
+1|pi|NULL|d|NULL|NULL
+2|NULL|NULL|d|NULL|NULL
+3|3|NULL|1000000000000000.0|3|X'F3261E'
+5|NULL|-1|-709|NULL|NULL
+9|0x1F|3|-608.955|0x1F|X'84A1603026'
+11|NULL|NULL|psi|NULL|NULL
+15|NULL|NULL|d|NULL|NULL
+16|X'BE2AA486'|NULL|d|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+17|NULL|NULL|d|NULL|NULL
+16|X'BE2AA486'|NULL|d|NULL|NULL
+9|NULL|NULL|d|NULL|NULL
+3|NULL|NULL|d|NULL|NULL
+2|NULL|NULL|d|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|1
+~~~
+# id|c0|c1|c2|c3|c4
+18|1|NULL|d|NULL|NULL
+17|NULL|NULL|d|NULL|NULL
+9|NULL|NULL|d|NULL|NULL
+4|tau|NULL|d|NULL|NULL
+3|NULL|NULL|d|NULL|NULL
+2|NULL|NULL|d|NULL|NULL
+~~~
+changes: 12
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|4.500000000000011e-310
+~~~
+# id|c0|c1
+2|NULL|NULL
+3|x_y|NULL
+6|NULL|NULL
+7|X'E5F4'|NULL
+18|NULL|NULL
+19|4.500000000000011e-310|NULL
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'A89CC03E3839'
+~~~
+# id|c0|c1
+2|NULL|NULL
+3|x_y|NULL
+4|9223372036854775807|NULL
+6|NULL|NULL
+7|X'E5F4'|NULL
+18|NULL|NULL
+19|4.500000000000011e-310|NULL
+20|X'A89CC03E3839'|NULL
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', 3, 2)|instr('rho', 'Lambda')|replace('rho', 'a', 'XY')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '%é%'|'rho' GLOB '?'|char(69, 416)|'rho' || 'Lambda'|'rho' < 'Lambda'|'rho' = 'Lambda' COLLATE NOCASE
+3|RHO|rho|o|0|rho|rho|rho|72686F|'rho'|114|0|0|EƠ|rhoLambda|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+2|1
+3|2
+9|5
+17|5
+18|6
+4|3
+~~~
+# id
+2
+3
+4
+9
+17
+18
+~~~
+# id
+2
+3
+4
+18
+~~~
+# c4
+~~~
+changes: 8
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|NULL
+~~~
+# id|c0|c1
+20|NULL|NULL
+19|NULL|NULL
+18|NULL|NULL
+7|NULL|NULL
+6|NULL|NULL
+4|tau|NULL
+3|NULL|NULL
+2|NULL|NULL
+1|0|NULL
+~~~

@@ -1,0 +1,289 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|-945
+~~~
+# id|c0|c1
+2|NULL|X'A2DC9FB03ABC'
+4|pi|NULL
+5|X'0B3E7A8012'|NULL
+6|X'37321654'|-5
+8|-58.81|1
+10|X'42'|-2.5
+12|-3|-1
+13|-945|NULL
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|X'598100'
+~~~
+# id|c0|c1|c2|c3|c4
+1|2|X''|X'DD512B'|kappa|gamma
+2|H�!|Ελλάδα|X'DC644DC3'|xi|X''
+4|X'2ADB'|X'D377'|654|über|-375
+5|484.1|d|NULL|0.0|NULL
+7|X'667A8D49FB'|0.0|it's|0.0|NULL
+8|-2.5|9.2233720368547758e+18|5|0.0|X'4D46'
+10|-163.2031|-528.8515|日本|iota|tau
+11|-1|1000.0|alpha|137.87|-264
+13|-725|1.0e+308|X'6E3342F4'|X''|-467
+14|0|X''|upsilon|X'26D5C4C93D'|NULL
+16|1|X'54'|NULL| pad |X'003587B3'
+17|X'AAFA589AAD1A'|-641.0|X'3286'|café|390
+18|X'598100'|d|NULL|0.0|NULL
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|80.069
+~~~
+# id|c0|c1
+1|theta|NULL
+2|NULL|X'A2DC9FB03ABC'
+4|gamma!|NULL
+6|X'37321654'|-5
+8|-58.81|1
+10|X'42'|-2.5
+12|-3|-1
+13|80.069|NULL
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: UNIQUE constraint failed: t1.c0
+~~~
+# id|c0|c1
+1|theta|NULL
+2|4.500000000000011e-310!|X'A2DC9FB03ABC'
+4|gamma!|NULL
+6|X'37321654'|-5
+8|9223372036854775807|NULL
+12|-3|-1
+13|80.069|NULL
+~~~
+changes: 13
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|it's
+~~~
+# id|c0|c1|c2|ref
+1|0|NULL|X'D7B663330C'|8
+2|0|NULL|0|NULL
+4|gamma!|1000000000000000|chi|7
+5|0|3.1415926535897931|0|2
+7|0|-755||NULL
+8|0|4|0|7
+10|0|pi|eta|7
+11|0|X'E8AFC6D2'|omicron|7
+13|0|325|0|3
+14|it's|NULL|0|NULL
+~~~
+changes: 13
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|-309.41
+~~~
+# id|c0|c1|c2|c3|c4
+2|-190.365|Ελλάδα|X'DC644DC3'|xi|X''
+4|0.1|d|NULL|0.0|NULL
+7|-190.365|0.0|it's|0.0|NULL
+8|-190.365|9.2233720368547758e+18|5|0.0|X'4D46'
+10|-190.365|-528.8515|日本|iota|tau
+11|-190.365|1000.0|alpha|137.87|-264
+14|-190.365|X''|upsilon|X'26D5C4C93D'|NULL
+16|-190.365|X'54'|NULL| pad |X'003587B3'
+18|-190.365|d|NULL|0.0|NULL
+19|-309.41|d|NULL|0.0|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+12|-3
+13|80.069
+8|9223372036854775807
+2|4.500000000000011e-310!
+4|gamma!
+1|theta
+6|X'37321654'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+4|3
+7|4
+8|5
+18|7
+19|7
+11|5
+16|7
+10|5
+2|2
+14|7
+~~~
+# id
+7
+10
+11
+14
+16
+18
+19
+~~~
+# id
+2
+4
+8
+10
+14
+16
+18
+19
+~~~
+# c2
+2
+4
+6
+8
+12
+13
+5
+alpha
+it's
+upsilon
+日本
+X'DC644DC3'
+~~~

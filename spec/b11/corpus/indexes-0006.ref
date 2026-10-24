@@ -1,0 +1,212 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|-290.54
+7|-576.28
+8|-59
+6|1
+5|749
+1|a%b
+2|naïve
+9|omega
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|-290.54
+7|-576.28
+8|-59
+6|1
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|id
+1|6|X'B498E1'|6
+2|7|über|7
+3|8|5|8
+4|4|663|4
+4|10|663|10
+5|2|76|2
+5|5|76|5
+5|11|76|11
+6|12|-1.0e+308|12
+7|3|NULL|3
+8|13|123456789012|13
+9|NULL|9223372036854775807|NULL
+10|NULL|X''|NULL
+11|NULL|9223372036854775807|NULL
+12|NULL|upsilon|NULL
+13|NULL|X'37240D503B'|NULL
+14|NULL|X'0198'|NULL
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+# id|c1
+6|-2.5
+5|-1
+3|290
+1|9223372036854775807
+7|MU
+2|upsilon
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+2|-559
+1|-160
+5|-2
+3|-1
+8|3
+12|456.0
+11|eta
+6|xi
+13|X''
+7|X'4BA4001B'
+4|X'58AC40ED'
+9|X'A77E629B5E'
+10|X'B404DA'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

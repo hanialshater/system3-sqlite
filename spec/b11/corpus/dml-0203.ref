@@ -1,0 +1,261 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|NULL
+~~~
+# id|c0|c1
+11|NULL|NULL
+10|rho|-2.953
+8|iota|-12.116
+6|phi|-45.887
+4|a%b|-8.588
+3|-2.5|NULL
+2|NULL|-33.276
+~~~
+changes: 5
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17| pad 
+~~~
+# id|c0|c1|c2|c3|ref
+2|X''|se√±or|upsilon|NULL|8
+4|omicron|NULL|NULL|NULL|NULL
+6|ﬁﬂ“{!|sigma|42|-4|2
+8|it's|NULL|xi|NULL|4
+10|NULL|-230|-754|0|2
+12| pad |154|-9223372036854775808|-46.695|4
+14|X''|692|NULL|655.3246|3
+16|rho|X'C8'|X'FE6998D2'|X'803776'|2
+17| pad |NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|NULL
+~~~
+# id|c0|c1|c2|ref
+18|NULL|d|NULL|NULL
+17|-951|gamma|X'66259EAAB9'|NULL
+15|X'36DBCE7ED5'|X'E99695'|NULL|7
+14|1.0e-07|NULL|X'A2'|8
+12|-193.8156|beta|-678|3
+11|0|-9223372036854775808|-176|7
+9|0x1F|195|ŒïŒªŒªŒ¨Œ¥Œ±|NULL
+8|-4|d|NULL|NULL
+6|X'F194'|rho|X'68C8731A07'|3
+5|-272!|NULL|beta|2
+3|242|X'B621EE'|1000000000000000|1
+2|se√±or|4|X'8D0D5C76'|1
+~~~
+changes: 12
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|886
+~~~
+# id|c0|c1|c2|ref
+1|X'5F'|d|NULL|NULL
+2|0|4|X'8D0D5C76'|1
+3|0|X'B621EE'|1000000000000000|1
+6|0|rho|X'68C8731A07'|3
+8|0|d|NULL|NULL
+11|0|-9223372036854775808|-176|7
+12|0|beta|-678|3
+14|0|NULL|X'A2'|8
+15|0|X'E99695'|NULL|7
+18|0|d|NULL|NULL
+19|886|d|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|iota
+~~~
+# id|c0|c1|c2|c3|ref
+2|X''|se√±or|upsilon|NULL|8
+5|NULL|NULL|NULL|NULL|NULL
+6|ﬁﬂ“{!|sigma|42|-4|2
+7|rho|NULL|NULL|NULL|NULL
+10|NULL|-230|-754|0|2
+14|X''|692|NULL|655.3246|3
+17| pad |NULL|NULL|NULL|NULL
+18|iota|NULL|NULL|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'DF'
+~~~
+# id|c0|c1|c2|ref
+1|-117|d|NULL|NULL
+2|0|4|X'8D0D5C76'|1
+3|0|X'B621EE'|1000000000000000|1
+5|X''|d|NULL|NULL
+6|NULL|d|NULL|NULL
+11|0|-9223372036854775808|-176|7
+14|0|NULL|X'A2'|8
+15|-117|X'E99695'|NULL|7
+18|-117|d|NULL|NULL
+19|-117|d|NULL|NULL
+20|X'DF'|d|NULL|NULL
+~~~
+# id|abs(abs(NULL BETWEEN id AND NULL))|coalesce(nullif(c0, c1 BETWEEN c0 AND c1), c0 IN (nullif(c1, c0), NULL, NULL))
+11|NULL|NULL
+10|NULL|rho
+8|NULL|iota
+6|NULL|phi
+4|NULL|a%b
+3|NULL|-2.5
+2|NULL|NULL
+~~~
+# NOT NULL IN (abs(abs(NULL)), 'nu', 1e-7)|x''
+NULL|X''
+~~~
+# id|NOT id|nullif(-484, c2)
+2|0|-484
+5|0|-484
+6|0|-484
+7|0|-484
+10|0|-484
+14|0|-484
+17|0|-484
+18|0|-484
+~~~
+# x'06964e619803'|coalesce((nullif('-7', x'5720aeb8') < nullif(NULL, x'ca7e7d61fb')), typeof(nullif(NULL, -2)))
+X'06964E619803'|null
+~~~

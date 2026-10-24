@@ -1,0 +1,194 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+15|14|7.7695927535897846|7.7695927535897846|0.55497091097069895|-576.74|X'FB3537C735'|14
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|1|9
+-576.74|1|13
+-5|1|4
+-2.5|1|5
+1.0e-07|1|1
+3.1415926535897931|1|11
+15.868|1|15
+573|1|7
+alpha|1|10
+iota|1|12
+pi|1|3
+日本|1|14
+X'767B5DF2'|1|8
+X'D337'|1|6
+X'FB3537C735'|1|2
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+23|14|35.0|35.0|2.5|-2|X'EB81C4'|14
+~~~
+# c0|count(*)|group_concat(id)
+NULL|9|1,2,3,6,7,13,17,19,22
+-2|1|20
+-5|1|18
+42|1|21
+MU|1|5
+beta|1|8
+café|1|11
+chi|1|23
+upsilon|1|16
+X'4C89017E6F'|1|4
+X'63FE0FC6'|1|14
+X'B434864592'|1|15
+X'DB10'|1|9
+X'E22F148F210F'|1|12
+X'EB81C4'|1|10
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+15|14|7.7695927535897846|7.7695927535897846|0.55497091097069895|-576.74|X'FB3537C735'|14
+~~~
+# c1|count(*)|group_concat(id)
+NULL|1|9
+-576.74|1|13
+-5|1|4
+-2.5|1|5
+1.0e-07|1|1
+3.1415926535897931|1|11
+15.868|1|15
+573|1|7
+alpha|1|10
+iota|1|12
+pi|1|3
+日本|1|14
+X'767B5DF2'|1|8
+X'D337'|1|6
+X'FB3537C735'|1|2
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+9|9|-576.13|-576.13|-64.01444444444445|-145|X'FD2B5211'|9
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|7|1;3;6;8;13;19;22
+-145|1|5
+-398|1|7
+-4|1|9
+-426.13|1|15
+-5|1|4
+1|1|16
+1.0e+308|1|17
+3|1|12
+epsilon|1|23
+señor|1|18
+Ελλάδα|1|14
+X'0DFEE868EF'|1|2
+X'2AD5'|1|20
+X'8BAE54BF'|1|11
+X'C00F'|1|10
+X'FD2B5211'|1|21
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+~~~
+changes: 23
+~~~
+changes: 12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|X'AB'
+~~~
+# id|c0|c1|c2
+1|-745|d|NULL
+2|NULL|X'04AD02'|X'0DFEE868EF'
+3|X''|d|NULL
+4|NULL|NULL|-5
+6|NULL|NULL|NULL
+8|NULL|NULL|NULL
+10|NULL|4.500000000000011e-310|X'C00F'
+12|NULL|NULL|3
+14|NULL|-5|Ελλάδα
+16|NULL|X'1B'|1
+18|NULL|omega|señor
+20|NULL|4.500000000000011e-310|X'2AD5'
+22|NULL|1|NULL
+23|X'AB'|d|NULL
+~~~

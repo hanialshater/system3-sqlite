@@ -1,0 +1,202 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-5
+12|-5
+9|5
+13|139.86
+4|9223372036854775807
+14|café
+16|X''
+3|X'60'
+10|X'76F50967'
+18|X'AA942BAAC8'
+8|X'AC845F'
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+7|-925
+6|-630
+4|-324.8397
+18|-147
+1|215
+13|281
+11|331.8
+14|492
+15|543.69
+10|772
+12|843
+8|café
+16|delta
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+5|NULL
+9|NULL
+14|NULL
+11|-742
+6|0
+1|1000000000000000.0
+18|123456789012
+2|491
+4|765.9
+12|893.8942
+15|psi
+3|señor
+17|zeta
+13|X''
+10|X'6721113F24'
+7|X'6D99E90D'
+16|X'9AC16D'
+8|X'DC2022F8'
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|NULL
+7|NULL
+11|NULL
+13|NULL
+10|-1.0e+308
+15|-1.0e+308
+18|-532
+2|1
+4|1
+12|5
+17|690.633
+9|904
+16|123456789012
+14|1.0e+308
+8|beta
+6|chi
+5|Ελλάδα
+1|X'F1555E3596FF'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+7|-925
+6|-630
+4|-324.8397
+18|-147
+1|215
+13|281
+11|331.8
+14|492
+15|543.69
+10|772
+12|843
+8|café
+16|delta
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -3, 3)|instr('日本', '42')|replace('日本', 'é', 'XY')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '%'|'日本' GLOB '?'|char(69, 545)|'日本' || '42'|'日本' < '42'|'日本' = '42' COLLATE NOCASE
+2|日本|日本|日本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|1|0|Eȡ|日本42|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -1, 0)|instr('1e3', 'über')|replace('1e3', 'é', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '%a_'|'1e3' GLOB '*[a-m]*'|char(81, 959)|'1e3' || 'über'|'1e3' < 'über'|'1e3' = 'über' COLLATE NOCASE
+3|1E3|1e3||0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Qο|1e3über|1|0
+~~~

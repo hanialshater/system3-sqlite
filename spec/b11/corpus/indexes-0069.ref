@@ -1,0 +1,132 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+1|-827
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+4|5.512
+5|32.325
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|ref|id
+1|1|8|1
+2|2|6|2
+3|3|8|3
+4|4|2|4
+5|5|8|5
+6|NULL|1|NULL
+~~~
+error: no such column: a.über
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|X'0C622758'
+~~~
+# id|c0|c1|c2
+1|psi|-7.0|-41.636
+2|576!|-16.42|6.245
+3|omicron|-9.2233720368547758e+18|49.769
+4|NULL|5.512|-1.434
+8|NULL|NULL|NULL
+9|X'0C622758'|NULL|NULL
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 3, 3)|instr('Lambda', 'xi')|replace('Lambda', '', 'XY')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%a_'|'Lambda' GLOB 'a*'|char(78, 753)|'Lambda' || 'xi'|'Lambda' < 'xi'|'Lambda' = 'xi' COLLATE NOCASE
+6|LAMBDA|lambda|mbd|0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|0|0|N˱|Lambdaxi|1|0
+~~~

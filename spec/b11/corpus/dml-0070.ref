@@ -1,0 +1,378 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|239
+~~~
+# id|c0|c1|c2|c3
+1|-2|60|287|0.0
+2|日本|0|X'154C9A'|NULL
+4|X''|X'DD40D1157653'|x_y|1e3
+5|NULL|0|NULL|NULL
+7|532|395|a%b|tau
+8|rho|0|296|865
+10|it's|-2.5|-633|señor
+11|NULL|123456789012|rho|X'AC883980'
+13|-777|X'2B2D9D53'|-339|NULL
+14|301.11|0|-3|NULL
+16|-819|3.1415926535897931|X''|-924.1932
+17|904.52|0|NULL|523
+19|phi|X'67B5B08AAF'|X'EB6796'|NULL
+20|X'4D0FF1'|-564|-399|440
+22|241|X'0B'|theta|-373
+23|239|0|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|1000000000000000
+~~~
+# id|c0|c1|c2|c3
+1|-2|60|287|0.0
+2|日本|0|X'154C9A'|NULL
+3|NULL|0|NULL|NULL
+5|NULL|0|NULL|NULL
+6|123456789012|0|NULL|NULL
+7|532|395|a%b|tau
+10|it's|-2.5|-633|señor
+11|NULL|123456789012|rho|X'AC883980'
+13|-777|X'2B2D9D53'|-339|NULL
+14|301.11|0|-3|NULL
+17|904.52|0|NULL|523
+19|phi|X'67B5B08AAF'|X'EB6796'|NULL
+22|241|X'0B'|theta|-373
+23|239|0|NULL|NULL
+24|1000000000000000|0|NULL|NULL
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|748.152
+~~~
+# id|c0|c1
+20|748.152|NULL
+19|1|NULL
+18|1|NULL
+17|1|NULL
+15|1|sigma
+14|1|-334
+13|1|X''
+11|1|-9223372036854775808
+10|1|-713
+9|1|NULL
+7|1|NULL
+6|1|0x1F
+5|1|-266
+4|-9223372036854775808|NULL
+3|1|-2
+2|22|NULL
+1|1|NULL
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 4
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+25|X'F5F6D58B'
+~~~
+# id|c0|c1|c2|c3
+25|X'F5F6D58B'|0|NULL|NULL
+24|1000000000000000|0|NULL|NULL
+23|239|0|NULL|NULL
+22|241|X'0B'|theta|-373
+19|phi|X'67B5B08AAF'|X'EB6796'|NULL
+14|301.11|0|-3|NULL
+11|NULL|123456789012|rho|X'AC883980'
+10|it's|-2.5|-633|señor
+9|NULL|0|NULL|NULL
+7|532|395|a%b|tau
+6|123456789012|0|NULL|NULL
+3|NULL|0|NULL|NULL
+2|日本|0|X'154C9A'|NULL
+~~~
+changes: 13
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|phi
+~~~
+# id|c0|c1|c2|c3
+2|696.231|0|NULL|NULL
+3|4!|0|NULL|NULL
+6|NULL|0|NULL|NULL
+7|NULL|395|a%b|tau
+10|NULL|-2.5|-633|señor
+11|NULL|123456789012|rho|X'AC883980'
+14|NULL|0|-3|NULL
+19|NULL|X'67B5B08AAF'|X'EB6796'|NULL
+22|NULL|X'0B'|theta|-373
+23|NULL|0|NULL|NULL
+24|NULL|0|NULL|NULL
+25|phi|0|NULL|NULL
+~~~
+# id|iif(iif(c0, c0, NULL) BETWEEN -(id) AND nullif(-578, 554), CAST(coalesce(id, c0) AS BLOB), NULL)|NULL
+1|NULL|NULL
+2|NULL|NULL
+3|NULL|NULL
+4|NULL|NULL
+5|NULL|NULL
+6|NULL|NULL
+7|NULL|NULL
+9|NULL|NULL
+10|NULL|NULL
+11|NULL|NULL
+13|NULL|NULL
+14|NULL|NULL
+15|NULL|NULL
+17|NULL|NULL
+18|NULL|NULL
+19|NULL|NULL
+20|NULL|NULL
+~~~
+# nullif(CAST(x'9330152b5d7e' BETWEEN -141.268 AND 'tau' AS BLOB), x'3cd9')|abs(NULL IN (x'65d063a1e0', x'', x'594f') IN (x'' IS NULL, NULL, 5))
+X'30'|NULL
+~~~
+# id|id|c1|c3
+1|2|NULL|X'A142D9D0'
+1|3|NULL|564.0
+1|4|NULL|NULL
+1|5|NULL|NULL
+1|6|NULL|X'C6'
+1|7|NULL|NULL
+1|8|NULL|NULL
+1|9|NULL|-805.0
+1|10|NULL|2.5
+1|11|NULL|-2.0
+1|12|NULL|-428.0
+1|13|NULL|NULL
+1|14|NULL|X'813E05123C'
+1|15|NULL|NULL
+1|16|NULL|NULL
+1|17|NULL|-433.2128
+1|18|NULL|-2.5
+1|19|NULL|NULL
+1|20|NULL|phi
+1|21|NULL|-1.0
+1|22|NULL|a%b
+1|23|NULL|alpha
+2|3|NULL|564.0
+2|4|NULL|NULL
+2|5|NULL|NULL
+2|6|NULL|X'C6'
+2|7|NULL|NULL
+2|8|NULL|NULL
+2|9|NULL|-805.0
+2|10|NULL|2.5
+2|11|NULL|-2.0
+2|12|NULL|-428.0
+2|13|NULL|NULL
+2|14|NULL|X'813E05123C'
+2|15|NULL|NULL
+2|16|NULL|NULL
+2|17|NULL|-433.2128
+2|18|NULL|-2.5
+~~~
+error: near "(": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+9|9
+10|10
+11|11
+13|13
+14|14
+15|15
+17|17
+18|18
+19|19
+20|20
+~~~
+# id
+4
+6
+7
+13
+14
+~~~
+# id
+~~~
+# c0
+-9223372036854775808
+1
+22
+748.152
+~~~

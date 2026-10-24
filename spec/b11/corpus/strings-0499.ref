@@ -1,0 +1,99 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 2, 2)|instr('zeta', '-7')|replace('zeta', 'é', '_')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '_'|'zeta' GLOB '?'|char(78, 451)|'zeta' || '-7'|'zeta' < '-7'|'zeta' = '-7' COLLATE NOCASE
+4|ZETA|zeta|et|0|zeta|zeta|zeta|7A657461|'zeta'|122|0|0|Nǃ|zeta-7|0|0
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', 4, 4)|instr('iota', 'alpha')|replace('iota', 'é', '_')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE '_'|'iota' GLOB 'a*'|char(71, 441)|'iota' || 'alpha'|'iota' < 'alpha'|'iota' = 'alpha' COLLATE NOCASE
+4|IOTA|iota|a|0|iota|iota|iota|696F7461|'iota'|105|0|0|Gƹ|iotaalpha|0|0
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 0, 2)|instr('eta', '日本')|replace('eta', 'e', '')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '_'|'eta' GLOB 'a*'|char(74, 527)|'eta' || '日本'|'eta' < '日本'|'eta' = '日本' COLLATE NOCASE
+3|ETA|eta|e|0|ta|eta|eta|657461|'eta'|101|0|0|Jȏ|eta日本|1|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 1, 1)|instr('chi', 'Lambda')|replace('chi', 'é', 'XY')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '%é%'|'chi' GLOB '*'|char(68, 778)|'chi' || 'Lambda'|'chi' < 'Lambda'|'chi' = 'Lambda' COLLATE NOCASE
+3|CHI|chi|c|0|chi|chi|chi|636869|'chi'|99|0|1|D̊|chiLambda|0|0
+~~~
+# id|NOT (ref BETWEEN c0 AND c1 + CAST(x'05b3a4' AS REAL))|nullif(NOT -(ref), c2)
+22|NULL|NULL
+21|1|0
+20|NULL|NULL
+19|1|0
+18|1|0
+17|1|0
+16|1|0
+15|1|0
+14|1|0
+13|1|0
+12|1|0
+11|1|0
+10|1|0
+9|1|0
+8|NULL|NULL
+7|1|0
+6|1|0
+5|NULL|NULL
+4|1|0
+3|1|0
+2|1|0
+1|0|0
+~~~
+# x'1c1ebcd8'|x'6f' BETWEEN typeof(nullif(x'6c0905e473', NULL)) AND '0x1F'
+X'1C1EBCD8'|0
+~~~

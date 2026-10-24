@@ -1,0 +1,170 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NULL|nullif(nullif(-(1), c3), abs(c4))
+1|NULL|-1
+2|NULL|-1
+3|NULL|-1
+4|NULL|-1
+5|NULL|-1
+6|NULL|-1
+7|NULL|-1
+8|NULL|-1
+9|NULL|-1
+10|NULL|-1
+11|NULL|-1
+12|NULL|-1
+13|NULL|-1
+14|NULL|-1
+15|NULL|-1
+16|NULL|-1
+17|NULL|-1
+18|NULL|-1
+19|NULL|-1
+20|NULL|-1
+~~~
+# -(coalesce('42', -(-5)))|NOT NULL
+-42|NULL
+~~~
+# id|CAST(iif(coalesce(c3, -257), typeof(c3), NULL) AS NUMERIC)|nullif(CAST(x'c08cf6be790c' AS REAL), ref)
+10|NULL|0.0
+9|NULL|0.0
+8|0|0.0
+7|NULL|0.0
+6|NULL|0.0
+5|NULL|0.0
+4|0|0.0
+3|NULL|0.0
+2|0|0.0
+1|0|0.0
+~~~
+# NULL BETWEEN -(NULL) IN (x'37d8afd2a05e' IN (-456.8, '0x1F', 1.0e15), x'', x'3979cea84c') AND 3|NOT CASE WHEN x'cc0136d5955b' THEN NULL ELSE 4 END IS NULL
+NULL|1
+~~~
+# id|CAST(coalesce(id, 'phi') IN (id, -5, 'tau') AS NUMERIC)|c1
+1|1|NULL
+2|1|NULL
+3|1|MU
+4|1|X''
+5|1|X'CD'
+~~~
+# typeof(x'9e78' BETWEEN -802.9 AND x'69c431bbbf7a' IN (NOT NULL, NULL, 0))|CAST('gamma' AS TEXT) IN (246.0, NULL, x'9b8f31')
+integer|NULL
+~~~
+# id|4 IN (abs(c3) IN (x'e1e9d379', 669.988, '0x1F'), NULL, NULL)|abs(nullif(c2, coalesce(c4, NULL)))
+1|NULL|0.0
+2|NULL|NULL
+3|NULL|0.0
+4|NULL|0.0
+5|NULL|NULL
+6|NULL|0.1
+7|NULL|NULL
+8|NULL|0.0
+9|NULL|9.0
+10|NULL|0.0
+~~~
+# x'55cc97587d'|nullif(((NULL < 552) IS NOT typeof(x'3e4df60c711b')), -(NOT NULL))
+X'55CC97587D'|1
+~~~
+# id|-('señor')|CASE WHEN -0.0 THEN nullif(c1 IN (c2, 'omicron', NULL), id) ELSE abs(nullif(196, x'')) END
+1|0|196
+2|0|196
+3|0|196
+4|0|196
+5|0|196
+6|0|196
+7|0|196
+8|0|196
+9|0|196
+10|0|196
+11|0|196
+12|0|196
+13|0|196
+14|0|196
+15|0|196
+16|0|196
+17|0|196
+18|0|196
+19|0|196
+20|0|196
+~~~
+# coalesce(abs(CAST(-9223372036854775808 AS TEXT)), nullif(('omega' OR x'00766ef7'), x'a0fa7d'))|-(coalesce(x'78', -571 IN (NULL, 'psi', 'alpha')))
+9.2233720368547758e+18|0
+~~~

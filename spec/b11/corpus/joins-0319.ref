@@ -1,0 +1,353 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|id
+1|15|tau|15
+2|12|0|12
+2|17|0|17
+2|18|0|18
+3|1|-831|1
+3|10|-831|10
+3|11|-831|11
+~~~
+error: near "(": syntax error
+~~~
+# id|id|ref|c3
+1|1|4|-170
+1|2|4|232
+1|3|4|-153
+1|4|4|455
+1|5|4|-238
+1|6|4|324
+1|7|4|39
+1|8|4|-330
+1|9|4|-493
+1|10|4|-30
+1|11|4|172
+1|12|4|-22
+1|13|4|-454
+1|14|4|-478
+1|15|4|36
+1|16|4|-388
+1|17|4|-50
+1|18|4|-432
+1|19|4|285
+1|20|4|-32
+2|1|NULL|-170
+2|2|NULL|232
+2|3|NULL|-153
+2|4|NULL|455
+2|5|NULL|-238
+2|6|NULL|324
+2|7|NULL|39
+2|8|NULL|-330
+2|9|NULL|-493
+2|10|NULL|-30
+2|11|NULL|172
+2|12|NULL|-22
+2|13|NULL|-454
+2|14|NULL|-478
+2|15|NULL|36
+2|16|NULL|-388
+2|17|NULL|-50
+2|18|NULL|-432
+2|19|NULL|285
+2|20|NULL|-32
+3|1|7|-170
+3|2|7|232
+3|3|7|-153
+3|4|7|455
+3|5|7|-238
+3|6|7|324
+3|7|7|39
+~~~
+# count(*)
+13
+~~~
+# id|id|c0|id
+1|15|5.0|15
+2|12|-5.0|12
+2|17|-5.0|17
+2|18|-5.0|18
+3|1|NULL|1
+3|10|NULL|10
+3|11|NULL|11
+4|5|X'3C702FFB83D4'|5
+4|8|X'3C702FFB83D4'|8
+4|9|X'3C702FFB83D4'|9
+5|3|epsilon|3
+5|7|epsilon|7
+6|2|-923.49|2
+6|6|-923.49|6
+6|20|-923.49|20
+7|16|4.500000000000011e-310|16
+8|NULL|X'2D'|NULL
+9|NULL|X'BA0C0EEC85'|NULL
+10|NULL|beta|NULL
+11|NULL|-727.0|NULL
+12|NULL|iota|NULL
+13|NULL|X''|NULL
+14|NULL|-27.0|NULL
+15|NULL|X'87308D'|NULL
+16|NULL|-492.0|NULL
+17|NULL|NULL|NULL
+18|NULL|0.0|NULL
+19|NULL|X'AB07'|NULL
+20|NULL|X'39CE6307B4'|NULL
+21|NULL|252.667|NULL
+22|NULL|-1.0|NULL
+~~~
+# count(*)
+25
+~~~
+# id|id|c3|c1
+1|1|-170|88.823
+1|2|-170|X'9A11'
+1|3|-170|kappa
+1|4|-170|NULL
+1|5|-170|über
+1|6|-170|X'377BAAE7'
+1|7|-170|0
+1|8|-170|-71.618
+1|9|-170|NULL
+1|10|-170|a%b
+1|11|-170|0
+1|12|-170|-756
+1|13|-170|alpha
+1|14|-170|418
+1|15|-170|NULL
+1|16|-170|X'26908B'
+1|17|-170|NULL
+1|18|-170|709.05
+1|19|-170|X''
+1|20|-170|NULL
+2|1|232|88.823
+2|2|232|X'9A11'
+2|3|232|kappa
+2|4|232|NULL
+2|5|232|über
+2|6|232|X'377BAAE7'
+2|7|232|0
+2|8|232|-71.618
+2|9|232|NULL
+2|10|232|a%b
+2|11|232|0
+2|12|232|-756
+2|13|232|alpha
+2|14|232|418
+2|15|232|NULL
+2|16|232|X'26908B'
+2|17|232|NULL
+2|18|232|709.05
+2|19|232|X''
+2|20|232|NULL
+3|1|-153|88.823
+3|2|-153|X'9A11'
+3|3|-153|kappa
+3|4|-153|NULL
+3|5|-153|über
+3|6|-153|X'377BAAE7'
+3|7|-153|0
+3|8|-153|-71.618
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c1|c1
+1|15|chi|NULL
+2|12|NULL|-756
+2|17|NULL|NULL
+2|18|NULL|709.05
+3|1|-404|88.823
+3|10|-404|a%b
+3|11|-404|0
+4|5|0|über
+4|8|0|-71.618
+4|9|0|NULL
+5|3|-4|kappa
+5|7|-4|0
+6|2|281|X'9A11'
+6|6|281|X'377BAAE7'
+6|20|281|NULL
+7|16|0|X'26908B'
+8|NULL|3.1415926535897931|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c2|ref
+1|15|NULL|1
+2|12|1.0e+308|2
+2|17|1.0e+308|2
+2|18|1.0e+308|2
+3|1|4.500000000000011e-310|3
+3|10|4.500000000000011e-310|3
+3|11|4.500000000000011e-310|3
+4|5|-2|4
+4|8|-2|4
+4|9|-2|4
+5|3|396.68|5
+5|7|396.68|5
+6|2|-118.097|6
+6|6|-118.097|6
+6|20|-118.097|6
+~~~
+# count(*)
+25
+~~~
+# id|id|ref|c2
+1|15|4|-441
+2|12|NULL|276
+2|17|NULL|338
+2|18|NULL|103
+3|1|7|-191
+3|10|7|438
+3|11|7|-48
+4|5|NULL|7
+4|8|NULL|319
+4|9|NULL|-496
+5|3|5|-278
+5|7|5|-74
+6|2|NULL|-261
+6|6|NULL|448
+6|20|NULL|-488
+7|16|7|-267
+8|NULL|6|NULL
+9|NULL|7|NULL
+10|NULL|3|NULL
+11|NULL|4|NULL
+12|NULL|7|NULL
+13|NULL|7|NULL
+14|NULL|7|NULL
+15|NULL|8|NULL
+16|NULL|5|NULL
+17|NULL|6|NULL
+18|NULL|6|NULL
+19|NULL|2|NULL
+20|NULL|6|NULL
+21|NULL|NULL|NULL
+22|NULL|4|NULL
+23|NULL|6|NULL
+24|NULL|3|NULL
+25|NULL|5|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|nullif(CAST(id AS BLOB), c1)|typeof(typeof(-2.5))
+1|X'31'|text
+2|X'32'|text
+3|X'33'|text
+~~~
+# 'NULL'|coalesce(-9223372036854775808 IN (CAST('nu' AS BLOB), NULL, 'sigma'), iif(nullif(-657.40, 'über'), iif(x'9565affc', x'abb0b5', NULL), 'chi'))
+NULL|NULL
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 2, 0)|instr('xi', 'gamma')|replace('xi', 'a', '')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%é%'|'xi' GLOB '?'|char(74, 714)|'xi' || 'gamma'|'xi' < 'gamma'|'xi' = 'gamma' COLLATE NOCASE
+2|XI|xi||0|xi|xi|xi|7869|'xi'|120|0|0|Jˊ|xigamma|0|0
+~~~
+# id|(typeof(x'43') - typeof(-4))|abs(CAST(c0 AS TEXT)) BETWEEN 544 IN (-719.5297, NULL, 'delta') AND NOT c2 BETWEEN c1 AND c3
+1|0|NULL
+2|0|NULL
+3|0|NULL
+~~~
+# coalesce(x'', x'498b61a8')|CASE WHEN CASE WHEN 9223372036854775807 THEN 4.5e-310 ELSE coalesce(-404.6, NULL) END THEN NOT CAST(-959 AS NUMERIC) ELSE 'it''s' END
+X''|0
+~~~

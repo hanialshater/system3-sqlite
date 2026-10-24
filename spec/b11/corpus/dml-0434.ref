@@ -1,0 +1,192 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|Ελλάδα
+~~~
+# id|c0|c1|ref
+2|5|0.0|NULL
+3|-902|2.0|NULL
+4|1.0e-07!|zeta|NULL
+5|X''|-165.0|4
+7|0|X'6ACF20DA18'|6
+8|0|1000000000000000.0|5
+9|X'C00004'|604.0|2
+10|X'71BC37'|xi|4
+12|0|X'AF81BF5A'|8
+13|-362|X'D5DC40'|2
+14|-78|724.214|NULL
+15|5|42.0|6
+17|409|681.72|1
+18|Ελλάδα|0.0|NULL
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t0.c2
+~~~
+error: cannot store TEXT value in INTEGER column t0.c2
+~~~
+# id|c0
+error: cannot store TEXT value in INTEGER column t0.c2
+~~~
+# id|c0|c1|c2|c3
+1|1.0|beta|9|364
+2|1.0|a%b|109|11
+4|1.0| pad |-250|-12
+5|1.0|epsilon|-215|-951
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|X'A0'
+~~~
+# id|c0|c1|c2
+1|beta|d|0.0
+2|epsilon|-1|X'6FE1721A3284'
+4|-639.26|0|X'D2A5005C03'
+5|NULL|d|0.0
+6|X'A0'|d|0.0
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|X'7328B82EE6'
+~~~
+# id|c0|c1|c2
+2|epsilon|-1|X'6FE1721A3284'
+5|NULL|d|0.0
+6|42|d|0.0
+7|X'7328B82EE6'|d|0.0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t0.c2
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+# id|c0|c1|c2|c3
+1|NULL|beta|9|364
+2|0.0|a%b|109|11
+5|0.0|epsilon|-215|-951
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2
+10|NULL|d|0.0
+9|-1|d|0.0
+7|X'7328B82EE6'|d|0.0
+6|42|d|0.0
+3|X'3B76A3831AEC'|d|0.0
+2|epsilon|-1|X'6FE1721A3284'
+~~~
+# id|id|c2|c0
+2|2|X'6FE1721A3284'|epsilon
+3|3|0.0|X'3B76A3831AEC'
+6|6|0.0|42
+7|7|0.0|X'7328B82EE6'
+9|9|0.0|-1
+10|10|0.0|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|(-(NULL) IS c0)|c3
+1|1|364
+2|0|11
+5|0|-951
+~~~
+# typeof(x'14a6002f199b')|coalesce(typeof(NULL), CAST('sigma' AS NUMERIC) IN (-2 IS NULL, -677.692, -0.0))
+blob|null
+~~~

@@ -1,0 +1,215 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+10|-902.9
+1|-364
+8|-169.565
+11|-73
+9|355.4
+7|364
+6|760
+16|936
+17|Lambda
+4|theta
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+3|-604.8
+13|-211
+8|-5
+6|-4
+2|-1
+1|0
+4|0
+9|0
+11|0
+12|0
+15|0
+14|5
+16|132.23
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+16|17
+7|17
+8|17
+6|17
+13|17
+14|17
+3|17
+4|17
+10|17
+5|17
+1|17
+12|17
+2|17
+9|17
+11|17
+15|17
+17|17
+~~~
+# id
+1
+5
+6
+7
+8
+9
+10
+11
+12
+16
+~~~
+# id
+15
+16
+17
+~~~
+# c1
+-811.1838
+-2
+4.500000000000011e-310
+3
+4
+5
+255.7
+367
+401
+843
+975.542
+1.0e+308
+ pad 
+a%b
+omega
+omicron
+señor
+日本
+X''
+X'00'
+X'11C12243DEC2'
+X'1362'
+X'59B4CAE8'
+~~~
+changes: 17
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+18|NULL|NULL|NULL|NULL|NULL|NULL
+17|NULL|-958| pad |Lambda|-4.0|3
+16|NULL|4.500000000000011e-310|1.0e+308|936|NULL|NULL
+14|NULL|日本|X'00'|X'9CB6'|-1.0|3
+13|NULL|255.7|401|X'83DD7238'|168.6|3
+12|0|X'720E19EF'|omega|NULL|NULL|6
+11|NULL|omicron|X'1362'|-73|-2.0|2
+9|NULL|843|NULL|355.4|naïve|6
+8|NULL|-2|NULL|-169.565|NULL|NULL
+7|NULL|3|NULL|364|42.0|2
+6|NULL|X''|X'11C12243DEC2'|760|X'48E5AB718A'|6
+5|gamma|NULL|NULL|NULL|NULL|NULL
+4|NULL|NULL|NULL|theta|NULL|5
+3|0|señor|5|X'B5'|NULL|8
+2|NULL|NULL|X'BD'|NULL|NULL|7
+1|0|4|X'59B4CAE8'|-364|delta|6
+~~~

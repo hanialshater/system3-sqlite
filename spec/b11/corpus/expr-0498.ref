@@ -1,0 +1,122 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id IN (id, -285, -9223372036854775808) IN (coalesce(c1, id), x'47', 246.06) IN (coalesce(c0, c2) IS NULL, x'f9', NULL)|-(-(CAST('NULL' AS TEXT)))
+1|1|0
+2|1|0
+3|1|0
+4|1|0
+5|1|0
+6|1|0
+7|1|0
+8|1|0
+9|1|0
+10|1|0
+11|1|0
+12|1|0
+13|1|0
+14|1|0
+15|1|0
+16|1|0
+17|1|0
+18|1|0
+19|1|0
+~~~
+# -875|CASE WHEN -693 THEN 9223372036854775807 ELSE 453 BETWEEN -399.9604 AND 363 BETWEEN 'beta' AND -(2) END
+-875|9223372036854775807
+~~~
+# id|c2|coalesce(id, id)
+1|X'469ECB91EAAE'|1
+2|603|2
+3|NULL|3
+4|X'6D2DECEC85D8'|4
+5|X'1BA75D'|5
+6|NULL|6
+~~~
+# -1e308|638
+-1.0e+308|638
+~~~
+# id|CASE WHEN c1 IS NULL IS NULL THEN c0 ELSE c0 END|-(abs(coalesce(x'ccab08ae35', c2)))
+1|0|0.0
+2|0|0.0
+3|über|0.0
+4|rho|0.0
+5|-598|0.0
+6|X'FD8F02C498'|0.0
+~~~
+# x''|abs(typeof(typeof(348)))
+X''|0.0
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: NOT NULL constraint failed: t0.c0
+~~~
+# id|c0|c1|c2|c3
+2|-810|NULL|603|299.224
+3|-810|168.3|NULL|2
+4|-810|-2|X'6D2DECEC85D8'|eta
+5|-908.3299|NULL|NULL|NULL
+6|-810|-633|NULL|X'311B'
+~~~

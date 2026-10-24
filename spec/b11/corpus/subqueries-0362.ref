@@ -1,0 +1,435 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t1.c4
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+10|10
+8|8
+18|18
+14|14
+17|17
+3|3
+13|13
+1|1
+16|16
+11|11
+7|7
+6|6
+2|2
+19|19
+12|12
+4|4
+15|15
+9|9
+5|5
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+~~~
+# c1
+NULL
+NULL
+NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|20
+5|20
+9|20
+7|20
+15|20
+10|20
+16|20
+12|20
+11|20
+6|20
+4|20
+8|20
+20|20
+17|20
+3|20
+14|20
+13|20
+1|20
+19|20
+18|20
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# c3
+-839.2
+-476
+-428
+-417
+-393
+-263
+-229
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+6|6
+13|13
+15|15
+1|1
+16|16
+4|4
+17|17
+9|9
+12|12
+18|18
+7|7
+5|5
+19|19
+8|8
+10|10
+14|14
+2|2
+11|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# c0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+15|15
+9|9
+5|5
+4|4
+12|12
+19|19
+2|2
+6|6
+7|7
+11|11
+16|16
+1|1
+13|13
+3|3
+17|17
+18|18
+14|14
+8|8
+10|10
+~~~
+# id
+2
+5
+7
+9
+~~~
+# id
+18
+19
+~~~
+# c0
+NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+11|11
+2|2
+14|14
+10|10
+8|8
+19|19
+5|5
+7|7
+18|18
+12|12
+9|9
+17|17
+4|4
+16|16
+1|1
+3|3
+6|6
+13|13
+15|15
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# c1
+-544.8948
+-237
+-5
+-5
+-5
+-4
+-3.0
+-1
+0.0
+0.0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|20
+5|20
+9|20
+7|20
+15|20
+10|20
+16|20
+12|20
+11|20
+6|20
+4|20
+8|20
+20|20
+17|20
+3|20
+14|20
+13|20
+1|20
+19|20
+18|20
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+~~~
+# ref
+3
+4
+5
+7
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', 4, 2)|instr('iota', 'eta')|replace('iota', 'a', '')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE 'a%'|'iota' GLOB '?'|char(75, 309)|'iota' || 'eta'|'iota' < 'eta'|'iota' = 'eta' COLLATE NOCASE
+4|IOTA|iota|a|0|iot|iota|iota|696F7461|'iota'|105|0|0|Kĵ|iotaeta|0|0
+~~~

@@ -1,0 +1,67 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', -1, 1)|instr('nu', '1e3')|replace('nu', 'e', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%a_'|'nu' GLOB '*[a-m]*'|char(71, 863)|'nu' || '1e3'|'nu' < '1e3'|'nu' = '1e3' COLLATE NOCASE
+2|NU|nu|u|0|nu|nu|nu|6E75|'nu'|110|0|0|G͟|nu1e3|0|0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 2, 4)|instr('xi', '-7')|replace('xi', 'é', '_')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE 'a%'|'xi' GLOB '?'|char(79, 215)|'xi' || '-7'|'xi' < '-7'|'xi' = '-7' COLLATE NOCASE
+2|XI|xi|i|0|xi|xi|xi|7869|'xi'|120|0|0|O×|xi-7|0|0
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', -1, 0)|instr('x_y', 'pi')|replace('x_y', 'e', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '%é%'|'x_y' GLOB '*[a-m]*'|char(65, 487)|'x_y' || 'pi'|'x_y' < 'pi'|'x_y' = 'pi' COLLATE NOCASE
+3|X_Y|x_y||0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|Aǧ|x_ypi|0|0
+~~~
+# id|c1|'MU' IS NULL
+1|NULL|0
+2|-492.0|0
+3|NULL|0
+4|epsilon|0
+5|rho|0
+~~~
+# 'naïve' IN (4, NULL, x'c0a4bbbeda4a') IS NULL|NULL IS NULL
+1|1
+~~~

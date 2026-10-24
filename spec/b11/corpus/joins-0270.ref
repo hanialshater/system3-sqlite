@@ -1,0 +1,263 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|c1
+1|1|1|NULL
+1|2|1|299.653
+1|3|1|X'12F3FCB49C'
+1|4|1|naïve
+1|5|1|1
+1|6|1|-788
+1|7|1|NULL
+1|8|1|phi
+1|9|1|-9223372036854775808
+~~~
+# count(*)
+14
+~~~
+# id|id|c0|id
+1|1|NULL|1
+1|2|NULL|2
+1|3|NULL|3
+1|4|NULL|4
+1|5|NULL|5
+1|6|NULL|6
+1|7|NULL|7
+1|8|NULL|8
+1|9|NULL|9
+1|10|NULL|10
+1|11|NULL|11
+1|12|NULL|12
+1|13|NULL|13
+1|14|NULL|14
+2|1|phi|1
+2|2|phi|2
+2|3|phi|3
+~~~
+# count(*)
+14
+~~~
+# id|id|c0|c1
+1|1|NULL|NULL
+2|1|NULL|NULL
+2|2|NULL|299.653
+3|1|4|NULL
+3|2|4|299.653
+3|3|4|X'12F3FCB49C'
+4|1|X'F4'|NULL
+4|2|X'F4'|299.653
+4|3|X'F4'|X'12F3FCB49C'
+4|4|X'F4'|naïve
+5|1|señor|NULL
+5|2|señor|299.653
+5|3|señor|X'12F3FCB49C'
+5|4|señor|naïve
+5|5|señor|1
+6|1|chi|NULL
+6|2|chi|299.653
+6|3|chi|X'12F3FCB49C'
+6|4|chi|naïve
+6|5|chi|1
+6|6|chi|-788
+7|1|señor|NULL
+7|2|señor|299.653
+7|3|señor|X'12F3FCB49C'
+7|4|señor|naïve
+7|5|señor|1
+7|6|señor|-788
+~~~
+# count(*)
+19
+~~~
+# id|id|c0|c1
+1|1|NULL|NULL
+2|2|NULL|299.653
+3|3|4|X'12F3FCB49C'
+4|4|X'F4'|naïve
+5|5|señor|1
+6|6|chi|-788
+7|7|señor|NULL
+~~~
+error: ambiguous column name: c1
+~~~
+# id|id|c0|id
+1|1|NULL|1
+1|2|NULL|2
+1|3|NULL|3
+1|4|NULL|4
+1|5|NULL|5
+1|6|NULL|6
+1|7|NULL|7
+1|8|NULL|8
+1|9|NULL|9
+1|10|NULL|10
+1|11|NULL|11
+1|12|NULL|12
+1|13|NULL|13
+1|14|NULL|14
+2|1|NULL|1
+2|2|NULL|2
+2|3|NULL|3
+2|4|NULL|4
+2|5|NULL|5
+2|6|NULL|6
+2|7|NULL|7
+2|8|NULL|8
+2|9|NULL|9
+2|10|NULL|10
+2|11|NULL|11
+2|12|NULL|12
+2|13|NULL|13
+2|14|NULL|14
+3|1|4|1
+3|2|4|2
+3|3|4|3
+3|4|4|4
+3|5|4|5
+3|6|4|6
+3|7|4|7
+3|8|4|8
+3|9|4|9
+3|10|4|10
+3|11|4|11
+3|12|4|12
+3|13|4|13
+3|14|4|14
+4|1|X'F4'|1
+4|2|X'F4'|2
+4|3|X'F4'|3
+4|4|X'F4'|4
+4|5|X'F4'|5
+4|6|X'F4'|6
+4|7|X'F4'|7
+4|8|X'F4'|8
+4|9|X'F4'|9
+4|10|X'F4'|10
+4|11|X'F4'|11
+4|12|X'F4'|12
+4|13|X'F4'|13
+4|14|X'F4'|14
+5|1|señor|1
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c1|c0
+1|1|NULL|NULL
+2|2|299.653|phi
+3|3|X'12F3FCB49C'|X'A4AD6AFA'
+4|4|naïve|X'275C5601'
+5|5|1|-991.0
+6|6|-788|NULL
+7|7|NULL|NULL
+8|8|phi|340.0
+9|9|-9223372036854775808|9.2233720368547758e+18
+10|10|NULL|5.0
+11|11|0|X'7BF70FFCA8'
+12|12|X'048346DB'|-315.1935
+13|13|-35|NULL
+14|14|X''|-927.0
+~~~
+error: near "-": syntax error
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+14|10|9.2233720368547738e+18|9.2233720368547738e+18|9.2233720368547738e+17|-991.0|X'A4AD6AFA'|10
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|4|1;6;7;13
+-991.0|1|5
+-927.0|1|14
+-315.1935|1|12
+5.0|1|10
+340.0|1|8
+9.2233720368547758e+18|1|9
+phi|1|2
+X'275C5601'|1|4
+X'7BF70FFCA8'|1|11
+X'A4AD6AFA'|1|3
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id)
+NULL|4|1,2,8,11
+-606|1|12
+-457.6074|1|17
+-171|1|9
+4.500000000000011e-310|1|13
+0.1|1|14
+3.1415926535897931|1|16
+4|2|3,15
+247.173|1|18
+chi|1|6
+señor|2|5,7
+upsilon|1|10
+X'5B2E'|1|19
+X'F4'|1|4
+~~~

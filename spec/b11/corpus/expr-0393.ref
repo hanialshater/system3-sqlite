@@ -1,0 +1,174 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|iif(NOT (c2 IS c1), -342, 'beta')|(x'e55b2831' = -0.0)
+1|-342|0
+2|-342|0
+3|-342|0
+4|-342|0
+5|-342|0
+6|-342|0
+7|-342|0
+8|-342|0
+9|-342|0
+10|-342|0
+11|-342|0
+12|-342|0
+13|-342|0
+14|-342|0
+15|-342|0
+16|-342|0
+17|-342|0
+18|-342|0
+19|-342|0
+~~~
+# NULL|-(nullif(-4, 55 BETWEEN NULL AND 1e308))
+NULL|4
+~~~
+# id|(-(418) IS coalesce(c4, c4)) IN (CAST(nullif(c1, c2) AS REAL), 'nu', 'psi')|-(NULL) BETWEEN CAST(c0 AS NUMERIC) AND CASE WHEN c0 THEN coalesce(NULL, c3) ELSE iif(NULL, c3, NULL) END
+1|1|NULL
+2|0|NULL
+3|0|NULL
+4|1|NULL
+5|0|NULL
+6|NULL|NULL
+7|0|NULL
+8|1|NULL
+9|1|NULL
+10|0|NULL
+11|0|NULL
+12|1|NULL
+~~~
+# 5 IN (0.1 IS NULL, '42', NULL) BETWEEN CASE WHEN 1 THEN 4.5e-310 ELSE 'Lambda' END IS NULL AND CASE WHEN CAST(-4 AS TEXT) THEN -0.0 ELSE -4 END|nullif(abs(-1) IN (nullif(9223372036854775807, 1e-7), NULL, NULL), CAST(NOT -81 AS NUMERIC))
+NULL|NULL
+~~~
+# id|c0 BETWEEN nullif(482.1 BETWEEN x'1b108cfd296f' AND c0, c0) AND -(id)|id
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|0|6
+7|0|7
+8|NULL|8
+9|0|9
+10|NULL|10
+11|0|11
+12|0|12
+~~~
+# nullif(NOT coalesce(4.5e-310, NULL), x'2c')|-(NOT 123456789012)
+0|0
+~~~
+# id|typeof(typeof(c3)) BETWEEN nullif(CAST(c1 AS NUMERIC), typeof(NULL)) AND c3|x'3e55'
+1|0|X'3E55'
+2|NULL|X'3E55'
+3|1|X'3E55'
+4|1|X'3E55'
+5|1|X'3E55'
+6|0|X'3E55'
+7|0|X'3E55'
+8|0|X'3E55'
+9|NULL|X'3E55'
+10|0|X'3E55'
+11|1|X'3E55'
+12|0|X'3E55'
+13|1|X'3E55'
+14|0|X'3E55'
+15|NULL|X'3E55'
+16|NULL|X'3E55'
+17|0|X'3E55'
+18|0|X'3E55'
+19|0|X'3E55'
+~~~
+# CASE WHEN NULL THEN iif(CAST(x'6ff5f1e2cd64' AS INTEGER), -(4.5e-310), 876) ELSE -(-0.0) END|nullif((CASE WHEN -2 THEN x'ef31' ELSE 'gamma' END OR CASE WHEN 0 THEN -0.0 ELSE NULL END), x'' IS NULL)
+0.0|NULL
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|3|4;18;19
+-1.0e+308|1|16
+-578|1|12
+-898.0|1|9
+1000000000000000.0|1|15
+2.5|1|2
+708|1|8
+café|1|1
+psi|1|17
+sigma|1|14
+x_y|1|13
+zeta|1|10
+X'42082C6227'|1|11
+X'7F6D3AA9'|1|3
+X'AFA2A4F51E91'|1|6
+X'D9083E'|1|5
+X'E3FF'|1|7
+~~~

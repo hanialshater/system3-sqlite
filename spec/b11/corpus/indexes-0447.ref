@@ -1,0 +1,139 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+3|190.0
+1|tau
+2|X'BE34'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(typeof(0.1 IN (NULL, 425, 5)) - nullif(typeof(c4), c2))|c3
+23|0|NULL
+22|0|-9223372036854775808
+21|0|X'6C44F8F9FEBF'
+20|0|X'D9E80A849820'
+19|0|NULL
+18|0|773
+17|0|4
+16|0|X'25BA'
+15|0|X'6F91D33156'
+14|0|X'76'
+13|0|NULL
+12|0|42
+11|0|X'C7F00F'
+10|0|sigma
+9|0|psi
+8|0|-742
+7|0|gamma
+6|0|NULL
+5|0|alpha
+4|0|-967.8
+3|0|NULL
+2|0|NULL
+1|0|x_y
+~~~
+# 1e308|iif(NULL, -(CAST(x'7a7bc969' AS BLOB)), 0.1)
+1.0e+308|0.1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+~~~
+# id
+1
+2
+3
+~~~
+# id
+~~~
+# c2
+655
+~~~

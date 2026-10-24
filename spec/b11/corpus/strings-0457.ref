@@ -1,0 +1,152 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 0, 4)|instr('Lambda', 'zeta')|replace('Lambda', 'e', '_')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%é%'|'Lambda' GLOB '?'|char(84, 863)|'Lambda' || 'zeta'|'Lambda' < 'zeta'|'Lambda' = 'zeta' COLLATE NOCASE
+6|LAMBDA|lambda|Lam|0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|0|0|T͟|Lambdazeta|1|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 1, 4)|instr('chi', 'iota')|replace('chi', '', 'XY')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '%a_'|'chi' GLOB 'a*'|char(66, 476)|'chi' || 'iota'|'chi' < 'iota'|'chi' = 'iota' COLLATE NOCASE
+3|CHI|chi|chi|0|chi|chi|chi|636869|'chi'|99|0|0|Bǜ|chiiota|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 1, 1)|instr('Ελλάδα', 'NULL')|replace('Ελλάδα', '', '')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'a%'|'Ελλάδα' GLOB 'a*'|char(90, 348)|'Ελλάδα' || 'NULL'|'Ελλάδα' < 'NULL'|'Ελλάδα' = 'NULL' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|Ε|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|ZŜ|ΕλλάδαNULL|0|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 1, 0)|instr('omega', 'chi')|replace('omega', 'é', '_')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE 'a%'|'omega' GLOB '?'|char(75, 652)|'omega' || 'chi'|'omega' < 'chi'|'omega' = 'chi' COLLATE NOCASE
+5|OMEGA|omega||0|omega|omega|omega|6F6D656761|'omega'|111|0|0|Kʌ|omegachi|0|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 2, 1)|instr('chi', 'zeta')|replace('chi', 'é', 'XY')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '%a_'|'chi' GLOB '*[a-m]*'|char(80, 261)|'chi' || 'zeta'|'chi' < 'zeta'|'chi' = 'zeta' COLLATE NOCASE
+3|CHI|chi|h|0|chi|chi|chi|636869|'chi'|99|0|1|Pą|chizeta|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 3, 1)|instr('pi', 'tau')|replace('pi', 'e', '_')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '%a_'|'pi' GLOB 'a*'|char(76, 551)|'pi' || 'tau'|'pi' < 'tau'|'pi' = 'tau' COLLATE NOCASE
+2|PI|pi||0|pi|pi|pi|7069|'pi'|112|0|0|Lȧ|pitau|1|0
+~~~
+# id|id|c1|c1
+1|1|1000|X'1A'
+1|2|1000|-7
+1|3|1000|4
+1|4|1000|psi
+1|5|1000|-7
+1|6|1000|-667.1
+1|7|1000|NULL
+1|8|1000|Ελλάδα
+1|9|1000|X'25E608F121'
+2|1|0|X'1A'
+2|2|0|-7
+2|3|0|4
+2|4|0|psi
+2|5|0|-7
+2|6|0|-667.1
+2|7|0|NULL
+2|8|0|Ελλάδα
+2|9|0|X'25E608F121'
+3|1|0|X'1A'
+3|2|0|-7
+3|3|0|4
+~~~
+# count(*)
+20
+~~~
+# id|abs(CASE WHEN NULL THEN CASE WHEN -4 THEN c0 ELSE id END ELSE c0 BETWEEN 'Ελλάδα' AND -60 END)|id
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|NULL|5
+6|NULL|6
+7|0|7
+8|0|8
+9|0|9
+10|0|10
+11|0|11
+12|0|12
+13|0|13
+14|0|14
+15|0|15
+16|0|16
+17|0|17
+18|NULL|18
+19|0|19
+20|0|20
+~~~
+# -(NOT 5 IS NULL)|-(x'ee57dc01e0')
+-1|0
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+20|15|-9.2233720368547758e+18|-9.2233720368547758e+18|-6.1489146912365171e+17|-512|X'9781214E4F00'|15
+~~~
+# c2|count(*)|group_concat(id)
+NULL|5|3,6,11,15,20
+-512|1|17
+-631.446|1|1
+-644.199|1|13
+-91.8|1|10
+-9223372036854775808|1|4
+0x1F|1|18
+1.0e-07|1|5
+48.3612|1|8
+848|1|14
+naïve|1|12
+phi|1|16
+rho|1|19
+X'1E912E172F54'|1|2
+X'7B3148'|1|9
+X'9781214E4F00'|1|7
+~~~

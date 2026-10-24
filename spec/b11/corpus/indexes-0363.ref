@@ -1,0 +1,189 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+2|-698.6
+4|-545
+10|-358.1
+5|1
+8|2.5
+13|5
+3|9223372036854775807
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+3|rho
+2|X'960D0A02149A'
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|NULL
+12|-1.0e+308
+7|-159.0
+1|-2.0
+10|2.0
+11|800.0
+6|it's
+4|MU
+8|rho
+5|X'1A'
+13|X'530CF563EF1C'
+9|X'5C55'
+2|X'5ED2'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+2|-698.6
+4|-545
+10|-358.1
+5|1
+8|2.5
+13|5
+3|9223372036854775807
+12|señor
+7|x_y
+6|日本
+9|X''
+1|X'B73B56'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+5|5|9.2233720368547758e+18|9.2233720368547758e+18|1.8446744073709553e+18|-358.1|X'B73B56'|5
+~~~
+# c3|count(*)|group_concat(id, ';')
+NULL|1|11
+-698.6|1|2
+-545|1|4
+-358.1|1|10
+1|1|5
+2.5|1|8
+5|1|13
+9223372036854775807|1|3
+señor|1|12
+x_y|1|7
+日本|1|6
+X''|1|9
+X'B73B56'|1|1
+~~~
+# id|NOT typeof(CASE WHEN c3 THEN NULL ELSE c0 END)|(-(c0) = abs(0) IS NULL)
+1|1|0
+2|1|0
+3|1|0
+4|1|0
+5|1|1
+~~~
+# coalesce(abs(x'24c626' BETWEEN NULL AND 651), nullif(137.869 IS NULL, iif(x'6026bd27b5', 'chi', x'73de6f2210bf')))|(896.8164 IS NULL * (x'6d' & -1)) IN (-(CASE WHEN NULL THEN NULL ELSE -589 END), x'42', x'195c96')
+0|0
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id)
+-659|1|5
+-422|1|4
+0|1|1
+rho|1|3
+X'960D0A02149A'|1|2
+~~~

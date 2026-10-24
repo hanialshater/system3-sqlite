@@ -1,0 +1,80 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', 0, 4)|instr('x_y', 'phi')|replace('x_y', 'é', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE 'a%'|'x_y' GLOB '*[a-m]*'|char(82, 325)|'x_y' || 'phi'|'x_y' < 'phi'|'x_y' = 'phi' COLLATE NOCASE
+3|X_Y|x_y|x_y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|RŅ|x_yphi|0|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', -1, 3)|instr('omega', 'omicron')|replace('omega', 'e', 'XY')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '_'|'omega' GLOB '?'|char(83, 599)|'omega' || 'omicron'|'omega' < 'omicron'|'omega' = 'omicron' COLLATE NOCASE
+5|OMEGA|omega|a|0|omXYga|omega|omega|6F6D656761|'omega'|111|0|0|Sɗ|omegaomicron|1|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 3, 4)|instr('it''s', 'xi')|replace('it''s', 'e', '_')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%é%'|'it''s' GLOB '?'|char(75, 887)|'it''s' || 'xi'|'it''s' < 'xi'|'it''s' = 'xi' COLLATE NOCASE
+4|IT'S|it's|'s|0|it's|it's|it's|69742773|'it''s'|105|0|0|Kͷ|it'sxi|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 3, 4)|instr('naïve', 'kappa')|replace('naïve', 'é', '')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'A%'|'naïve' GLOB '?'|char(72, 213)|'naïve' || 'kappa'|'naïve' < 'kappa'|'naïve' = 'kappa' COLLATE NOCASE
+5|NAïVE|naïve|ïve|0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|HÕ|naïvekappa|0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 2, 1)|instr('NULL', 'x_y')|replace('NULL', 'e', 'XY')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%a_'|'NULL' GLOB '*[a-m]*'|char(82, 401)|'NULL' || 'x_y'|'NULL' < 'x_y'|'NULL' = 'x_y' COLLATE NOCASE
+4|NULL|null|U|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|RƑ|NULLx_y|1|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 1, 5)|instr('tau', 'theta')|replace('tau', 'e', '_')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%a_'|'tau' GLOB '?'|char(83, 716)|'tau' || 'theta'|'tau' < 'theta'|'tau' = 'theta' COLLATE NOCASE
+3|TAU|tau|tau|0|tau|tau|tau|746175|'tau'|116|1|0|Sˌ|tautheta|1|0
+~~~

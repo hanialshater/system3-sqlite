@@ -1,0 +1,323 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 12
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|omega
+~~~
+# id|c0|c1
+24|omega|NULL
+23|0|798
+22|0|-123
+20|1e3|NULL
+19|0|-468
+17|0|955
+16|0|42
+14|NULL|X'8C1D5B'
+13|0|-9223372036854775808
+11|0|-180
+10|88.6|X'74C4436DE590'
+8|0x1F|NULL
+7|NULL|X'C3158F'
+5|sigma|NULL
+4|NULL|X'A12AF3'
+3|X''|NULL
+2|0|-474.2
+1|X'8C'|X''
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|NULL
+~~~
+# id|c0|c1|c2
+18|NULL|d|NULL
+17|X'0C45D20541'|X'169E'|NULL
+15|X''|-5|-126
+14|rho|café|X'6973FCD3'
+13|sigma|X'AB341BE1'|742
+12|202.4|X'A562777B'|X'D2D59D'
+10|X'33626D'|X'F3BC32'|NULL
+9|NULL|d|NULL
+8|0|X''|NULL
+7|café|-7|delta
+6|X'704E7F'|d|NULL
+5|X'A5E47FD2'|-162|NULL
+4|eta|195|X''
+3|-931|1.0e-07|NULL
+2|NULL|X'09'|X'8A2EADB60687'
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|0.0
+~~~
+# id|c0|c1|c2
+19|0.0|d|NULL
+18|NULL|d|NULL
+15|X''|-5|-126
+14|rho|café|X'6973FCD3'
+12|202.4|X'A562777B'|X'D2D59D'
+10|X'33626D'|X'F3BC32'|NULL
+8|X'0B15A78A'|d|NULL
+7|café|-7|delta
+6|X'704E7F'|d|NULL
+5|9223372036854775807|d|NULL
+4|856|195|X''
+3|-931|1.0e-07|NULL
+2|NULL|X'09'|X'8A2EADB60687'
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|rho
+~~~
+# id|c0|c1|c2
+1|X''|d|NULL
+2|NULL|X'09'|X'8A2EADB60687'
+3|-931|1.0e-07|NULL
+5|9223372036854775807|d|NULL
+6|X'704E7F'|d|NULL
+8|NULL|d|NULL
+12|202.4|X'A562777B'|X'D2D59D'
+14|rho|café|X'6973FCD3'
+15|X''|-5|-126
+18|NULL|d|NULL
+19|rho|d|NULL
+~~~
+changes: 14
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|3
+~~~
+# id|c0|c1|c2
+15|3|NULL|NULL
+14|0|NULL|NULL
+13|1|4|2.5
+11|1|X'D0E5B9'|-584.56
+10|0|-382.8342|-1
+9|1|0|rho
+8|X'1E36'|NULL|NULL
+7|0|NULL|-268.5822
+6|0|über|318
+5|0|kappa|rho
+3|0|NULL|señor
+2|0|nu|NULL
+1|-102.6!|X'55'|1.0e+308
+~~~
+# id|id|c2|c1
+1|2|1.0e+308|X'09'
+1|3|1.0e+308|1.0e-07
+1|5|1.0e+308|d
+1|6|1.0e+308|d
+1|8|1.0e+308|d
+1|12|1.0e+308|X'A562777B'
+1|14|1.0e+308|café
+1|15|1.0e+308|-5
+1|18|1.0e+308|d
+1|19|1.0e+308|d
+2|3|NULL|1.0e-07
+2|5|NULL|d
+2|6|NULL|d
+2|8|NULL|d
+2|12|NULL|X'A562777B'
+2|14|NULL|café
+2|15|NULL|-5
+2|18|NULL|d
+2|19|NULL|d
+3|5|señor|d
+3|6|señor|d
+3|8|señor|d
+3|12|señor|X'A562777B'
+3|14|señor|café
+3|15|señor|-5
+3|18|señor|d
+3|19|señor|d
+5|6|rho|d
+5|8|rho|d
+5|12|rho|X'A562777B'
+5|14|rho|café
+5|15|rho|-5
+5|18|rho|d
+5|19|rho|d
+6|8|318|d
+6|12|318|X'A562777B'
+6|14|318|café
+6|15|318|-5
+6|18|318|d
+6|19|318|d
+7|8|-268.5822|d
+7|12|-268.5822|X'A562777B'
+~~~
+# count(*)
+13
+~~~
+changes: 18
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|-1.0e+308
+~~~
+# id|c0|c1
+2|0|-474.2
+3|0|NULL
+4|-66|NULL
+5|0|NULL
+8|MU|NULL
+11|0|-180
+14|0|X'8C1D5B'
+17|0|955
+20|0|NULL
+23|0|798
+24|0|NULL
+25|-1.0e+308|NULL
+~~~

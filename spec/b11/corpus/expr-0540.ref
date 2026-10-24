@@ -1,0 +1,100 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3 IS NULL IN (nullif(NULL, c1), -642, 'x_y') IS NULL|nullif(iif(-2.5, id IS NULL, -5), id)
+5|1|0
+4|1|0
+3|1|0
+2|1|0
+1|1|0
+~~~
+# CAST(abs(NULL) AS INTEGER) IS NULL|CASE WHEN NOT iif(-720, 'Ελλάδα', NULL) THEN x'5c1d44' ELSE -(typeof('eta')) END
+1|X'5C1D44'
+~~~
+# id|c1|iif(abs(-1e308), coalesce(c2, c3), NULL) IN (id IN (id, x'b0', 120) BETWEEN NOT c1 AND c1 IN (c2, -506, 766.8843), -652, x'59076e')
+1|X'305C482C0D24'|0
+2|-917.6|0
+3|-7|0
+4|123456789012|0
+5|naïve|0
+~~~
+# 'sigma'|CAST(CASE WHEN -863 IS NULL THEN NOT 'theta' ELSE typeof(333) END AS NUMERIC)
+sigma|0
+~~~
+# id|NOT NOT x'8c7350' BETWEEN NULL AND id|c2
+1|0|0.0
+2|0|NULL
+3|0|374.0
+4|0|5.0
+5|0|naïve
+6|0|X'75'
+7|0|-255.0
+~~~
+# iif(iif(abs(NULL), -5, NULL), -2.5, x'b628ee9a0a')|NULL
+X'B628EE9A0A'|NULL
+~~~
+# id|CASE WHEN c0 THEN iif(NOT 1.0e15, id, 240) ELSE -564.865 END|typeof(CASE WHEN -2.5 THEN id ELSE c1 END IN (nullif(x'511b5d', x'ccd4'), NULL, 'upsilon'))
+1|-564.865|null
+2|-564.865|null
+3|240|null
+4|-564.865|null
+5|-564.865|null
+6|240|null
+7|240|null
+~~~
+# NOT nullif(NULL, 429) IS NULL|x'5b7d1430' IN (1.0e15, 'Ελλάδα', x'75f811192d') IN (iif(918, -859, x'434792bfa0'), 708.95, NULL) BETWEEN 2 AND NULL
+0|NULL
+~~~
+# id|abs(c1)|c0
+1|0.0|a%b
+2|3|NULL
+3|0.0|464
+4|738.329|X''
+5|NULL|omega
+6|0.0|-2
+7|NULL|5
+~~~
+# -3|'upsilon' IS NULL
+-3|0
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

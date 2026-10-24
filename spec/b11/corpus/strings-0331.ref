@@ -1,0 +1,122 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 3, 5)|instr(' pad ', '42')|replace(' pad ', '', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%a_'|' pad ' GLOB 'a*'|char(82, 329)|' pad ' || '42'|' pad ' < '42'|' pad ' = '42' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|0|Rŉ| pad 42|1|0
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', -2, 4)|instr('x_y', 'nu')|replace('x_y', 'é', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE 'a%'|'x_y' GLOB '?'|char(86, 205)|'x_y' || 'nu'|'x_y' < 'nu'|'x_y' = 'nu' COLLATE NOCASE
+3|X_Y|x_y|_y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|VÍ|x_ynu|0|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 3, 3)|instr('tau', 'iota')|replace('tau', 'e', '_')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%é%'|'tau' GLOB '*'|char(73, 202)|'tau' || 'iota'|'tau' < 'iota'|'tau' = 'iota' COLLATE NOCASE
+3|TAU|tau|u|0|tau|tau|tau|746175|'tau'|116|0|1|IÊ|tauiota|0|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 4, 2)|instr('chi', '-7')|replace('chi', 'a', '')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '_'|'chi' GLOB '*'|char(81, 761)|'chi' || '-7'|'chi' < '-7'|'chi' = '-7' COLLATE NOCASE
+3|CHI|chi||0|chi|chi|chi|636869|'chi'|99|0|1|Q˹|chi-7|0|0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', -1, 1)|instr('xi', 'Ελλάδα')|replace('xi', '', '_')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%a_'|'xi' GLOB 'a*'|char(85, 284)|'xi' || 'Ελλάδα'|'xi' < 'Ελλάδα'|'xi' = 'Ελλάδα' COLLATE NOCASE
+2|XI|xi|i|0|xi|xi|xi|7869|'xi'|120|0|0|UĜ|xiΕλλάδα|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 2, 5)|instr('Ελλάδα', 'tau')|replace('Ελλάδα', 'é', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'A%'|'Ελλάδα' GLOB '*'|char(77, 479)|'Ελλάδα' || 'tau'|'Ελλάδα' < 'tau'|'Ελλάδα' = 'tau' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|λλάδα|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|1|Mǟ|Ελλάδαtau|0|0
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+18|15|68|68.0|4.5333333333333332|1|8|6
+~~~
+# ref|count(*)|group_concat(id)
+NULL|3|1,4,9
+1|2|10,12
+2|1|5
+3|1|6
+4|6|2,3,7,8,17,18
+7|3|11,14,15
+8|2|13,16
+~~~

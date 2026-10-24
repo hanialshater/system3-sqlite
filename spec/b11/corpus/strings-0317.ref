@@ -1,0 +1,96 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', -3, 2)|instr('a%b', 'nu')|replace('a%b', '', 'XY')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '%a_'|'a%b' GLOB 'a*'|char(74, 480)|'a%b' || 'nu'|'a%b' < 'nu'|'a%b' = 'nu' COLLATE NOCASE
+3|A%B|a%b|a%|0|a%b|a%b|%b|612562|'a%b'|97|0|1|JÇ |a%bnu|1|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 2, 0)|instr('Lambda', 'beta')|replace('Lambda', 'Ã©', '_')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%'|'Lambda' GLOB '*[a-m]*'|char(68, 913)|'Lambda' || 'beta'|'Lambda' < 'beta'|'Lambda' = 'beta' COLLATE NOCASE
+6|LAMBDA|lambda||0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|1|1|DÎ‘|Lambdabeta|1|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', -1, 3)|instr('pi', 'rho')|replace('pi', 'e', '')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE 'a%'|'pi' GLOB '?'|char(88, 913)|'pi' || 'rho'|'pi' < 'rho'|'pi' = 'rho' COLLATE NOCASE
+2|PI|pi|i|0|pi|pi|pi|7069|'pi'|112|0|0|XÎ‘|pirho|1|0
+~~~
+changes: 12
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|eta
+~~~
+# id|c0|c1|c2|c3
+1|287.178|NULL|3.1415926535897931|X'1C222627F686'
+2|-71|seÃ±or|181|psi
+4|1|psi|NULL|2
+5|àöÐ"!|1.0e-07|3.1415926535897931|0.1
+7|NULL|NULL|NULL|NULL
+8|X'1AF3'|NULL|NULL|NULL
+10|683.3|NULL|1|X'59C6'
+11|NULL|NULL|NULL|X''
+12|eta|NULL|NULL|NULL
+~~~
+# id|id|id|c2
+1|1|1|3.1415926535897931
+2|2|2|181
+4|4|4|NULL
+5|5|5|3.1415926535897931
+7|7|7|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|NOT c3 IS NULL|NOT iif(5, CAST(x'' AS BLOB), NULL)
+12|0|1
+11|1|1
+10|1|1
+8|0|1
+7|0|1
+5|1|1
+4|1|1
+2|1|1
+1|1|1
+~~~
+# CAST(('Ã¼ber' OR x'') AS REAL) BETWEEN coalesce(NOT x'e3f549', typeof(x'dfb9c4eb14')) AND NOT 9223372036854775807 IN (958.7157, -657.6745, 'pi')|'0x1F'
+0|0x1F
+~~~

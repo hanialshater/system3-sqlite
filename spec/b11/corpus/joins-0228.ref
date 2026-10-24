@@ -1,0 +1,289 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c1
+1|9|X'701982A523'|NULL
+2|NULL|166|NULL
+3|2|0x1F|X''
+3|10|0x1F|X'C3F10D651E'
+4|1|1000000000000000|X'CF29'
+5|NULL|NULL|NULL
+6|4|NULL|1
+6|11|NULL|9223372036854775807
+7|6| pad |799
+8|5|NULL|-1
+8|7|NULL|768
+8|8|NULL|9223372036854775807
+9|NULL|Ελλάδα|NULL
+10|NULL|NULL|NULL
+11|NULL|-137|NULL
+12|NULL|epsilon|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|X'BE415976FC50'|NULL
+16|NULL|4.500000000000011e-310|NULL
+17|NULL|X'4DAA8CC388B4'|NULL
+18|NULL|X'4987'|NULL
+19|NULL|NULL|NULL
+20|NULL|naïve|NULL
+~~~
+# count(*)
+20
+~~~
+# id|id|c0|ref
+1|9|-1.0|1
+3|2|869.5056|3
+3|10|869.5056|3
+4|1|Ελλάδα|4
+6|4|0.0|6
+6|11|0.0|6
+7|6|tau|7
+8|5|-216.0|8
+8|7|-216.0|8
+8|8|-216.0|8
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c2
+1|9|NULL|X'402DA9CD'
+2|NULL|0|NULL
+3|2|3.1415926535897931|1.0e+308
+3|10|3.1415926535897931|-1
+4|1|tau|1
+5|NULL|X''|NULL
+6|4|784.732|
+6|11|784.732|NULL
+7|6|-510.874|-4
+8|5|sigma|1
+8|7|sigma|NULL
+8|8|sigma|112
+9|NULL|0|NULL
+10|NULL|x_y|NULL
+11|NULL|-5|NULL
+12|NULL|NULL|NULL
+13|NULL|322|NULL
+14|NULL|2|NULL
+15|NULL|omega|NULL
+16|NULL|4.500000000000011e-310|NULL
+17|NULL|señor|NULL
+18|NULL|NULL|NULL
+19|NULL|-385|NULL
+20|NULL|gamma|NULL
+21|NULL|-4|NULL
+22|NULL|801.4|NULL
+23|NULL|X'651254DDE5'|NULL
+~~~
+# count(*)
+23
+~~~
+# id|id|ref|c1
+1|9|4|NULL
+2|NULL|3|NULL
+3|2|NULL|X''
+3|10|NULL|X'C3F10D651E'
+4|1|6|X'CF29'
+5|NULL|8|NULL
+6|4|7|1
+6|11|7|9223372036854775807
+7|6|8|799
+8|5|8|-1
+8|7|8|768
+8|8|8|9223372036854775807
+9|NULL|1|NULL
+10|NULL|3|NULL
+11|NULL|6|NULL
+~~~
+# count(*)
+11
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+20|11
+19|11
+18|11
+17|11
+16|11
+15|11
+14|11
+13|11
+12|11
+11|11
+10|10
+9|9
+8|8
+7|7
+6|6
+5|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# id
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id|-(-(x'5a9a3523e0' BETWEEN c1 AND 561))|iif(CAST(abs(x'1f') AS TEXT), c1, -4)
+1|0|-4
+2|0|-4
+3|0|-4
+4|0|-4
+5|0|-4
+6|0|-4
+7|0|-4
+8|0|-4
+9|0|-4
+10|0|-4
+11|0|-4
+12|0|-4
+13|0|-4
+14|0|-4
+15|0|-4
+16|0|-4
+17|0|-4
+18|0|-4
+19|0|-4
+20|0|-4
+~~~
+# 'sigma'|iif(-(-(-1)), NOT NULL IN (NULL, 'rho', 1e308), x'e06b398686f7')
+sigma|NULL
+~~~

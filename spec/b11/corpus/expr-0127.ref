@@ -1,0 +1,103 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT 'chi'|CAST(-(c2) AS TEXT)
+10|1|-399
+9|1|-478
+8|1|-215
+7|1|107
+6|1|-143
+5|1|81
+4|1|369
+3|1|-287
+2|1|439
+1|1|208
+~~~
+# NULL|-0.0
+NULL|0.0
+~~~
+# id|(NULL + coalesce(c0, 542.089) IS NULL)|c2
+1|1|NULL
+2|1|42
+3|1|X'C0D9BB64C8BB'
+4|1|5
+~~~
+# iif(abs('pi'), typeof(x'a636'), 552) BETWEEN NOT -('0x1F') AND iif(abs(x'de068e61ad'), NULL, x'')|NULL
+1|NULL
+~~~
+# id|iif(CASE WHEN 13 THEN coalesce(x'516399f5fe82', c0) ELSE coalesce(NULL, -719) END, nullif(NOT c3, c1), -5)|c3
+1|-5|upsilon
+2|-5|0x1F
+3|-5|X''
+4|-5|0
+~~~
+# CASE WHEN iif(-371, 'über', -9223372036854775808) BETWEEN 0 BETWEEN -9223372036854775808 AND 'nu' AND 'phi' THEN typeof(1) ELSE iif(x'', 'naïve', '日本') END|iif('epsilon', NOT NOT 575.20, 'it''s')
+日本|it's
+~~~
+changes: 1
+~~~
+# id|c2
+4|5
+2|42
+3|X'C0D9BB64C8BB'
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+3|3
+1|1
+4|4
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c2
+NULL
+-333
+-88
+-64
+-53
+5
+40
+72
+~~~

@@ -1,0 +1,143 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NOT abs(c1) BETWEEN CASE WHEN typeof(' pad ') THEN NOT c3 ELSE CAST(c2 AS INTEGER) END AND CAST(-245 AS NUMERIC) BETWEEN c2 IN (c2, x'e5cbf41d', 179.387) AND c2|(c1 >> NULL BETWEEN CAST(c1 AS TEXT) AND abs(c1))
+14|1|NULL
+13|NULL|NULL
+12|1|NULL
+11|NULL|NULL
+10|NULL|NULL
+9|1|NULL
+8|1|NULL
+7|NULL|NULL
+6|NULL|NULL
+5|NULL|NULL
+4|1|NULL
+3|NULL|NULL
+2|1|NULL
+1|NULL|NULL
+~~~
+# typeof(CASE WHEN x'f2fa6d7360' THEN x'b3b66f1918ec' ELSE NULL END IS NULL)|-879.0
+integer|-879.0
+~~~
+# id|NULL|abs(abs(id IS NULL))
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+13|NULL|0
+14|NULL|0
+~~~
+# nullif(x'', typeof(CAST(1 AS REAL)))|iif(abs(abs(286.2)), 'epsilon', 59)
+X''|epsilon
+~~~
+# id|-937.2680 IN (CAST(c2 AS BLOB), 0, 419)|''
+1|0|
+2|0|
+3|0|
+4|0|
+5|NULL|
+6|0|
+7|NULL|
+8|0|
+9|0|
+10|0|
+11|NULL|
+12|0|
+13|NULL|
+14|0|
+~~~
+# typeof(abs(CAST(-24 AS NUMERIC)))|coalesce('zeta', 987)
+integer|zeta
+~~~
+# id|c3|-(c2) IN ((c1 || -(c2)), 'café', 2)
+4|NULL|NULL
+3|4.500000000000011e-310|NULL
+2|1.0e+308|0
+1|NULL|NULL
+~~~
+# CAST(iif(abs(x'56f567be60'), -58 BETWEEN 0 AND NULL, NULL) AS REAL)|-(1) IS NULL
+NULL|0
+~~~
+# id|-(NOT id IS NULL)|nullif(typeof(-199), CASE WHEN iif(id, 541.601, -0.0) THEN CASE WHEN x'' THEN -513 ELSE c1 END ELSE ref END)
+1|-1|integer
+2|-1|integer
+3|-1|integer
+4|-1|integer
+5|-1|integer
+6|-1|integer
+7|-1|integer
+8|-1|integer
+9|-1|integer
+~~~
+# -(-1e308)|-(abs((NULL OR 'café')))
+1.0e+308|NULL
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -3, 2)|instr('kappa', 'NULL')|replace('kappa', '', '')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '_'|'kappa' GLOB '?'|char(71, 367)|'kappa' || 'NULL'|'kappa' < 'NULL'|'kappa' = 'NULL' COLLATE NOCASE
+5|KAPPA|kappa|pp|0|kappa|kappa|kappa|6B61707061|'kappa'|107|0|0|Gů|kappaNULL|0|0
+~~~

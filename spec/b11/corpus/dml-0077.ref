@@ -1,0 +1,272 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 5
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|-370.703
+~~~
+# id|c0|c1|c2
+2|575|786.528|0.0
+4|iota|970|2.0
+6|NULL|NULL|NULL
+8|X'A5FD'|Ελλάδα|a%b
+10|iota|delta|-1.0e+308
+11|-370.703|NULL|NULL
+~~~
+changes: 2
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|X''
+~~~
+# id|c0|c1|c2
+2|0.0|786.528|0.0
+6|NULL|NULL|NULL
+8|X'3FE9C4'|NULL|NULL
+11|NULL|NULL|NULL
+12|X''|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|1.0e+308
+~~~
+# id|c0|c1
+1|1|phi
+2|-2.5|X''
+3|9223372036854775807|X'8D51F8D8F947'
+4|NULL|588
+6|878!|x_y
+7|Lambda|0
+8|NULL|X'3298FF69'
+9|X'CB05F3EA1E'|iota
+11|-307|X'7D680209'
+12|NULL|-929
+13|X'6E124FC52D'|X'4B27E24464'
+14|NULL|5
+16|NULL|-2
+17|sigma|0
+18|NULL|630.6
+19|X'9C1B'|0
+21|NULL|1
+22|NULL|3
+23|1.0e+308|0
+~~~
+changes: 5
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|856
+~~~
+# id|c0|c1|c2
+1|89.965|NULL|NULL
+7|X'AD0D43'|NULL|NULL
+11|11|NULL|NULL
+12|856|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|NULL
+~~~
+# id|c0|c1
+1|1|phi
+3|�!|X'8D51F8D8F947'
+5|882.9|0
+7|Lambda|0
+9|X'CB05F3EA1E'|iota
+11|-307|X'7D680209'
+13|X'6E124FC52D'|X'4B27E24464'
+17|sigma|0
+19|X'9C1B'|0
+21|NULL|1
+23|1.0e+308|0
+24|NULL|0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|NULL
+~~~
+# id|c0|c1|c2
+12|NULL|NULL|NULL
+11|NULL|NULL|NULL
+7|NULL|NULL|NULL
+6|NULL|NULL|NULL
+4|NULL|NULL|NULL
+1|NULL|NULL|NULL
+~~~
+changes: 12
+~~~
+changes: 4
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+12| pad 
+~~~
+# id|c0|c1|c2|c3
+1|X''|NULL|600|1000.0
+2|X''|3|848.33|137.0
+3|kappa|NULL|0|NULL
+4|X''|-1|0|Ελλάδα
+5|X''|X'4FC361A6'|595|NULL
+7|X''|1.0e-07|X''|2.5
+8|X''|663|1.0e+308|216.0
+10|X''|X'5A19130BEAB2'|0|X'E93D2B2071'
+11|X''|2.5|0|NULL
+12| pad |NULL|0|NULL
+~~~
+changes: 1
+~~~
+# id|c3
+3|NULL
+5|NULL
+11|NULL
+12|NULL
+7|2.5
+2|137.0
+8|216.0
+1|1000.0
+4|Ελλάδα
+10|X'E93D2B2071'
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

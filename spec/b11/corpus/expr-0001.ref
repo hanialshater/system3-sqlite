@@ -1,0 +1,181 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|nullif(44.756 IN (NULL, 0.1, x'2e6561') IS NULL, c0)|iif(iif(c0, NULL, NULL), typeof(c1), 1e-7) IN (CAST(c0 AS TEXT), -5, x'45')
+1|1|NULL
+2|1|0
+3|1|NULL
+4|1|0
+5|1|0
+6|1|0
+~~~
+# nullif(-(CAST(-187.51 AS NUMERIC)), -2 BETWEEN x'883277143c' AND '0x1F')|0
+187.51|0
+~~~
+# id|c4|c2
+1|psi|theta
+2|X'363C9A3D'|tau
+3|X'0756'|NULL
+4|sigma|epsilon
+5|NULL|a%b
+6|3.0|sigma
+7|epsilon|NULL
+8|X'AE44DB9B58'|X'52'
+9|X'A523B1'|X'76B1DBF78B'
+10|NULL|-921
+~~~
+# typeof(CAST(-321 AS TEXT))|CASE WHEN 'über' THEN 4.5e-310 ELSE 'omega' END
+text|omega
+~~~
+# id|nullif(iif(c4 IS NULL, -2, NULL), c1)|c1
+1|NULL|NULL
+2|NULL|NULL
+3|NULL|X'129C'
+4|NULL|-133
+5|-2|-876
+6|NULL|416
+7|NULL|delta
+8|NULL|alpha
+9|NULL|NULL
+10|-2|0
+~~~
+# typeof(typeof(NULL IS NULL))|NOT -(coalesce(x'cc', x'8568'))
+text|1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|6
+3|6
+2|6
+6|6
+5|6
+4|6
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# c1
+969.47
+X'AD42E9156028'
+~~~
+# id|NULL|NULL
+10|NULL|NULL
+9|NULL|NULL
+8|NULL|NULL
+7|NULL|NULL
+6|NULL|NULL
+5|NULL|NULL
+4|NULL|NULL
+3|NULL|NULL
+2|NULL|NULL
+1|NULL|NULL
+~~~
+# -(CASE WHEN -4 BETWEEN x'9252' AND -1 THEN 418 IN (0, 732, x'b3ca37c6a6') ELSE -220.82 END)|iif(-2, CASE WHEN typeof(x'94bd') THEN NULL ELSE x'32c4' END, -0.0)
+220.82|X'32C4'
+~~~
+changes: 1
+~~~
+# id|c1
+2|5
+6|629
+1|969.47
+3|X'AD42E9156028'
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

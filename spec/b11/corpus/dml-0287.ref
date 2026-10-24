@@ -1,0 +1,187 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|215
+~~~
+# id|c0|c1|c2
+2|-773!|X'47DDA54E60'|X''
+3|omega|X'EDD3C26F'|-7
+4|NULL|theta|-3
+5|X'D21BA7528DD7'|NULL|477.2
+6|-60.505|NULL|0
+7|NULL|eta|1.0e+308
+8|215|NULL|0
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|alpha
+~~~
+# id|c0|c1|c2
+1|4|NULL|0
+2|-773!|X'47DDA54E60'|X''
+4|NULL|theta|-3
+5|X'D21BA7528DD7'|NULL|477.2
+6|MU|NULL|0
+7|NULL|eta|1.0e+308
+8|215|NULL|0
+9|alpha|NULL|0
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 5
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+11|iota
+~~~
+# id|c0|c1|c2|c3
+2|3.1415926535897931|-747|NULL|-4
+4|iota|omega|3|893.2883
+5|X'2AA31D'|0|NULL|0
+6|663.37|0|1| pad 
+8|X'7AE81A55'|-177|-1|-886
+10|2.5|-4|X'CCFA8A'|X''
+11|iota|0|NULL|0
+~~~
+changes: 6
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|NULL
+~~~
+# id|c0|c1|c2|c3
+2|9223372036854775807|a%b|1.0e-07|X'6D67E1'
+3|phi|NULL|0|NULL
+4|NULL|NULL|0|NULL
+6|746.73|1.0e-07|3.1415926535897931|xi
+7|NULL|NULL|0|NULL
+~~~
+changes: 8
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|it's
+~~~
+# id|c0|c1|c2
+9|it's|NULL|0
+8|-2.5|NULL|0
+6|-2.5|NULL|0
+5|-1|NULL|0
+4|-2.5|theta|-3
+2|-2.5|X'47DDA54E60'|X''
+1|rho|NULL|0
+~~~
+changes: 5
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|765
+~~~
+# id|c0|c1|c2|c3
+1|beta|NULL|0|NULL
+3|329|NULL|0|NULL
+4|über|NULL|0|NULL
+7|329|NULL|0|NULL
+8|765|NULL|0|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+5|-1
+2|-2.5
+4|-2.5
+6|-2.5
+8|-2.5
+9|it's
+1|rho
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

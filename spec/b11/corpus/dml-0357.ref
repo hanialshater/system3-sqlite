@@ -1,0 +1,301 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|-333.3
+~~~
+# id|c0|c1|c2|c3|ref
+1|309|410|471.7|rho|3
+2|397|NULL|NULL|0|NULL
+3|NULL|-420|beta|-1|8
+5|NULL|1.0e+308|epsilon|-3|1
+7|sigma|382|X'9C70B26E34'|-210|4
+9|X'B72B025FD742'|659|X'A31A'|X'D6AA5D2F578B'|6
+11|5|-245.161|X'B888AC'|sigma|7
+13|X'EB08ABF13B'|108|NULL|-547|5
+15|2|X'26E58AF79F'|1|0x1F|NULL
+17|NULL|NULL|0|0|5
+19|NULL|X'D8F8D1'|508|-297|7
+21|X'8D5A66E961'|916|xi|860|2
+23|-949|eta|-1|-955|NULL
+25|NULL|-429|5||7
+26|-333.3|NULL|NULL|0|NULL
+~~~
+changes: 15
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+27|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|日本|410|471.7|rho|3
+2|0|NULL|NULL|0|NULL
+3|日本|-420|beta|-1|8
+4|727|NULL|NULL|0|NULL
+5|日本|1.0e+308|epsilon|-3|1
+6|NULL|NULL|NULL|0|NULL
+7|sigma|382|X'9C70B26E34'|-210|4
+9|X'B72B025FD742'|659|X'A31A'|X'D6AA5D2F578B'|6
+11|日本|-245.161|X'B888AC'|sigma|7
+13|X'EB08ABF13B'|108|NULL|-547|5
+15|0x1F|X'26E58AF79F'|1|0x1F|NULL
+17|NULL|NULL|0|0|5
+19|-297|X'D8F8D1'|508|-297|7
+21|X'8D5A66E961'|916|xi|860|2
+23|-955|eta|-1|-955|NULL
+25|NULL|-429|5||7
+26|0|NULL|NULL|0|NULL
+27|NULL|NULL|NULL|0|NULL
+~~~
+changes: 18
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-3
+~~~
+# id|c0|c1|c2|c3|c4
+1|2|sigma|-5|-198|1
+2|_!|alpha|nu|X'DA842F4A14'|日本
+4|3.1415926535897931|0.1|it's|1000000000000000|2.5
+5|845.45|phi|X'6DD888B0BD'|-669|tau
+7|X'E4'|435.152|NULL|MU|NULL
+8|NULL|NULL|NULL|NULL|NULL
+10|-236.2649|omicron|NULL|NULL|0.1
+11|nu|NULL|NULL|a%b|1000000000000000
+13|iota|NULL|X'EE'|X'6C2DCC74EC6E'|0x1F
+14||X'81A6BE5B'|NULL|NULL|X'34E3E8A2'
+16|NULL|phi|X'BE8B690A59'|-298.7|0.1
+17|0|X''|NULL|gamma|X'B109EAFF6E12'
+18|-3|NULL|NULL|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+27|-2
+~~~
+# id|c0|c1|c2|c3|ref
+2|0|NULL|NULL|0|NULL
+4|727|NULL|NULL|0|NULL
+5|X'4BA5184879'|NULL|NULL|0|NULL
+6|X'54C7'|NULL|NULL|0|NULL
+26|0|NULL|NULL|0|NULL
+27|-2|NULL|NULL|0|NULL
+~~~
+changes: 13
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|nu
+~~~
+# id|c0|c1|c2|c3|c4
+19|nu|NULL|NULL|NULL|NULL
+18|NULL|NULL|NULL|NULL|NULL
+16|NULL|phi|X'BE8B690A59'|-298.7|0.1
+14|NULL|X'81A6BE5B'|NULL|NULL|X'34E3E8A2'
+11|NULL|NULL|NULL|a%b|1000000000000000
+10|NULL|omicron|NULL|NULL|0.1
+8|NULL|NULL|NULL|NULL|NULL
+7|NULL|435.152|NULL|MU|NULL
+4|-572.9!|0.1|it's|1000000000000000|2.5
+2|NULL|alpha|nu|X'DA842F4A14'|日本
+1|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 14
+~~~
+changes: 6
+~~~
+error: cannot store TEXT value in REAL column t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1|c2
+2|23.668|-347|203
+3|12.743|-325|152
+5|33.868|116|-40
+6|44.692|152|-310
+7|NULL|NULL|NULL
+8|-16.656|-35|-453
+9|40.549|250|-204
+11|-6.355|-455|462
+12|-11.344|-106|-364
+14|49.927|-10|-297
+15|-10.128|-230|104
+16|NULL|NULL|NULL
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+27|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+2|NULL|NULL|NULL|0|NULL
+4|727|NULL|NULL|0|NULL
+6|889.5!|NULL|NULL|0|NULL
+26|123456789012|NULL|NULL|0|NULL
+27|NULL|NULL|NULL|0|NULL
+~~~

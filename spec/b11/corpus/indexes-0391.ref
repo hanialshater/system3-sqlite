@@ -1,0 +1,224 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|17
+1|273.0481
+7|640.5
+11|日本
+6|X''
+3|X'581390'
+10|X'8EACBBE8'
+5|X'DDBC'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+4|1
+11|1
+1|2
+3|2
+5|2
+7|2
+9|2
+12|3
+8|5
+10|5
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|-2
+8|1
+12|17
+1|273.0481
+7|640.5
+11|日本
+6|X''
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+2|-341
+18|-125
+15|-89
+5|-5
+1|0
+6|0
+8|0
+14|0
+7|24.85
+9|a%b
+11|gamma
+12|phi
+13|X'39A7'
+3|X'71'
+10|X'A18A'
+4|X'B11B45BD10DC'
+19|X'B9'
+16|X'D53F'
+17|X'E4FFDD50'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+9|13
+3|13
+13|13
+12|13
+7|13
+5|13
+2|13
+8|13
+6|13
+4|13
+10|13
+1|13
+11|13
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id
+~~~
+# c0
+NULL
+NULL
+NULL
+NULL
+NULL
+-2
+-2
+1
+1
+17
+17
+273.0481
+273.0481
+640.5
+640.5
+日本
+日本
+X''
+X''
+X'581390'
+X'581390'
+X'8EACBBE8'
+~~~

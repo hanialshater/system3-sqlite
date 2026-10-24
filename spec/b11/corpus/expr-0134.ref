@@ -1,0 +1,266 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CASE WHEN CAST(NOT 'delta' AS INTEGER) THEN 548 ELSE id END|NOT x'433e92' IN (CASE WHEN -408 THEN NULL ELSE c1 END, 'rho', NULL)
+1|548|NULL
+2|548|NULL
+3|548|NULL
+4|548|NULL
+5|548|NULL
+6|548|NULL
+7|548|NULL
+8|548|NULL
+9|548|NULL
+10|548|NULL
+~~~
+# CASE WHEN '0x1F' THEN 'omicron' BETWEEN -11.3351 AND x'e175' IN (nullif(-565, x'022c4cf3'), x'aafcde6d14', 1e308) ELSE -('psi') BETWEEN CASE WHEN 0 THEN -2.5 ELSE x'464d6567' END AND 'epsilon' IS NULL END|(CASE WHEN NULL IS NULL THEN NULL BETWEEN 1e-7 AND -41 ELSE iif(-102, 238, 941) END >> abs('0x1F' IS NULL))
+0|NULL
+~~~
+# id|typeof(id) IN ((564 & c0), x'041b', x'11fc41') BETWEEN c1 AND coalesce(CAST(id AS TEXT), id)|c1
+1|0|956
+2|1|-290
+3|NULL|NULL
+4|NULL|NULL
+5|0|X'11'
+6|0|4.500000000000011e-310
+7|0|it's
+8|0|2.5
+9|0|4.500000000000011e-310
+10|0|X'A85DA19C'
+~~~
+# CASE WHEN 123456789012 THEN -16 ELSE (typeof('upsilon') % NULL) END|iif(CAST(coalesce(x'dc4b', 1e308) AS NUMERIC), (coalesce(-2, NULL) | typeof(185)), 381)
+-16|381
+~~~
+# id|id|coalesce(CAST(20 AS TEXT) IS NULL, c2)
+1|1|0
+2|2|0
+3|3|0
+4|4|0
+5|5|0
+6|6|0
+7|7|0
+8|8|0
+9|9|0
+10|10|0
+11|11|0
+12|12|0
+13|13|0
+14|14|0
+15|15|0
+16|16|0
+~~~
+# x'e29d20fd6133'|-3
+X'E29D20FD6133'|-3
+~~~
+# id|'café'|abs(coalesce((x'bfc736d799' >> id), iif(c1, -520, 'xi')))
+1|café|0
+2|café|0
+3|café|0
+4|café|0
+5|café|0
+6|café|0
+7|café|0
+8|café|0
+9|café|0
+10|café|0
+11|café|0
+12|café|0
+~~~
+# 'tau'|3
+tau|3
+~~~
+# id|abs(coalesce(CAST(NULL AS INTEGER), NOT id))|x'd6'
+1|0|X'D6'
+2|0|X'D6'
+3|0|X'D6'
+4|0|X'D6'
+5|0|X'D6'
+6|0|X'D6'
+7|0|X'D6'
+8|0|X'D6'
+9|0|X'D6'
+10|0|X'D6'
+11|0|X'D6'
+12|0|X'D6'
+~~~
+# abs('omicron')|iif(nullif('iota', NULL), 0, NULL) BETWEEN CASE WHEN nullif(-311, x'd4aecdb6') THEN abs(NULL) ELSE (4 << '日本') END AND ((-2 IS NOT x'd85677') < coalesce(NULL, x''))
+0.0|NULL
+~~~
+# id|NULL|typeof(id)
+1|NULL|integer
+2|NULL|integer
+3|NULL|integer
+4|NULL|integer
+5|NULL|integer
+6|NULL|integer
+7|NULL|integer
+8|NULL|integer
+9|NULL|integer
+10|NULL|integer
+11|NULL|integer
+12|NULL|integer
+~~~
+# x'cebc88'|NOT 1e308
+X'CEBC88'|0
+~~~
+# id|CASE WHEN nullif(c0, c2) THEN abs(x'9f') ELSE NULL END IS NULL|nullif(typeof('Ελλάδα' IS NULL), CAST(c0 IN (-536.1853, -1, -9223372036854775808) AS BLOB))
+1|1|integer
+2|1|integer
+3|1|integer
+4|1|integer
+5|1|integer
+6|1|integer
+7|1|integer
+8|1|integer
+9|1|integer
+10|1|integer
+11|1|integer
+12|1|integer
+13|1|integer
+14|1|integer
+15|1|integer
+16|1|integer
+~~~
+# x'be'|iif(iif('x_y' IN (x'c88c51', NULL, -2), coalesce(x'a3fc9b', x'4f0633a78689'), -232), NOT 'pi', -1)
+X'BE'|1
+~~~
+# id|nullif(c0 BETWEEN nullif(ref, c0) AND NOT NULL, -(-183.0045))|abs('alpha') IS NULL IS NULL
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+13|NULL|0
+14|NULL|0
+15|NULL|0
+16|NULL|0
+~~~
+# -(-(x'7d4b3d978f'))|NULL
+0|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+3|3
+5|5
+8|8
+9|9
+2|2
+7|7
+4|4
+1|1
+6|6
+10|10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# c1
+~~~

@@ -1,0 +1,216 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|id
+1|1|42|1
+1|2|42|2
+1|3|42|3
+1|4|42|4
+1|5|42|5
+1|6|42|6
+1|7|42|7
+1|8|42|8
+1|9|42|9
+1|10|42|10
+1|11|42|11
+2|1|X'AB1D326024'|1
+2|2|X'AB1D326024'|2
+2|3|X'AB1D326024'|3
+2|4|X'AB1D326024'|4
+2|5|X'AB1D326024'|5
+2|6|X'AB1D326024'|6
+2|7|X'AB1D326024'|7
+2|8|X'AB1D326024'|8
+2|9|X'AB1D326024'|9
+2|10|X'AB1D326024'|10
+2|11|X'AB1D326024'|11
+3|1|X'63725CE791'|1
+3|2|X'63725CE791'|2
+3|3|X'63725CE791'|3
+3|4|X'63725CE791'|4
+3|5|X'63725CE791'|5
+3|6|X'63725CE791'|6
+3|7|X'63725CE791'|7
+3|8|X'63725CE791'|8
+3|9|X'63725CE791'|9
+3|10|X'63725CE791'|10
+3|11|X'63725CE791'|11
+4|1|-104|1
+4|2|-104|2
+4|3|-104|3
+4|4|-104|4
+4|5|-104|5
+4|6|-104|6
+4|7|-104|7
+4|8|-104|8
+4|9|-104|9
+4|10|-104|10
+4|11|-104|11
+5|1|645|1
+5|2|645|2
+5|3|645|3
+5|4|645|4
+5|5|645|5
+5|6|645|6
+5|7|645|7
+5|8|645|8
+~~~
+# count(*)
+11
+~~~
+# id|id|id|ref
+1|1|1|4
+1|2|1|6
+1|3|1|6
+1|4|1|1
+1|5|1|4
+~~~
+# count(*)
+11
+~~~
+# id|id|c0|c2
+1|4|2.5|-5
+2|NULL|phi|NULL
+3|6|-807.175|rho
+4|1|X'EE212088EF9F'|5
+4|5|X'EE212088EF9F'|beta
+5|9|-392|-1
+5|10|-392|341
+6|2|X'AD7C'|NULL
+6|3|X'AD7C'|MU
+7|7|968|0
+7|8|968|1000
+7|11|968|zeta
+8|NULL|NULL|NULL
+9|NULL|0|NULL
+10|NULL|9223372036854775807|NULL
+11|NULL|X'84'|NULL
+12|NULL|1.0e-07|NULL
+13|NULL|NULL|NULL
+14|NULL|42|NULL
+15|NULL|nu|NULL
+16|NULL|X'22BFEB2ED1DC'|NULL
+17|NULL|-938|NULL
+18|NULL|-4|NULL
+19|NULL|5|NULL
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+17|17
+18|18
+19|19
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|NULL|nullif(coalesce(typeof(id), c1), coalesce(-(c0), -(c1)))
+19|NULL|integer
+18|NULL|integer
+17|NULL|integer
+16|NULL|integer
+15|NULL|integer
+14|NULL|integer
+13|NULL|integer
+12|NULL|integer
+11|NULL|integer
+10|NULL|integer
+9|NULL|integer
+8|NULL|integer
+7|NULL|integer
+6|NULL|integer
+5|NULL|integer
+4|NULL|integer
+3|NULL|integer
+2|NULL|integer
+1|NULL|integer
+~~~
+# -389 IN (nullif(CASE WHEN 15.957 THEN 4 ELSE x'e3238d12' END, -('1e3')), 89.788, 'señor')|'Lambda'
+0|Lambda
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 2, 5)|instr('-7', 'beta')|replace('-7', 'a', '_')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%'|'-7' GLOB '?'|char(78, 615)|'-7' || 'beta'|'-7' < 'beta'|'-7' = 'beta' COLLATE NOCASE
+2|-7|-7|7|0|-7|-7|-7|2D37|'-7'|45|1|0|Nɧ|-7beta|1|0
+~~~

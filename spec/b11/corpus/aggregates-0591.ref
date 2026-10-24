@@ -1,0 +1,208 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id)
+-411|1|7
+-310|1|1
+-235|1|11
+-51|1|12
+151|1|2
+200|1|4
+217|2|3,6
+239|1|10
+301|1|9
+433|1|8
+459|1|5
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+12|12|78|78.0|6.5|1|12|12
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+3|3|0.0|0.0|0.0|0|X'617729'|2
+~~~
+# c1|count(*)|group_concat(id, ';')
+0|2|1;3
+1.0e-07|1|4
+X'617729'|1|2
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+11|11|573.3|573.3|52.118181818181817||日本|11
+~~~
+# c1|count(*)|group_concat(id)
+|1|6
+42|1|4
+531.3|1|8
+NULL|1|10
+chi|1|3
+epsilon|1|7
+eta|1|12
+it's|1|2
+phi|1|5
+rho|2|9,11
+日本|1|1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+4|4
+6|6
+9|9
+8|8
+3|3
+7|7
+2|2
+1|1
+5|5
+10|10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# c1
+42
+531.3
+NULL
+chi
+delta
+epsilon
+eta
+it's
+omega
+phi
+rho
+tau
+日本
+X'45BE0D72418D'
+X'9C81'
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 2, 5)|instr('naïve', 'theta')|replace('naïve', 'e', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%'|'naïve' GLOB '*[a-m]*'|char(80, 773)|'naïve' || 'theta'|'naïve' < 'theta'|'naïve' = 'theta' COLLATE NOCASE
+5|NAïVE|naïve|aïve|0|naïv_|naïve|naïve|6E61C3AF7665|'naïve'|110|1|1|P̅|naïvetheta|1|0
+~~~

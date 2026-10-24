@@ -1,0 +1,71 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|abs(c1)|CASE WHEN typeof(c1) THEN c0 ELSE 'chi' END
+1|0.0|chi
+2|185|chi
+3|0.0|chi
+4|0.0|chi
+5|853|chi
+6|0.0|chi
+~~~
+# x'1697182a8286'|CASE WHEN coalesce(abs(1e308), -2) THEN -(-613) IN (-186, NULL, 'sigma') ELSE x'' END
+X'1697182A8286'|NULL
+~~~
+# id|c2|ref
+1|nu|2
+2|-933|NULL
+3|X'53'|7
+4|tau|2
+5|-9223372036854775808|2
+~~~
+# nullif(iif(-135.64, x'690ff0a4', NULL), CAST(CASE WHEN x'' THEN -759 ELSE NULL END AS INTEGER))|(NULL IN (x'92d6', -818.3, -0.0) = ('Ελλάδα' = x'6b2bf05a54') IN (-969, 'alpha', x'1b7930'))
+X'690FF0A4'|NULL
+~~~
+# id|(typeof(coalesce(c0, c2)) - iif((-515.6 = c1), c2, 2.5))|CAST(CASE WHEN abs(c1) THEN id IS NULL ELSE -654.77 END AS NUMERIC)
+1|-2.5|-654.77
+2|-2.5|0
+3|-2.5|-654.77
+4|-2.5|-654.77
+5|-2.5|0
+6|-2.5|-654.77
+~~~
+# ' pad '|NULL
+ pad |NULL
+~~~
+# id|NULL IS NULL|NULL
+5|1|NULL
+4|1|NULL
+3|1|NULL
+2|1|NULL
+1|1|NULL
+~~~
+# (333.8 < CAST(-(1) AS BLOB))|typeof(x'') BETWEEN -2.5 AND (-(985) < -973 IN (-308.413, 'tau', 'psi'))
+1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', -1, 5)|instr('nu', '1e3')|replace('nu', 'e', '')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'a%'|'nu' GLOB '*[a-m]*'|char(72, 271)|'nu' || '1e3'|'nu' < '1e3'|'nu' = '1e3' COLLATE NOCASE
+2|NU|nu|u|0|nu|nu|nu|6E75|'nu'|110|0|0|Hď|nu1e3|0|0
+~~~

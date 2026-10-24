@@ -1,0 +1,147 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+2|epsilon
+1|X'A4F4D2'
+~~~
+# count(*)
+2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+1|pi
+7|X'32B8629055'
+15|X'80B789012E19'
+4|X'CD1AE3C6657C'
+11|X'EB45B5C50A'
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|-5
+3|tau
+2|X'9D87D5'
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', -2, 3)|instr('a%b', 'iota')|replace('a%b', '', 'XY')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB '*[a-m]*'|char(86, 850)|'a%b' || 'iota'|'a%b' < 'iota'|'a%b' = 'iota' COLLATE NOCASE
+3|A%B|a%b|%b|0|a%b|a%b|%b|612562|'a%b'|97|0|1|V͒|a%biota|1|0
+~~~
+# id|nullif(c1, c1)|coalesce(coalesce(abs(c0), abs(NULL)), coalesce(iif(c3, c1, NULL), 331))
+1|NULL|80
+2|NULL|10
+3|NULL|486
+4|NULL|413
+5|NULL|448
+6|NULL|378
+7|NULL|340
+8|NULL|406
+9|NULL|231
+10|NULL|221
+11|NULL|42
+12|NULL|324
+13|NULL|253
+14|NULL|252
+15|NULL|257
+16|NULL|1
+17|NULL|445
+18|NULL|134
+19|NULL|456
+~~~
+# coalesce(NOT x'd588271e' IN (-9223372036854775808 IN (NULL, -977.1, -4), -694.3420, x'36'), -4 IN (NULL, -0.0, 402))|-982
+NULL|-982
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+4|2|0.0|0.0|0.0|epsilon|X'A4F4D2'|2
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|2|3;4
+~~~

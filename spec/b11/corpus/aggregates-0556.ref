@@ -1,0 +1,184 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id, ';')
+-7|2|5;17
+alpha|2|1;8
+omega|2|15;16
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|7|4;7;8;10;12;14;15
+-1|1|3
+-3|1|9
+42|1|11
+Ελλάδα|1|5
+X'5532008CE9'|1|2
+X'90'|1|1
+X'B155C2'|1|13
+X'DBFB58'|1|6
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+20|19|-32.357|-32.357|-1.703|-48.759|40.058|19
+~~~
+# c0|count(*)|group_concat(id)
+NULL|1|13
+-48.759|1|9
+-36.551|1|4
+-34.83|1|10
+-33.545|1|12
+-31.914|1|6
+-19.218|1|18
+-16.948|1|11
+-14.046|1|2
+-13.473|1|7
+-4.731|1|8
+9.894|1|5
+14.299|1|14
+16.76|1|1
+17.006|1|19
+27.084|1|15
+30.155|1|3
+33.031|1|20
+33.371|1|17
+40.058|1|16
+~~~
+# id|CAST(id AS BLOB)|abs(typeof(NOT -3))
+1|X'31'|0.0
+2|X'32'|0.0
+3|X'33'|0.0
+4|X'34'|0.0
+5|X'35'|0.0
+6|X'36'|0.0
+7|X'37'|0.0
+8|X'38'|0.0
+9|X'39'|0.0
+10|X'3130'|0.0
+11|X'3131'|0.0
+12|X'3132'|0.0
+13|X'3133'|0.0
+14|X'3134'|0.0
+15|X'3135'|0.0
+16|X'3136'|0.0
+17|X'3137'|0.0
+18|X'3138'|0.0
+19|X'3139'|0.0
+20|X'3230'|0.0
+~~~
+# typeof(x'09634c')|-814.569
+blob|-814.569
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+~~~

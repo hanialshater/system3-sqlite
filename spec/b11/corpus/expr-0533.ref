@@ -1,0 +1,138 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|typeof(iif((c0 OR 2.5), CASE WHEN c2 THEN c2 ELSE 4.5e-310 END, -0.0))|155.5
+1|real|155.5
+2|real|155.5
+3|real|155.5
+4|real|155.5
+5|real|155.5
+6|real|155.5
+7|real|155.5
+8|real|155.5
+9|integer|155.5
+10|integer|155.5
+11|integer|155.5
+12|real|155.5
+13|integer|155.5
+~~~
+# 578 IS NULL|CAST(nullif(NOT NULL, NULL) AS NUMERIC)
+0|NULL
+~~~
+# id|coalesce(NOT CASE WHEN c2 THEN c0 ELSE id END, -(c0 IN (c0, -9223372036854775808, x'ca')))|abs(c2 IS NULL)
+1|0|1
+2|0|0
+3|0|0
+4|1|0
+5|0|0
+~~~
+# CASE WHEN x'64b8e4bd8dbb' THEN -('zeta') ELSE abs(coalesce(x'db7e', -1)) END|coalesce(4, CASE WHEN (-2 + NULL) THEN 404 IS NULL ELSE nullif(NULL, -1) END)
+0.0|4
+~~~
+# id|abs(c3)|NULL
+1|1.0e+308|NULL
+2|0.0|NULL
+3|0.0|NULL
+4|1|NULL
+5|0.0|NULL
+~~~
+# NULL|NULL
+NULL|NULL
+~~~
+# id|-(id)|coalesce((typeof(c0) IS iif(c0, c0, 795)), CAST(NOT 'psi' AS INTEGER))
+1|-1|0
+2|-2|0
+3|-3|0
+4|-4|0
+5|-5|0
+~~~
+# CASE WHEN 'x_y' THEN abs(161 BETWEEN -2.5 AND NULL) ELSE nullif(-9223372036854775808, nullif(812, NULL)) END|'zeta'
+-9223372036854775808|zeta
+~~~
+# id|c0|nullif(-(c0 IS NULL), nullif(-724, (c2 << x'75')))
+5|-614.07|0
+4|über|0
+3|250|0
+2|-84|0
+1|-819|0
+~~~
+# -((CAST(-2.5 AS BLOB) | x'' IS NULL))|-113
+0|-113
+~~~
+# id|typeof(CAST(3 AS NUMERIC))|-(c1)
+5|integer|0
+4|integer|0.0
+3|integer|-271.0
+2|integer|0
+1|integer|NULL
+~~~
+# typeof(coalesce(3.141592653589793, NULL IN (NULL, x'7d', 769)))|x'5e251f0a1010'
+real|X'5E251F0A1010'
+~~~
+# id|(typeof(c0) IN (coalesce(id, 'Lambda'), 0.1, x'5925c228') / -(CAST(c1 AS NUMERIC)))|CAST(CAST(c3 AS INTEGER) IN (47 IS NULL, 772.36, NULL) AS TEXT)
+1|NULL|NULL
+2|NULL|1
+3|0.0|1
+4|NULL|NULL
+5|NULL|1
+~~~
+# (NOT NULL / -(NOT NULL))|coalesce('alpha', nullif(CASE WHEN NULL THEN 0.1 ELSE NULL END, x'13' IN (NULL, -3, -0.0)))
+NULL|alpha
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|it's
+~~~
+# id|c0|c1|c2|c3
+1|nu|NULL|NULL|1.0e+308
+2|nu|sigma|X'96ACDD3E'|sigma
+3|nu|271.0|-1|X'79106E372F'
+4|nu|0.0|-781.84|1
+5|X'13C463B2'|NULL|d|NULL
+8|X'9E7F09'|NULL|d|NULL
+9|it's|NULL|d|NULL
+~~~

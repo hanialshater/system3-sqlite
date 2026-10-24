@@ -1,0 +1,105 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|abs(CASE WHEN 'iota' IS NULL THEN typeof(x'fc') ELSE typeof(c3) END)|typeof(-500 IS NULL)
+1|0.0|integer
+2|0.0|integer
+3|0.0|integer
+4|0.0|integer
+5|0.0|integer
+6|0.0|integer
+~~~
+# typeof(typeof(-(-2)))|iif(491, -('kappa'), x'0dacd8c189') BETWEEN coalesce(iif('nu', NULL, NULL), coalesce(x'ce3b08', NULL)) AND coalesce(NULL, 873) IS NULL
+text|0
+~~~
+# id|CASE WHEN CAST(abs(c4) AS INTEGER) THEN CASE WHEN iif(c0, c4, x'1d5911') THEN c4 ELSE c3 END ELSE typeof(id) END|c3
+1|integer|262
+2|integer|-196.4981
+3|-4|-4
+4|0|0
+5|integer|X'73AD'
+6|integer|61.1
+~~~
+# typeof(402)|'iota'
+integer|iota
+~~~
+# id|NULL|CASE WHEN (84.975 AND coalesce('señor', c3)) THEN -(c0) ELSE c3 IS NULL BETWEEN NULL IN (c4, NULL, x'2926') AND CAST(c0 AS INTEGER) END
+1|NULL|0
+2|NULL|NULL
+3|NULL|NULL
+4|NULL|NULL
+5|NULL|0
+6|NULL|NULL
+~~~
+# -584|-(typeof(x'c0b0')) IS NULL
+-584|0
+~~~
+# id|x'0e'|id
+1|X'0E'|1
+2|X'0E'|2
+3|X'0E'|3
+4|X'0E'|4
+5|X'0E'|5
+6|X'0E'|6
+~~~
+# 'iota'|NULL IN (3.141592653589793, 'señor', NULL) BETWEEN iif(x'', x'479eb7f5f9fd', NULL) AND 0 BETWEEN x'12' AND -4 BETWEEN CASE WHEN x'bacfd7b9' THEN -606 ELSE -0.0 END AND NOT 884
+iota|NULL
+~~~
+# id|1e-7|(nullif(id, id) || NOT c1) IN (coalesce(NULL BETWEEN c1 AND c1, -154), NULL, 'über')
+5|1.0e-07|NULL
+4|1.0e-07|NULL
+3|1.0e-07|NULL
+2|1.0e-07|NULL
+1|1.0e-07|NULL
+~~~
+# CAST(NULL AS INTEGER)|nullif(iif(NULL, CAST('0x1F' AS INTEGER), 'delta'), 'NULL' IN (NOT -4, '-7', NULL))
+NULL|delta
+~~~
+# id|-(NOT -(id))|c0
+5|0|X'13FDB0'
+4|0|X'A17F84'
+3|0|3
+2|0|NULL
+1|0|0x1F
+~~~
+# (abs(x'7c9f') & -2 IN (NULL, x'', x'aff3acab')) IS NULL|CAST(abs(CAST('eta' AS INTEGER)) AS NUMERIC)
+1|0
+~~~
+# id|NULL|abs(c1 BETWEEN NOT c1 AND abs(id))
+5|NULL|0
+4|NULL|0
+3|NULL|0
+2|NULL|1
+1|NULL|0
+~~~
+# CAST(CAST(438 BETWEEN 37 AND 'epsilon' AS INTEGER) AS TEXT)|x'0a651099'
+1|X'0A651099'
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 3, 1)|instr('nu', 'theta')|replace('nu', 'a', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%'|'nu' GLOB '?'|char(86, 559)|'nu' || 'theta'|'nu' < 'theta'|'nu' = 'theta' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|1|0|Vȯ|nutheta|1|0
+~~~

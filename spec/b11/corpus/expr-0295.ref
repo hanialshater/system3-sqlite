@@ -1,0 +1,341 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c2
+~~~
+# id|x'7b5d09471e94'|abs(abs(iif(c0, id, 'naïve')))
+1|X'7B5D09471E94'|1
+2|X'7B5D09471E94'|0.0
+3|X'7B5D09471E94'|0.0
+4|X'7B5D09471E94'|0.0
+5|X'7B5D09471E94'|0.0
+6|X'7B5D09471E94'|6
+7|X'7B5D09471E94'|0.0
+8|X'7B5D09471E94'|0.0
+9|X'7B5D09471E94'|0.0
+10|X'7B5D09471E94'|10
+11|X'7B5D09471E94'|0.0
+12|X'7B5D09471E94'|12
+13|X'7B5D09471E94'|0.0
+14|X'7B5D09471E94'|14
+15|X'7B5D09471E94'|0.0
+16|X'7B5D09471E94'|16
+17|X'7B5D09471E94'|0.0
+18|X'7B5D09471E94'|0.0
+19|X'7B5D09471E94'|0.0
+20|X'7B5D09471E94'|0.0
+21|X'7B5D09471E94'|0.0
+22|X'7B5D09471E94'|22
+23|X'7B5D09471E94'|0.0
+24|X'7B5D09471E94'|0.0
+~~~
+# x'232b'|-(-9223372036854775808)
+X'232B'|9.2233720368547758e+18
+~~~
+# id|c1 BETWEEN coalesce(id, c0) AND -(c0) IN (CAST(iif(0.1, id, x'c0cebdf3') AS NUMERIC), 9223372036854775807, 'beta')|c1
+1|0|-557
+2|NULL|NULL
+3|0|-2
+4|NULL|X'383690CDE2'
+5|0|-1
+6|0|X'E391A8F847'
+7|0|-9223372036854775808
+8|0|-1
+9|NULL|NULL
+10|0|671
+11|0|X''
+12|0|Lambda
+13|0|1000000000000000.0
+14|NULL|NULL
+15|0|1000000000000000.0
+16|0|X'12548A498DB4'
+17|NULL|X'E4'
+18|0| pad 
+19|0|1000000000000000.0
+20|NULL|524
+21|NULL|psi
+22|NULL|NULL
+23|NULL|alpha
+24|0|-1
+~~~
+# x'c4ca'|NOT CAST(x'e153e3ca74' AS REAL) IN (576, -855.006, 123456789012)
+X'C4CA'|1
+~~~
+# id|CASE WHEN abs(c3) BETWEEN typeof(c3) AND ref THEN abs(-(x'')) ELSE c1 END|-103
+1|a%b|-103
+2|486.0|-103
+3|X'FEA9'|-103
+4|-795.0|-103
+5|X'ED980C48229D'|-103
+6|café|-103
+7|X''|-103
+8|-223.0|-103
+9|-580.0|-103
+10|señor|-103
+11|-744.0|-103
+12||-103
+13| pad |-103
+14|NULL|-103
+15|0.0|-103
+16|NULL|-103
+17|NULL|-103
+18|-507.0|-103
+~~~
+# -(nullif(nullif(-443, 'alpha'), CASE WHEN x'f2f2e2983d8d' THEN x'f2d7' ELSE NULL END))|-(nullif(coalesce(NULL, '42'), CAST(x'364541a033ca' AS NUMERIC)))
+443|-42
+~~~
+# id|CASE WHEN iif(abs(id), NOT -4, 234) THEN NOT c2 IN ('Lambda', 'epsilon', x'eaebf4') ELSE c2 END|CASE WHEN abs(typeof(c2)) THEN 'sigma' ELSE CASE WHEN c2 THEN c1 IS NULL ELSE c1 BETWEEN c2 AND -0.0 END END
+1|-973|0
+2|365.5995|1
+3|gamma|0
+4|-752|0
+5|X'CA'|0
+6|NULL|0
+7|NULL|NULL
+8|beta|0
+9|-460|1
+10|-1|0
+11|231|0
+12|1e3|0
+13|-1000|0
+14|922|1
+15|zeta|0
+16|omicron|0
+17|X'AB5793'|0
+18|0|0
+19|X'1EDDD21BD48C'|0
+20|X'4CD1'|0
+21|NULL|0
+22|X'1C30D2FA00'|NULL
+23|zeta|0
+24|1000000000000000.0|0
+~~~
+# typeof(x'66' BETWEEN coalesce(-1, NULL) AND CASE WHEN NULL THEN 577 ELSE x'' END)|9223372036854775807
+integer|9223372036854775807
+~~~
+# id|c0|-(abs(NULL) BETWEEN 'chi' AND -(c2))
+24|NULL|NULL
+23|NULL|NULL
+22|-4|NULL
+21|NULL|NULL
+20|NULL|NULL
+19|NULL|NULL
+18|NULL|NULL
+17|NULL|NULL
+16|5|NULL
+15|phi|NULL
+14|578.265|NULL
+13|NULL|NULL
+12|216|NULL
+11|X'A81F60D7F6BE'|NULL
+10|381.66|NULL
+9|NULL|NULL
+8|NULL|NULL
+7|X'2D4C5BF0E35F'|NULL
+6|3.1415926535897931|NULL
+5|X'8B82C38D0AB3'|NULL
+4|NULL|NULL
+3|señor|NULL
+2|NULL|NULL
+1|676.1547|NULL
+~~~
+# NULL|NULL
+NULL|NULL
+~~~
+# id|-19 IS NULL|CASE WHEN CASE WHEN c1 BETWEEN 472.098 AND c0 THEN typeof(id) ELSE CASE WHEN id THEN -748 ELSE c0 END END THEN iif(c2, c0, NULL) IS NULL ELSE typeof(typeof(544)) END
+1|0|0
+2|0|1
+3|0|1
+4|0|1
+5|0|1
+6|0|1
+7|0|1
+8|0|1
+9|0|1
+10|0|0
+11|0|text
+12|0|0
+13|0|1
+14|0|0
+15|0|1
+16|0|1
+17|0|1
+18|0|1
+19|0|1
+20|0|1
+21|0|1
+22|0|1
+23|0|1
+24|0|1
+~~~
+# coalesce(1, 0)|x'36'
+1|X'36'
+~~~
+# id|(abs(c1) % 3 BETWEEN c0 AND iif(-170.278, c1, NULL))|CAST(abs(nullif(x'e8538584', c0)) AS BLOB)
+18|0|X'302E30'
+17|NULL|X'302E30'
+16|NULL|X'302E30'
+15|0|X'302E30'
+14|NULL|X'302E30'
+13|0|X'302E30'
+12|0|X'302E30'
+11|0|X'302E30'
+10|NULL|X'302E30'
+9|0|X'302E30'
+8|0|X'302E30'
+7|NULL|X'302E30'
+6|NULL|X'302E30'
+5|0|X'302E30'
+4|0|X'302E30'
+3|0|X'302E30'
+2|0|X'302E30'
+1|0|X'302E30'
+~~~
+# (NULL <> nullif('beta', -(NULL)))|NOT NOT abs(NULL)
+NULL|NULL
+~~~
+error: UNIQUE constraint failed: t0.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|3
+~~~
+# id|c0|c1|c2
+1|NULL|-557|-973
+2|NULL|NULL|365.5995
+3|señor|-2|gamma
+4|NULL|X'383690CDE2'|-752
+6|3.1415926535897931|X'E391A8F847'|NULL
+7|X'2D4C5BF0E35F'|-9223372036854775808|NULL
+8|NULL|-1|beta
+9|X'6521'|NULL|NULL
+11|X'A81F60D7F6BE'|X''|231
+12|216|Lambda|1e3
+13|NULL|1000000000000000.0|-1000
+14|578.265|NULL|922
+16|5|X'12548A498DB4'|omicron
+17|NULL|X'E4'|X'AB5793'
+18|NULL| pad |0
+19|NULL|1000000000000000.0|X'1EDDD21BD48C'
+21|NULL|psi|NULL
+22|-4|NULL|X'1C30D2FA00'
+23|NULL|alpha|zeta
+24|NULL|-1|1000000000000000.0
+25|3|NULL|NULL
+~~~
+# id|typeof(-(-851) BETWEEN CAST(id AS INTEGER) AND typeof(c1))|-(nullif(c1, (c1 << -254)))
+25|integer|NULL
+24|integer|1
+23|integer|0
+22|integer|NULL
+21|integer|0
+19|integer|-1000000000000000.0
+18|integer|0
+17|integer|0
+16|integer|0
+14|integer|NULL
+13|integer|-1000000000000000.0
+12|integer|0
+11|integer|0
+9|integer|NULL
+8|integer|1
+7|integer|9.2233720368547758e+18
+6|integer|0
+4|integer|-86
+3|integer|2
+2|integer|NULL
+1|integer|557
+~~~
+# (CASE WHEN -(NULL) THEN nullif(-531, -3) ELSE coalesce(-787.9701, -60) END % NOT -(847.794))|NOT typeof(x'28e16577b1') BETWEEN CASE WHEN -322.5 THEN x'b085' ELSE -2 END AND NULL IS NULL
+NULL|1
+~~~

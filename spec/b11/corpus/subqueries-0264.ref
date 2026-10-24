@@ -1,0 +1,352 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+9|9
+1|1
+8|8
+7|7
+6|6
+4|4
+5|5
+3|3
+~~~
+# id
+~~~
+# id
+~~~
+# c3
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|19
+13|19
+19|19
+6|19
+18|19
+17|19
+16|19
+5|19
+12|19
+9|19
+3|19
+8|19
+14|19
+7|19
+10|19
+15|19
+11|19
+2|19
+4|19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# c1
+-496.9
+-5.7937
+-5
+0
+1.0e+308
+beta
+epsilon
+omicron
+rho
+sigma
+theta
+x_y
+X'38834FEE'
+X'676C08DD'
+X'7422'
+X'79'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+6|19
+14|19
+11|19
+19|19
+10|19
+9|19
+18|19
+7|19
+15|19
+2|19
+8|19
+16|19
+3|19
+5|19
+17|19
+4|19
+12|19
+13|19
+1|19
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# c0
+-4.0
+-1.0
+0.0
+131.0
+773.0
+Lambda
+alpha
+señor
+theta
+X''
+X'01BCFF08'
+X'42DA163D5F'
+X'5EBD1C668B'
+X'C2535B26'
+X'D12B6ABC'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|19
+2|19
+3|19
+4|19
+5|19
+6|19
+7|19
+8|19
+9|19
+10|19
+11|19
+12|19
+13|19
+14|19
+15|19
+16|19
+17|19
+18|19
+19|19
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+~~~
+# id
+~~~
+# c2
+theta
+X''
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+8|8
+7|7
+4|4
+9|9
+1|1
+3|3
+2|2
+6|6
+5|5
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+~~~
+# c1
+NULL
+NULL
+NULL
+-739
+-496.9
+-438.2
+-5.7937
+-5
+0
+2
+5
+1.0e+308
+1.0e+308
+beta
+epsilon
+omicron
+rho
+sigma
+theta
+x_y
+X''
+X'31'
+X'38834FEE'
+X'676C08DD'
+X'7422'
+~~~
+# id|typeof(c3)|nullif(c3 IN (NULL, -9223372036854775808, NULL) IS NULL, NOT -(id))
+9|null|1
+8|real|1
+7|real|1
+6|text|1
+5|blob|1
+4|blob|1
+3|blob|1
+2|null|1
+1|real|1
+~~~
+# 1|nullif(626, -2) IS NULL BETWEEN x'e7cf5ea9' IS NULL IS NULL AND (0.1 - x'6fe0' BETWEEN -371 AND 'omega')
+1|1
+~~~

@@ -1,0 +1,157 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|NULL
+6|NULL
+2|1.0e-07
+8|1.0e-07
+7|173
+9|9223372036854775807
+5| pad 
+3|MU
+4|café
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+6|NULL
+11|NULL
+4|-4
+2|4.500000000000011e-310
+3|153.2976
+7|312
+10|iota
+5|upsilon
+8|日本
+1|X''
+9|X'77'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+15|13|9.2233720368547758e+18|9.2233720368547758e+18|7.0949015668113664e+17|-388|X'D014'|13
+~~~
+# c1|count(*)|group_concat(id)
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|it's
+~~~
+# id|c0|c1|c2|c3|c4
+12|it's|NULL|0|NULL|NULL
+11|0.0|NULL|X'220DD170D6'|X'4F1C1D'|303
+10|NULL|iota|0|-2|0x1F
+8|0.0|日本|187|3.1415926535897931|-757
+7|0.0|312|0.1|NULL|-595
+5|5!|upsilon|0|X'436AF39A04DE'|1000000000000000
+4|0.0|-4|548.5647|X''|0
+3|9223372036854775807|NULL|0|NULL|NULL
+2|0.0|4.500000000000011e-310|X'8293CC'|X'A8A3'|X'C3'
+1|2.0|X''|0|NULL|X''
+~~~

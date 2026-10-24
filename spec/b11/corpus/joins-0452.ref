@@ -1,0 +1,146 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|id
+1|4|1|4
+2|6|2|6
+2|9|2|9
+2|15|2|15
+3|5|3|5
+3|10|3|10
+4|13|4|13
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c1|c1
+1|4|NULL|3.1415926535897931
+2|6|-2.5|76
+2|9|-2.5|X'E9'
+2|15|-2.5|X'A9ACF8DC'
+3|5|it's|4.500000000000011e-310
+3|10|it's|upsilon
+4|13|X'E6E607F9'|123456789012
+~~~
+# count(*)
+4
+~~~
+# id|id|id|c0
+1|4|1|0
+2|6|2|NULL
+2|9|2|-275
+2|15|2|NULL
+3|5|3|-628.6903
+3|10|3|42
+4|13|4|X'E6D37354278E'
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c1|ref
+1|4|phi|1
+2|6|X''|2
+2|9|X''|2
+2|15|X''|2
+3|5||3
+3|10||3
+4|13|3.1415926535897931|4
+5|12|4.500000000000011e-310|5
+6|1|76|6
+6|8|76|6
+6|14|76|6
+6|16|76|6
+6|17|76|6
+6|18|76|6
+6|19|76|6
+8|3|X''|8
+8|7|X''|8
+~~~
+error: near "(": syntax error
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

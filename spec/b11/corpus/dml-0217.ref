@@ -1,0 +1,317 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t1.c1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1
+2|NULL|NULL
+3|NULL|NULL
+4|-3|-3
+5|0|NULL
+6|-94|-94
+7|-1|NULL
+8|123456789012|123456789012
+10|NULL|NULL
+11|NULL|NULL
+12|X'2A6D42A32974'|X'2A6D42A32974'
+14|580|580
+15|NULL|NULL
+16|0x1F|0x1F
+18|-910|-910
+19|2|2
+20|3|3
+21|NULL|NULL
+~~~
+changes: 19
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|795.2
+~~~
+# id|c0|c1|c2|ref
+1|X'A0CE6211DDF3'|NULL|NULL|NULL
+3|4.500000000000011e-310!|1.0e+308|0.1|1
+5|2|beta|NULL|2
+7|2|X'1254F182D90B'|X'92'|2
+9|3|X'10184DA1'|3.0|3
+11|2|X''|phi|2
+13|4|123456789012.0|NULL|4
+15|5|X'F6050D831D'|NULL|5
+17|7|5.0|X'1984BD22E0'|7
+19|3|-5.0|Ελλάδα|3
+20|795.2|NULL|NULL|NULL
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|phi
+~~~
+# id|c0|c1|c2|ref
+20|phi|NULL|NULL|NULL
+19|NULL|-5.0|Ελλάδα|3
+17|NULL|5.0|X'1984BD22E0'|7
+13|NULL|123456789012.0|NULL|4
+11|NULL|X''|phi|2
+9|NULL|X'10184DA1'|3.0|3
+7|NULL|X'1254F182D90B'|X'92'|2
+6|0|NULL|NULL|NULL
+3|NULL|1.0e+308|0.1|1
+1|NULL|NULL|NULL|NULL
+~~~
+changes: 17
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|delta
+~~~
+# id|c0|c1
+2|X'A9'|NULL
+4|4.0|-3
+5|5.0|NULL
+6|X'928EC7'|NULL
+7|7.0|NULL
+8|8.0|123456789012
+10|10.0|NULL
+11|11.0|NULL
+14|14.0|580
+16|16.0|0x1F
+19|19.0|2
+20|20.0|3
+21|delta|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-1
+~~~
+# id|c0|c1|c2|ref
+21|-1|NULL|NULL|NULL
+20|phi|NULL|NULL|NULL
+19|NULL|-5.0|Ελλάδα|3
+17|NULL|5.0|X'1984BD22E0'|7
+13|NULL|123456789012.0|NULL|4
+9|NULL|X'10184DA1'|3.0|3
+7|NULL|X'1254F182D90B'|X'92'|2
+4|rho|NULL|NULL|NULL
+3|386|NULL|NULL|NULL
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-157
+~~~
+# id|c0|c1|c2|ref
+3|0|NULL|NULL|NULL
+4|NULL|NULL|NULL|NULL
+5|NULL|NULL|NULL|NULL
+7|0|X'1254F182D90B'|X'92'|2
+9|0|X'10184DA1'|3.0|3
+13|0|123456789012.0|NULL|4
+17|0|5.0|X'1984BD22E0'|7
+19|0|-5.0|Ελλάδα|3
+20|0|NULL|NULL|NULL
+21|-157|NULL|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c1
+4|-3
+19|2
+20|3
+14|580
+8|123456789012
+16|0x1F
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|4.0
+5|5.0
+7|7.0
+8|8.0
+10|10.0
+11|11.0
+14|14.0
+16|16.0
+19|19.0
+20|20.0
+21|delta
+6|X'928EC7'
+2|X'A9'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,259 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+16|16
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+2|NULL
+6|NULL
+8|NULL
+11|NULL
+16|NULL
+3|-442
+15|-7
+14|4.500000000000011e-310
+1|42
+5|817.712
+12|9223372036854775807
+13|tau
+4|日本
+9|日本
+7|X'0C8055'
+10|X'7D946C'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|-442
+15|-7
+14|4.500000000000011e-310
+1|42
+5|817.712
+12|9223372036854775807
+13|tau
+4|日本
+9|日本
+7|X'0C8055'
+10|X'7D946C'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|nullif(abs(c0), NOT c1)|nullif(c0, NOT 1.0e15) BETWEEN abs(c0) AND nullif(0, c1) IN (NULL, NULL, 623)
+1|0.0|NULL
+2|266.605|NULL
+3|NULL|NULL
+4|NULL|NULL
+5|NULL|NULL
+6|782.544|NULL
+7|1.0e+308|NULL
+8|NULL|NULL
+9|336|NULL
+10|811.34|NULL
+11|0.0|NULL
+12|NULL|NULL
+13|NULL|NULL
+14|NULL|NULL
+15|2|NULL
+16|0.0|NULL
+17|1|NULL
+~~~
+# NOT CASE WHEN NULL BETWEEN NULL AND 3 THEN 'omicron' ELSE nullif(26, 9223372036854775807) END|CASE WHEN NULL BETWEEN nullif(1.0e15, 760.093) AND -1e308 THEN (-9223372036854775808 << -726.7342) IN (NULL, 666.654, 652) ELSE x'f8d7251acdca' END
+0|X'F8D7251ACDCA'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+17|16
+16|16
+15|15
+14|14
+13|13
+12|12
+11|11
+10|10
+9|9
+8|8
+7|7
+6|6
+5|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id
+NULL
+NULL
+NULL
+NULL
+NULL
+1
+1
+1
+1
+2
+2
+3
+3
+4
+4
+4
+5
+6
+6
+7
+7
+8
+8
+8
+9
+10
+~~~

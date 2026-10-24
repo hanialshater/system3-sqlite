@@ -1,0 +1,282 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CAST(c3 AS BLOB)|typeof(nullif(x'24' IN (x'965b44e5e998', x'd2d35a457523', 'zeta'), NOT id))
+1|X'31'|null
+2|X'92'|null
+3|X'203A91562834'|null
+4|X'383732'|null
+5|X'2D333536'|null
+6|NULL|null
+7|X'33'|null
+8|X'302E30'|null
+9|X'654AEDF0'|null
+10|X'696F7461'|null
+11|X'67616D6D61'|null
+12|X'7365C3B16F72'|null
+13|X'35'|null
+14|X'2D34'|null
+15|X'34'|null
+16|X'746175'|null
+17|X'2D3934372E3638'|null
+18|X'3C'|null
+19|NULL|null
+20|X'2D3637372E343531'|null
+21|X'3731312E3433'|null
+22|X''|null
+23|X'35'|null
+24|X'2D3831372E37323332'|null
+~~~
+# CAST(CAST(31.155 AS TEXT) AS TEXT) IN (coalesce(NULL, NULL) BETWEEN x'3ae332e46dba' BETWEEN 695 AND x'' AND -5, NULL, 'über')|-357.9
+NULL|-357.9
+~~~
+# id|nullif(nullif(nullif('NULL', -593), (c3 - c2)), NOT (c1 - c0))|1.0e15
+1|NULL|1000000000000000.0
+2|NULL|1000000000000000.0
+3|NULL|1000000000000000.0
+4|NULL|1000000000000000.0
+5|NULL|1000000000000000.0
+6|NULL|1000000000000000.0
+7|NULL|1000000000000000.0
+8|NULL|1000000000000000.0
+9|NULL|1000000000000000.0
+~~~
+# (NULL BETWEEN -345.715 AND x'461081' IN (758 BETWEEN x'9716b7' AND -483, NULL, -0.0) = ('café' OR -810.3003) BETWEEN abs(-5) AND iif(x'', 9223372036854775807, NULL))|abs(iif(-9223372036854775808, x'58369b991c', 'nu') IN (NOT x'9aec', x'46b942023d', 462.2299))
+NULL|0
+~~~
+# id|0 IN (-4, NULL, '0x1F') IN ((ref || 0.1), -3, x'')|(iif(nullif(c0, -0.0), typeof(c2), x'3a27c7') < ref)
+24|NULL|0
+23|NULL|0
+22|NULL|0
+21|NULL|0
+20|NULL|0
+19|NULL|0
+18|NULL|0
+17|NULL|0
+16|NULL|0
+15|NULL|0
+14|NULL|0
+13|NULL|NULL
+12|NULL|NULL
+11|NULL|0
+10|NULL|0
+9|NULL|0
+8|NULL|0
+7|NULL|0
+6|NULL|0
+5|NULL|0
+4|NULL|0
+3|NULL|NULL
+2|NULL|NULL
+1|NULL|0
+~~~
+# NOT coalesce(abs(2.5), NOT -33)|CAST(x'07e32e' AS BLOB)
+0|X'07E32E'
+~~~
+# id|id|nullif(-(id), CASE WHEN c1 THEN x'189ddf29a4' ELSE '日本' END BETWEEN '1e3' AND (c3 + c1))
+24|24|-24
+23|23|-23
+22|22|-22
+21|21|-21
+20|20|-20
+19|19|-19
+18|18|-18
+17|17|-17
+16|16|-16
+15|15|-15
+14|14|-14
+13|13|-13
+12|12|-12
+11|11|-11
+10|10|-10
+9|9|-9
+8|8|-8
+7|7|-7
+6|6|-6
+5|5|-5
+4|4|-4
+3|3|-3
+2|2|-2
+1|1|-1
+~~~
+# CAST(680 AS INTEGER) IN (727, NULL, x'85870b') BETWEEN (CASE WHEN 'chi' THEN 'kappa' ELSE NULL END % -0.0) AND coalesce('', -4) IS NULL|NOT iif('-7', x'42', 'omicron') IN (-0.0, NULL, -0.0)
+1|NULL
+~~~
+# id|c3|abs(typeof(c3))
+1|3|0.0
+2|X'B4F59A'|0.0
+3|-5|0.0
+4|321.808|0.0
+5|-7|0.0
+6|NULL|0.0
+7|-842|0.0
+8|a%b|0.0
+9|X'FD'|0.0
+~~~
+# nullif(x'950d', coalesce('1e3' BETWEEN x'1a08735d' AND x'd5c515', CAST(NULL AS NUMERIC)))|abs((nullif(-939, NULL) * abs(5)))
+X'950D'|4695
+~~~
+changes: 1
+~~~
+# id|c2
+21|824.54
+11|952
+14|971
+1|MU
+2|kappa
+19|nu
+6|señor
+17|theta
+24|x_y
+4|X''
+3|X'9443C1'
+7|X'BBE4'
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+23|18|479.48959265358974|479.48959265358974|26.638310702977208|-791.652|X'C56365'|18
+~~~
+# c1|count(*)|group_concat(id)
+NULL|5|1,12,19,21,23
+-791.652|1|18
+-349.0|1|11
+-5.0|1|20
+-3.0|1|3
+1.0|1|17
+3.0|1|4
+3.1415926535897931|1|22
+690.0|1|14
+931.0|1|9
+ pad |1|2
+0x1F|1|10
+café|1|5
+epsilon|1|16
+gamma|1|13
+X''|1|15
+X'3A687CE928'|1|6
+X'8F663DAAD6'|1|7
+X'C56365'|1|8
+~~~

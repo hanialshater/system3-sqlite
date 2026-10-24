@@ -1,0 +1,337 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 8
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|gamma
+~~~
+# id|c0|c1|c2|c3
+1|4.500000000000011e-310|NULL|NULL|NULL
+2|X''|NULL|NULL|NULL
+3|real|alpha|NULL|645
+4|NULL|NULL|595.4843|2.5
+6|X'1B8B'|X'C2E5F9444D37'|X'46CC3B93'|it's
+7|X'E9E8763E'|omega|214|2
+8|NULL|omega|-832.23|352
+10|real|-4|1.0e+308|NULL
+11|NULL|upsilon|-686|NULL
+12|X'8D4A'|5|NULL|X''
+14|phi|x_y|0.0|-695
+15|NULL|250|X'FDC46A11'|NULL
+16|NULL|-1|NULL|X'C1AE46'
+18|real|X''|X''|chi
+19|NULL|-4|X'19765D0D2F'|-2.5
+20| pad |-557|X''|47.6
+22|upsilon|4.500000000000011e-310|rho|X'AB6E84A2CBE2'
+23|NULL|X'5CF25C723D'|55|3.1415926535897931
+24|X'AAF35A22'|X'65BE35'|X'FF'|552.942
+25|gamma|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|X'4FD6'
+~~~
+# id|c0|c1|c2|c3
+2|X''|NULL|NULL|NULL
+3|delta!|alpha|NULL|645
+4|NULL|NULL|NULL|NULL
+6|X'1B8B'|X'C2E5F9444D37'|X'46CC3B93'|it's
+8|NULL|omega|-832.23|352
+11|NULL|upsilon|-686|NULL
+12|X'8D4A'|5|NULL|X''
+14|phi|x_y|0.0|-695
+15|NULL|250|X'FDC46A11'|NULL
+18|real|X''|X''|chi
+20| pad |-557|X''|47.6
+23|NULL|X'5CF25C723D'|55|3.1415926535897931
+24|X'AAF35A22'|X'65BE35'|X'FF'|552.942
+25|X'4FD6'|NULL|NULL|NULL
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|NULL
+~~~
+# id|c0|c1|c2|c3
+1|psi|NULL|NULL|NULL
+2|NULL|NULL|NULL|NULL
+3|delta!|alpha|NULL|645
+4|NULL|NULL|NULL|NULL
+8|-832.23|omega|-832.23|352
+12|X'8D4A'|5|NULL|X''
+14|phi|x_y|0.0|-695
+15|NULL|250|X'FDC46A11'|NULL
+18|real|X''|X''|chi
+20| pad |-557|X''|47.6
+23|55|X'5CF25C723D'|55|3.1415926535897931
+24|X'AAF35A22'|X'65BE35'|X'FF'|552.942
+25|X'4FD6'|NULL|NULL|NULL
+26|NULL|NULL|NULL|NULL
+~~~
+changes: 6
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+27|-481
+~~~
+# id|c0|c1|c2|c3
+2|NULL|NULL|NULL|NULL
+3|123456789012|NULL|NULL|NULL
+6|xi|NULL|NULL|NULL
+8|omega|omega|-832.23|352
+12|X'8D4A'|5|NULL|X''
+14|x_y|x_y|0.0|-695
+15|NULL|250|X'FDC46A11'|NULL
+18|real|X''|X''|chi
+20|-557|-557|X''|47.6
+23|X'5CF25C723D'|X'5CF25C723D'|55|3.1415926535897931
+24|X'65BE35'|X'65BE35'|X'FF'|552.942
+26|NULL|NULL|NULL|NULL
+27|-481|NULL|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+28|690
+~~~
+# id|c0|c1|c2|c3
+1|X'A5DFB2AE3F'|NULL|NULL|NULL
+3|123456789012|NULL|NULL|NULL
+5|-222.0981|NULL|NULL|NULL
+15|NULL|250|X'FDC46A11'|NULL
+23|0|X'5CF25C723D'|55|3.1415926535897931
+27|-481|NULL|NULL|NULL
+28|690|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+29|NULL
+~~~
+# id|c0|c1|c2|c3
+2|alpha|NULL|NULL|NULL
+4|gamma|NULL|NULL|NULL
+28|690|NULL|NULL|NULL
+29|NULL|NULL|NULL|NULL
+~~~
+changes: 25
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|835.78
+~~~
+# id|c0|c1|c2|ref
+1|zeta|-1.0e+308|X'B4787C68C926'|NULL
+2|3!|X'AF4617'|0|4
+3|zeta|133.9|epsilon|8
+4|zeta|0.1|X'6FB46735'|7
+6|zeta|3.1415926535897931|682|4
+7|-808|NULL|0|NULL
+8|zeta|123456789012|X'D85C673AE5F2'|4
+9|zeta|0.0|X'88'|7
+11|zeta|X''|42|2
+12|zeta|iota|0.0|4
+13|zeta|NULL|X'9048E0B2D9'|2
+14|zeta|X'784F'|966|7
+16|zeta|31|0|5
+17|zeta|NULL|0x1F|NULL
+18|zeta|X''|0|NULL
+19|zeta|2.5|984.0533|6
+21|zeta|upsilon|X'05DD6895AC9F'|8
+22|zeta|1.0e+308|X'5C83'|5
+23|zeta|-712|0|6
+24|zeta|NULL|0|1
+25|835.78|NULL|0|NULL
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+4|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id)
+NULL|4|2,4,28,29
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|123456789012
+~~~
+# id|c0|c1|c2|ref
+25|123456789012|NULL|0|NULL
+24|zeta|NULL|0|1
+23|23|-712|0|6
+22|22|1.0e+308|X'5C83'|5
+21|zeta|upsilon|X'05DD6895AC9F'|8
+19|19|2.5|984.0533|6
+18|zeta|X''|0|NULL
+17|zeta|NULL|0x1F|NULL
+16|16|31|0|5
+14|zeta|X'784F'|966|7
+13|zeta|NULL|X'9048E0B2D9'|2
+12|zeta|iota|0.0|4
+11|zeta|X''|42|2
+9|1000000000000000|NULL|0|NULL
+8|8|123456789012|X'D85C673AE5F2'|4
+7|-808|NULL|0|NULL
+6|42!|3.1415926535897931|682|4
+4|4|0.1|X'6FB46735'|7
+3|3|133.9|epsilon|8
+2|3!|X'AF4617'|0|4
+1|1|-1.0e+308|X'B4787C68C926'|NULL
+~~~
+# id|5|c1
+2|5|NULL
+4|5|NULL
+28|5|NULL
+29|5|NULL
+~~~
+# coalesce(CAST(CAST(x'5c08' AS NUMERIC) AS REAL), NULL)|NOT 2.5 BETWEEN NULL AND NULL IN (CASE WHEN -(x'') THEN iif('nu', NULL, -258) ELSE NULL END, -4, 'Lambda')
+0.0|NULL
+~~~

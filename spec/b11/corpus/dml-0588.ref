@@ -1,0 +1,268 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 12
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|phi
+~~~
+# id|c0|c1|ref
+1| pad |-701|NULL
+2|NULL|NULL|NULL
+3| pad |468|6
+5|!|-988|5
+6| pad |-2.5|5
+7| pad |X''|3
+9| pad |X'F02D9E2D'|1
+10| pad |X'7E754891'|NULL
+11| pad |3|2
+12|phi|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|日本
+~~~
+# id|c0|c1
+2|X'3F06E979'|-419
+3|��G�!|210.707
+5|-126.0|-541.97
+6|NULL|NULL
+7|-2.0|d
+8|9.2233720368547758e+18|X'46575157DE'
+9|-2.5|3.1415926535897931
+11|-421.74|NULL
+12|X'B1A2ED'|-4
+14|NULL|1000000000000000
+15|1.0e+308|naïve
+17|X'93B637D9'|NULL
+18|日本|d
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|epsilon
+~~~
+# id|c0|c1|ref
+1| pad |-701|NULL
+3| pad |468|6
+5|!|-988|5
+6|NULL|NULL|NULL
+7|theta|NULL|NULL
+9| pad |X'F02D9E2D'|1
+11| pad |3|2
+12|epsilon|NULL|NULL
+~~~
+changes: 13
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|-373.0
+~~~
+# id|c0|c1
+1|0.0|d
+2|2.0|-419
+3|3.0|210.707
+4|Ελλάδα|d
+5|5.0|-541.97
+6|6.0|NULL
+7|7.0|d
+9|9.0|3.1415926535897931
+11|11.0|NULL
+14|14.0|1000000000000000
+15|15.0|naïve
+17|17.0|NULL
+18|18.0|d
+19|-373.0|d
+~~~
+changes: 14
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|-991.0
+~~~
+# id|c0|c1
+1|2.0|d
+2|NULL|-419
+3|NULL|210.707
+4|282.1352|d
+5|NULL|-541.97
+6|NULL|NULL
+9|NULL|3.1415926535897931
+11|NULL|NULL
+14|NULL|1000000000000000
+15|NULL|naïve
+17|NULL|NULL
+18|NULL|d
+19|-991.0|d
+~~~
+changes: 13
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|-5.0
+~~~
+# id|c0|c1
+1|-823.0|d
+2|integer|-419
+3|integer|210.707
+5|integer|-541.97
+6|integer|NULL
+9|integer|3.1415926535897931
+11|integer|NULL
+14|integer|1000000000000000
+15|integer|naïve
+17|integer|NULL
+18|integer|d
+19|-5.0|d
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', 1, 5)|instr('phi', 'rho')|replace('phi', 'a', '_')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE 'A%'|'phi' GLOB '*'|char(75, 930)|'phi' || 'rho'|'phi' < 'rho'|'phi' = 'rho' COLLATE NOCASE
+3|PHI|phi|phi|0|phi|phi|phi|706869|'phi'|112|0|1|K΢|phirho|1|0
+~~~
+# id|id|c1|id
+1|1|d|1
+1|3|d|3
+1|5|d|5
+1|6|d|6
+1|7|d|7
+1|9|d|9
+1|11|d|11
+1|12|d|12
+2|1|-419|1
+2|3|-419|3
+2|5|-419|5
+2|6|-419|6
+2|7|-419|7
+2|9|-419|9
+2|11|-419|11
+2|12|-419|12
+3|1|210.707|1
+3|3|210.707|3
+3|5|210.707|5
+3|6|210.707|6
+3|7|210.707|7
+3|9|210.707|9
+3|11|210.707|11
+3|12|210.707|12
+5|1|-541.97|1
+5|3|-541.97|3
+5|5|-541.97|5
+5|6|-541.97|6
+5|7|-541.97|7
+5|9|-541.97|9
+5|11|-541.97|11
+5|12|-541.97|12
+6|1|NULL|1
+6|3|NULL|3
+6|5|NULL|5
+6|6|NULL|6
+6|7|NULL|7
+6|9|NULL|9
+~~~
+error: near "(": syntax error
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

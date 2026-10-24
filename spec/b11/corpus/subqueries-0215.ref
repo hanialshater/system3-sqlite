@@ -1,0 +1,304 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+9|16
+10|16
+8|16
+2|16
+5|16
+6|16
+14|16
+1|16
+7|16
+12|16
+13|16
+15|16
+16|16
+3|16
+4|16
+11|16
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+16
+~~~
+# c2
+-1.0e+308
+-749
+-716.222
+-572
+-3
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+alpha
+eta
+nu
+phi
+sigma
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+2|2
+4|4
+1|1
+~~~
+# id
+1
+2
+3
+~~~
+# id
+~~~
+# c0
+NULL
+-1.0e+308
+-749
+-716.222
+-572
+-3
+0
+74.72
+586.0
+alpha
+eta
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+~~~
+# id
+1
+2
+3
+4
+~~~
+# id
+~~~
+# c1
+xi
+zeta
+X'A9EBB2'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+2|2
+4|4
+1|1
+~~~
+# id
+1
+2
+3
+4
+~~~
+# id
+~~~
+# c0
+NULL
+-1.0e+308
+1
+2
+4
+5
+7
+74.72
+586.0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+5|16
+1|16
+7|16
+13|16
+16|16
+6|16
+14|16
+2|16
+4|16
+12|16
+15|16
+10|16
+9|16
+8|16
+3|16
+11|16
+~~~
+# id
+9
+10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# id
+-662.3833
+1
+2
+3
+3.1415926535897931
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+NULL
+a%b
+chi
+epsilon
+omicron
+über
+X'4A54'
+~~~
+# id|id|c0|ref
+1|8|586.0|1
+2|2|-1.0e+308|2
+2|5|-1.0e+308|2
+2|6|-1.0e+308|2
+2|14|-1.0e+308|2
+3|NULL|NULL|NULL
+4|1|74.72|4
+4|7|74.72|4
+4|12|74.72|4
+4|13|74.72|4
+4|15|74.72|4
+4|16|74.72|4
+~~~
+# count(*)
+4
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 4, 4)|instr('naïve', 'naïve')|replace('naïve', 'e', '_')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'A%'|'naïve' GLOB '*[a-m]*'|char(65, 947)|'naïve' || 'naïve'|'naïve' < 'naïve'|'naïve' = 'naïve' COLLATE NOCASE
+5|NAïVE|naïve|ve|1|naïv_|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|Aγ|naïvenaïve|0|1
+~~~
+# id|abs(nullif(NOT c0, iif(c0, c1, '')))|CASE WHEN iif(typeof(ref), ref BETWEEN ref AND ref, NULL) THEN c2 ELSE iif(c0, c1 BETWEEN c2 AND x'', x'15a627d07ca8') END
+1|1|X'15A627D07CA8'
+2|NULL|X'15A627D07CA8'
+3|1|X'15A627D07CA8'
+4|0|0
+5|1|X'15A627D07CA8'
+6|1|X'15A627D07CA8'
+7|0|0
+8|NULL|X'15A627D07CA8'
+9|NULL|X'15A627D07CA8'
+10|0|1
+11|0|1
+12|1|X'15A627D07CA8'
+13|0|0
+14|1|X'15A627D07CA8'
+15|NULL|X'15A627D07CA8'
+16|1|X'15A627D07CA8'
+~~~
+# CAST(typeof(-348.0 IN (-2.5, 334.3475, x'2823')) AS INTEGER)|CAST(iif(x'', 5, NULL) AS TEXT)
+0|NULL
+~~~

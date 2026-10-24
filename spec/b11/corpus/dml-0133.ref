@@ -1,0 +1,168 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|1.0e+308
+~~~
+# id|c0|c1|c2|c3|c4
+2|phi|upsilon|-1|0.0|0
+3|-2.5|4.500000000000011e-310|731|NULL|X'8DC2'
+4|integer|3|X'9FA256'|-779.874|4
+5|Ελλάδα!|omega|123456789012|4.500000000000011e-310|479
+7|X'9BDF680E83'|NULL|NULL|NULL|NULL
+8|integer|4|-408|NULL|-2
+9|1.0e+308|NULL|NULL|NULL|NULL
+~~~
+changes: 15
+~~~
+changes: 5
+~~~
+error: cannot store TEXT value in REAL column t0.c0
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+# id|c0
+15|-9.2233720368547758e+18
+~~~
+# id|c0|c1|c2|c3|c4
+1|1.0|X'5BA9'|20.835|delta|-326
+2|1.0|NULL|35.794|señor|-461.0
+4|1.0|4|-18.712|eta|pi
+5|1.0|X''|-9.923|delta| pad 
+7|1.0|-889.932|-47.169|nu|zeta
+8|1.0|NULL|-36.211|phi|Lambda
+10|1.0|404.486|3.541|Lambda|NULL
+11|1.0|日本|-37.853|-2.5|nu
+13|1.0|X'CFB463B7'|27.296|733.81|
+14|1.0|X'57B8AA8E'|15.789|kappa|it's
+15|-9.2233720368547758e+18|NULL|NULL|0|NULL
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|-341.58
+~~~
+# id|c0|c1|c2|c3|c4
+16|-341.58|NULL|NULL|0|NULL
+15|15.0|NULL|NULL|0|NULL
+14|14.0|X'57B8AA8E'|15.789|kappa|it's
+11|11.0|日本|-37.853|-2.5|nu
+10|10.0|404.486|3.541|Lambda|NULL
+8|8.0|NULL|-36.211|phi|Lambda
+7|616.48|NULL|NULL|0|NULL
+4|NULL|4|-18.712|eta|pi
+2|2.0|NULL|35.794|señor|-461.0
+~~~
+changes: 7
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|799.65
+~~~
+# id|c0|c1|c2|c3|c4
+10|799.65|NULL|NULL|NULL|NULL
+9|integer|NULL|NULL|NULL|NULL
+8|integer|4|-408|NULL|-2
+7|integer|NULL|NULL|NULL|NULL
+5|integer|omega|123456789012|4.500000000000011e-310|479
+4|-967.8|NULL|NULL|NULL|NULL
+3|integer|4.500000000000011e-310|731|NULL|X'8DC2'
+2|NULL|upsilon|-1|0.0|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -3, 4)|instr('kappa', 'theta')|replace('kappa', '', '')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '%'|'kappa' GLOB 'a*'|char(85, 893)|'kappa' || 'theta'|'kappa' < 'theta'|'kappa' = 'theta' COLLATE NOCASE
+5|KAPPA|kappa|ppa|0|kappa|kappa|kappa|6B61707061|'kappa'|107|1|0|Uͽ|kappatheta|1|0
+~~~
+# id|id|c0|c1
+2|2|NULL|upsilon
+3|3|integer|4.500000000000011e-310
+4|4|-967.8|NULL
+5|5|integer|omega
+7|7|integer|NULL
+8|8|integer|4
+9|9|integer|NULL
+10|10|799.65|NULL
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+# id|c2
+8|-408
+2|-1
+3|731
+5|123456789012
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,240 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 20
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|eta
+~~~
+# id|c0|c1|c2|c3|c4
+2|NULL|NULL|gamma|-547.1|276.2
+3|NULL|NULL|1000.0|-839|NULL
+4|NULL|-1|-9.2233720368547758e+18|X''|533
+6|NULL|pi|4.500000000000011e-310|4.500000000000011e-310|-387.1
+7|NULL|X'7533A27CFB'|X'69E3'|NULL|X'6796'
+8|-272.21|NULL|NULL|NULL|NULL
+10|NULL|X'70AF'|kappa|-30.086|X''
+11|NULL|NULL|4.500000000000011e-310|phi|390
+12|NULL|-494|NULL|-831|42
+14|NULL|NULL|0.1|Ελλάδα|X'8706A0'
+15|NULL|X''|-485.56|5|café
+16|NULL|gamma|-9.2233720368547758e+18|X'4707'|NULL
+18|NULL|460.6|123456789012.0|-9223372036854775808|-164
+19|NULL|3.1415926535897931|4.500000000000011e-310|-56.043|X'765D'
+20|NULL|659.88|-618.0|sigma|beta
+21|eta|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21| pad 
+~~~
+# id|c0|c1|c2|c3|c4
+21| pad |NULL|NULL|NULL|NULL
+20|NULL|659.88|-618.0|sigma|beta
+18|NULL|460.6|123456789012.0|-9223372036854775808|-164
+16|NULL|gamma|-9.2233720368547758e+18|X'4707'|NULL
+14|NULL|NULL|0.1|Ελλάδα|X'8706A0'
+12|NULL|-494|NULL|-831|42
+10|NULL|X'70AF'|kappa|-30.086|X''
+8|-272.21|NULL|NULL|NULL|NULL
+6|NULL|pi|4.500000000000011e-310|4.500000000000011e-310|-387.1
+4|X'D735'|NULL|NULL|NULL|NULL
+3|a%b|NULL|NULL|NULL|NULL
+2|NULL|NULL|gamma|-547.1|276.2
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|X''
+~~~
+# id|c0|c1|c2|c3|c4
+1|-123|NULL|NULL|NULL|NULL
+2|NULL|-719.0|sigma|phi|555.968
+3|-37.0|NULL|-37|NULL|NULL
+4|NULL|-751.0|X'0794'|424|gamma
+6|NULL|4.0|NULL|x_y|NULL
+7|NULL|X'0B14'|NULL|632|3
+8|X''|NULL|NULL|NULL|NULL
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+# id|c0
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+# id|c0|c1|ref
+1|-61|X'1FC3F13AA9'|3
+2|23|-2|NULL
+4|153|NULL|5
+5|201|-1|6
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+error: cannot store REAL value in INTEGER column t2.c0
+~~~
+# id|c0
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+# id|c0|c1|ref
+4|153|NULL|5
+2|23|-2|NULL
+1|-61|X'1FC3F13AA9'|3
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store REAL value in INTEGER column t2.c0
+~~~
+# id|c0|c1|ref
+1|1|X'1FC3F13AA9'|3
+2|1|-2|NULL
+5|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+6|NULL
+~~~
+# id|c0|c1|ref
+2|1|-2|NULL
+3|244|NULL|NULL
+5|NULL|NULL|NULL
+6|NULL|NULL|NULL
+~~~
+# id|id|id|c4
+2|2|2|276.2
+2|3|2|NULL
+2|4|2|NULL
+2|6|2|-387.1
+2|8|2|NULL
+2|10|2|X''
+2|12|2|42
+2|14|2|X'8706A0'
+2|16|2|NULL
+2|18|2|-164
+2|20|2|beta
+2|21|2|NULL
+3|2|3|276.2
+3|3|3|NULL
+3|4|3|NULL
+3|6|3|-387.1
+3|8|3|NULL
+3|10|3|X''
+3|12|3|42
+3|14|3|X'8706A0'
+3|16|3|NULL
+3|18|3|-164
+3|20|3|beta
+3|21|3|NULL
+4|2|4|276.2
+~~~
+# count(*)
+12
+~~~

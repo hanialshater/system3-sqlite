@@ -1,0 +1,214 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|omicron
+~~~
+# id|c0|c1|c2|ref
+10|omicron|NULL|NULL|NULL
+9|NULL|NULL|kappa|4
+8|MU|1000000000000000|0|NULL
+6|-901.0|NULL|kappa|NULL
+5|NULL|NULL|-848.923|NULL
+4|1.0e+308|NULL|NULL|NULL
+3|NULL|3.1415926535897931|X'3F40A3BCEBD0'|5
+2|1.0|-44.9659|eta|NULL
+~~~
+changes: 9
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|3.1415926535897931
+~~~
+# id|c0|c1|c2
+1|NULL|-824.7|X'D70CB290'
+2|373!|Ελλάδα|3.1415926535897931
+3|-621|NULL|NULL
+4|NULL|X''|X''
+6|0|4.500000000000011e-310|435.5
+7|-219|0|0x1F
+8|1|xi|X'99A1'
+9|1000000000000000.0|NULL|X''
+11|NULL|-601.889|alpha
+12|0|X'900EB2B8AA'|-3
+13|X''|NULL|x_y
+14|-2.5|-4|NULL
+16|0|X'49'|90.09
+17|0|NULL|1000000000000000.0
+18|941.102|X'4F8B6295D7'|0
+19|it's|psi|it's
+21|0|557.2|1.0e+308
+22|0|9223372036854775807|203
+23|396.72|NULL|über
+24|3.1415926535897931|NULL|NULL
+~~~
+changes: 8
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|NULL
+~~~
+# id|c0|c1|c2|ref
+2|NULL|-44.9659|eta|NULL
+4|NULL|NULL|NULL|NULL
+5|0x1F|NULL|NULL|NULL
+6|NULL|NULL|kappa|NULL
+8|NULL|1000000000000000|0|NULL
+10|NULL|NULL|NULL|NULL
+11|NULL|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|-496.0
+~~~
+# id|c0|c1|c2|ref
+3||NULL|NULL|NULL
+5|psi|NULL|NULL|NULL
+11|NULL|NULL|NULL|NULL
+12|-496.0|NULL|NULL|NULL
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|-1
+~~~
+# id|c0|c1|c2
+2|1|upsilon|187
+3|-372!|Lambda|-68
+6|-4|d|NULL
+7|-1|d|NULL
+~~~
+changes: 20
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|391
+~~~
+# id|c0|c1|c2
+1|-1.0e+308|NULL|NULL
+2|omega!|Ελλάδα|3.1415926535897931
+3|1|NULL|NULL
+6|0|4.500000000000011e-310|435.5
+8|0|xi|X'99A1'
+9|1|NULL|X''
+11|0|-601.889|alpha
+12|0|X'900EB2B8AA'|-3
+14|0|-4|NULL
+17|1|NULL|1000000000000000.0
+18|0|X'4F8B6295D7'|0
+21|0|557.2|1.0e+308
+23|1|NULL|über
+24|1|NULL|NULL
+25|391|NULL|NULL
+~~~

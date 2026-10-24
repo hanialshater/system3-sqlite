@@ -1,0 +1,222 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 2, 0)|instr('a%b', 'pi')|replace('a%b', 'e', '')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB '?'|char(90, 444)|'a%b' || 'pi'|'a%b' < 'pi'|'a%b' = 'pi' COLLATE NOCASE
+3|A%B|a%b||0|a%b|a%b|%b|612562|'a%b'|97|0|0|ZƼ|a%bpi|1|0
+~~~
+# length('Lambda')|upper('Lambda')|lower('Lambda')|substr('Lambda', 4, 3)|instr('Lambda', 'kappa')|replace('Lambda', '', 'XY')|trim('Lambda')|ltrim('Lambda', 'ab')|hex('Lambda')|quote('Lambda')|unicode('Lambda')|'Lambda' LIKE '%a_'|'Lambda' GLOB '*[a-m]*'|char(77, 845)|'Lambda' || 'kappa'|'Lambda' < 'kappa'|'Lambda' = 'kappa' COLLATE NOCASE
+6|LAMBDA|lambda|bda|0|Lambda|Lambda|Lambda|4C616D626461|'Lambda'|76|0|1|M͍|Lambdakappa|1|0
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 0, 2)|instr('delta', 'Lambda')|replace('delta', 'a', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE '%a_'|'delta' GLOB '*[a-m]*'|char(83, 979)|'delta' || 'Lambda'|'delta' < 'Lambda'|'delta' = 'Lambda' COLLATE NOCASE
+5|DELTA|delta|d|0|delt|delta|delta|64656C7461|'delta'|100|0|1|Sϓ|deltaLambda|0|0
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', 0, 5)|instr('x_y', ' pad ')|replace('x_y', 'a', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '_'|'x_y' GLOB '*[a-m]*'|char(85, 457)|'x_y' || ' pad '|'x_y' < ' pad '|'x_y' = ' pad ' COLLATE NOCASE
+3|X_Y|x_y|x_y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|Uǉ|x_y pad |0|0
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', -3, 4)|instr('x_y', '-7')|replace('x_y', 'a', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '_'|'x_y' GLOB '?'|char(82, 709)|'x_y' || '-7'|'x_y' < '-7'|'x_y' = '-7' COLLATE NOCASE
+3|X_Y|x_y|x_y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|R˅|x_y-7|0|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 0, 0)|instr('sigma', 'upsilon')|replace('sigma', 'a', 'XY')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '%a_'|'sigma' GLOB '*[a-m]*'|char(69, 593)|'sigma' || 'upsilon'|'sigma' < 'upsilon'|'sigma' = 'upsilon' COLLATE NOCASE
+5|SIGMA|sigma||0|sigmXY|sigma|sigma|7369676D61|'sigma'|115|0|1|Eɑ|sigmaupsilon|1|0
+~~~
+# length('MU')|upper('MU')|lower('MU')|substr('MU', 3, 0)|instr('MU', 'omega')|replace('MU', 'a', 'XY')|trim('MU')|ltrim('MU', 'ab')|hex('MU')|quote('MU')|unicode('MU')|'MU' LIKE '%é%'|'MU' GLOB '*[a-m]*'|char(75, 273)|'MU' || 'omega'|'MU' < 'omega'|'MU' = 'omega' COLLATE NOCASE
+2|MU|mu||0|MU|MU|MU|4D55|'MU'|77|0|0|Kđ|MUomega|1|0
+~~~
+# id|nullif(nullif(iif(x'bb', c1, 592), CAST(c3 AS REAL)), NOT ref BETWEEN nullif(3.141592653589793, -3) AND c1)|c2 BETWEEN 464.20 AND -263
+22|592|0
+21|592|0
+20|592|0
+19|592|0
+18|592|0
+17|592|0
+16|592|0
+15|592|0
+14|592|0
+13|592|0
+12|592|0
+11|592|NULL
+10|592|0
+9|592|0
+8|592|0
+7|592|0
+6|592|0
+5|592|0
+4|592|0
+3|592|0
+2|592|0
+1|592|0
+~~~
+# 2|-(NULL IS NULL)
+2|-1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+20|20
+14|14
+6|6
+7|7
+13|13
+4|4
+15|15
+5|5
+18|18
+19|19
+3|3
+11|11
+1|1
+22|22
+10|10
+9|9
+16|16
+12|12
+17|17
+8|8
+21|21
+2|2
+~~~
+# id
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+13
+14
+15
+16
+17
+19
+20
+21
+22
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# c3
+213
+297
+sigma
+~~~

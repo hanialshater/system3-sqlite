@@ -1,0 +1,179 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|-1.0e+308
+~~~
+# id|c0|c1
+1|X'47689D2332'|-7
+2|NULL|NULL
+3|rho|-762.3131
+5|NULL|X'188C5768AC'
+6|Lambda|X'CAAADE21B912'
+7|Lambda|-4
+9|it's|NULL
+10|x_y|X''
+11|0|X'307F9AB3'
+13|1|0
+14|1|chi
+15|NULL|X'D39C393B'
+16|-1.0e+308|NULL
+~~~
+changes: 3
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|X'7A08EF'
+~~~
+# id|c0|c1
+1|X'D73B46B0D4'|NULL
+2|491|NULL
+4|X'BBCE4A52E95F'|925
+7|X'83'|NULL
+8|X'7A08EF'|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|rho
+~~~
+# id|c0|c1
+1|X'47689D2332'|-7
+2|NULL|NULL
+3|0x1F|NULL
+6|Lambda|X'CAAADE21B912'
+7|Lambda|-4
+9|it's|NULL
+11|0|X'307F9AB3'
+13|1|0
+14|1|chi
+16|-1.0e+308|NULL
+17|rho|NULL
+~~~
+changes: 0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|-582.33
+~~~
+# id|c0|c1
+1|X'D73B46B0D4'|NULL
+2|491|NULL
+4|NULL|925
+6|-2|NULL
+7|X'83'|NULL
+8|X'7A08EF'|NULL
+9|-582.33|NULL
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|9223372036854775807
+~~~
+# id|c0|c1
+1|-9223372036854775808|NULL
+2|2|NULL
+5|1|NULL
+7|text|-4
+11|11|X'307F9AB3'
+13|13|0
+14|14|chi
+16|16|NULL
+17|17|NULL
+18|9223372036854775807|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|10
+2|10
+5|10
+16|10
+17|10
+18|10
+7|10
+13|10
+14|10
+11|10
+~~~
+# id
+~~~
+# id
+1
+2
+7
+13
+17
+18
+~~~
+# c0
+~~~

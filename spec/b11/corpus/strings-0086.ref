@@ -1,0 +1,135 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 2, 3)|instr('it''s', 'tau')|replace('it''s', 'é', '_')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%é%'|'it''s' GLOB 'a*'|char(90, 461)|'it''s' || 'tau'|'it''s' < 'tau'|'it''s' = 'tau' COLLATE NOCASE
+4|IT'S|it's|t's|0|it's|it's|it's|69742773|'it''s'|105|0|0|ZǍ|it'stau|1|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', 4, 4)|instr('0x1F', ' pad ')|replace('0x1F', 'e', '_')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE '_'|'0x1F' GLOB '*'|char(90, 810)|'0x1F' || ' pad '|'0x1F' < ' pad '|'0x1F' = ' pad ' COLLATE NOCASE
+4|0X1F|0x1f|F|0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|1|Z̪|0x1F pad |0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 2, 3)|instr('it''s', 'rho')|replace('it''s', 'e', '')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%a_'|'it''s' GLOB '?'|char(83, 818)|'it''s' || 'rho'|'it''s' < 'rho'|'it''s' = 'rho' COLLATE NOCASE
+4|IT'S|it's|t's|0|it's|it's|it's|69742773|'it''s'|105|0|0|S̲|it'srho|1|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', -3, 4)|instr('psi', 'pi')|replace('psi', 'a', '')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE '%'|'psi' GLOB 'a*'|char(81, 222)|'psi' || 'pi'|'psi' < 'pi'|'psi' = 'pi' COLLATE NOCASE
+3|PSI|psi|psi|0|psi|psi|psi|707369|'psi'|112|1|0|QÞ|psipi|0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 2, 2)|instr('NULL', 'x_y')|replace('NULL', 'a', '_')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%é%'|'NULL' GLOB '*[a-m]*'|char(71, 991)|'NULL' || 'x_y'|'NULL' < 'x_y'|'NULL' = 'x_y' COLLATE NOCASE
+4|NULL|null|UL|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|Gϟ|NULLx_y|1|0
+~~~
+error: cannot store BLOB value in REAL column t1.c0
+~~~
+changes: 10
+~~~
+error: cannot store TEXT value in REAL column t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store BLOB value in REAL column t1.c0
+~~~
+# id|c0|c1|c2|ref
+2|-30.721|-27.092|-490|3
+4|38.275|20.505|-329|1
+6|0.0|NULL|NULL|NULL
+8|-29.765|42.881|464|NULL
+10|-35.878|-40.015|175|5
+12|7.107|-33.812|-218|1
+14|27.516|3.435|136|3
+16|21.694|2.407|-223|7
+18|-0.704|27.113|-129|3
+~~~
+# id|NULL|-(iif(-682.8, iif(ref, c0, NULL), 553))
+2|NULL|30.721
+4|NULL|-38.275
+6|NULL|NULL
+8|NULL|NULL
+10|NULL|35.878
+12|NULL|-7.107
+14|NULL|-27.516
+16|NULL|-21.694
+18|NULL|0.704
+~~~
+# 0|x'4fd91c'
+0|X'4FD91C'
+~~~

@@ -1,0 +1,107 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+2|NULL
+4|NULL
+9|NULL
+10|NULL
+6|-305.67
+1|4.500000000000011e-310
+8|1.0e+308
+5|
+3|zeta
+7|X'3846'
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|996.29
+~~~
+# id|c0|c1|c2|c3|c4
+1|X'AF2E2E7BEBB1'|NULL|NULL|NULL|0.0
+2|sigma|señor|NULL|NULL|4.500000000000011e-310
+4|X'66'|-781|NULL|X'AA'|pi
+6|NULL|838.6|-305.67|X'CE5D5B7BDD88'|kappa
+7|NULL|NULL|NULL|NULL|0.0
+8|X'3ADD'|0x1F|1.0e+308|X'F40C69047E47'|X'98E97DD563A1'
+10|9223372036854775807|0|NULL|X''|5.0
+11|996.29|NULL|NULL|NULL|0.0
+~~~

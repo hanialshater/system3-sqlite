@@ -1,0 +1,215 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t2.c0
+~~~
+# id|c0
+7|beta
+~~~
+# id|c0|c1|c2|ref
+1|pi|455|30.627|6
+2|alpha!|-284|-15.0|6
+3||189|-2.343|3
+4|rho|240|-30.278|8
+6|beta|306|-10.816|NULL
+7|beta|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+15|X'CA'
+~~~
+# id|c0|c1
+15|X'CA'|NULL
+14|X''|iota
+13|X''|NULL
+12|461.82|655
+11|-9.2233720368547758e+18|X'63B32EC68014'
+9|-391.51|NULL
+8|4.0|-776
+7|omega|X'20F8FA'
+6|331.2174|-1
+5|-451.0|NULL
+4|X'271B53A40A08'|1.0e-07
+3|493.0|3.1415926535897931
+2|omicron|211.41
+1|0.0|NULL
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-865
+~~~
+# id|c0|c1|c2|c3|c4
+1|X'FA85A47F94'|338|a%b|NULL|NULL
+2|xi|X'735E4B5974'|NULL|NULL|gamma
+4|0|0.0|0.0|-927|-624
+5|X'2D9B9B7E604F'|NULL|X'B3D6C68B'|-7|pi
+6|NULL|NULL|NULL|NULL|NULL
+7|epsilon|0.1|9223372036854775807|NULL|-537
+8|-587.176|NULL|NULL|NULL|NULL
+10|Ελλάδα|X'BC91C352'|2|1|-7
+11|NULL|X''|X'C82D062D'|X'DCD9E2'|NULL
+13|0|1000000000000000.0|X'BDD44B'|2|NULL
+14|-1|227|X'5C38A535'|-243|a%b
+16|9223372036854775807|661|X'89E6'| pad |756
+17|NULL|831|NULL|NULL|X''
+18|-865|NULL|NULL|NULL|NULL
+~~~
+changes: 14
+~~~
+changes: 8
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+15|1.0
+~~~
+# id|c0|c1
+15|1.0|NULL
+14|2.0|iota
+12|2.0|655
+8|2.0|-776
+6|2.0|-1
+4|2.0|1.0e-07
+2|2.0|211.41
+1|1.0e-07|NULL
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', -1, 2)|instr('über', 'rho')|replace('über', '', '')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE 'a%'|'über' GLOB '*'|char(65, 764)|'über' || 'rho'|'über' < 'rho'|'über' = 'rho' COLLATE NOCASE
+4|üBER|über|r|0|über|über|über|C3BC626572|'über'|252|0|1|A˼|überrho|0|0
+~~~
+# id|id|id|id
+1|2|1|2
+1|4|1|4
+1|6|1|6
+1|8|1|8
+1|12|1|12
+1|14|1|14
+1|15|1|15
+2|4|2|4
+2|6|2|6
+2|8|2|8
+2|12|2|12
+2|14|2|14
+2|15|2|15
+3|4|3|4
+3|6|3|6
+3|8|3|8
+3|12|3|12
+3|14|3|14
+3|15|3|15
+4|6|4|6
+4|8|4|8
+4|12|4|12
+4|14|4|14
+4|15|4|15
+6|8|6|8
+6|12|6|12
+6|14|6|14
+6|15|6|15
+7|8|7|8
+7|12|7|12
+7|14|7|14
+7|15|7|15
+~~~
+error: near "NOT": syntax error
+~~~

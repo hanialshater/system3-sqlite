@@ -1,0 +1,115 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|1
+~~~
+# id|c0|c1|c2|c3|c4
+1|NULL|NULL|d|d|NULL
+3|383|MU|NULL|3.1415926535897931|383
+5|NULL|0.1|X'8250DA'|xi|-673
+7|1|-9.2233720368547758e+18|NULL|-3|1
+8|1|NULL|d|d|NULL
+~~~
+changes: 5
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|it's
+~~~
+# id|c0|c1|c2|c3|c4
+9|it's|NULL|d|d|NULL
+8|1|NULL|d|d|NULL
+7|X'FFAF775F'|NULL|d|d|NULL
+1|600.12|NULL|d|d|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|699
+~~~
+# id|c0|c1|c2|c3|c4
+9|699|NULL|d|d|NULL
+8|1|NULL|d|d|NULL
+6|NULL|NULL|d|d|NULL
+1|1.0e-07|NULL|d|d|NULL
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

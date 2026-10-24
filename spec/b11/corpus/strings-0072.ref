@@ -1,0 +1,147 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t2.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('epsilon')|upper('epsilon')|lower('epsilon')|substr('epsilon', 3, 4)|instr('epsilon', ' pad ')|replace('epsilon', 'é', '')|trim('epsilon')|ltrim('epsilon', 'ab')|hex('epsilon')|quote('epsilon')|unicode('epsilon')|'epsilon' LIKE 'A%'|'epsilon' GLOB 'a*'|char(71, 681)|'epsilon' || ' pad '|'epsilon' < ' pad '|'epsilon' = ' pad ' COLLATE NOCASE
+7|EPSILON|epsilon|silo|0|epsilon|epsilon|epsilon|657073696C6F6E|'epsilon'|101|0|0|Gʩ|epsilon pad |0|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 0, 0)|instr('it''s', 'señor')|replace('it''s', '', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '_'|'it''s' GLOB '*'|char(85, 500)|'it''s' || 'señor'|'it''s' < 'señor'|'it''s' = 'señor' COLLATE NOCASE
+4|IT'S|it's||0|it's|it's|it's|69742773|'it''s'|105|0|1|UǴ|it'sseñor|1|0
+~~~
+# length('chi')|upper('chi')|lower('chi')|substr('chi', 3, 4)|instr('chi', '0x1F')|replace('chi', 'e', 'XY')|trim('chi')|ltrim('chi', 'ab')|hex('chi')|quote('chi')|unicode('chi')|'chi' LIKE '%é%'|'chi' GLOB '?'|char(90, 289)|'chi' || '0x1F'|'chi' < '0x1F'|'chi' = '0x1F' COLLATE NOCASE
+3|CHI|chi|i|0|chi|chi|chi|636869|'chi'|99|0|0|Zġ|chi0x1F|0|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', 1, 4)|instr('theta', 'x_y')|replace('theta', 'é', 'XY')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%a_'|'theta' GLOB 'a*'|char(82, 641)|'theta' || 'x_y'|'theta' < 'x_y'|'theta' = 'x_y' COLLATE NOCASE
+5|THETA|theta|thet|0|theta|theta|theta|7468657461|'theta'|116|0|0|Rʁ|thetax_y|1|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+23|16|1638.5094|1638.5094|102.4068375|-3|X'EC5323'|16
+~~~
+# c0|count(*)|group_concat(id)
+NULL|7|3,7,13,14,18,19,23
+-3|1|8
+5|1|22
+41.5094|1|9
+199|1|15
+649|1|1
+738|1|10
+ pad |1|2
+beta|1|21
+chi|1|16
+rho|1|4
+xi|1|12
+X'259AF8'|1|17
+X'397CCF67'|1|20
+X'45D5E1BF5DDF'|1|5
+X'CA3CEAE090BB'|1|11
+X'EC5323'|1|6
+~~~
+# length('iota')|upper('iota')|lower('iota')|substr('iota', 0, 3)|instr('iota', 'Ελλάδα')|replace('iota', 'e', '')|trim('iota')|ltrim('iota', 'ab')|hex('iota')|quote('iota')|unicode('iota')|'iota' LIKE '_'|'iota' GLOB '?'|char(87, 965)|'iota' || 'Ελλάδα'|'iota' < 'Ελλάδα'|'iota' = 'Ελλάδα' COLLATE NOCASE
+4|IOTA|iota|io|0|iota|iota|iota|696F7461|'iota'|105|0|0|Wυ|iotaΕλλάδα|1|0
+~~~

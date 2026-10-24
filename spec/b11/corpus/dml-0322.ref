@@ -1,0 +1,362 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 20
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1|c2
+1|-2.5|-2.5|0.0
+2|0.0!|NULL|NULL
+4|2.5|2.5|pi
+5|chi|chi|1.0e+308
+6|NULL|NULL|d
+7|50|50|NULL
+8|NULL|NULL|delta
+10|X'35E6A866BC'|X'35E6A866BC'|X'1A59E6A4'
+11|-287|-287|-808.0
+13|4.500000000000011e-310|4.500000000000011e-310|-5.0
+14|X'898446'|X'898446'|NULL
+16|NULL|NULL|NULL
+17|xi|xi|NULL
+19|X'FFD6A4'|X'FFD6A4'|X'22DB35'
+20|X'C016FDF72A'|X'C016FDF72A'|NULL
+21|NULL|NULL|d
+~~~
+changes: 16
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|-1.0e+308
+~~~
+# id|c0|c1|c2
+1|NULL|-2.5|0.0
+2|NULL|NULL|NULL
+4|NULL|2.5|pi
+5|NULL|NULL|d
+6|NULL|NULL|d
+7|NULL|50|NULL
+8|NULL|NULL|delta
+9|0.0|NULL|d
+11|NULL|-287|-808.0
+13|NULL|4.500000000000011e-310|-5.0
+14|NULL|X'898446'|NULL
+16|NULL|NULL|NULL
+17|NULL|xi|NULL
+19|NULL|X'FFD6A4'|X'22DB35'
+21|NULL|NULL|d
+22|-1.0e+308|NULL|d
+~~~
+changes: 16
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|NULL
+~~~
+# id|c0|c1|c2
+1|-2!|-2.5|0.0
+2|1|NULL|NULL
+3|-5|NULL|d
+5|1|NULL|d
+6|1|NULL|d
+7|0|50|NULL
+9|1|NULL|d
+11|0|-287|-808.0
+13|0|4.500000000000011e-310|-5.0
+14|0|X'898446'|NULL
+17|0|xi|NULL
+19|0|X'FFD6A4'|X'22DB35'
+21|1|NULL|d
+22|1|NULL|d
+23|NULL|NULL|d
+~~~
+changes: 25
+~~~
+changes: 13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+1|NULL|NULL|NULL|NULL|NULL
+2|NULL|NULL|NULL|NULL|NULL
+4|NULL|-674.0013|NULL|4.500000000000011e-310|1
+6|0|chi|2|363|NULL
+8|0|NULL|-161.381|café|1
+10|0|-512|-63.513|NULL|1
+12|1|epsilon|phi|chi|3
+14|1|-471.7729|omega|-2.5|2
+16|0|919.8|1|NULL|8
+18|1|zeta|X'9FFA79DECBDC'|964|4
+20|1|omicron|X'8DA174DD'|-21|8
+22|1|616|a%b|340|1
+24|NULL|X''|NULL|日本|1
+25|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 14
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+26|X'3B3A2995AD20'
+~~~
+# id|c0|c1|c2|c3|ref
+2|NULL|NULL|NULL|NULL|NULL
+4|NULL|NULL|NULL|NULL|NULL
+6|rho|NULL|NULL|NULL|NULL
+8|1|NULL|-161.381|café|1
+10|NULL|-512|-63.513|NULL|1
+12|0|epsilon|phi|chi|3
+14|0|-471.7729|omega|-2.5|2
+18|0|zeta|X'9FFA79DECBDC'|964|4
+20|0|omicron|X'8DA174DD'|-21|8
+22|0|616|a%b|340|1
+24|NULL|X''|NULL|日本|1
+25|NULL|NULL|NULL|NULL|NULL
+26|X'3B3A2995AD20'|NULL|NULL|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c1
+2|NULL
+3|NULL
+5|NULL
+6|NULL
+9|NULL
+21|NULL
+22|NULL
+23|NULL
+11|-287
+1|-2.5
+13|4.500000000000011e-310
+7|50
+17|xi
+14|X'898446'
+19|X'FFD6A4'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+20|13
+18|13
+12|13
+14|13
+24|13
+22|13
+10|13
+8|13
+26|13
+25|13
+6|13
+4|13
+2|13
+~~~
+# id
+10
+14
+22
+~~~
+# id
+14
+25
+26
+~~~
+# ref
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+NULL
+1
+1
+1
+1
+1
+1
+1
+1
+2
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

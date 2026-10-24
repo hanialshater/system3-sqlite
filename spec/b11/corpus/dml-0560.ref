@@ -1,0 +1,286 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|NULL
+~~~
+# id|c0|c1|c2|c3
+25|NULL|0|NULL|0
+24|2.5|iota|-712|0
+23|X'7B35'|X'3ACD1ACE7CE8'|X'0A'|X'7584E413'
+21|-2|509.3997|X'5E0612'|X'F1'
+20|X'F768'|1|NULL|-984.912
+18|sigma|naïve|142|-1
+17|NULL|-9223372036854775808|9223372036854775807|kappa
+15|X'1F1F5AFB'|xi|naïve|297
+14|X'AB'|548.5|-3|113
+12|X'F0792A124245'|462|-715|1.0e+308
+11|X'8665081075'|0|-873|0
+9|NULL|822.4072|theta|116
+8|NULL|0|NULL|0
+6|naïve|phi|NULL|-563
+5|4|0|NULL|-4
+3|0|-7|0|1
+2|NULL|-138|X'9ED0'|929
+~~~
+changes: 10
+~~~
+changes: 12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|X''
+~~~
+# id|c0|c1|c2|c3
+1|0|NULL|0|0
+2|eta|452|0|0
+4|179|-1.0e+308|-939|0
+6|X'A2'|394.4|X'CB6A7B5D'|0
+7|omega|NULL|0|0
+8|X'2309D19245'|theta|X'FE'|0
+10|-2|-447|日本|
+12|0|211.4275|X'2B98'|1
+14|-567.6|X'9EE42D975826'|-161.7087|0
+16|0|NULL|882|-460
+18|0|550|70|123456789012
+20|NULL|X'AF2FE96D'|0|0
+22|0|X'A4'|X'C14044'|3.1415926535897931
+23|X''|NULL|0|0
+~~~
+changes: 17
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|-1
+~~~
+# id|c0|c1|c2|c3
+2|1|-138|X'9ED0'|929
+3|NULL|0|NULL|0
+6|NULL|phi|NULL|-563
+8|1|0|NULL|0
+11|1|0|-873|0
+12|1|462|-715|1.0e+308
+14|1|548.5|-3|113
+15|1|xi|naïve|297
+18|1|naïve|142|-1
+20|1|1|NULL|-984.912
+23|1|X'3ACD1ACE7CE8'|X'0A'|X'7584E413'
+24|1|iota|-712|0
+25|-1|0|NULL|0
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|NULL
+~~~
+# id|c0|c1|c2|c3
+2|1|-138|X'9ED0'|929
+3|NULL|0|NULL|0
+5|theta|0|NULL|0
+6|NULL|phi|NULL|-563
+8|1|0|NULL|0
+9|a%b|0|NULL|0
+11|1|0|-873|0
+12|1|462|-715|1.0e+308
+14|1|548.5|-3|113
+18|1|naïve|142|-1
+23|1|X'3ACD1ACE7CE8'|X'0A'|X'7584E413'
+24|1|iota|-712|0
+25|NULL|0|NULL|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+13|10|8.0|8.0|0.8|1|theta|3
+~~~
+# c0|count(*)|group_concat(id)
+NULL|3|3,6,25
+1|8|2,8,11,12,14,18,23,24
+a%b|1|9
+theta|1|5
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|2
+6|4
+25|14
+2|2
+8|6
+11|7
+12|8
+14|9
+18|11
+23|14
+24|14
+9|6
+5|3
+~~~
+# id
+3
+5
+9
+11
+24
+25
+~~~
+# id
+3
+5
+6
+9
+11
+~~~
+# c0
+NULL
+NULL
+NULL
+-460
+0
+0
+0
+0
+~~~
+changes: 1
+~~~
+# id|c2
+3|NULL
+5|NULL
+6|NULL
+8|NULL
+9|NULL
+25|NULL
+11|-873
+12|-715
+24|-712
+14|-3
+18|142
+23|X'0A'
+2|X'9ED0'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

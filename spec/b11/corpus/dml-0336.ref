@@ -1,0 +1,164 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+7|Lambda
+~~~
+# id|c0|c1
+1|3!|1e3
+2|zeta|NULL
+3|delta|0x1F
+4|kappa|0.1
+5|4.500000000000011e-310|NULL
+6| pad |NULL
+7|Lambda|NULL
+~~~
+changes: 7
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+# id|c0|c1
+2|-211|NULL
+4|0|0.1
+6|614!|NULL
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+# id|c0|c1
+2|-211|NULL
+4|4|0.1
+5|-995.524|NULL
+6|-335.7538|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|-369.2813
+~~~
+# id|c0|c1|c2|c3|ref
+9|-369.2813|NULL|NULL|0.0|NULL
+8|NULL|NULL|NULL|0.0|NULL
+5|phi|-37.029|256|0.561|2
+4|epsilon|-22.881|-367|-42.939|7
+2|chi|6.961|340|-35.565|6
+1|128.637!|-33.241|-326|-0.932|3
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c0
+~~~
+# id|c0
+7|NULL
+~~~
+# id|c0|c1
+7|NULL|NULL
+6|NULL|NULL
+5|¸¼J°!|NULL
+2|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|Lambda
+~~~
+# id|c0|c1|c2|c3|ref
+1|128.637!|-33.241|-326|-0.932|3
+2|chi|6.961|340|-35.565|6
+4|epsilon|-22.881|-367|-42.939|7
+6|upsilon|NULL|NULL|0.0|NULL
+7|-2|NULL|NULL|0.0|NULL
+8|NULL|NULL|NULL|0.0|NULL
+9|-369.2813|NULL|NULL|0.0|NULL
+10|Lambda|NULL|NULL|0.0|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|1.0e+308
+~~~
+# id|c0|c1|c2|c3|ref
+1|615|NULL|NULL|0.0|NULL
+2|chi|6.961|340|-35.565|6
+5|omega|NULL|NULL|0.0|NULL
+6|upsilon|NULL|NULL|0.0|NULL
+7|-2|NULL|NULL|0.0|NULL
+9|-369.2813|NULL|NULL|0.0|NULL
+10|Lambda|NULL|NULL|0.0|NULL
+11|1.0e+308|NULL|NULL|0.0|NULL
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 1, 0)|instr('NULL', 'kappa')|replace('NULL', 'e', 'XY')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%'|'NULL' GLOB '*[a-m]*'|char(77, 328)|'NULL' || 'kappa'|'NULL' < 'kappa'|'NULL' = 'kappa' COLLATE NOCASE
+4|NULL|null||0|NULL|NULL|NULL|4E554C4C|'NULL'|78|1|0|MÅˆ|NULLkappa|1|0
+~~~

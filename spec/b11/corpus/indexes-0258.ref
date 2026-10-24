@@ -1,0 +1,248 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|-968
+13|-339
+6|-5
+3|3
+10|413.841
+7|1.0e+308
+2|a%b
+18|omicron
+9|phi
+12|X'325C9032'
+15|X'65D6'
+11|X'6B3F05D3AA53'
+1|X'6BC7'
+16|X'B7E184C7D0'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+11|X'C23B5A'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+11|señor
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+5|-4
+11|0.0
+3|1.0e-07
+4|2
+1|391.9
+18|5
+17|zeta
+9|X'24'
+10|X'52C5E2CDDE9F'
+14|X'A6244E'
+16|X'A707517C965A'
+13|X'C759A9B0'
+7|X'E3'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 18
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|X'030D21'
+~~~
+# id|c0|c1|c2|c3
+1|391.9|391.9|1|theta
+3|1.0e-07|1.0e-07|NULL|916
+4|501.6577|NULL|NULL|NULL
+5|beta|NULL|NULL|NULL
+7|X'E3'|X'E3'|日本|-17
+9|X'24'|X'24'|NULL|X'E477'
+11|0|0.0|X'C23B5A'|3
+13|X'C759A9B0'|X'C759A9B0'|NULL|NULL
+15|NULL|NULL|-940.5|Lambda
+17|zeta|zeta|-914.492|1.0e+308
+18|X'030D21'|NULL|NULL|NULL
+~~~
+changes: 18
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|X'B3570A1520'
+~~~
+# id|c0|c1|ref
+18|X'B3570A1520'|NULL|NULL
+17|17|NULL|6
+15|15|omega|7
+13|13|1e3|NULL
+11|11|alpha|6
+9|9|rho|1
+7|7|414.768|2
+5|über|NULL|NULL
+3|(j��!|-186|6
+1|1|x_y|NULL
+~~~

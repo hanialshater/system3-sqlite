@@ -1,0 +1,333 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t0.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c4|ref
+1|3|-439|1
+1|19|-439|1
+2|2|413|2
+2|6|413|2
+2|8|413|2
+3|1|-390|3
+3|7|-390|3
+3|11|-390|3
+4|13|-5|4
+5|9|94|5
+5|10|94|5
+5|20|94|5
+6|4|-417|6
+6|5|-417|6
+6|16|-417|6
+7|17|-277|7
+8|12|-323|8
+8|15|-323|8
+8|21|-323|8
+9|NULL|164|NULL
+10|NULL|-160|NULL
+11|NULL|-140|NULL
+12|NULL|97|NULL
+13|NULL|314|NULL
+14|NULL|34|NULL
+15|NULL|476|NULL
+~~~
+error: near "x'6b3d6173'": syntax error
+~~~
+# id|id|id|id
+1|3|1|3
+1|19|1|19
+2|2|2|2
+2|6|2|6
+2|8|2|8
+3|1|3|1
+3|7|3|7
+3|11|3|11
+4|13|4|13
+5|9|5|9
+5|10|5|10
+5|20|5|20
+6|4|6|4
+6|5|6|5
+6|16|6|16
+7|17|7|17
+8|12|8|12
+8|15|8|15
+8|21|8|21
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+~~~
+# count(*)
+16
+~~~
+# id|id|c2|c0
+1|3|-146|981
+1|19|-146|NULL
+2|2|110|-3
+2|6|110|beta
+2|8|110|0
+3|1|-354|34
+3|7|-354|X'5C7FA880BB'
+3|11|-354|X'603E58'
+4|13|-188|NULL
+5|9|145| pad 
+5|10|145|upsilon
+5|20|145|NULL
+6|4|299|omega
+6|5|299|NULL
+~~~
+error: ambiguous column name: c1
+~~~
+# id|id|c3|c0
+1|3|X'7FA38C2CB7'|981
+1|19|X'7FA38C2CB7'|NULL
+2|2|549|-3
+2|6|549|beta
+2|8|549|0
+3|1|日本|34
+3|7|日本|X'5C7FA880BB'
+3|11|日本|X'603E58'
+4|13|NULL|NULL
+5|9|1| pad 
+5|10|1|upsilon
+5|20|1|NULL
+6|4|-835|omega
+6|5|-835|NULL
+6|16|-835|0.0
+7|17|NULL|MU
+8|12||999
+8|15||1e3
+8|21||-1
+9|NULL|111|NULL
+10|NULL|rho|NULL
+11|NULL|NULL|NULL
+12|NULL|NULL|NULL
+13|NULL|eta|NULL
+14|NULL|NULL|NULL
+15|NULL|-745|NULL
+16|NULL|4|NULL
+17|NULL|-495.075|NULL
+18|NULL|-1.0e+308|NULL
+19|NULL|1|NULL
+20|NULL|1.0e-07|NULL
+21|NULL|151.096|NULL
+~~~
+# count(*)
+21
+~~~
+# id|id|c2|c0
+1|3|-146|981
+1|19|-146|NULL
+2|2|110|-3
+2|6|110|beta
+2|8|110|0
+3|1|-354|34
+3|7|-354|X'5C7FA880BB'
+3|11|-354|X'603E58'
+4|13|-188|NULL
+5|9|145| pad 
+5|10|145|upsilon
+5|20|145|NULL
+6|4|299|omega
+6|5|299|NULL
+6|16|299|0.0
+7|17|-419|MU
+8|12|315|999
+8|15|315|1e3
+8|21|315|-1
+9|NULL|-187|NULL
+10|NULL|-181|NULL
+11|NULL|8|NULL
+12|NULL|483|NULL
+13|NULL|-477|NULL
+14|NULL|-313|NULL
+15|NULL|-105|NULL
+16|NULL|-338|NULL
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c0|c2
+1|3|331|X'835F'
+1|19|331|776
+2|2|215|391.2
+2|6|215|2
+2|8|215|sigma
+3|1|-301|X''
+3|7|-301|0
+3|11|-301|0
+4|13|-233|4
+5|9|14|-818
+5|10|14|-3
+5|20|14|epsilon
+6|4|-349|896
+6|5|-349|X'CD'
+~~~
+error: no such column: a.Ελλάδα
+~~~
+# id|id|id|c2
+1|3|1|X'835F'
+1|19|1|776
+2|2|2|391.2
+2|6|2|2
+2|8|2|sigma
+3|1|3|X''
+3|7|3|0
+3|11|3|0
+4|13|4|4
+5|9|5|-818
+5|10|5|-3
+5|20|5|epsilon
+6|4|6|896
+6|5|6|X'CD'
+6|16|6|a%b
+7|17|7|-360
+8|12|8|0
+8|15|8|0.0
+8|21|8|-72
+~~~
+# count(*)
+21
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -2, 3)|instr('日本', 'x_y')|replace('日本', 'a', '')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '%é%'|'日本' GLOB '*[a-m]*'|char(73, 427)|'日本' || 'x_y'|'日本' < 'x_y'|'日本' = 'x_y' COLLATE NOCASE
+2|日本|日本|日本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|Iƫ|日本x_y|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+15|15
+14|14
+1|1
+10|10
+2|2
+16|16
+11|11
+8|8
+5|5
+12|12
+9|9
+4|4
+7|7
+3|3
+13|13
+6|6
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# c2
+-354
+-338
+-313
+-188
+-187
+-181
+-146
+-105
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+~~~

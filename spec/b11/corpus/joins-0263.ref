@@ -1,0 +1,214 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c2
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c1
+1|9|NULL|-884
+1|14|NULL|
+1|15|NULL|3.1415926535897931
+1|19|NULL|-627
+2|2|NULL|0x1F
+2|5|NULL|rho
+3|18|alpha|日本
+4|1|X''|tau
+4|7|X''|señor
+4|13|X''|1000000000000000
+4|16|X''|8
+4|21|X''|NULL
+5|3|239|NULL
+~~~
+# count(*)
+6
+~~~
+# id|id|c0|ref
+1|9|-3|1
+1|14|-3|1
+1|15|-3|1
+1|19|-3|1
+2|2|NULL|2
+2|5|NULL|2
+3|18|X'CE'|3
+4|1|0.1|4
+4|7|0.1|4
+4|13|0.1|4
+4|16|0.1|4
+4|21|0.1|4
+5|3|246|5
+6|4|X'2AB7195CE4'|6
+7|6|3|7
+8|11|X'7C975485'|8
+~~~
+# count(*)
+21
+~~~
+# id|id|c2|c1
+1|9|NULL|-884
+1|14|NULL|
+1|15|NULL|3.1415926535897931
+1|19|NULL|-627
+2|2|NULL|0x1F
+2|5|NULL|rho
+3|18|alpha|日本
+4|1|X''|tau
+4|7|X''|señor
+4|13|X''|1000000000000000
+4|16|X''|8
+4|21|X''|NULL
+5|3|239|NULL
+6|4|X'A785DF'|X'0E'
+7|6|-1|208
+8|11|X''|-7
+9|NULL|NULL|NULL
+10|NULL|X'FC7A96368A'|NULL
+11|NULL|X'53'|NULL
+12|NULL|NULL|NULL
+13|NULL|1000000000000000.0|NULL
+14|NULL|9223372036854775807|NULL
+15|NULL|X'B45FF6'|NULL
+16|NULL|-319|NULL
+17|NULL|2.5|NULL
+18|NULL|theta|NULL
+19|NULL|X'DDD9F180'|NULL
+~~~
+# count(*)
+19
+~~~
+# id|id|c0|ref
+1|1|rho|4
+1|2|rho|2
+1|3|rho|5
+1|4|rho|6
+1|5|rho|2
+1|6|rho|7
+1|7|rho|4
+1|8|rho|NULL
+1|9|rho|1
+1|10|rho|NULL
+1|11|rho|8
+1|12|rho|NULL
+1|13|rho|4
+1|14|rho|1
+1|15|rho|1
+1|16|rho|4
+1|17|rho|NULL
+1|18|rho|3
+1|19|rho|1
+1|20|rho|NULL
+1|21|rho|4
+2|1|X''|4
+2|2|X''|2
+2|3|X''|5
+2|4|X''|6
+2|5|X''|2
+~~~
+error: near "(": syntax error
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

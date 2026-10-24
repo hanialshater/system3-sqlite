@@ -1,0 +1,112 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c4
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', -2, 1)|instr('gamma', 'x_y')|replace('gamma', '', '')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE 'A%'|'gamma' GLOB 'a*'|char(66, 691)|'gamma' || 'x_y'|'gamma' < 'x_y'|'gamma' = 'x_y' COLLATE NOCASE
+5|GAMMA|gamma|m|0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|0|Bʳ|gammax_y|1|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -1, 1)|instr('theta', 'kappa')|replace('theta', 'a', '_')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%é%'|'theta' GLOB '?'|char(90, 427)|'theta' || 'kappa'|'theta' < 'kappa'|'theta' = 'kappa' COLLATE NOCASE
+5|THETA|theta|a|0|thet_|theta|theta|7468657461|'theta'|116|0|0|Zƫ|thetakappa|0|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', -3, 1)|instr('Ελλάδα', 'café')|replace('Ελλάδα', 'é', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'a%'|'Ελλάδα' GLOB '*[a-m]*'|char(75, 590)|'Ελλάδα' || 'café'|'Ελλάδα' < 'café'|'Ελλάδα' = 'café' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|ά|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|KɎ|Ελλάδαcafé|0|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 4, 2)|instr('Ελλάδα', 'tau')|replace('Ελλάδα', 'a', '')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%'|'Ελλάδα' GLOB '*[a-m]*'|char(75, 463)|'Ελλάδα' || 'tau'|'Ελλάδα' < 'tau'|'Ελλάδα' = 'tau' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|άδ|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|1|0|KǏ|Ελλάδαtau|0|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', -2, 2)|instr('beta', ' pad ')|replace('beta', 'e', '_')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE 'a%'|'beta' GLOB 'a*'|char(76, 802)|'beta' || ' pad '|'beta' < ' pad '|'beta' = ' pad ' COLLATE NOCASE
+4|BETA|beta|ta|0|b_ta|beta|eta|62657461|'beta'|98|0|0|L̢|beta pad |0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 3, 1)|instr('NULL', 'psi')|replace('NULL', 'a', '')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE 'a%'|'NULL' GLOB 'a*'|char(74, 678)|'NULL' || 'psi'|'NULL' < 'psi'|'NULL' = 'psi' COLLATE NOCASE
+4|NULL|null|L|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|Jʦ|NULLpsi|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', -1, 0)|instr('Ελλάδα', 'gamma')|replace('Ελλάδα', 'é', '_')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '_'|'Ελλάδα' GLOB '*'|char(86, 563)|'Ελλάδα' || 'gamma'|'Ελλάδα' < 'gamma'|'Ελλάδα' = 'gamma' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα||0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|1|Vȳ|Ελλάδαgamma|0|0
+~~~
+# id|typeof(CASE WHEN NULL THEN 759 ELSE c0 END) IN (NOT iif(c0, c1, NULL), x'a7', NULL)|-(x'ff612d')
+1|NULL|0
+2|NULL|0
+3|NULL|0
+4|NULL|0
+5|NULL|0
+6|NULL|0
+7|NULL|0
+8|NULL|0
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+~~~
+# x'0d'|NULL
+X'0D'|NULL
+~~~

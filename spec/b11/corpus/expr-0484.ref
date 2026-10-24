@@ -1,0 +1,288 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CAST(CASE WHEN CASE WHEN 456 THEN c0 ELSE 202 END THEN NOT id ELSE NOT c3 END AS TEXT)|nullif(CASE WHEN NULL THEN -9223372036854775808 ELSE NULL END, -329 BETWEEN c0 AND id) IS NULL
+20|1|1
+19|0|1
+18|0|1
+17|NULL|1
+16|1|1
+15|0|1
+14|0|1
+13|0|1
+12|0|1
+11|0|1
+10|0|1
+9|0|1
+8|1|1
+7|0|1
+6|0|1
+5|1|1
+4|0|1
+3|NULL|1
+2|0|1
+1|0|1
+~~~
+# 0|coalesce(0, typeof(NULL))
+0|0
+~~~
+# id|CAST(1.0e15 AS TEXT) IS NULL BETWEEN nullif(id, c3) BETWEEN coalesce(id, c1) AND c3 IS NULL AND typeof('Ελλάδα')|c0
+20|1|X'66B1A010A912'
+19|1|NULL
+18|1|-1
+17|0|NULL
+16|1|upsilon
+15|1|6
+14|1|369
+13|1|123456789012
+12|1|42
+11|0|-2.5
+10|1|NULL
+9|1|über
+8|1|delta
+7|1|-2.5
+6|1|3.1415926535897931
+5|1|beta
+4|1|-160
+3|0|
+2|0|-72
+1|1|-3
+~~~
+# abs(abs(NULL))|x'3bf6ea3e'
+NULL|X'3BF6EA3E'
+~~~
+# id|nullif(c0 BETWEEN -(-923) AND coalesce(c2, 4), coalesce(abs(761), c1 IS NULL))|c0
+1|0|MU
+2|0|rho
+3|0|5
+4|0|a%b
+5|0|3.1415926535897931
+6|0|X'8484DC3D64'
+7|0|X'77D30612D93E'
+8|0|X'13EAA894'
+9|0|0
+10|0|X'33834AAC4B'
+11|0|1.0e-07
+12|0|0
+13|0|0
+~~~
+# NOT NOT 'nu' BETWEEN CAST(9223372036854775807 AS NUMERIC) AND 'NULL'|typeof(typeof(NULL))
+0|text
+~~~
+# id|typeof(-5)|121
+1|integer|121
+2|integer|121
+3|integer|121
+4|integer|121
+5|integer|121
+6|integer|121
+7|integer|121
+8|integer|121
+9|integer|121
+10|integer|121
+11|integer|121
+12|integer|121
+13|integer|121
+14|integer|121
+15|integer|121
+16|integer|121
+17|integer|121
+18|integer|121
+19|integer|121
+20|integer|121
+~~~
+# CASE WHEN 1.0e15 THEN NOT typeof(x'') ELSE coalesce(coalesce(NULL, NULL), -878.15) END|('delta' BETWEEN NULL IN (NULL, 0, NULL) AND typeof(-467) AND nullif((x'e7713987ad55' >= 5), 491 BETWEEN -630 AND -680))
+1|NULL
+~~~
+# id|c2|abs(-(c1 IN (id, '1e3', x'34a301')))
+1|NULL|0
+2|-962|0
+3|psi|0
+4|NULL|0
+5|NULL|0
+6|818|0
+7|NULL|0
+8|-9223372036854775808|NULL
+9|-13|0
+10|0|0
+11|zeta|0
+12|alpha|0
+13|X'C1'|NULL
+~~~
+# CAST(674.0944 AS REAL) IN (abs(NULL), NULL, NULL)|x'ac' BETWEEN CAST((x'f664' >> '-7') AS NUMERIC) AND nullif(iif('1e3', -3, x'87520b54014f'), 5 IN (-102, 'epsilon', -1000))
+NULL|0
+~~~
+# id|nullif(c0, (iif(c1, id, 1e308) <> id))|typeof(NOT c0)
+13|0|integer
+12|0|integer
+11|1.0e-07|integer
+10|X'33834AAC4B'|integer
+9|NULL|integer
+8|X'13EAA894'|integer
+7|X'77D30612D93E'|integer
+6|X'8484DC3D64'|integer
+5|3.1415926535897931|integer
+4|a%b|integer
+3|5|integer
+2|rho|integer
+1|MU|integer
+~~~
+# typeof(NULL)|iif(CAST(x'22f7' IS NULL AS BLOB), -(-(-646)), x'')
+null|X''
+~~~
+# id|c2|x'8699' BETWEEN NOT NULL AND nullif(c1, c0) IS NULL
+1|NULL|1
+2|-962|0
+3|psi|0
+4|NULL|1
+5|NULL|0
+6|818|0
+7|NULL|0
+8|-9223372036854775808|1
+9|-13|0
+10|0|1
+11|zeta|0
+12|alpha|0
+13|X'C1'|1
+~~~
+# CASE WHEN 757 THEN CAST(CASE WHEN 'theta' THEN x'5003' ELSE 4 END AS BLOB) ELSE '1e3' END|coalesce(-101 IN (-902.7103, 'omega', x''), -1 IS NULL) IN (CASE WHEN 5 THEN (NULL * x'7c3387ac7e') ELSE x'd8db' IN (580, x'12', x'd7e0') END, NULL, x'5156e502')
+X'34'|NULL
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+20|16|1573.5700001|1573.5700001|98.34812500625|-3|X'94'|15
+~~~
+# c4|count(*)|group_concat(id)
+NULL|4|3,5,19,20
+-3|1|14
+-596.43|1|9
+0|1|13
+1.0e-07|1|15
+1e3|1|16
+222|1|1
+5|1|2
+946|1|11
+NULL|1|10
+epsilon|1|7
+gamma|1|6
+pi|2|8,17
+X''|1|18
+X'87C003'|1|4
+X'94'|1|12
+~~~
+# id|id|c1|id
+1|2|485|2
+1|3|485|3
+1|4|485|4
+1|5|485|5
+1|6|485|6
+1|7|485|7
+1|8|485|8
+1|9|485|9
+1|10|485|10
+1|11|485|11
+1|12|485|12
+1|13|485|13
+2|3|-883|3
+2|4|-883|4
+2|5|-883|5
+2|6|-883|6
+2|7|-883|7
+2|8|-883|8
+2|9|-883|9
+2|10|-883|10
+2|11|-883|11
+2|12|-883|12
+2|13|-883|13
+3|4|84.6|4
+3|5|84.6|5
+3|6|84.6|6
+3|7|84.6|7
+3|8|84.6|8
+3|9|84.6|9
+3|10|84.6|10
+3|11|84.6|11
+3|12|84.6|12
+3|13|84.6|13
+4|5|NULL|5
+4|6|NULL|6
+4|7|NULL|7
+4|8|NULL|8
+4|9|NULL|9
+4|10|NULL|10
+4|11|NULL|11
+4|12|NULL|12
+4|13|NULL|13
+~~~
+error: near "-": syntax error
+~~~

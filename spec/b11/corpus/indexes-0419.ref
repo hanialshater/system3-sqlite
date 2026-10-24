@@ -1,0 +1,322 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+21
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+7|-138.5
+1|1.0e+308
+2|4.500000000000011e-310
+13|405.56
+6|545.41
+17|759.8074
+4|9223372036854775807
+16|9223372036854775807
+11|NULL
+5|nu
+14|omega
+21|theta
+15|upsilon
+9|日本
+19|X'0575'
+20|X'37BDBC'
+3|X'5E90'
+8|X'BACDD45513'
+12|X'F6'
+~~~
+# count(*)
+21
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+2|2
+8|2
+14|2
+24|2
+3|3
+11|3
+22|3
+23|3
+7|4
+10|4
+16|4
+19|4
+5|5
+6|5
+17|5
+18|5
+12|6
+25|6
+1|7
+4|7
+13|7
+15|8
+20|8
+~~~
+# count(*)
+23
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+9|NULL
+21|NULL
+2|2
+8|2
+14|2
+24|2
+3|3
+11|3
+22|3
+23|3
+7|4
+10|4
+16|4
+19|4
+5|5
+6|5
+17|5
+18|5
+12|6
+25|6
+1|7
+4|7
+13|7
+15|8
+20|8
+~~~
+# count(*)
+23
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-516.0
+2|-21.904
+4|-14.0
+9|0.0
+21|alpha
+11|kappa
+6|日本
+15|X'00'
+5|X'01769828'
+17|X'20A990EF'
+16|X'49E4'
+8|X'7395'
+10|X'8DC4570E'
+1|X'D18A'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+21
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|-914.6
+~~~
+# id|c0|c1|c2|ref
+25|-914.6|NULL|NULL|NULL
+24|X'FF149FEE0145'|NULL|it's|2
+23|X'D9ACF4'|NULL|upsilon|3
+21|kappa|0|NULL|NULL
+20|X'47B33CC4'|0|NULL|8
+18|215|X'68CD'|Lambda|5
+17|3.1415926535897931|-2.5|10|5
+15|-707|NULL|536.9|8
+14|290.3768|-457|-2|2
+12|X'8B42C2'|NULL|374|6
+11|kappa|über|NULL|3
+9|5|NULL|NULL|NULL
+8|-5|3.1415926535897931|NULL|2
+6|-9223372036854775808|643|200.74|5
+5|525!|1000000000000000|X'592510BBC7'|5
+3|485.8953|3|X'39'|3
+2|270.08|-2.5|NULL|2
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 0, 0)|instr('eta', 'rho')|replace('eta', 'é', '')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '%é%'|'eta' GLOB '*'|char(88, 903)|'eta' || 'rho'|'eta' < 'rho'|'eta' = 'rho' COLLATE NOCASE
+3|ETA|eta||0|eta|eta|eta|657461|'eta'|101|0|1|X·|etarho|1|0
+~~~
+# id|id|id|ref
+1|NULL|1|NULL
+2|2|2|2
+2|8|2|2
+2|14|2|2
+2|24|2|2
+3|3|3|3
+3|11|3|3
+3|23|3|3
+4|NULL|4|NULL
+5|5|5|5
+5|6|5|5
+5|17|5|5
+5|18|5|5
+6|12|6|6
+7|NULL|7|NULL
+8|15|8|8
+8|20|8|8
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+18|NULL|18|NULL
+19|NULL|19|NULL
+20|NULL|20|NULL
+21|NULL|21|NULL
+~~~
+# count(*)
+21
+~~~

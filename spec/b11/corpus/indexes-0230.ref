@@ -1,0 +1,209 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+2|NULL
+3|NULL
+4|NULL
+12|NULL
+14|NULL
+13|0
+8|4.500000000000011e-310
+17|1
+16|94.5
+20|391
+1|485.4662
+15|797.5932
+19|993.7246
+6|1000000000000000
+11|X''
+7|X'170EB8'
+5|X'4A4329'
+18|X'6725FBBA5988'
+10|X'6889BA05'
+9|X'BBB9'
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|-918.1
+11|-690
+15|-536.3386
+7|-302
+12|-2.5
+9|4.500000000000011e-310
+8|294
+10|426.2074
+3|677
+4|891.2
+6|0x1F
+17|chi
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|7
+2|7
+3|7
+4|7
+5|7
+6|7
+7|7
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c0
+0
+gamma
+gamma
+X'158EA096'
+X'158EA096'
+X'4AB470DCD2E8'
+X'4AB470DCD2E8'
+X'4DCCB4BE6D96'
+X'4DCCB4BE6D96'
+X'61'
+X'61'
+~~~

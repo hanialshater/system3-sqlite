@@ -1,0 +1,230 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in INTEGER column t1.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('epsilon')|upper('epsilon')|lower('epsilon')|substr('epsilon', 3, 2)|instr('epsilon', 'café')|replace('epsilon', 'é', '')|trim('epsilon')|ltrim('epsilon', 'ab')|hex('epsilon')|quote('epsilon')|unicode('epsilon')|'epsilon' LIKE '%a_'|'epsilon' GLOB 'a*'|char(74, 754)|'epsilon' || 'café'|'epsilon' < 'café'|'epsilon' = 'café' COLLATE NOCASE
+7|EPSILON|epsilon|si|0|epsilon|epsilon|epsilon|657073696C6F6E|'epsilon'|101|0|0|J˲|epsiloncafé|0|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', -2, 1)|instr('zeta', 'nu')|replace('zeta', 'a', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%a_'|'zeta' GLOB '*'|char(67, 415)|'zeta' || 'nu'|'zeta' < 'nu'|'zeta' = 'nu' COLLATE NOCASE
+4|ZETA|zeta|t|0|zet|zeta|zeta|7A657461|'zeta'|122|0|1|CƟ|zetanu|0|0
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', 3, 0)|instr('0x1F', 'tau')|replace('0x1F', 'e', 'XY')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE 'A%'|'0x1F' GLOB '?'|char(66, 446)|'0x1F' || 'tau'|'0x1F' < 'tau'|'0x1F' = 'tau' COLLATE NOCASE
+4|0X1F|0x1f||0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|Bƾ|0x1Ftau|1|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -1, 0)|instr('1e3', 'naïve')|replace('1e3', '', 'XY')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '%é%'|'1e3' GLOB '*[a-m]*'|char(66, 692)|'1e3' || 'naïve'|'1e3' < 'naïve'|'1e3' = 'naïve' COLLATE NOCASE
+3|1E3|1e3||0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Bʴ|1e3naïve|1|0
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 4, 4)|instr(' pad ', 'iota')|replace(' pad ', 'e', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE 'a%'|' pad ' GLOB '*[a-m]*'|char(87, 978)|' pad ' || 'iota'|' pad ' < 'iota'|' pad ' = 'iota' COLLATE NOCASE
+5| PAD | pad |d |0| pad |pad| pad |2070616420|' pad '|32|0|1|Wϒ| pad iota|1|0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 0, 4)|instr('xi', 'it''s')|replace('xi', '', '_')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%'|'xi' GLOB '*[a-m]*'|char(67, 878)|'xi' || 'it''s'|'xi' < 'it''s'|'xi' = 'it''s' COLLATE NOCASE
+2|XI|xi|xi|0|xi|xi|xi|7869|'xi'|120|1|1|Cͮ|xiit's|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+11|11
+2|2
+10|10
+6|6
+12|12
+8|8
+1|1
+5|5
+9|9
+4|4
+7|7
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+~~~
+# id
+-467
+-458
+-450
+-414
+-305
+-298
+-279
+-228
+-214
+-207
+-89
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+20
+42
+100
+150
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 3
+~~~
+error: cannot store TEXT value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+13|9223372036854775807
+~~~
+# id|c0|c1
+13|9223372036854775807|d
+12|-439|NULL
+10|356|X'A6042CA077'
+9|-489|390.1043
+8|285|X'A7CBC64F63'
+7|541|d
+5|-81|-879.9412
+4|330|NULL
+3|457|123456789012
+2|180|785
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+23|23|11|11.0|0.47826086956521741|-467|480|23
+~~~
+# c2|count(*)|group_concat(id, ';')
+-467|1|14
+-458|1|10
+-450|1|23
+-414|1|3
+-305|1|2
+-298|1|4
+-279|1|8
+-228|1|5
+-214|1|19
+-207|1|1
+-89|1|7
+20|1|6
+42|1|11
+100|1|21
+150|1|12
+197|1|17
+303|1|16
+377|1|18
+405|1|15
+435|1|9
+443|1|13
+468|1|22
+480|1|20
+~~~

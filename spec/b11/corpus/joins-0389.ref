@@ -1,0 +1,174 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c0
+2|1|NULL|4
+2|3|NULL|omega
+4|2|42|-1
+~~~
+# count(*)
+4
+~~~
+# id|id|c1|ref
+1|NULL|X''|NULL
+2|1|-1|2
+2|3|-1|2
+3|NULL|X'933686'|NULL
+4|2|NULL|4
+5|4|-2.5|5
+6|NULL|NULL|NULL
+7|NULL|1.0e+308|NULL
+8|NULL|upsilon|NULL
+9|NULL|NULL|NULL
+10|NULL|-661|NULL
+11|NULL|NULL|NULL
+12|NULL|6|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|94|NULL
+16|NULL|NULL|NULL
+17|NULL|1000000000000000.0|NULL
+~~~
+error: near "x'fb4043'": syntax error
+~~~
+# id|id|c2|id
+2|1|NULL|1
+2|3|NULL|3
+4|2|4.500000000000011e-310|2
+5|4|NULL|4
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c2|c2
+1|NULL|9223372036854775807|NULL
+2|1|NULL|554.46
+2|3|NULL|X'D7'
+3|NULL|X'22'|NULL
+4|2|4.500000000000011e-310|NULL
+5|4|NULL|42
+6|NULL|NULL|NULL
+7|NULL|0.0|NULL
+8|NULL|X'67901E74'|NULL
+9|NULL|X'33824295'|NULL
+10|NULL|NULL|NULL
+11|NULL|X'7B790080CC26'|NULL
+12|NULL|4.500000000000011e-310|NULL
+13|NULL|0.1|NULL
+14|NULL|-988|NULL
+15|NULL|-560|NULL
+16|NULL|2.5|NULL
+17|NULL|eta|NULL
+~~~
+# count(*)
+17
+~~~
+# id|id|c0|c3
+1|NULL|-851.91|NULL
+2|1|-3|X''
+2|3|-3|-405.271
+3|NULL|NULL|NULL
+4|2|NULL|0.0
+5|4|NULL|-1.0e+308
+6|NULL|516.4772|NULL
+7|NULL|-9223372036854775808|NULL
+8|NULL|X'9D'|NULL
+9|NULL|x_y|NULL
+10|NULL|zeta|NULL
+11|NULL|X'C8F439B7'|NULL
+12|NULL|omega|NULL
+13|NULL|X''|NULL
+14|NULL|NULL|NULL
+15|NULL|X'85755AAF36'|NULL
+16|NULL|NULL|NULL
+17|NULL|-283.78|NULL
+~~~
+error: near "-": syntax error
+~~~
+# id|id|c2|c0
+1|NULL|554.46|NULL
+2|1|NULL|4
+2|3|NULL|omega
+3|NULL|X'D7'|NULL
+4|2|42|-1
+~~~
+error: near "(": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|4
+3|4
+1|4
+2|4
+~~~
+# id
+1
+3
+4
+~~~
+# id
+1
+2
+3
+~~~
+# ref
+-1
+2
+4
+5
+omega
+X'A930523DB4'
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', 0, 5)|instr('upsilon', '-7')|replace('upsilon', 'é', '')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE '_'|'upsilon' GLOB '*'|char(90, 967)|'upsilon' || '-7'|'upsilon' < '-7'|'upsilon' = '-7' COLLATE NOCASE
+7|UPSILON|upsilon|upsi|0|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|1|Zχ|upsilon-7|0|0
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+2|2|7|7.0|3.5|3|4|2
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+~~~

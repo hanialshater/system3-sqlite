@@ -1,0 +1,190 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+6|5
+13|5
+9|5
+2|2
+5|5
+3|3
+7|5
+10|5
+1|1
+4|4
+8|5
+12|5
+11|5
+~~~
+# id
+1
+3
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c2
+2
+3
+4
+5
+-755.841
+0x1F
+1.0e+308
+2.5
+877
+iota
+kappa
+upsilon
+über
+X''
+X'62'
+X'B423E1DE'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|5
+5|5
+3|5
+4|5
+2|5
+~~~
+# id
+~~~
+# id
+~~~
+# ref
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|5
+5|5
+3|5
+4|5
+2|5
+~~~
+# id
+1
+2
+3
+4
+5
+~~~
+# id
+5
+~~~
+# c2
+952.9373
+MU
+X'83C6F1043876'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+10|5
+8|5
+7|5
+5|5
+12|5
+3|3
+11|5
+2|2
+4|4
+9|5
+13|5
+1|1
+6|5
+~~~
+# id
+1
+2
+4
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id
+1
+2
+3
+~~~
+# id
+2.0
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+270.07
+506.0
+X'392FD53C'
+~~~
+# id|id|ref|ref
+1|3|7|1
+1|4|7|1
+1|5|7|1
+2|NULL|NULL|NULL
+3|NULL|1|NULL
+4|NULL|1|NULL
+5|NULL|1|NULL
+~~~
+error: near "(": syntax error
+~~~

@@ -1,0 +1,142 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', -2, 0)|instr('42', 'eta')|replace('42', 'e', 'XY')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE 'a%'|'42' GLOB '?'|char(76, 458)|'42' || 'eta'|'42' < 'eta'|'42' = 'eta' COLLATE NOCASE
+2|42|42||0|42|42|42|3432|'42'|52|0|0|LǊ|42eta|1|0
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', 3, 4)|instr('x_y', 'kappa')|replace('x_y', 'e', '_')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE '%é%'|'x_y' GLOB '?'|char(90, 498)|'x_y' || 'kappa'|'x_y' < 'kappa'|'x_y' = 'kappa' COLLATE NOCASE
+3|X_Y|x_y|y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|Zǲ|x_ykappa|0|0
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', 2, 4)|instr('über', 'nu')|replace('über', 'é', '')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE 'a%'|'über' GLOB '?'|char(66, 374)|'über' || 'nu'|'über' < 'nu'|'über' = 'nu' COLLATE NOCASE
+4|üBER|über|ber|0|über|über|über|C3BC626572|'über'|252|0|0|BŶ|übernu|0|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', -2, 1)|instr('zeta', 'pi')|replace('zeta', 'e', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE 'A%'|'zeta' GLOB '*[a-m]*'|char(71, 538)|'zeta' || 'pi'|'zeta' < 'pi'|'zeta' = 'pi' COLLATE NOCASE
+4|ZETA|zeta|t|0|zta|zeta|zeta|7A657461|'zeta'|122|0|1|GȚ|zetapi|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -3, 4)|instr('1e3', 'phi')|replace('1e3', 'é', 'XY')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '%a_'|'1e3' GLOB '*[a-m]*'|char(72, 766)|'1e3' || 'phi'|'1e3' < 'phi'|'1e3' = 'phi' COLLATE NOCASE
+3|1E3|1e3|1e3|0|1e3|1e3|1e3|316533|'1e3'|49|0|1|H˾|1e3phi|1|0
+~~~
+# length('42')|upper('42')|lower('42')|substr('42', -2, 1)|instr('42', 'café')|replace('42', '', '_')|trim('42')|ltrim('42', 'ab')|hex('42')|quote('42')|unicode('42')|'42' LIKE '%'|'42' GLOB '*'|char(74, 571)|'42' || 'café'|'42' < 'café'|'42' = 'café' COLLATE NOCASE
+2|42|42|4|0|42|42|42|3432|'42'|52|1|1|JȻ|42café|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 2, 3)|instr('nu', 'nu')|replace('nu', 'é', 'XY')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '_'|'nu' GLOB '*[a-m]*'|char(71, 243)|'nu' || 'nu'|'nu' < 'nu'|'nu' = 'nu' COLLATE NOCASE
+2|NU|nu|u|1|nu|nu|nu|6E75|'nu'|110|0|0|Gó|nunu|0|1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+6|18
+7|18
+8|18
+16|18
+17|18
+11|18
+13|18
+14|18
+10|18
+12|18
+4|18
+2|18
+9|18
+15|18
+18|18
+1|18
+5|18
+3|18
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+~~~
+# c2
+NULL
+~~~

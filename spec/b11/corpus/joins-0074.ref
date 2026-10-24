@@ -1,0 +1,167 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c1
+1|13|1.0e+308|842
+1|16|1.0e+308|NULL
+1|18|1.0e+308|NULL
+2|5|0x1F|733.71
+2|11|0x1F|-976
+3|17|NULL|omicron
+5|4|X'74B85B'|NULL
+~~~
+error: ambiguous column name: c0
+~~~
+# id|id|c3|id
+1|13|499|13
+1|16|499|16
+1|18|499|18
+2|5|NULL|5
+2|11|NULL|11
+3|17|kappa|17
+4|NULL|phi|NULL
+5|4|日本|4
+6|14|2.5|14
+7|6|X'48FD8D'|6
+7|9|X'48FD8D'|9
+8|7|delta|7
+8|12|delta|12
+8|19|delta|19
+9|NULL|x_y|NULL
+10|NULL|X'74D4'|NULL
+11|NULL|X''|NULL
+12|NULL|9223372036854775807|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|X'2B9030'|NULL
+16|NULL|4.500000000000011e-310|NULL
+17|NULL|NULL|NULL
+18|NULL|X'CF328C921C'|NULL
+19|NULL|NULL|NULL
+20|NULL|2|NULL
+~~~
+# count(*)
+5
+~~~
+# id|id|c3|c1
+1|13|499|842
+1|16|499|NULL
+1|18|499|NULL
+2|5|NULL|733.71
+2|11|NULL|-976
+3|17|kappa|omicron
+4|NULL|phi|NULL
+5|4|日本|NULL
+6|14|2.5|NULL
+7|6|X'48FD8D'|888
+7|9|X'48FD8D'|X''
+8|7|delta|-957.8
+8|12|delta|X'5FFB'
+8|19|delta|über
+9|NULL|x_y|NULL
+10|NULL|X'74D4'|NULL
+11|NULL|X''|NULL
+12|NULL|9223372036854775807|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|X'2B9030'|NULL
+16|NULL|4.500000000000011e-310|NULL
+17|NULL|NULL|NULL
+18|NULL|X'CF328C921C'|NULL
+19|NULL|NULL|NULL
+20|NULL|2|NULL
+~~~
+# count(*)
+20
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|-5
+~~~
+# id|c0|c1
+5|-5|d
+4|X'EB84CB812C21'|-1.0e+308
+3|NULL|-3
+2|NULL|590
+1|1.0e-07|d
+~~~

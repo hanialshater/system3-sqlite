@@ -1,0 +1,84 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+6|4|885.34|885.34|221.335|-2|zeta|4
+~~~
+# c0|count(*)|group_concat(id)
+NULL|2|1,5
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+3|3|-9.2223720368547748e+18|-9.2223720368547748e+18|-3.0741240122849249e+18|-9.2233720368547758e+18|1000000000000000.0|3
+~~~
+# c0|count(*)|group_concat(id)
+NULL|3|1,2,4
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id)
+NULL|1|1
+0|1|3
+iota|1|4
+tau|1|2
+X'0A7898'|1|6
+X'980A'|1|5
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', -2, 5)|instr('delta', 'delta')|replace('delta', 'a', '_')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE 'a%'|'delta' GLOB '*[a-m]*'|char(83, 287)|'delta' || 'delta'|'delta' < 'delta'|'delta' = 'delta' COLLATE NOCASE
+5|DELTA|delta|ta|1|delt_|delta|delta|64656C7461|'delta'|100|0|1|Sğ|deltadelta|0|1
+~~~
+# id|1 IS NULL|CASE WHEN 319 THEN x'd4c7d5' ELSE id END
+1|0|X'D4C7D5'
+2|0|X'D4C7D5'
+3|0|X'D4C7D5'
+4|0|X'D4C7D5'
+5|0|X'D4C7D5'
+6|0|X'D4C7D5'
+~~~
+# x'3c188f93'|coalesce(abs(0), NOT x'1c6151')
+X'3C188F93'|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 0, 1)|instr('señor', 'iota')|replace('señor', 'é', '')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '%'|'señor' GLOB '*[a-m]*'|char(68, 498)|'señor' || 'iota'|'señor' < 'iota'|'señor' = 'iota' COLLATE NOCASE
+5|SEñOR|señor||0|señor|señor|señor|7365C3B16F72|'señor'|115|1|1|Dǲ|señoriota|0|0
+~~~

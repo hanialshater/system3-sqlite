@@ -1,0 +1,151 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 1, 3)|instr('naïve', '日本')|replace('naïve', '', 'XY')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '_'|'naïve' GLOB '*'|char(88, 536)|'naïve' || '日本'|'naïve' < '日本'|'naïve' = '日本' COLLATE NOCASE
+5|NAïVE|naïve|naï|0|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|1|XȘ|naïve日本|1|0
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', 0, 5)|instr('beta', 'omicron')|replace('beta', 'e', '_')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE 'A%'|'beta' GLOB 'a*'|char(75, 212)|'beta' || 'omicron'|'beta' < 'omicron'|'beta' = 'omicron' COLLATE NOCASE
+4|BETA|beta|beta|0|b_ta|beta|eta|62657461|'beta'|98|0|0|KÔ|betaomicron|1|0
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', 0, 1)|instr('über', '')|replace('über', '', '')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE '_'|'über' GLOB '*'|char(66, 551)|'über' || ''|'über' < ''|'über' = '' COLLATE NOCASE
+4|üBER|über||1|über|über|über|C3BC626572|'über'|252|0|1|Bȧ|über|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 4, 3)|instr('señor', ' pad ')|replace('señor', 'é', '')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '_'|'señor' GLOB 'a*'|char(89, 248)|'señor' || ' pad '|'señor' < ' pad '|'señor' = ' pad ' COLLATE NOCASE
+5|SEñOR|señor|or|0|señor|señor|señor|7365C3B16F72|'señor'|115|0|0|Yø|señor pad |0|0
+~~~
+# id|id|c0|c0
+1|2|NULL|it's
+1|3|NULL|-4
+1|4|NULL|-1
+1|5|NULL|NULL
+1|6|NULL|932
+1|7|NULL|X'2E7150AB04'
+1|8|NULL|-557
+1|9|NULL|-807
+1|10|NULL|905
+1|11|NULL|tau
+1|12|NULL|psi
+2|3|0.1|-4
+2|4|0.1|-1
+2|5|0.1|NULL
+2|6|0.1|932
+2|7|0.1|X'2E7150AB04'
+2|8|0.1|-557
+2|9|0.1|-807
+2|10|0.1|905
+2|11|0.1|tau
+2|12|0.1|psi
+3|4|NULL|-1
+3|5|NULL|NULL
+3|6|NULL|932
+3|7|NULL|X'2E7150AB04'
+3|8|NULL|-557
+3|9|NULL|-807
+3|10|NULL|905
+3|11|NULL|tau
+3|12|NULL|psi
+4|5|NULL|NULL
+4|6|NULL|932
+4|7|NULL|X'2E7150AB04'
+4|8|NULL|-557
+4|9|NULL|-807
+4|10|NULL|905
+4|11|NULL|tau
+4|12|NULL|psi
+5|6|4.500000000000011e-310|932
+5|7|4.500000000000011e-310|X'2E7150AB04'
+5|8|4.500000000000011e-310|-557
+5|9|4.500000000000011e-310|-807
+5|10|4.500000000000011e-310|905
+5|11|4.500000000000011e-310|tau
+5|12|4.500000000000011e-310|psi
+6|7|-563.5|X'2E7150AB04'
+6|8|-563.5|-557
+6|9|-563.5|-807
+6|10|-563.5|905
+6|11|-563.5|tau
+6|12|-563.5|psi
+7|8|NULL|-557
+7|9|NULL|-807
+7|10|NULL|905
+~~~
+error: near "NOT": syntax error
+~~~
+changes: 6
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|
+~~~
+# id|c0|c1|c2
+2|0|0|X''
+3|804!|X'7227'|278.49
+5|0|5|X'71378A'
+6|NULL|0|NULL
+8|-557|0|a%b
+9|-807|0|NULL
+11|0|chi|X'3B3EFC439703'
+12|0|X'8C'|1.0e+308
+13||0|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,169 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+20|16|-895.6182|-895.6182|-55.9761375|-594|X'FD'|14
+~~~
+# c4|count(*)|group_concat(id, ';')
+NULL|4|2;8;9;14
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+20|16|-1.0e+308|-1.0e+308|-6.25e+306|-1.0e+308|X'9B73'|16
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|4|10;11;16;19
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+20|17|-753.1393|-753.1393|-44.302311764705884|-491.5393|X'F295211EEC2B'|17
+~~~
+# c0|count(*)|group_concat(id)
+NULL|3|4,10,14
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+19|20
+16|20
+11|20
+10|20
+12|20
+20|20
+6|20
+8|20
+2|20
+7|20
+4|20
+9|20
+14|20
+3|20
+1|20
+17|20
+13|20
+5|20
+18|20
+15|20
+~~~
+# id
+4
+5
+6
+9
+10
+11
+12
+13
+15
+20
+~~~
+# id
+19
+20
+~~~
+# c1
+NULL
+-974
+-491.5393
+-453.5155
+-263.7
+-5
+0
+0.1
+2.0
+3
+523
+685
+828
+9223372036854775807
+1.0e+308
+
+42
+MU
+beta
+café
+chi
+~~~

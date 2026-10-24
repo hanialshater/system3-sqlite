@@ -1,0 +1,193 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2|typeof(iif(NULL, typeof('MU'), 1e308))
+6|NULL|real
+5|X'5C94BA67'|real
+4|NULL|real
+3|NULL|real
+2|tau|real
+1|NULL|real
+~~~
+# iif(typeof(NULL), x'47' IS NULL, 'omega') IN (iif(typeof(x'b55665cff07a'), CAST(-412 AS TEXT), 'psi'), -0.0, 'señor')|coalesce(iif(CAST('1e3' AS TEXT), 474, NULL), -4)
+0|474
+~~~
+# id|abs((iif(c3, -2, NULL) = NOT id))|abs(c0)
+1|0|2.5
+2|NULL|788.374
+3|NULL|0.0
+4|0|0.0
+5|0|3
+6|NULL|0.0
+7|NULL|0.0
+8|0|2.5
+9|NULL|4
+10|NULL|0.0
+11|NULL|NULL
+12|NULL|0.0
+13|NULL|NULL
+~~~
+# x'81bdd3afec'|coalesce(abs(CAST(-240 AS INTEGER)), coalesce(NOT x'aa14', ('psi' - x'7b')))
+X'81BDD3AFEC'|240
+~~~
+# id|CAST((coalesce(-96.499, -245.62) IS NOT c3) AS BLOB)|id
+15|X'31'|15
+14|X'31'|14
+13|X'31'|13
+12|X'31'|12
+11|X'31'|11
+10|X'31'|10
+9|X'31'|9
+8|X'31'|8
+7|X'31'|7
+6|X'31'|6
+5|X'31'|5
+4|X'31'|4
+3|X'31'|3
+2|X'31'|2
+1|X'31'|1
+~~~
+# CASE WHEN iif(-3, x'4323', x'6f90a30247') BETWEEN 'pi' AND (x'8b74' < 720) THEN 898 ELSE coalesce('tau', x'5c') IS NULL END|NULL
+0|NULL
+~~~
+# id|abs(2.5)|abs(abs(coalesce(x'a8778695b2d7', c2)))
+1|2.5|0.0
+2|2.5|0.0
+3|2.5|0.0
+4|2.5|0.0
+5|2.5|0.0
+6|2.5|0.0
+~~~
+# (361.490 >= x'b73fd694683e') IN (typeof(3), 705, 586)|'naïve'
+0|naïve
+~~~
+# id|-(-('x_y'))|coalesce(abs(265), c3 IN (CAST(c1 AS TEXT), NULL, -894.3))
+15|0|265
+14|0|265
+13|0|265
+12|0|265
+11|0|265
+10|0|265
+9|0|265
+8|0|265
+7|0|265
+6|0|265
+5|0|265
+4|0|265
+3|0|265
+2|0|265
+1|0|265
+~~~
+# 198 BETWEEN typeof(iif(-75, x'96e300', -97)) AND x'3d3ed2'|-(coalesce(abs(-4.85), CASE WHEN NULL THEN 'tau' ELSE 951 END))
+0|-4.85
+~~~
+# id|CASE WHEN c2 THEN iif((c3 < x'9fcc4215ac'), ('Ελλάδα' << id), NULL) ELSE CAST(typeof(c2) AS NUMERIC) END|abs(c4 IS NULL)
+1|0|0
+2|0|0
+3|0|1
+4|0|0
+5|0|0
+6|0|0
+7|0|0
+8|0|0
+9|0|0
+10|0|0
+11|0|0
+12|0|0
+13|0|1
+14|0|0
+15|0|1
+~~~
+# -(iif(-338, NULL, -2.5)) IN (coalesce((x'51959a' + 332.918), -134 IN (-624.50, 'it''s', NULL)), NULL, x'dcad9a')|nullif(abs(NULL), (x'72477282' OR NULL) IS NULL)
+NULL|NULL
+~~~
+changes: 6
+~~~
+changes: 3
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+6|3.1415926535897931
+~~~
+# id|c0|c1|c2|c3
+1|1|NULL|NULL|X'2ACF'
+3|0|NULL|NULL|NULL
+5|1|NULL|X'5C94BA67'|-9223372036854775808
+6|3.1415926535897931|NULL|NULL|NULL
+~~~

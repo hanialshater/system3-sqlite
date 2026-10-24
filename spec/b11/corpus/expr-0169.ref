@@ -1,0 +1,146 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|iif(abs(id IN (id, 'tau', NULL)), typeof(3.141592653589793) IS NULL, NULL)|abs(c0)
+1|0|NULL
+2|0|356
+3|0|NULL
+4|0|849
+5|0|752
+~~~
+# NULL|688.9 BETWEEN -(abs(x'd466de0bf7')) AND -(abs(-801))
+NULL|0
+~~~
+# id|-(c2)|-(CAST(c2 AS NUMERIC))
+1|0|0
+2|2.5|2.5
+3|0|0
+4|0|0
+5|0|0
+~~~
+# NULL|CASE WHEN (x'4ac83051' IS NULL - -0.0) THEN NOT 1e-7 ELSE NOT CASE WHEN NULL THEN x'' ELSE x'800ea66aa5' END END
+NULL|1
+~~~
+# id|iif(NOT CASE WHEN id THEN id ELSE -754 END, NOT NULL, 1)|NULL IN (CAST(x'd0' AS NUMERIC), NULL, x'98fc709f')
+1|1|NULL
+2|1|NULL
+3|1|NULL
+4|1|NULL
+5|1|NULL
+6|1|NULL
+7|1|NULL
+~~~
+# '0x1F'|768
+0x1F|768
+~~~
+# id|abs('1e3') BETWEEN c0 AND c3|c0 IS NULL
+7|NULL|0
+6|0|0
+5|0|0
+4|0|0
+3|1|0
+2|0|0
+1|0|0
+~~~
+# typeof(-522 IS NULL)|typeof(CAST('a%b' AS BLOB))
+integer|blob
+~~~
+# id|(x'd4a4a9ed89a2' BETWEEN (-537 + c3) AND CAST(c1 AS TEXT) << NOT c2 IS NULL)|NOT nullif(typeof(c0), 'a%b' BETWEEN c3 AND c0)
+1|0|1
+2|NULL|1
+3|0|1
+4|0|1
+5|0|1
+~~~
+# NULL|nullif((abs(-0.0) << NULL), coalesce(2, 'chi') IS NULL)
+NULL|NULL
+~~~
+# id|CAST((c0 < iif(c2, 'a%b', 3)) AS TEXT)|CAST(c3 AS REAL)
+1|NULL|0.0
+2|1|-2.5
+3|NULL|285.0
+4|0|-184.0
+5|1|0.0
+~~~
+# x'f2'|abs(x'be')
+X'F2'|0.0
+~~~
+# id|typeof(c0)|-(NOT c0 IS NULL)
+1|text|-1
+2|text|-1
+3|text|-1
+4|text|-1
+5|text|-1
+6|text|-1
+7|text|-1
+~~~
+# iif(NULL, -(CAST(NULL AS NUMERIC)), NULL)|iif(CAST(x'db45e5' AS NUMERIC) BETWEEN nullif('café', -1) AND -('zeta'), -113 IS NULL, -150)
+NULL|-150
+~~~
+changes: 1
+~~~
+# id|c1
+4|X'D1'
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CAST(nullif((c1 + id), c3 BETWEEN c3 AND id) AS REAL)|x'dccf900f4a'
+7|7.0|X'DCCF900F4A'
+6|6.0|X'DCCF900F4A'
+5|NULL|X'DCCF900F4A'
+4|4.0|X'DCCF900F4A'
+3|963.0|X'DCCF900F4A'
+2|2.0|X'DCCF900F4A'
+1|-1.0e+308|X'DCCF900F4A'
+~~~
+# NULL IN (('delta' >> 'x_y') IS NULL, 'chi', 0)|NOT '42'
+NULL|0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|759.49
+~~~
+# id|c0|c1|c2|c3|c4
+1|NULL|307|señor|X'772E'|NULL
+2|NULL|NULL|-2.5|-2.5|-688
+3|NULL|it's|café|285|X'D4'
+4|-1.0e+308|NULL|NULL|0|NULL
+5|759.49|NULL|NULL|0|NULL
+~~~

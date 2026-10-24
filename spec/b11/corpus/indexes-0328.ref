@@ -1,0 +1,86 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+1|-449
+2|2
+6|9223372036854775807
+3|omega
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+8|-5.0
+4|0.1
+7|2.0
+2|415.426
+5|X''
+9|X'7C'
+6|X'9AE9FDB35570'
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 0, 3)|instr('xi', 'phi')|replace('xi', '', '')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%'|'xi' GLOB 'a*'|char(83, 907)|'xi' || 'phi'|'xi' < 'phi'|'xi' = 'phi' COLLATE NOCASE
+2|XI|xi|xi|0|xi|xi|xi|7869|'xi'|120|1|0|S΋|xiphi|0|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', -2, 0)|instr('-7', 'eta')|replace('-7', '', 'XY')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%é%'|'-7' GLOB '*'|char(68, 962)|'-7' || 'eta'|'-7' < 'eta'|'-7' = 'eta' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|0|1|Dς|-7eta|1|0
+~~~

@@ -1,0 +1,315 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|-4
+~~~
+# id|c0|c1|c2|c3|ref
+9|-4|0|NULL|NULL|NULL
+8|-312.8|nu|1|4|NULL
+6|-902|-106|NULL|-1|4
+5|470.377|0|NULL|NULL|NULL
+3|pi|-965.1|NULL|1.0e-07|8
+2|]ȠV!|rho|-5|-4|1
+~~~
+changes: 18
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|X'C343C4B2'
+~~~
+# id|c0|c1|c2|c3|ref
+2|NULL|X'6548B3'|-883.0|NULL|6
+3|922|X'2B51835B8D'|-80.3778|-763.108|NULL
+4|NULL|NULL|0.0|NULL|NULL
+5|pi|X'DE'|X'DAD804C4BD'|4.500000000000011e-310|2
+6|NULL|X'D6EAA20E47B5'|4.0|-2.5|7
+8|NULL|-3|über|4|2
+9|-4|NULL|0.0|NULL|NULL
+11|NULL|-1|X'9A351B'|3|3
+12|X'F6'|omega|X'8450'|X''|NULL
+14|eta|470|phi|2.5|NULL
+15|1e3|-486|-101.17|NULL|6
+17|NULL|2|X'83'|0|6
+18|-286|xi|-9.2233720368547758e+18|-311|NULL
+20|-7|X'33194EEE61D3'|X'873F3CC47318'|0.1|3
+21|343|NULL|0.0|epsilon|3
+22|X'C343C4B2'|NULL|0.0|NULL|NULL
+~~~
+changes: 16
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|alpha
+~~~
+# id|c0|c1|c2|c3|ref
+2|null|X'6548B3'|-883.0|NULL|6
+3|blob|X'2B51835B8D'|-80.3778|-763.108|NULL
+4|NULL|NULL|0.0|NULL|NULL
+5|text|X'DE'|X'DAD804C4BD'|4.500000000000011e-310|2
+6|null|X'D6EAA20E47B5'|4.0|-2.5|7
+8|NULL|NULL|0.0|NULL|NULL
+9|blob|NULL|0.0|NULL|NULL
+11|null|-1|X'9A351B'|3|3
+14|blob|470|phi|2.5|NULL
+15|text|-486|-101.17|NULL|6
+17|null|2|X'83'|0|6
+18|blob|xi|-9.2233720368547758e+18|-311|NULL
+21|text|NULL|0.0|epsilon|3
+22|blob|NULL|0.0|NULL|NULL
+23|alpha|NULL|0.0|NULL|NULL
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 9
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+25|0.1
+~~~
+# id|c0|c1|c2|c3
+2|upsilon|-9223372036854775808|-2.5|42
+3|123456789012|1|-9223372036854775808|419
+4|-5|NULL|NULL|NULL
+5|1|625|über|Lambda
+6|0|-4|16|-53.176
+8|pi|5|sigma|2.9067
+9|señor|gamma|9223372036854775807|X'B68369BE'
+11|Lambda|X'E0'|NULL|-707.4172
+12|-9223372036854775808|beta|1e3|187
+14|4.500000000000011e-310|NULL|X'6E0F'|rho
+15|0|4.500000000000011e-310|X'F4'| pad 
+17|0|NULL|897|X'6106'
+18|-2|X'B99F9AE3'|-915|Ελλάδα
+20|0.0|-7.14|-2.5|NULL
+21|X'4A'|-272|X'C73F8B06ABE1'|iota
+23|kappa|über|Lambda|X'E4E6A6'
+24|1|X'BF'|NULL|1000000000000000
+25|0.1|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|-534
+~~~
+# id|c0|c1|c2|c3
+25|-534|NULL|NULL|NULL
+24|1|X'BF'|NULL|1000000000000000
+23|kappa|über|Lambda|X'E4E6A6'
+20|0.0|-7.14|-2.5|NULL
+18|-2|X'B99F9AE3'|-915|Ελλάδα
+15|0|4.500000000000011e-310|X'F4'| pad 
+14|4.500000000000011e-310|NULL|X'6E0F'|rho
+12|-9223372036854775808|beta|1e3|187
+11|Lambda|X'E0'|NULL|-707.4172
+8|pi|5|sigma|2.9067
+6|0|-4|16|-53.176
+5|-841|NULL|NULL|NULL
+4|-5|NULL|NULL|NULL
+3|123456789012|1|-9223372036854775808|419
+2|upsilon|-9223372036854775808|-2.5|42
+1|3|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|239
+~~~
+# id|c0|c1|c2|c3|ref
+1|-916|0|NULL|NULL|NULL
+2|]ȠV!|rho|-5|-4|1
+5|470.377|0|NULL|NULL|NULL
+8|-329|0|NULL|NULL|NULL
+9|239|0|NULL|NULL|NULL
+~~~
+changes: 15
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|123456789012
+~~~
+# id|c0|c1|c2|c3|ref
+2|eta|NULL|0.0|NULL|NULL
+3|blob|X'2B51835B8D'|-80.3778|-763.108|NULL
+5|text|X'DE'|X'DAD804C4BD'|4.500000000000011e-310|2
+6|null|X'D6EAA20E47B5'|4.0|-2.5|7
+8|NULL|NULL|0.0|NULL|NULL
+9|blob|NULL|0.0|NULL|NULL
+11|null|-1|X'9A351B'|3|3
+14|blob|470|phi|2.5|NULL
+15|text|-486|-101.17|NULL|6
+17|null|2|X'83'|0|6
+18|blob|xi|-9.2233720368547758e+18|-311|NULL
+21|text|NULL|0.0|epsilon|3
+23|alpha|NULL|0.0|NULL|NULL
+24|123456789012|NULL|0.0|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|id
+1|2|0|2
+~~~
+error: near "NOT": syntax error
+~~~

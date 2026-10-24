@@ -1,0 +1,162 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+6|817.0
+1|123456789012.0
+5|X'4E5C'
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+1|NULL
+6|NULL
+7|NULL
+4|-971
+9|0
+16|3
+11|42
+10|652
+8|Lambda
+3|alpha
+13|alpha
+17|alpha
+2|epsilon
+5|iota
+14|it's
+15|X'1B'
+12|X'60A176'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+10|eta
+6|señor
+1|X'0B'
+9|X'E61DC2'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c0
+1|7|X'0B'|71
+2|2|NULL|-4
+3|3|450.8|282
+3|5|450.8|-2.5
+3|6|450.8|NULL
+5|12|409|X'8D18D7C4'
+7|8|0|rho
+8|1|1000000000000000|X'13F2884E17E8'
+8|4|1000000000000000|876
+8|9|1000000000000000|X'B19E96D1EB'
+8|13|1000000000000000|4
+~~~
+# count(*)
+13
+~~~

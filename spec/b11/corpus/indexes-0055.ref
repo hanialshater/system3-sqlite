@@ -1,0 +1,193 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+4|X'0BC6'
+2|X'137F8E1F9E6D'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|abs(nullif(coalesce(c4, 'Lambda'), iif(c3, x'14b7ea5c', -5)))|typeof(CASE WHEN 1e-7 THEN x'9e' BETWEEN 'beta' AND id ELSE c4 END)
+1|1|integer
+2|0.0|integer
+3|211|integer
+4|0.0|integer
+5|56|integer
+6|0.0|integer
+7|927|integer
+8|2.5|integer
+9|0.0|integer
+10|2|integer
+11|285|integer
+~~~
+# (-(abs(NULL)) < nullif(coalesce(-533, NULL), CASE WHEN 259 THEN 422 ELSE 'sigma' END))|coalesce(3.141592653589793, 1e308)
+NULL|3.1415926535897931
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|NULL
+~~~
+# id|c0|c1|c2|c3
+1|x_y|NULL|d|NULL
+3|señor|-310.0|-31.0|-365.404
+5|NULL|NULL|-135.0398|café
+7|X'341ED6'|rho|NULL|X'C87906C3B2'
+9|NULL|-3.0|-528.0|-117
+11|-2|X'66E9F9'|0x1F|NULL
+13|NULL|omega|nu|1
+14|NULL|NULL|d|NULL
+~~~
+changes: 1
+~~~
+# id|c4
+6|NULL
+9|NULL
+7|-927
+11|-285
+3|-211
+1|1
+10|2
+8|2.5
+5|56
+4|X'0BC6'
+2|X'137F8E1F9E6D'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

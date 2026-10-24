@@ -1,0 +1,266 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+10|10
+5|5
+4|4
+1|1
+9|9
+3|3
+2|2
+13|13
+6|6
+11|11
+8|8
+12|12
+7|7
+~~~
+# id
+~~~
+# id
+~~~
+# c2
+120.1
+229.0
+902.0
+delta
+X'9CBBEFD948'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+11|17
+8|17
+3|17
+5|17
+7|17
+13|17
+10|17
+17|17
+1|17
+9|17
+16|17
+2|17
+15|17
+6|17
+12|17
+14|17
+4|17
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# c2
+0
+0
+0
+1
+2
+3
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+4|4
+5|5
+14|14
+17|17
+2|2
+6|6
+3|3
+16|16
+10|10
+7|7
+12|12
+8|8
+18|17
+1|1
+13|13
+11|11
+9|9
+15|15
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# ref
+-696
+-5
+0
+~~~
+# id|id|c1|c3
+1|11|MU|NULL
+1|17|MU|X''
+2|9|NULL|5.0
+2|15|NULL|NULL
+3|5|1.0e-07|X'08F6'
+4|16|NULL|X'83800C'
+5|NULL|343|NULL
+6|NULL|delta|NULL
+7|2|X'6D'|-1.0
+7|13|X'6D'|日本
+8|1|X''|NULL
+8|12|X''|X'0632E1F2'
+9|NULL|x_y|NULL
+10|NULL|NULL|NULL
+11|NULL|X'121B0FF0'|NULL
+12|NULL|NULL|NULL
+13|NULL|X'857B144D89'|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|'42'|id IS NULL
+1|42|0
+2|42|0
+3|42|0
+4|42|0
+5|42|0
+6|42|0
+7|42|0
+8|42|0
+9|42|0
+10|42|0
+11|42|0
+12|42|0
+13|42|0
+~~~
+# CASE WHEN coalesce(abs(561), typeof(x'bac3')) THEN iif(-(NULL), abs(0), x'2670986c') ELSE abs(abs('-7')) END|NOT 'eta'
+X'2670986C'|1
+~~~

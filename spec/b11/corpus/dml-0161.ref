@@ -1,0 +1,174 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 15
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|X''
+~~~
+# id|c0|c1|c2|c3|c4
+2|-2.5|-313|NULL|-142.8|NULL
+3|0.1!|2|-702|-224|X'B9BDC6E07F'
+4|-2.5|NULL|omicron|-5|X''
+5|4|NULL|NULL|NULL|NULL
+7|-2.5|844.4|-764|4.500000000000011e-310|78
+8|-2.5|0.0|NULL|X'CD9EA2019B0F'|798
+9|-2.5|-3|NULL|NULL|130.1
+10|-2.5|-2|X'1342'|gamma|0x1F
+12|-2.5|3|X'EA'|42|NULL
+13|-2.5|-963.9557|-216|0|0
+14|-2.5|268.85|1000000000000000.0|X''|chi
+15|-2.5|X'6082'|NULL|-459.6|sigma
+16|X''|NULL|NULL|NULL|NULL
+~~~
+changes: 13
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|delta
+~~~
+# id|c0|c1|c2|c3|c4
+17|delta|NULL|NULL|NULL|NULL
+16|1|NULL|NULL|NULL|NULL
+14|0|268.85|1000000000000000.0|X''|chi
+12|0|3|X'EA'|42|NULL
+10|0|-2|X'1342'|gamma|0x1F
+8|NULL|NULL|NULL|NULL|NULL
+5|X'A5'|NULL|NULL|NULL|NULL
+4|0|NULL|omicron|-5|X''
+2|0|-313|NULL|-142.8|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|-815
+~~~
+# id|c0|c1|c2|c3|c4
+2|732!|-313|NULL|-142.8|NULL
+4|0|NULL|omicron|-5|X''
+5|X'83F0D1DC3BC3'|NULL|NULL|NULL|NULL
+8|NULL|NULL|NULL|NULL|NULL
+12|0|3|X'EA'|42|NULL
+14|0|268.85|1000000000000000.0|X''|chi
+16|1|NULL|NULL|NULL|NULL
+17|delta|NULL|NULL|NULL|NULL
+18|-815|NULL|NULL|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|0.0|X''|X'CB'|X'6ABA'|-826.3|6
+3|X'5C133BA299'|X'5C133BA299'|NULL|-269.65|2|3
+4|-862.0|NULL|NULL|NULL|NULL|NULL
+5|-7.0|-7|42|X'23B736414B'|NULL|5
+7|1.0|1|NULL|-2.5|X'0E'|2
+9|eta|NULL|NULL|NULL|NULL|NULL
+10|NULL|NULL|NULL|NULL|NULL|NULL
+~~~
+changes: 9
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|3
+~~~
+# id|c0|c1|c2|c3|c4
+18|3|NULL|NULL|NULL|NULL
+17|X'2D35'|NULL|NULL|NULL|NULL
+5|X'2D35'|NULL|NULL|NULL|NULL
+2|-3|NULL|NULL|NULL|NULL
+1|-1|NULL|NULL|NULL|NULL
+~~~
+# id|typeof(x'99c01516') IN (CASE WHEN CAST(c1 AS INTEGER) THEN c1 ELSE c3 END, 0, -0.0)|nullif(coalesce((c1 * 1e308), nullif(c1, NULL)), (c0 BETWEEN c0 AND c3 < 5 IN (c3, 2.5, 'über')))
+18|NULL|NULL
+17|NULL|NULL
+5|NULL|NULL
+2|NULL|NULL
+1|NULL|NULL
+~~~
+# abs(coalesce(NULL, iif(5, 1, 3.141592653589793)))|0 IS NULL BETWEEN coalesce(-3, CAST('日本' AS NUMERIC)) AND 0.1 IS NULL IN (typeof(-937), 0, x'2fbdfb')
+1|1
+~~~

@@ -1,0 +1,154 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c2
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+3|NULL
+4|NULL
+11|NULL
+2|-1.0e+308
+1|-887
+9|-2
+14|-1
+8|4
+12|18
+15| pad 
+16|beta
+5|epsilon
+7|omega
+13|X'23'
+10|X'61C3'
+6|X'F0CBFE48DA78'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|NULL
+8|NULL
+10|NULL
+16|NULL
+15|-489
+13|-401
+6|1
+9|13
+12|311
+5|397
+14|657
+3|1000000000000000
+11|omega
+7|psi
+2|X'74C01F15F113'
+1|X'E52ECC4891'
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+4|2|3|3.0|1.5|-1|4|2
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|3|3;4;11
+-1.0e+308|1|2
+-887|1|1
+-2|1|9
+-1|1|14
+4|1|8
+18|1|12
+ pad |1|15
+beta|1|16
+epsilon|1|5
+omega|1|7
+X'23'|1|13
+X'61C3'|1|10
+X'F0CBFE48DA78'|1|6
+~~~

@@ -1,0 +1,321 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+8|-179
+17|-44
+7|-64
+5|-687
+11|-9223372036854775808
+16|-9223372036854775808
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+3|NULL
+6|NULL
+8|NULL
+9|NULL
+11|NULL
+12|NULL
+5|-957
+7|0.0
+10|1000000000000000.0
+1|2.5
+13|502
+16|kappa
+2|Ελλάδα
+4|X'7F'
+14|X'8BECC4C0'
+15|X'BF2D77318FC4'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+5|-957
+7|0.0
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|NULL
+11|NULL
+13|-9223372036854775808
+2|-819.3
+12|-541
+6|-280
+15|-5
+16|0.0
+5|1
+10|5
+4|120
+8|
+14|0x1F
+1|gamma
+7|X'4CCD58B008'
+3|X'C1'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+12|12
+14|14
+8|8
+17|16
+7|7
+5|5
+11|11
+16|16
+6|6
+9|9
+2|2
+3|3
+13|13
+15|15
+4|4
+10|10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# id
+14
+15
+16
+17
+~~~
+# ref
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+10|10
+4|4
+15|15
+13|13
+3|3
+2|2
+9|9
+6|6
+11|11
+16|16
+5|5
+7|7
+17|16
+8|8
+1|1
+12|12
+14|14
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+~~~
+# c0
+~~~

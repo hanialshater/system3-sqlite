@@ -1,0 +1,185 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+5|-454.66
+4|-190.0
+2|-17.35
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|iif(abs(c3) IS NULL, (x'439d44' OR coalesce(id, c3)), 'upsilon')|-(x'4b8711e9')
+5|1|0
+4|upsilon|0
+3|upsilon|0
+2|1|0
+1|upsilon|0
+~~~
+# CASE WHEN x'2265778e' THEN 'omicron' ELSE NULL END|CAST('eta' AS REAL)
+NULL|0.0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|5
+7|5
+8|5
+9|5
+10|5
+11|5
+12|5
+13|5
+14|5
+15|5
+~~~
+# id
+2
+4
+5
+~~~
+# id
+1
+2
+3
+4
+5
+~~~
+# c0
+NULL
+NULL
+NULL
+NULL
+-168
+-3
+-1
+3
+4
+6
+6
+247.7254
+535
+~~~
+# id|c0|id
+15|-3|15
+14|X'C4883A'|14
+13|NULL|13
+12|1.0e+308|12
+11|247.7254|11
+10|delta|10
+9|-1|9
+8|1000000000000000|8
+7|535|7
+6|-168|6
+5|NULL|5
+4|nu|4
+3|X'834C'|3
+2|NULL|2
+1|4|1
+~~~
+# NULL|nullif('delta', -798)
+NULL|delta
+~~~

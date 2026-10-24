@@ -1,0 +1,86 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c4
+2|X'C1'
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 0, 4)|instr('psi', 'nu')|replace('psi', 'e', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE 'a%'|'psi' GLOB '*[a-m]*'|char(70, 574)|'psi' || 'nu'|'psi' < 'nu'|'psi' = 'nu' COLLATE NOCASE
+3|PSI|psi|psi|0|psi|psi|psi|707369|'psi'|112|0|1|FȾ|psinu|0|0
+~~~
+# id|id|c0|c4
+2|2|gamma|X'C1'
+5|1|-2|NULL
+5|3|-2|-524.0
+5|4|-2|epsilon
+~~~
+error: near "NOT": syntax error
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 1, 3)|instr('delta', 'alpha')|replace('delta', '', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE '_'|'delta' GLOB '*'|char(67, 601)|'delta' || 'alpha'|'delta' < 'alpha'|'delta' = 'alpha' COLLATE NOCASE
+5|DELTA|delta|del|0|delta|delta|delta|64656C7461|'delta'|100|0|1|Cə|deltaalpha|0|0
+~~~

@@ -1,0 +1,114 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c3
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('phi')|upper('phi')|lower('phi')|substr('phi', -3, 0)|instr('phi', 'señor')|replace('phi', '', '_')|trim('phi')|ltrim('phi', 'ab')|hex('phi')|quote('phi')|unicode('phi')|'phi' LIKE 'A%'|'phi' GLOB 'a*'|char(67, 380)|'phi' || 'señor'|'phi' < 'señor'|'phi' = 'señor' COLLATE NOCASE
+3|PHI|phi||0|phi|phi|phi|706869|'phi'|112|0|0|Cż|phiseñor|1|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 3, 3)|instr('tau', 'eta')|replace('tau', 'e', 'XY')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE 'A%'|'tau' GLOB 'a*'|char(88, 696)|'tau' || 'eta'|'tau' < 'eta'|'tau' = 'eta' COLLATE NOCASE
+3|TAU|tau|u|0|tau|tau|tau|746175|'tau'|116|0|0|Xʸ|taueta|0|0
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', -2, 3)|instr('xi', 'theta')|replace('xi', 'é', 'XY')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE '%é%'|'xi' GLOB '*'|char(77, 246)|'xi' || 'theta'|'xi' < 'theta'|'xi' = 'theta' COLLATE NOCASE
+2|XI|xi|xi|0|xi|xi|xi|7869|'xi'|120|0|1|Mö|xitheta|0|0
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', -3, 0)|instr('sigma', 'sigma')|replace('sigma', '', '_')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '%é%'|'sigma' GLOB 'a*'|char(66, 426)|'sigma' || 'sigma'|'sigma' < 'sigma'|'sigma' = 'sigma' COLLATE NOCASE
+5|SIGMA|sigma||1|sigma|sigma|sigma|7369676D61|'sigma'|115|0|0|Bƪ|sigmasigma|0|1
+~~~
+# length('')|upper('')|lower('')|substr('', -3, 1)|instr('', '1e3')|replace('', 'a', '_')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE 'A%'|'' GLOB '*[a-m]*'|char(73, 710)|'' || '1e3'|'' < '1e3'|'' = '1e3' COLLATE NOCASE
+0||||0|||||''|NULL|0|0|Iˆ|1e3|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+2|2
+5|5
+8|8
+4|4
+6|6
+7|7
+3|3
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# id
+~~~
+# c3
+3
+X'70FA'
+X'96955E6C'
+~~~

@@ -1,0 +1,260 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|ref
+1|4|198.815|1
+1|6|198.815|1
+1|13|198.815|1
+2|2|chi|2
+3|1|-834.5|3
+3|11|-834.5|3
+4|12|-4|4
+5|14|eta|5
+6|5|X'E21C2F5335'|6
+6|7|X'E21C2F5335'|6
+6|10|X'E21C2F5335'|6
+7|NULL|pi|NULL
+8|NULL|tau|NULL
+9|NULL|0.0|NULL
+10|NULL|NULL|NULL
+11|NULL|123456789012|NULL
+12|NULL|1.0e+308|NULL
+13|NULL|omega|NULL
+14|NULL|NULL|NULL
+~~~
+error: no such column: a.1e3
+~~~
+# id|id|c2|ref
+1|4|NULL|1
+1|6|NULL|1
+1|13|NULL|1
+2|2|-97.9|2
+3|1|-586|3
+3|11|-586|3
+4|12|19.5|4
+~~~
+error: ambiguous column name: c2
+~~~
+# id|id|id|ref
+1|1|1|3
+1|2|1|2
+1|3|1|NULL
+1|4|1|1
+1|5|1|6
+1|6|1|1
+1|7|1|6
+1|8|1|NULL
+1|9|1|NULL
+1|10|1|6
+1|11|1|3
+1|12|1|4
+1|13|1|1
+1|14|1|5
+2|1|2|3
+2|2|2|2
+2|3|2|NULL
+2|4|2|1
+2|5|2|6
+2|6|2|1
+2|7|2|6
+2|8|2|NULL
+2|9|2|NULL
+2|10|2|6
+2|11|2|3
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c0
+1|4|-183.2|0x1F
+1|6|-183.2|0
+1|13|-183.2|1
+2|2|-142|-142
+3|1|-9223372036854775808|-183.2
+3|11|-9223372036854775808|0
+4|12|0x1F|-493
+5|14|gamma|chi
+6|5|0|gamma
+6|7|0|0
+6|10|0|930
+7|NULL|0|NULL
+8|NULL|X'416535D5'|NULL
+9|NULL|620|NULL
+10|NULL|930|NULL
+11|NULL|0|NULL
+12|NULL|-493|NULL
+13|NULL|1|NULL
+14|NULL|chi|NULL
+~~~
+error: ambiguous column name: ref
+~~~
+# id|id|c0|ref
+1|4|-646.5768|1
+1|6|-646.5768|1
+1|13|-646.5768|1
+2|2|0|2
+3|1|X'20B20CEC'|3
+3|11|X'20B20CEC'|3
+4|12|X'2D6B'|4
+~~~
+# count(*)
+4
+~~~
+# id|id|id|c1
+1|4|1|-4
+1|6|1|X'E21C2F5335'
+1|13|1|omega
+2|2|2|chi
+3|1|3|198.815
+3|11|3|123456789012
+4|12|4|1.0e+308
+5|14|5|NULL
+6|5|6|eta
+6|7|6|pi
+6|10|6|NULL
+7|NULL|7|NULL
+8|NULL|8|NULL
+9|NULL|9|NULL
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c0|id
+1|4|NULL|4
+1|6|NULL|6
+1|13|NULL|13
+2|2|NULL|2
+3|1|-2|1
+3|11|-2|11
+4|12|X'9E9771F76708'|12
+5|14|-176.4|14
+6|5|NULL|5
+6|7|NULL|7
+6|10|NULL|10
+~~~
+error: near "NOT": syntax error
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+14|11|38|38.0|3.4545454545454546|1|6|6
+~~~
+# ref|count(*)|group_concat(id)
+NULL|3|3,8,9
+1|3|4,6,13
+3|2|1,11
+6|3|5,7,10
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+14|14|-9.2233720368547748e+18|-9.2233720368547748e+18|-6.5881228834676966e+17|-9223372036854775808|X'416535D5'|12
+~~~
+# c0|count(*)|group_concat(id, ';')
+0|3|6;7;11
+~~~
+changes: 0
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|naïve
+~~~
+# id|c0|c1|c2|c3|c4|ref
+1|NULL|tau|534|pi| pad |3
+2|-339|NULL|NULL|NULL|NULL|NULL
+3|-2|Ελλάδα|X''|NULL|866.2882|5
+5|-176.4|X'946822182B'|0.1|-1|kappa|2
+6|1000000000000000.0|NULL|NULL|NULL|NULL|NULL
+7|X'42E90871'|3.0|-2.5|X'181D'|X'8C6BB35526'|2
+9|-1.0e+308|NULL|-237.0263|X'9D4A994D'|X''|1
+11|-477.37|225.2713|-949|-973|-488|5
+13|nu|X'A1'|NULL|X''|742|8
+15|884|NULL|tau|-2|123456789012|7
+17|Lambda|NULL|NULL|NULL|X'66A368B32B'|3
+19|X'D6'|921.0|X'F5A1E38F'|iota|über|6
+20|naïve|NULL|NULL|NULL|NULL|NULL
+~~~

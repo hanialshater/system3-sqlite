@@ -1,0 +1,89 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|typeof(CAST(CASE WHEN c0 THEN 'Lambda' ELSE -1 END AS INTEGER))|NULL
+8|integer|NULL
+7|integer|NULL
+6|integer|NULL
+5|integer|NULL
+4|integer|NULL
+3|integer|NULL
+2|integer|NULL
+1|integer|NULL
+~~~
+# 'alpha' IN ('zeta', NULL, x'')|CASE WHEN 0 THEN 1e-7 ELSE x'1db22d6bcb' END
+NULL|X'1DB22D6BCB'
+~~~
+# id|CASE WHEN id THEN id ELSE ref IS NULL IS NULL END|ref
+3|3|8
+2|2|5
+1|1|3
+~~~
+# (x'9fb53716' IS NULL - iif(x'22a407e233', x'', x'ecba55')) IS NULL|NULL
+0|NULL
+~~~
+# id|id|nullif(c1, NOT 519 IS NULL)
+1|1|816
+2|2|X'6027E945'
+3|3|chi
+4|4| pad 
+5|5|205.4743
+6|6|-2.5
+7|7|omega
+8|8|0
+~~~
+# typeof(566 IS NULL) IS NULL|(typeof(nullif(-5, 'tau')) & -(iif(73, x'ef98806b', 'café')))
+0|0
+~~~
+changes: 1
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|
+~~~
+# id|c0|c1|c2|c3|c4
+1|delta|0|0|NULL|NULL
+2|-4|X'6027E945'|tau|psi|x_y
+4|0| pad |chi|-1.0e+308|1e3
+6|NULL|0|0|NULL|NULL
+8|NULL|0|naïve|naïve|rho
+9||0|0|NULL|NULL
+~~~
+# id|id|c1|c1
+1|NULL|0|NULL
+2|NULL|X'6027E945'|NULL
+4|NULL| pad |NULL
+6|NULL|0|NULL
+8|3|0|-5
+9|NULL|0|NULL
+~~~
+error: near "CASE": syntax error
+~~~

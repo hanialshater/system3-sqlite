@@ -1,0 +1,141 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c0
+1|1|NULL|1.0e+308
+1|2|NULL|X'64B3'
+1|3|NULL|pi
+1|4|NULL|NULL
+1|5|NULL|phi
+2|1|X'B9'|1.0e+308
+2|2|X'B9'|X'64B3'
+2|3|X'B9'|pi
+~~~
+# count(*)
+10
+~~~
+# id|id|id|ref
+1|1|1|1
+2|2|2|2
+3|NULL|3|NULL
+4|NULL|4|NULL
+5|5|5|5
+6|4|6|6
+7|NULL|7|NULL
+8|3|8|8
+9|NULL|9|NULL
+10|NULL|10|NULL
+~~~
+# count(*)
+10
+~~~
+# id|id|c1|id
+1|1|NULL|1
+2|2|X'B9'|2
+5|5|sigma|5
+6|4|4|4
+8|3|NULL|3
+~~~
+# count(*)
+10
+~~~
+# id|id|ref|ref
+1|1|1|1
+2|2|2|2
+3|NULL|8|NULL
+4|NULL|6|NULL
+5|5|5|5
+~~~
+# count(*)
+5
+~~~
+# id|id|id|id
+1|1|1|1
+2|2|2|2
+3|NULL|3|NULL
+4|NULL|4|NULL
+5|5|5|5
+6|4|6|4
+7|NULL|7|NULL
+8|3|8|3
+9|NULL|9|NULL
+10|NULL|10|NULL
+~~~
+# count(*)
+5
+~~~
+# id|id|c3|c1
+1|1|9.2233720368547758e+18|epsilon
+2|2|naïve|NULL
+5|5|13.0|592
+6|4|4.0|X'054E634C320A'
+8|3|5.0|zeta
+~~~
+error: near "(": syntax error
+~~~
+# id|id|id|ref
+1|1|1|1
+2|2|2|2
+5|5|5|5
+~~~
+# count(*)
+5
+~~~
+# id|id|c0|id
+1|1|1.0e+308|1
+2|2|X'64B3'|2
+3|NULL|pi|NULL
+4|NULL|NULL|NULL
+5|5|phi|5
+~~~
+error: near "(": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|5
+5|5
+1|5
+3|5
+4|5
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+~~~
+# c0
+~~~

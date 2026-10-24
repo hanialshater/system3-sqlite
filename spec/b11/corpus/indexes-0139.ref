@@ -1,0 +1,213 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+3|-4
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+2|NULL
+1|-456.2
+3|-2
+4|1.0e-07
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+4|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+4|NULL|d|NULL|NULL|NULL
+3|-4|-2|-9223372036854775808|X''|6
+2| pad |d|NULL|NULL|NULL
+1|NULL|-456.2|X'88580940'|NULL|2
+~~~
+changes: 25
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|X'225A40'
+~~~
+# id|c0|c1|c2|c3
+2|0|epsilon|-1|MU
+3|0|NULL|NULL|X''
+4|0|NULL|-1|NULL
+6|878!|phi|NULL|X'83'
+7|0|NULL|840.6|5
+8|NULL|NULL|NULL|NULL
+10|0|805.82|café|321
+11|0|NULL|NULL|X'C712C0473C'
+12|0|NULL|X'DC14D4C3F64E'|-173.53
+14|0|3|-163.6431|0x1F
+15|0|X'8D'|X'9FEB319ED819'|X'47'
+16|0|X'995E'|-5|X'84766DF85B'
+18|0|753|Ελλάδα|beta
+19|0|pi|X'B6D188C297'|375
+20|0|-1.0e+308|626.7|NULL
+22|0|X'F397C6'|-9223372036854775808|tau
+23|0|upsilon|psi|-309.77
+24|0|3.1415926535897931|NULL|-262
+25|X'225A40'|NULL|NULL|NULL
+~~~

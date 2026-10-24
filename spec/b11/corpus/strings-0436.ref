@@ -1,0 +1,122 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 1, 5)|instr('gamma', 'nu')|replace('gamma', 'é', 'XY')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE '%é%'|'gamma' GLOB '*'|char(76, 761)|'gamma' || 'nu'|'gamma' < 'nu'|'gamma' = 'nu' COLLATE NOCASE
+5|GAMMA|gamma|gamma|0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|1|L˹|gammanu|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 4, 2)|instr('Ελλάδα', 'pi')|replace('Ελλάδα', '', '')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%é%'|'Ελλάδα' GLOB '*[a-m]*'|char(86, 719)|'Ελλάδα' || 'pi'|'Ελλάδα' < 'pi'|'Ελλάδα' = 'pi' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|άδ|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|Vˏ|Ελλάδαpi|0|0
+~~~
+# length('')|upper('')|lower('')|substr('', 2, 2)|instr('', 'naïve')|replace('', 'e', '_')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '%'|'' GLOB '?'|char(74, 709)|'' || 'naïve'|'' < 'naïve'|'' = 'naïve' COLLATE NOCASE
+0||||0|||||''|NULL|1|0|J˅|naïve|1|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 0, 4)|instr('NULL', '日本')|replace('NULL', '', '')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%a_'|'NULL' GLOB '*'|char(68, 565)|'NULL' || '日本'|'NULL' < '日本'|'NULL' = '日本' COLLATE NOCASE
+4|NULL|null|NUL|0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|1|Dȵ|NULL日本|1|0
+~~~
+changes: 13
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|-9223372036854775808
+~~~
+# id|c0|c1|c2|c3|c4
+1|real|4|-46.095|-10.431|-0.096
+2|real|alpha|7.938|-48.29|22.82
+3|828.7003|NULL|NULL|NULL|0.0
+5|real|rho|-4.86|24.415|0.215
+6|real|X'0D1AAE'|12.691|-3.163|20.648
+7|real|-185|-26.162|-10.582|6.045
+9|real|123456789012|37.841|-35.728|-43.473
+10|real|-251|-7.853|-47.92|-26.871
+11|real|日本|-10.48|0.849|30.249
+13|real|NULL|-43.665|-4.407|-23.925
+14|-9223372036854775808|NULL|NULL|NULL|0.0
+~~~

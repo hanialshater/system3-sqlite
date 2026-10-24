@@ -1,0 +1,239 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t0.c3
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c2
+1|1|NULL|4.500000000000011e-310
+2|2|X'2857B095'|NULL
+3|3|0|it's
+4|4|-4|X'7522'
+5|5|X'DA41'|X'69BF49'
+6|6|X'CAA410B22D99'|-939
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c2
+1|2|NULL|NULL
+1|3|NULL|it's
+1|4|NULL|X'7522'
+1|5|NULL|X'69BF49'
+1|6|NULL|-939
+1|7|NULL|X'FE3AC6E7DE'
+1|8|NULL|-3
+1|9|NULL|NULL
+1|10|NULL|Ελλάδα
+1|11|NULL|702
+1|12|NULL|X''
+1|13|NULL|X'C6D7BD'
+1|14|NULL|-7
+1|15|NULL|delta
+2|3|X'2857B095'|it's
+2|4|X'2857B095'|X'7522'
+2|5|X'2857B095'|X'69BF49'
+2|6|X'2857B095'|-939
+2|7|X'2857B095'|X'FE3AC6E7DE'
+2|8|X'2857B095'|-3
+2|9|X'2857B095'|NULL
+2|10|X'2857B095'|Ελλάδα
+2|11|X'2857B095'|702
+2|12|X'2857B095'|X''
+2|13|X'2857B095'|X'C6D7BD'
+2|14|X'2857B095'|-7
+2|15|X'2857B095'|delta
+3|4|0|X'7522'
+3|5|0|X'69BF49'
+3|6|0|-939
+3|7|0|X'FE3AC6E7DE'
+3|8|0|-3
+3|9|0|NULL
+3|10|0|Ελλάδα
+3|11|0|702
+3|12|0|X''
+3|13|0|X'C6D7BD'
+3|14|0|-7
+3|15|0|delta
+4|5|-4|X'69BF49'
+4|6|-4|-939
+4|7|-4|X'FE3AC6E7DE'
+4|8|-4|-3
+4|9|-4|NULL
+4|10|-4|Ελλάδα
+4|11|-4|702
+4|12|-4|X''
+4|13|-4|X'C6D7BD'
+4|14|-4|-7
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c0|c0
+1|1|beta|NULL
+2|2|omicron|X'2857B095'
+3|3|xi|0
+4|4|Ελλάδα|-4
+5|5|eta|X'DA41'
+6|6|upsilon|X'CAA410B22D99'
+7|7|it's|X'24AFEB6E'
+8|8|gamma|omega
+9|9||x_y
+10|10|xi|X'CA9721'
+11|11| pad |NULL
+12|12|phi|-1
+13|13|sigma|X'19AFB44DED70'
+~~~
+# count(*)
+13
+~~~
+# id|id|c1|c3
+1|2|NULL|-462
+1|3|NULL|x_y
+1|4|NULL|0
+1|5|NULL|394
+1|6|NULL|-570
+1|7|NULL|sigma
+1|8|NULL|X'8ECE6CD17C'
+1|9|NULL|café
+1|10|NULL|0
+1|11|NULL|beta
+1|12|NULL|0
+1|13|NULL|0
+1|14|NULL|5
+1|15|NULL|eta
+2|3|upsilon|x_y
+2|4|upsilon|0
+2|5|upsilon|394
+2|6|upsilon|-570
+2|7|upsilon|sigma
+2|8|upsilon|X'8ECE6CD17C'
+2|9|upsilon|café
+2|10|upsilon|0
+2|11|upsilon|beta
+2|12|upsilon|0
+2|13|upsilon|0
+2|14|upsilon|5
+2|15|upsilon|eta
+3|4|sigma|0
+3|5|sigma|394
+3|6|sigma|-570
+3|7|sigma|sigma
+3|8|sigma|X'8ECE6CD17C'
+3|9|sigma|café
+3|10|sigma|0
+3|11|sigma|beta
+3|12|sigma|0
+3|13|sigma|0
+3|14|sigma|5
+3|15|sigma|eta
+4|5|0x1F|394
+4|6|0x1F|-570
+~~~
+# count(*)
+13
+~~~
+# id|id|c3|c0
+1|1|theta|NULL
+2|2|omicron|X'2857B095'
+3|3|señor|0
+4|4|naïve|-4
+5|5|upsilon|X'DA41'
+6|6|it's|X'CAA410B22D99'
+7|7||X'24AFEB6E'
+8|8|515|omega
+9|9|NULL|x_y
+10|10|0x1F|X'CA9721'
+11|11|psi|NULL
+12|12|sigma|-1
+13|13|theta|X'19AFB44DED70'
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c1|c2
+1|1|NULL|4.500000000000011e-310
+2|2|upsilon|NULL
+3|3|sigma|it's
+4|4|0x1F|X'7522'
+5|5|MU|X'69BF49'
+6|6|upsilon|-939
+7|7|sigma|X'FE3AC6E7DE'
+8|8|beta|-3
+9|9|xi|NULL
+10|10|tau|Ελλάδα
+11|11|xi|702
+12|12|it's|X''
+13|13|Ελλάδα|X'C6D7BD'
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+# id|c2
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

@@ -1,0 +1,303 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c2
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|0.1
+~~~
+# id|c0|c1|c2
+1|NULL|NULL|NULL
+2|X'7CEA301D'|49.22|-4
+3|1.0e+308|-14.84|-2
+5|X'51F2A32843'|NULL|NULL
+6|-1|-28.436|NULL
+8|X'4537'|21.765|naïve
+9|psi|36.708|NULL
+11|4|-19.899|X'13'
+12|X'436522'|26.241|-9223372036854775808
+14|NULL|24.213|NULL
+15|2|-10.352|707.8
+17|-5|38.498|NULL
+18|0.1|NULL|NULL
+~~~
+changes: 20
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-2
+~~~
+# id|c0|c1|c2
+2|-120!|X'21EC'|naïve
+3||0|NULL
+5|NULL|-166|NULL
+6|1|X'9C3B76D408FF'|123456789012
+8|1|0|beta
+9|1|-75|naïve
+11|1|3|X'9AD6DCE8'
+12|1|0|upsilon
+14|1|0|日本
+15|1|x_y|epsilon
+17|1|epsilon|it's
+18|1|2.5|café
+20|1|23|
+21|-2|0|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|it's
+~~~
+# id|c0|c1|c2
+2|X'7CEA301D'|49.22|-4
+3|!|-14.84|-2
+5|X'51F2A32843'|NULL|NULL
+6|-1|-28.436|NULL
+7|epsilon|NULL|NULL
+8|X'4537'|21.765|naïve
+9|psi|36.708|NULL
+11|4|-19.899|X'13'
+12|X'436522'|26.241|-9223372036854775808
+14|NULL|24.213|NULL
+15|2|-10.352|707.8
+17|-5|38.498|NULL
+18|0.1|NULL|NULL
+19|it's|NULL|NULL
+~~~
+changes: 14
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|-453
+~~~
+# id|c0|c1|c2
+2|1|49.22|-4
+4|-723.027|NULL|NULL
+5|X'5E93D03378'|NULL|NULL
+7|1|NULL|NULL
+8|1|21.765|naïve
+11|1|-19.899|X'13'
+14|1|24.213|NULL
+17|1|38.498|NULL
+19|1|NULL|NULL
+20|-453|NULL|NULL
+~~~
+changes: 9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1|c2
+2|x_y!|49.22|-4
+5|X'5E93D03378'|NULL|NULL
+7|X''|NULL|NULL
+8|naïve|21.765|naïve
+11|X'13'|-19.899|X'13'
+14|NULL|24.213|NULL
+17|NULL|38.498|NULL
+20|NULL|NULL|NULL
+21|NULL|NULL|NULL
+~~~
+changes: 5
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|42
+~~~
+# id|c0|c1|c2
+2|-120!|X'21EC'|naïve
+3||0|NULL
+4|theta|0|NULL
+5|NULL|-166|NULL
+8|1|0|beta
+9|X''|0|NULL
+12|1|0|upsilon
+14|1|0|日本
+15|1|x_y|epsilon
+17|1|epsilon|it's
+18|1|2.5|café
+20|1|23|
+21|42|0|NULL
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 3, 5)|instr(' pad ', 'delta')|replace(' pad ', 'e', 'XY')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%a_'|' pad ' GLOB '?'|char(80, 500)|' pad ' || 'delta'|' pad ' < 'delta'|' pad ' = 'delta' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|0|PǴ| pad delta|1|0
+~~~
+# id|id|c0|c2
+2|5|-120!|NULL
+2|7|-120!|NULL
+2|8|-120!|naïve
+2|11|-120!|X'13'
+2|14|-120!|NULL
+2|17|-120!|NULL
+2|20|-120!|NULL
+2|21|-120!|NULL
+3|5||NULL
+3|7||NULL
+3|8||naïve
+3|11||X'13'
+3|14||NULL
+3|17||NULL
+3|20||NULL
+3|21||NULL
+4|5|theta|NULL
+4|7|theta|NULL
+4|8|theta|naïve
+4|11|theta|X'13'
+4|14|theta|NULL
+4|17|theta|NULL
+4|20|theta|NULL
+4|21|theta|NULL
+5|7|NULL|NULL
+5|8|NULL|naïve
+5|11|NULL|X'13'
+5|14|NULL|NULL
+5|17|NULL|NULL
+5|20|NULL|NULL
+5|21|NULL|NULL
+8|11|1|X'13'
+8|14|1|NULL
+8|17|1|NULL
+8|20|1|NULL
+8|21|1|NULL
+9|11|X''|X'13'
+9|14|X''|NULL
+9|17|X''|NULL
+9|20|X''|NULL
+9|21|X''|NULL
+12|14|1|NULL
+12|17|1|NULL
+~~~
+error: near "NULL": syntax error
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X''
+~~~
+# id|c0|c1|c2
+2|-968!|49.22|-4
+5|X'5E93D03378'|NULL|NULL
+7|26|NULL|NULL
+8|naïve|21.765|naïve
+11|X'13'|-19.899|X'13'
+14|NULL|24.213|NULL
+17|NULL|38.498|NULL
+20|NULL|NULL|NULL
+21|X''|NULL|NULL
+~~~

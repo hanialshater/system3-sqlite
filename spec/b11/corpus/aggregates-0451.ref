@@ -1,0 +1,233 @@
+changes: 0
+~~~
+error: NOT NULL constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+23|21|-1633.7149999|-1633.7149999|-77.795952376190485|-468|X'FAEF17DB'|19
+~~~
+# c4|count(*)|group_concat(id)
+NULL|2|3,19
+-468|1|18
+-493|1|10
+-60.3|1|6
+-784.96|1|23
+-901|1|5
+1|2|9,13
+1.0e-07|1|21
+202|1|14
+292|1|11
+48|1|2
+5|1|16
+524.545|1|15
+it's|1|7
+zeta|1|8
+X''|2|1,22
+X'6495AB152682'|1|20
+X'C90BFCF3'|1|12
+X'F0B6'|1|4
+X'FAEF17DB'|1|17
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+6|5|-1190.4141|-1190.4141|-238.08282|-531.4141|X'F87E2388'|5
+~~~
+# c2|count(*)|group_concat(id)
+NULL|1|6
+-531.4141|1|2
+-659|1|5
+theta|1|1
+X'60DBAE'|1|3
+X'F87E2388'|1|4
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id, ';')
+-911|1|4
+4|1|6
+137.659|1|3
+564|1|2
+Lambda|1|5
+alpha|1|1
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+4|3|8|8.0|2.6666666666666665|2|3|2
+~~~
+# ref|count(*)|group_concat(id)
+NULL|1|4
+2|2|1,6
+3|2|2,3
+6|1|5
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+6|6|-205.341|-205.341|-34.2235|-911|alpha|6
+~~~
+# c3|count(*)|group_concat(id)
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+23|21|-1633.7149999|-1633.7149999|-77.795952376190485|-468|X'FAEF17DB'|19
+~~~
+# c4|count(*)|group_concat(id, ';')
+NULL|2|3;19
+-468|1|18
+-493|1|10
+-60.3|1|6
+-784.96|1|23
+-901|1|5
+1|2|9;13
+1.0e-07|1|21
+202|1|14
+292|1|11
+48|1|2
+5|1|16
+524.545|1|15
+it's|1|7
+zeta|1|8
+X''|2|1;22
+X'6495AB152682'|1|20
+X'C90BFCF3'|1|12
+X'F0B6'|1|4
+X'FAEF17DB'|1|17
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c4|count(*)|group_concat(id, ';')
+NULL|2|3;19
+1|2|9;13
+X''|2|1;22
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+19|6
+18|6
+10|6
+6|6
+23|6
+5|5
+9|6
+13|6
+21|6
+14|6
+11|6
+2|2
+16|6
+15|6
+7|6
+8|6
+1|1
+22|6
+20|6
+12|6
+4|4
+17|6
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# id
+1
+2
+3
+4
+5
+~~~
+# c2
+~~~
+changes: 23
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+24|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+24|NULL|0|NULL|NULL|NULL
+23|1|café|-407|rho|-784.96
+22|0|kappa|1e3|-3|X''
+20|0|5|NULL|9223372036854775807|X'6495AB152682'
+19|Ελλάδα|X'4B12406F'|-571.3|日本|NULL
+18|1|X''|-285.7732|X'2174'|-468
+17|0|Ελλάδα|Ελλάδα|0|X'FAEF17DB'
+15|0|-2.5|-3|-3|524.545
+14|0|chi|NULL|X'816007F5B737'|202
+13|1|X'DB97C9331C'|zeta|0x1F|1
+12|0|0|日本| pad |X'C90BFCF3'
+10|1|1.0e+308|5|NULL|-493
+9|1|570.0|-105.5|eta|1
+8|0|237.06|pi|557|zeta
+7|X'302B902BF358'|0|NULL|NULL|NULL
+6|X'D1E43429'|0|NULL|NULL|NULL
+5|1|877|71|937|-901
+4|0|-436|NULL|257|X'F0B6'
+3|Ελλάδα|X'157B30BF'|NULL|X'2F'|NULL
+2|0|X'F9F61D'|X'C1F4CE6F'|NULL|48
+~~~

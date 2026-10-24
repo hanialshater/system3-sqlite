@@ -1,0 +1,242 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|21
+4|21
+8|21
+9|21
+10|21
+13|21
+17|21
+18|21
+12|21
+16|21
+21|21
+1|21
+6|21
+7|21
+19|21
+11|21
+3|21
+5|21
+14|21
+15|21
+20|21
+~~~
+# id
+~~~
+# id
+20
+21
+~~~
+# c2
+NULL
+-808.733
+-332
+-2
+0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+5|5
+3|3
+4|4
+9|9
+6|6
+11|11
+2|2
+8|8
+10|10
+1|1
+7|7
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# c4
+0.1
+ pad 
+nu
+omega
+sigma
+X'3B692D'
+X'83B308'
+X'F6ECEC'
+X'F8F6F901F3'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+5|21
+8|21
+21|21
+3|21
+4|21
+2|21
+10|21
+14|21
+15|21
+19|21
+20|21
+1|21
+9|21
+13|21
+11|21
+7|21
+12|21
+6|21
+16|21
+18|21
+17|21
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+~~~
+# id
+20
+21
+~~~
+# ref
+~~~
+# id|CASE WHEN NULL THEN iif(c2, x'', NULL) IS NULL ELSE (526 >= ref) IS NULL END|NOT id
+21|1|0
+20|0|0
+19|0|0
+18|0|0
+17|0|0
+16|0|0
+15|0|0
+14|0|0
+13|0|0
+12|0|0
+11|0|0
+10|0|0
+9|0|0
+8|1|0
+7|0|0
+6|0|0
+5|1|0
+4|0|0
+3|0|0
+2|0|0
+1|0|0
+~~~
+# coalesce(abs(-1) BETWEEN 623 BETWEEN ' pad ' AND 'x_y' AND NOT 636, NOT (123456789012 % x'8903dbbca26b'))|nullif(x'db5799a2', 'tau')
+0|X'DB5799A2'
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+21|15|1.0e+308|1.0e+308|6.6666666666666662e+306|-808.733|X'B3DDC2F84B'|13
+~~~
+# c0|count(*)|group_concat(id, ';')
+NULL|6|2;4;8;9;10;13
+-808.733|1|17
+0|1|18
+4.500000000000011e-310|1|12
+1|1|16
+3|1|21
+121|1|1
+239|1|6
+450|1|7
+1.0e+308|1|19
+beta|1|11
+X''|3|3;5;14
+X'62682AE932DC'|1|15
+X'B3DDC2F84B'|1|20
+~~~

@@ -1,0 +1,232 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|4
+2|4
+3|4
+4|4
+~~~
+# id
+~~~
+# id
+1
+~~~
+# c4
+-9223372036854775808
+psi
+psi
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|4
+4|4
+2|4
+3|4
+~~~
+# id
+1
+2
+3
+~~~
+# id
+1
+~~~
+# c0
+NULL
+-9223372036854775808
+-266
+-942.96
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+3|3
+1|1
+4|4
+2|2
+~~~
+# id
+2
+4
+~~~
+# id
+2
+3
+4
+~~~
+# c1
+omega
+X'22ABC9'
+X'DB'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|4
+4|4
+2|4
+3|4
+~~~
+# id
+~~~
+# id
+1
+~~~
+# c4
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+7|4
+5|4
+4|4
+2|2
+1|1
+3|3
+8|4
+9|4
+6|4
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+3
+4
+5
+6
+7
+8
+9
+~~~
+# c1
+9223372036854775807
+chi
+iota
+X'99C1816DE9'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+6|4
+9|4
+8|4
+3|3
+7|4
+5|4
+4|4
+2|2
+1|1
+~~~
+# id
+5
+6
+7
+8
+9
+~~~
+# id
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+4
+5
+6
+7
+8
+9
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|4
+6|4
+7|4
+8|4
+9|4
+~~~
+# id
+1
+2
+3
+4
+~~~
+# id
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+5
+6
+7
+8
+9
+~~~
+# id|id|c2|c3
+1|2|xi|gamma
+1|3|xi|pi
+1|4|xi|X'BEBBAE8D8B'
+2|3|psi|pi
+2|4|psi|X'BEBBAE8D8B'
+3|4|upsilon|X'BEBBAE8D8B'
+~~~
+# count(*)
+0
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 2, 4)|instr('eta', 'señor')|replace('eta', 'e', '_')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '%é%'|'eta' GLOB '*[a-m]*'|char(88, 466)|'eta' || 'señor'|'eta' < 'señor'|'eta' = 'señor' COLLATE NOCASE
+3|ETA|eta|ta|0|_ta|eta|eta|657461|'eta'|101|0|1|Xǒ|etaseñor|1|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 2, 0)|instr('1e3', 'delta')|replace('1e3', 'é', 'XY')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE 'a%'|'1e3' GLOB '*[a-m]*'|char(87, 638)|'1e3' || 'delta'|'1e3' < 'delta'|'1e3' = 'delta' COLLATE NOCASE
+3|1E3|1e3||0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Wɾ|1e3delta|1|0
+~~~

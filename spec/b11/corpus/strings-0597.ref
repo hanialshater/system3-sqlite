@@ -1,0 +1,130 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', -1, 3)|instr(' pad ', 'gamma')|replace(' pad ', 'é', '_')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE 'A%'|' pad ' GLOB '?'|char(75, 642)|' pad ' || 'gamma'|' pad ' < 'gamma'|' pad ' = 'gamma' COLLATE NOCASE
+5| PAD | pad | |0| pad |pad| pad |2070616420|' pad '|32|0|0|Kʂ| pad gamma|1|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 1, 2)|instr('nu', 'upsilon')|replace('nu', 'e', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'a%'|'nu' GLOB 'a*'|char(74, 665)|'nu' || 'upsilon'|'nu' < 'upsilon'|'nu' = 'upsilon' COLLATE NOCASE
+2|NU|nu|nu|0|nu|nu|nu|6E75|'nu'|110|0|0|Jʙ|nuupsilon|1|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', -1, 5)|instr('zeta', 'xi')|replace('zeta', 'a', '_')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%é%'|'zeta' GLOB '?'|char(75, 448)|'zeta' || 'xi'|'zeta' < 'xi'|'zeta' = 'xi' COLLATE NOCASE
+4|ZETA|zeta|a|0|zet_|zeta|zeta|7A657461|'zeta'|122|0|0|Kǀ|zetaxi|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 0, 4)|instr('señor', 'a%b')|replace('señor', 'e', 'XY')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE 'a%'|'señor' GLOB '*'|char(76, 260)|'señor' || 'a%b'|'señor' < 'a%b'|'señor' = 'a%b' COLLATE NOCASE
+5|SEñOR|señor|señ|0|sXYñor|señor|señor|7365C3B16F72|'señor'|115|0|1|LĄ|señora%b|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+9|4
+2|2
+3|3
+1|1
+4|4
+6|4
+11|4
+12|4
+7|4
+13|4
+10|4
+8|4
+5|4
+~~~
+# id
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# id
+1
+2
+3
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+~~~

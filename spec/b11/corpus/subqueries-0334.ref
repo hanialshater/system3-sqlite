@@ -1,0 +1,336 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+10|10
+9|9
+8|8
+7|7
+6|6
+5|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+3
+4
+6
+7
+~~~
+# id
+~~~
+# c1
+2.5
+733
+816.58
+xi
+über
+X'56EB8AEBC1'
+X'9A16C0B4206B'
+X'B832'
+X'F3A7B5619443'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+3|3
+9|9
+7|7
+8|8
+5|5
+2|2
+4|4
+6|6
+10|10
+~~~
+# id
+~~~
+# id
+~~~
+# c0
+NULL
+NULL
+NULL
+-492.942
+-191.1951
+-7.0
+-4.0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|11
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+~~~
+# id
+12
+~~~
+# c4
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+3|3
+7|7
+6|6
+2|2
+12|11
+9|9
+1|1
+4|4
+8|8
+10|10
+11|11
+5|5
+~~~
+# id
+12
+~~~
+# id
+11
+12
+~~~
+# c0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+9|9
+7|7
+10|10
+5|5
+1|1
+3|3
+8|8
+2|2
+4|4
+6|6
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+~~~
+# c1
+NULL
+NULL
+-492.942
+-191.1951
+0
+493.338
+890
+933
+1.0e+308
+-7
+2.5
+733
+816.58
+xi
+über
+X'56EB8AEBC1'
+X'9A16C0B4206B'
+X'B832'
+X'F3A7B5619443'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# c1
+733
+816.58
+xi
+über
+X'56EB8AEBC1'
+~~~
+# id|x'5f9e6f95b3' BETWEEN x'fd94' AND -(3.141592653589793) IN (NULL, '1e3', 1e-7)|ref BETWEEN CAST(coalesce(c4, id) AS BLOB) AND coalesce(typeof(c0), CAST(c3 AS INTEGER))
+1|NULL|NULL
+2|NULL|0
+3|NULL|0
+4|NULL|NULL
+5|NULL|NULL
+6|NULL|NULL
+7|NULL|0
+8|NULL|NULL
+9|NULL|0
+10|NULL|0
+11|NULL|0
+12|NULL|0
+~~~
+# NULL|iif(-(CASE WHEN 735 THEN NULL ELSE x'fbe2dd7a' END), -1, NULL)
+NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|11
+~~~
+# id
+1
+6
+8
+10
+12
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# c4
+-690
+3
+681
+-118
+-2.5
+-240.4
+-4
+-492.269
+-94
+1000000000000000.0
+beta
+kappa
+omicron
+psi
+theta
+X''
+X'360C7FF3'
+X'50E7'
+X'6BFA4E'
+~~~

@@ -1,0 +1,233 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|-(-(typeof(1e-7)))|iif(typeof(c1), ('naïve' / x'') IS NULL, 1e-7)
+1|0|1.0e-07
+2|0|1.0e-07
+3|0|1.0e-07
+4|0|1.0e-07
+5|0|1.0e-07
+6|0|1.0e-07
+7|0|1.0e-07
+8|0|1.0e-07
+9|0|1.0e-07
+10|0|1.0e-07
+11|0|1.0e-07
+12|0|1.0e-07
+13|0|1.0e-07
+14|0|1.0e-07
+15|0|1.0e-07
+16|0|1.0e-07
+17|0|1.0e-07
+18|0|1.0e-07
+19|0|1.0e-07
+20|0|1.0e-07
+21|0|1.0e-07
+22|0|1.0e-07
+~~~
+# abs(CAST(NULL AS INTEGER))|coalesce(NOT nullif(x'a6', 889.4777), (-832 << -(x'025587')))
+NULL|1
+~~~
+# id|CASE WHEN NOT c0 THEN abs(id) ELSE NOT c0 END IN (id, 'omicron', NULL)|NOT CAST(0 AS TEXT)
+1|1|1
+2|1|1
+3|1|1
+4|1|1
+5|1|1
+6|1|1
+7|1|1
+8|1|1
+9|1|1
+10|NULL|1
+11|1|1
+12|1|1
+13|1|1
+14|1|1
+15|1|1
+16|1|1
+17|1|1
+18|1|1
+19|1|1
+20|1|1
+21|1|1
+22|1|1
+~~~
+# iif(iif(nullif(-392.086, NULL), -362, 'kappa'), CAST(NOT 'kappa' AS INTEGER), x'0f')|x'86bfff87'
+1|X'86BFFF87'
+~~~
+# id|x'6f'|c4
+1|X'6F'|5
+2|X'6F'|sigma
+3|X'6F'|X'752E11'
+4|X'6F'|2.5
+5|X'6F'|1.0e-07
+6|X'6F'|omicron
+7|X'6F'|nu
+8|X'6F'|delta
+9|X'6F'|café
+~~~
+# iif(NULL, CAST(NOT NULL AS REAL), 'tau')|typeof(783.9)
+tau|real
+~~~
+# id|CASE WHEN NULL THEN -(-(c3)) ELSE id END|(-599.1053 >= NULL)
+9|9|NULL
+8|8|NULL
+7|7|NULL
+6|6|NULL
+5|5|NULL
+4|4|NULL
+3|3|NULL
+2|2|NULL
+1|1|NULL
+~~~
+# iif(-4, -(NULL IS NULL), '1e3')|' pad '
+-1| pad 
+~~~
+# id|-2.5|abs(c0) BETWEEN c1 AND c1 IN (c1, NULL, 447) IS NULL
+22|-2.5|1
+21|-2.5|1
+20|-2.5|1
+19|-2.5|1
+18|-2.5|1
+17|-2.5|1
+16|-2.5|1
+15|-2.5|1
+14|-2.5|1
+13|-2.5|1
+12|-2.5|1
+11|-2.5|1
+10|-2.5|1
+9|-2.5|1
+8|-2.5|1
+7|-2.5|1
+6|-2.5|1
+5|-2.5|1
+4|-2.5|1
+3|-2.5|1
+2|-2.5|1
+1|-2.5|1
+~~~
+# NULL|typeof(CAST(1 AS REAL))
+NULL|real
+~~~
+# id|CAST(coalesce(c1, c1) IN (CASE WHEN id THEN 2.5 ELSE c1 END, x'a97ff7', x'34e2') AS TEXT)|iif(CASE WHEN CASE WHEN c1 THEN 1.0e15 ELSE c1 END THEN -(c1) ELSE NOT c0 END, id, 'kappa')
+1|0|1
+2|0|2
+3|0|3
+4|0|4
+5|0|5
+6|0|6
+7|0|7
+8|0|8
+9|0|9
+10|0|kappa
+11|0|11
+12|0|12
+13|0|13
+14|0|14
+15|0|15
+16|0|16
+17|0|17
+18|0|18
+19|0|19
+20|0|20
+21|0|21
+22|0|22
+~~~
+# -(0)|NULL
+0|NULL
+~~~
+changes: 22
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|NULL
+~~~
+# id|c0|c1
+1|!|chi
+2|2|rho
+3|3|beta
+5|5|rho
+6|-728.703|NULL
+7|7|Lambda
+9|9|alpha
+10|10|omega
+11|11|eta
+13|13|delta
+14|14|sigma
+15|15|日本
+17|17|-7
+18|18|upsilon
+19|19|42
+21|21|chi
+22|22|1e3
+23|NULL|NULL
+~~~

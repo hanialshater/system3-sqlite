@@ -1,0 +1,236 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+16|1|16
+17|1|17
+18|1|18
+19|1|19
+20|1|20
+21|1|21
+22|1|22
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+22|22|253|253.0|11.5|1|22|22
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+16|1|16
+17|1|17
+18|1|18
+19|1|19
+20|1|20
+21|1|21
+22|1|22
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+22|20|-9.2223720368547738e+18|-9.2223720368547738e+18|-4.6111860184273869e+17|-9223372036854775808|X'D88FE94F70CB'|20
+~~~
+# c1|count(*)|group_concat(id)
+NULL|2|8,16
+-9223372036854775808|1|12
+4.500000000000011e-310|1|20
+3.1415926535897931|1|3
+5|1|7
+875|1|14
+916.6|1|13
+1000000000000000|1|21
+MU|1|19
+NULL|1|6
+it's|1|9
+sigma|1|10
+theta|1|2
+X''|1|17
+X'24E00F3DCFC1'|1|18
+X'2E3C'|1|11
+X'5F25'|1|1
+X'781224'|1|15
+X'86B0CC83D3'|1|5
+X'C961'|1|4
+X'D88FE94F70CB'|1|22
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+9|9|45|45.0|5.0|1|9|9
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|9
+11|9
+12|9
+13|9
+14|9
+15|9
+16|9
+17|9
+18|9
+19|9
+20|9
+21|9
+22|9
+~~~
+# id
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', -2, 1)|instr('über', 'über')|replace('über', 'e', '_')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE '%'|'über' GLOB 'a*'|char(87, 890)|'über' || 'über'|'über' < 'über'|'über' = 'über' COLLATE NOCASE
+4|üBER|über|e|1|üb_r|über|über|C3BC626572|'über'|252|1|0|Wͺ|überüber|0|1
+~~~

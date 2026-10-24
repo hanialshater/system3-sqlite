@@ -1,0 +1,160 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 11
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+2|-1|5|1.0e-07|X'9E'|-766.9
+3|-899|899|0.1|X'B4D7F1FF'|-318
+4|NULL|NULL|0.0|NULL|-1.0e+308
+5|-995|1000|-780.032|psi|9223372036854775807
+6|NULL|d|0.0|NULL|NULL
+7|343|-338|X'55D370D79582'|rho|X'C3E2993C2FA5'
+8|5|X'80BAB842'|X''|NULL|-4
+9|299|d|0.0|NULL|NULL
+10|-3|4|psi|X''|-46
+11|NULL|d|0.0|NULL|NULL
+~~~
+changes: 3
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|-312
+~~~
+# id|c0|c1|c2|c3
+6|-312|0.0|NULL|d
+5|X'F24C5187D5'|0.0|NULL|d
+2|-2.5|0.0|1.0|-5
+1|956|0.0|NULL|d
+~~~
+changes: 4
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|omicron
+~~~
+# id|c0|c1|c2|c3
+2|2.5|0.0|1.0|-5
+5|X'5861414EF8C2'|0.0|NULL|d
+6|312|0.0|NULL|d
+8|-966.861|0.0|NULL|d
+9|omicron|0.0|NULL|d
+~~~
+changes: 10
+~~~
+changes: 2
+~~~
+error: cannot store TEXT value in INTEGER column t2.c2
+~~~
+error: cannot store TEXT value in INTEGER column t2.c2
+~~~
+# id|c0
+error: cannot store TEXT value in INTEGER column t2.c2
+~~~
+# id|c0|c1|c2|c3|ref
+2|X'302E30'|2.834|34|tau|6
+3|X'302E30'|6.902|147|kappa|5
+4|X'302E30'|20.138|-201|naïve|5
+5|X'302E30'|-250.0|-104| pad |6
+7|NULL|-41.636|-426|pi|7
+8|X'302E30'|30.616|-354|alpha|1
+9|X'302E30'|-5.026|473|MU|5
+10|X'302E30'|-14.584|-385|beta|8
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+9|8
+8|7
+6|5
+5|4
+2|1
+~~~
+# id
+2
+5
+6
+8
+9
+~~~
+# id
+9
+~~~
+# c3
+d
+psi
+rho
+X''
+X'9E'
+X'B4D7F1FF'
+~~~

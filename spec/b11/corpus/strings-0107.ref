@@ -1,0 +1,95 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -3, 0)|instr('kappa', 'theta')|replace('kappa', 'e', '')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '_'|'kappa' GLOB '*'|char(72, 244)|'kappa' || 'theta'|'kappa' < 'theta'|'kappa' = 'theta' COLLATE NOCASE
+5|KAPPA|kappa||0|kappa|kappa|kappa|6B61707061|'kappa'|107|0|1|Hô|kappatheta|1|0
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 4, 3)|instr('it''s', 'NULL')|replace('it''s', 'é', '_')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE 'a%'|'it''s' GLOB '*[a-m]*'|char(78, 290)|'it''s' || 'NULL'|'it''s' < 'NULL'|'it''s' = 'NULL' COLLATE NOCASE
+4|IT'S|it's|s|0|it's|it's|it's|69742773|'it''s'|105|0|1|NĢ|it'sNULL|0|0
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 3, 3)|instr('-7', 'chi')|replace('-7', 'é', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%'|'-7' GLOB '*'|char(73, 308)|'-7' || 'chi'|'-7' < 'chi'|'-7' = 'chi' COLLATE NOCASE
+2|-7|-7||0|-7|-7|-7|2D37|'-7'|45|1|1|IĴ|-7chi|1|0
+~~~
+changes: 7
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|rho
+~~~
+# id|c0|c1|c2|c3
+8|rho|NULL|NULL|NULL
+7|NULL|X'0FE64DAA49'|352|3.1415926535897931
+6|NULL|NULL|NULL|NULL
+5|NULL|X'49FCB48586'|X'76ADA07E76'|-766.0
+3|real|café|pi|234.0
+1|NULL|-4|68|-2.5
+~~~
+changes: 13
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+14|263
+~~~
+# id|c0|c1|c2|c3
+1|0|8|NULL|X'D8B13A6D3D'
+2|-9223372036854775808|NULL|NULL|d
+3|0|X''|upsilon|-9223372036854775808
+4|nu|NULL|NULL|d
+5|NULL|NULL|zeta|260
+7|NULL|NULL|901.3169|0.0
+9|0|X'9D4137061B'|iota|2
+11|0|it's|-47.0|NULL
+13|0|X'22612A34'|X''|3
+14|263|NULL|NULL|d
+~~~

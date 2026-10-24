@@ -1,0 +1,100 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', 3, 0)|instr('sigma', 'nu')|replace('sigma', '', '')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE 'A%'|'sigma' GLOB '*'|char(68, 398)|'sigma' || 'nu'|'sigma' < 'nu'|'sigma' = 'nu' COLLATE NOCASE
+5|SIGMA|sigma||0|sigma|sigma|sigma|7369676D61|'sigma'|115|0|1|DƎ|sigmanu|0|0
+~~~
+# length('tau')|upper('tau')|lower('tau')|substr('tau', 4, 2)|instr('tau', 'gamma')|replace('tau', 'é', '')|trim('tau')|ltrim('tau', 'ab')|hex('tau')|quote('tau')|unicode('tau')|'tau' LIKE '%'|'tau' GLOB '*[a-m]*'|char(89, 742)|'tau' || 'gamma'|'tau' < 'gamma'|'tau' = 'gamma' COLLATE NOCASE
+3|TAU|tau||0|tau|tau|tau|746175|'tau'|116|1|1|Y˦|taugamma|0|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 3, 0)|instr('Ελλάδα', '1e3')|replace('Ελλάδα', '', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE 'A%'|'Ελλάδα' GLOB '?'|char(72, 847)|'Ελλάδα' || '1e3'|'Ελλάδα' < '1e3'|'Ελλάδα' = '1e3' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα||0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|H͏|Ελλάδα1e3|0|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 4, 5)|instr('naïve', '42')|replace('naïve', 'a', 'XY')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'a%'|'naïve' GLOB 'a*'|char(69, 447)|'naïve' || '42'|'naïve' < '42'|'naïve' = '42' COLLATE NOCASE
+5|NAïVE|naïve|ve|0|nXYïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|Eƿ|naïve42|0|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', 4, 2)|instr('alpha', 'kappa')|replace('alpha', '', 'XY')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE '%a_'|'alpha' GLOB '*[a-m]*'|char(78, 544)|'alpha' || 'kappa'|'alpha' < 'kappa'|'alpha' = 'kappa' COLLATE NOCASE
+5|ALPHA|alpha|ha|0|alpha|alpha|lpha|616C706861|'alpha'|97|0|1|NȠ|alphakappa|1|0
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+9|8|359.2074001|359.2074001|44.9009250125|-3|X'FF99706FC7'|8
+~~~
+# c2|count(*)|group_concat(id)
+~~~

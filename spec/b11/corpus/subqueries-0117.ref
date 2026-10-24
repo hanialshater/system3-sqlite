@@ -1,0 +1,250 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|4
+3|4
+2|4
+1|4
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+22|4
+21|4
+20|4
+19|4
+18|4
+17|4
+16|4
+15|4
+14|4
+13|4
+12|4
+11|4
+10|4
+9|4
+8|4
+7|4
+6|4
+5|4
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+1
+2
+3
+4
+~~~
+# id
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+~~~
+# c1
+NULL
+-1.0e+308
+-9223372036854775808
+-855.23
+-753
+-482.92
+-270.1
+-4
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+3|4
+4|4
+2|4
+1|4
+~~~
+# id
+~~~
+# id
+2
+3
+4
+~~~
+# c0
+-753
+0
+kappa
+X'10'
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|X'D2AF4A82581E'
+~~~
+# id|c0|c1|c2|c3
+1|X'80289D61B5'|NULL|d|NULL
+2|chi|X'3CFAA5BD'|-1.0e+308|4.500000000000011e-310
+3|chi|NULL|1.0e-07|über
+4|X'10'|-1.0e+308|gamma|pi
+5|NULL|NULL|d|NULL
+6|X'D2AF4A82581E'|NULL|d|NULL
+~~~
+# id|'omega'|iif(c2, c0, 'alpha')
+1|omega| pad 
+2|omega|alpha
+3|omega|alpha
+4|omega|alpha
+5|omega|X'9D'
+6|omega|alpha
+7|omega|NULL
+8|omega|alpha
+9|omega|X'C164'
+10|omega|alpha
+11|omega|alpha
+12|omega|alpha
+13|omega|über
+14|omega|453.0
+15|omega|alpha
+16|omega|alpha
+17|omega|alpha
+18|omega|alpha
+19|omega|alpha
+20|omega|alpha
+21|omega|alpha
+22|omega|café
+~~~
+# x'567653baf6f2'|-133.6
+X'567653BAF6F2'|-133.6
+~~~

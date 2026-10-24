@@ -1,0 +1,274 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|3.0
+~~~
+# id|c0|c1|c2|c3|c4|ref
+19|3.0|0|d|NULL|NULL|NULL
+18|café|-250|-560.42|rho|X''|NULL
+17|0.0|X''|-713.5|X'93F9'|NULL|2
+15|602.0|X'C26BE982'|-4.0|NULL|893|5
+14|0.0|3|X'B5D5AF'|-1000|X'DD'|2
+12|iota|1000|X'B7C67C30F2'|-665|42|7
+11| pad |123456789012|867.0|1.0e-07|1000000000000000.0|6
+9|-9.2233720368547758e+18|0|d|NULL|NULL|NULL
+8|-3.0|日本|NULL|Lambda|X'30'|6
+6|789.8703!|55|NULL|NULL|NULL|NULL
+5|-902.8|X'C28DD2A949'|9.2233720368547758e+18|0|epsilon|5
+3|0.0|4|68.0|psi|0.1|5
+2|0.0|-74|NULL||0.1|NULL
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|X'C3C5'
+~~~
+# id|c0|c1|c2|c3|ref
+16|X'C3C5'|NULL|NULL|0|NULL
+15|X'CE857A0F'|NULL|NULL|0|8
+14|-438.622|3.1415926535897931|NULL|0|6
+13|theta|café|0|beta|3
+12|X'F6827CAE'|X'22F2469240'|953|tau|1
+10|NULL|alpha|X'766BB9D9'|it's|5
+9|NULL|X'C409'| pad |0|1
+8|-451|NULL|X'0770CFFB'|42|4
+7|-7|423.5|X''|521.4|NULL
+5|NULL|NULL|NULL|0|NULL
+4|NULL|X'E832'|X'C8DF55AE'|X'55EC'|7
+3|-796.19|sigma|5|X'64FB'|4
+2|X''|-486|NULL|255.91|NULL
+1|NULL|NULL|NULL|0|NULL
+~~~
+changes: 19
+~~~
+changes: 6
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+error: cannot store BLOB value in INTEGER column t0.c0
+~~~
+# id|c0|c1|c2|c3
+1|0|nu|0|a%b
+2|0|gamma|NULL|pi
+3|0|0|NULL|NULL
+4|0|0|-3|Lambda
+5|0|936|X'24B5A6'|alpha
+7|0|-89|NULL|omicron
+8|0|889|NULL|theta
+10|0|9223372036854775807|4|psi
+11|0|0|-3|iota
+13|0|phi|2.5|MU
+14|0|4|907|phi
+16|0|X'A1362416AC'|NULL|naïve
+17|0|0|-5|café
+19|0|-1|933|naïve
+~~~
+changes: 14
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|phi
+~~~
+# id|c0|c1|c2|c3|ref
+17|phi|NULL|NULL|0|NULL
+16|0|NULL|NULL|0|NULL
+14|438.622|3.1415926535897931|NULL|0|6
+13|0|café|0|beta|3
+10|NULL|alpha|X'766BB9D9'|it's|5
+8|451|NULL|X'0770CFFB'|42|4
+7|7|423.5|X''|521.4|NULL
+5|NULL|NULL|NULL|0|NULL
+4|NULL|X'E832'|X'C8DF55AE'|X'55EC'|7
+3|X'6D9D22E4BE'|NULL|NULL|0|NULL
+2|d6�n_!|-486|NULL|255.91|NULL
+1|NULL|NULL|NULL|0|NULL
+~~~
+changes: 13
+~~~
+changes: 3
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+20|4.500000000000011e-310
+~~~
+# id|c0|c1|c2|c3|c4|ref
+2|-74.0|-74|NULL||0.1|NULL
+3|-4.0|4|68.0|psi|0.1|5
+6|-55.0|55|NULL|NULL|NULL|NULL
+8|0.0|日本|NULL|Lambda|X'30'|6
+9|0.0|0|d|NULL|NULL|NULL
+11|-123456789012.0|123456789012|867.0|1.0e-07|1000000000000000.0|6
+12|-1000.0|1000|X'B7C67C30F2'|-665|42|7
+14|-3.0|3|X'B5D5AF'|-1000|X'DD'|2
+15|0.0|X'C26BE982'|-4.0|NULL|893|5
+18|-250.0|-250|-560.42|rho|X''|NULL
+19|0.0|0|d|NULL|NULL|NULL
+20|4.500000000000011e-310|0|d|NULL|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+error: cannot store TEXT value in INTEGER column t0.c0
+~~~
+changes: 1
+~~~
+# id|c0
+20|-644
+~~~
+# id|c0|c1|c2|c3
+1|0|nu|0|a%b
+3|0|0|NULL|NULL
+4|0|0|NULL|NULL
+5|0|936|X'24B5A6'|alpha
+7|0|-89|NULL|omicron
+11|0|0|-3|iota
+13|0|phi|2.5|MU
+17|0|0|-5|café
+19|0|-1|933|naïve
+20|-644|0|NULL|NULL
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

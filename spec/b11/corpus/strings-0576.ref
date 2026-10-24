@@ -1,0 +1,175 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', -3, 1)|instr('upsilon', 'phi')|replace('upsilon', 'e', 'XY')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE '%a_'|'upsilon' GLOB '*[a-m]*'|char(77, 563)|'upsilon' || 'phi'|'upsilon' < 'phi'|'upsilon' = 'phi' COLLATE NOCASE
+7|UPSILON|upsilon|l|0|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|1|Mȳ|upsilonphi|0|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 3, 0)|instr('Ελλάδα', 'MU')|replace('Ελλάδα', '', '_')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%a_'|'Ελλάδα' GLOB '?'|char(71, 527)|'Ελλάδα' || 'MU'|'Ελλάδα' < 'MU'|'Ελλάδα' = 'MU' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα||0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|Gȏ|ΕλλάδαMU|0|0
+~~~
+# length('alpha')|upper('alpha')|lower('alpha')|substr('alpha', -2, 4)|instr('alpha', 'kappa')|replace('alpha', 'é', '')|trim('alpha')|ltrim('alpha', 'ab')|hex('alpha')|quote('alpha')|unicode('alpha')|'alpha' LIKE 'A%'|'alpha' GLOB '*[a-m]*'|char(90, 562)|'alpha' || 'kappa'|'alpha' < 'kappa'|'alpha' = 'kappa' COLLATE NOCASE
+5|ALPHA|alpha|ha|0|alpha|alpha|lpha|616C706861|'alpha'|97|1|1|ZȲ|alphakappa|1|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 3, 4)|instr('omega', 'Lambda')|replace('omega', 'é', '')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE 'A%'|'omega' GLOB '*'|char(89, 524)|'omega' || 'Lambda'|'omega' < 'Lambda'|'omega' = 'Lambda' COLLATE NOCASE
+5|OMEGA|omega|ega|0|omega|omega|omega|6F6D656761|'omega'|111|0|1|YȌ|omegaLambda|0|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 3, 5)|instr('omega', 'theta')|replace('omega', 'é', 'XY')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '%'|'omega' GLOB '*'|char(74, 913)|'omega' || 'theta'|'omega' < 'theta'|'omega' = 'theta' COLLATE NOCASE
+5|OMEGA|omega|ega|0|omega|omega|omega|6F6D656761|'omega'|111|1|1|JΑ|omegatheta|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+11|3
+12|3
+5|3
+13|3
+9|3
+10|3
+7|3
+1|1
+8|3
+3|3
+4|3
+6|3
+2|2
+~~~
+# id
+1
+2
+3
+~~~
+# id
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+~~~
+# c0
+0.0
+2
+pi
+upsilon
+X'3822ED29EA'
+X'6CE945'
+X'89CE'
+X'E9FAFE65'
+~~~
+# id|id|c0|ref
+1|1|NULL|2
+1|2|NULL|4
+1|3|NULL|8
+2|1|rho|2
+2|2|rho|4
+2|3|rho|8
+~~~
+error: near "CASE": syntax error
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c2|count(*)|group_concat(id)
+-4|1|16
+-598.9|1|1
+-717|1|10
+0|3|2,12,14
+1.0e-07|1|6
+2|1|8
+4.500000000000011e-310|1|21
+736.7|1|11
+897|1|9
+a%b|1|13
+theta|1|19
+xi|1|7
+zeta|1|20
+über|1|4
+X'1A0DD8B6'|1|17
+X'30F706B14C'|1|15
+X'5B1F9BB429B9'|1|5
+X'6F174ED351'|1|3
+X'FB1B5F'|1|18
+~~~

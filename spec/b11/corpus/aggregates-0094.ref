@@ -1,0 +1,244 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c3|count(*)|group_concat(id, ';')
+NULL|1|10
+-2|1|8
+0.0|2|9;13
+3|1|11
+717.5|1|12
+1.0e+308|1|2
+café|1|5
+naïve|1|4
+omega|1|1
+theta|1|3
+X'974E'|1|7
+X'C66F481928A4'|1|6
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+11|9|9.2233720368547748e+18|9.2233720368547748e+18|1.0248191152060861e+18|-598|X'BC'|9
+~~~
+# c4|count(*)|group_concat(id)
+NULL|5|2,7,10,11,15
+-598|1|5
+-573|1|12
+-522.834|1|1
+-1|1|18
+3.1415926535897931|1|4
+218|1|13
+432.7317|1|23
+575.496|1|3
+1000|1|17
+9223372036854775807|1|24
+iota|1|6
+X''|1|9
+X'11A5C4C3'|1|14
+X'201319'|1|8
+X'2DC3A1'|1|16
+X'5D2C5A5E4C'|1|22
+X'5F'|1|20
+X'AB45D49B670B'|1|19
+X'BC'|1|21
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+13|11|-9.2233720368547748e+18|-9.2233720368547748e+18|-8.384883669867977e+17|-9223372036854775808|X'E84D45EAD336'|11
+~~~
+# c0|count(*)|group_concat(id)
+NULL|2|4,10
+-9223372036854775808|1|12
+-251.788|1|3
+-2|1|1
+2|1|9
+892|1|2
+theta|1|5
+x_y|1|7
+Ελλάδα|1|13
+X''|1|11
+X'7A744DE6'|1|8
+X'E84D45EAD336'|1|6
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+4|4|1030.56|1030.56|257.64|170|X'EA120AF23A'|4
+~~~
+# c4|count(*)|group_concat(id)
+NULL|1|7
+-808|1|10
+-625.833|1|6
+0|1|4
+1.0e-07|1|5
+170|1|2
+362|1|13
+860.56|1|8
+|1|9
+delta|1|11
+x_y|1|3
+X'CB'|1|1
+X'EA120AF23A'|1|12
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+13|13|91|91.0|7.0|1|13|13
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+2|2|21|21.0|10.5|10|11|2
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+4|4|29|29.0|7.25|1|13|4
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+~~~
+changes: 13
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+25|X'87'
+~~~
+# id|c0|c1|c2|c3|c4
+2|2.0|X'FCCAE85AB4'|-514|-135|NULL
+3|NULL|NULL|NULL|0|NULL
+4|4.0| pad |X'0C136C'|-637.6|3.1415926535897931
+5|über|NULL|NULL|0|NULL
+6|X'955D9B2A'|X'7B'|iota|kappa|iota
+7|upsilon|日本|-396|0|NULL
+8|8|delta|NULL|892|X'201319'
+10|0|X'924C'|iota|634|NULL
+11|11.0|X'7FAD91'|X'C91F46218825'|-1.0e+308|NULL
+12|12.0|-4|X''|0|-573
+14|14|3|a%b|-1.0e+308|X'11A5C4C3'
+15|15|X'F604C728D6'|NULL|nu|NULL
+16|Ελλάδα|-449.81|-5|upsilon|X'2DC3A1'
+18|NULL|787|beta|632|-1
+19|NULL|X'738C'|X'72B5DD6178BF'|X'A581E458BC'|X'AB45D49B670B'
+20|20.0|kappa|507.65|228.0557|X'5F'
+22|NULL|zeta|-115|0|X'5D2C5A5E4C'
+23|日本|864.3968|NULL|beta|432.7317
+24|X'43A2F29682'|chi|-167|X'39ED'|9223372036854775807
+25|X'87'|NULL|NULL|0|NULL
+~~~
+changes: 1
+~~~
+# id|c3
+~~~
+# count(*)
+20
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

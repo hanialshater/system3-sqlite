@@ -1,0 +1,275 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c0|c1
+1|2|-767.312|psi
+1|12|-767.312|-4
+1|15|-767.312|-5
+3|6|rho|-3
+3|10|rho|0
+5|1|X'BE98'|0
+5|8|X'BE98'|NULL
+5|11|X'BE98'|omicron
+5|14|X'BE98'|NULL
+5|17|X'BE98'|-505.685
+6|3|X'735831'|NULL
+6|7|X'735831'|NULL
+6|16|X'735831'|204.2793
+7|5|-1.0e+308|123456789012
+8|4|X'01'|641.32
+8|9|X'01'|X''
+~~~
+# count(*)
+9
+~~~
+# id|id|id|c3
+1|2|1|X'FFBD'
+1|12|1|-2
+1|15|1|NULL
+3|6|3|-2.5
+3|10|3|-2
+5|1|5|NULL
+5|8|5|1
+5|11|5|NULL
+5|14|5|NULL
+5|17|5|775
+6|3|6|X'7667C27F36'
+6|7|6|NULL
+6|16|6|NULL
+7|5|7|NULL
+8|4|8|日本
+8|9|8|NULL
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c4|c0
+1|2|-903|NULL
+1|12|-903|NULL
+1|15|-903|chi
+2|NULL|X'84'|NULL
+3|6|X''|NULL
+3|10|X''|X'56197A3AA2'
+4|NULL|704|NULL
+5|1|NULL|0.1
+5|8|NULL|-178.036
+5|11|NULL|NULL
+5|14|NULL|X''
+5|17|NULL|X'73D5'
+6|3|-3|beta
+6|7|-3|epsilon
+6|16|-3|X'8A492AAF6E46'
+7|5|-364|upsilon
+8|4|NULL|pi
+8|9|NULL|NULL
+9|NULL|679|NULL
+10|NULL|NULL|NULL
+11|NULL|NULL|NULL
+12|NULL|-503|NULL
+13|NULL|-626|NULL
+14|NULL|NULL|NULL
+15|NULL|NULL|NULL
+16|NULL|-133|NULL
+17|NULL|X'2CA30BC8'|NULL
+~~~
+# count(*)
+5
+~~~
+# id|id|id|ref
+1|2|1|1
+1|12|1|1
+1|15|1|1
+2|NULL|2|NULL
+3|6|3|3
+3|10|3|3
+4|NULL|4|NULL
+5|1|5|5
+5|8|5|5
+5|11|5|5
+5|14|5|5
+5|17|5|5
+6|3|6|6
+6|7|6|6
+6|16|6|6
+7|5|7|7
+8|4|8|8
+8|9|8|8
+9|NULL|9|NULL
+10|NULL|10|NULL
+11|NULL|11|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+14|NULL|14|NULL
+15|NULL|15|NULL
+16|NULL|16|NULL
+17|NULL|17|NULL
+~~~
+# count(*)
+17
+~~~
+# id|id|c3|id
+1|2|NULL|2
+1|12|NULL|12
+1|15|NULL|15
+2|NULL|X'FFBD'|NULL
+3|6|X'7667C27F36'|6
+3|10|X'7667C27F36'|10
+4|NULL|日本|NULL
+5|1|NULL|1
+5|8|NULL|8
+5|11|NULL|11
+5|14|NULL|14
+5|17|NULL|17
+6|3|-2.5|3
+6|7|-2.5|7
+6|16|-2.5|16
+7|5|NULL|5
+8|4|1|4
+8|9|1|9
+9|NULL|NULL|NULL
+10|NULL|-2|NULL
+11|NULL|NULL|NULL
+12|NULL|-2|NULL
+13|NULL|X'75589FFF'|NULL
+14|NULL|NULL|NULL
+15|NULL|NULL|NULL
+16|NULL|NULL|NULL
+17|NULL|775|NULL
+~~~
+error: near "x'a36bb6'": syntax error
+~~~
+# id|id|c3|id
+1|2|NULL|2
+1|12|NULL|12
+1|15|NULL|15
+2|NULL|X'FFBD'|NULL
+3|6|X'7667C27F36'|6
+3|10|X'7667C27F36'|10
+4|NULL|日本|NULL
+5|1|NULL|1
+5|8|NULL|8
+5|11|NULL|11
+5|14|NULL|14
+5|17|NULL|17
+6|3|-2.5|3
+6|7|-2.5|7
+6|16|-2.5|16
+7|5|NULL|5
+8|4|1|4
+8|9|1|9
+9|NULL|NULL|NULL
+10|NULL|-2|NULL
+11|NULL|NULL|NULL
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c1|c2
+1|1|X'ED0B'|X'660F65'
+1|2|X'ED0B'|NULL
+1|3|X'ED0B'|NULL
+1|4|X'ED0B'|X'6873370C8E'
+1|5|X'ED0B'|X'8EE3'
+1|6|X'ED0B'|NULL
+1|7|X'ED0B'|9223372036854775807
+1|8|X'ED0B'|-377
+1|9|X'ED0B'|upsilon
+1|10|X'ED0B'|0.1
+1|11|X'ED0B'|iota
+1|12|X'ED0B'|NULL
+1|13|X'ED0B'|xi
+1|14|X'ED0B'|4
+1|15|X'ED0B'|-4
+1|16|X'ED0B'|NULL
+1|17|X'ED0B'|NULL
+2|1|X'FD54'|X'660F65'
+2|2|X'FD54'|NULL
+~~~
+# count(*)
+9
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+17|12|9.2233720368547758e+18|9.2233720368547758e+18|7.6861433640456461e+17|-377|X'8EE3'|12
+~~~
+# c2|count(*)|group_concat(id, ';')
+NULL|5|2;3;6;16;17
+-377|1|8
+-4|1|15
+0.1|1|10
+4|1|14
+9223372036854775807|1|7
+NULL|1|12
+iota|1|11
+upsilon|1|9
+xi|1|13
+X'660F65'|1|1
+X'6873370C8E'|1|4
+X'8EE3'|1|5
+~~~
+changes: 1
+~~~
+# id|c0
+3|rho
+8|X'01'
+6|X'735831'
+2|X'A6FE235AA1'
+5|X'BE98'
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

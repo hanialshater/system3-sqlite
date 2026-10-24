@@ -1,0 +1,73 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+7|7|36|36.0|5.1428571428571432|3|8|4
+~~~
+# ref|count(*)|group_concat(id, ';')
+3|3|1;4;6
+7|2|2;5
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+4|4|758.989|758.989|189.74725|0|X''|4
+~~~
+# c1|count(*)|group_concat(id, ';')
+~~~
+# count(*)|count(c3)|sum(c3)|total(c3)|avg(c3)|min(c3)|max(c3)|count(DISTINCT c3)
+4|4|695.1|695.1|173.775|-30|chi|4
+~~~
+# c3|count(*)|group_concat(id)
+-30|1|2
+0.1|1|4
+725|1|1
+chi|1|3
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+4|4|15|15.0|3.75|1|7|4
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+~~~
+# id
+2
+3
+~~~
+# id
+1
+2
+3
+4
+~~~
+# c1
+758.989
+café
+X''
+~~~

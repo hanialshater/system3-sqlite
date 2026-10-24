@@ -1,0 +1,123 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in REAL column t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t2.c3
+~~~
+# length('upsilon')|upper('upsilon')|lower('upsilon')|substr('upsilon', -3, 1)|instr('upsilon', 'kappa')|replace('upsilon', 'é', '_')|trim('upsilon')|ltrim('upsilon', 'ab')|hex('upsilon')|quote('upsilon')|unicode('upsilon')|'upsilon' LIKE '%a_'|'upsilon' GLOB '*'|char(77, 925)|'upsilon' || 'kappa'|'upsilon' < 'kappa'|'upsilon' = 'kappa' COLLATE NOCASE
+7|UPSILON|upsilon|l|0|upsilon|upsilon|upsilon|757073696C6F6E|'upsilon'|117|0|1|MΝ|upsilonkappa|0|0
+~~~
+# length('')|upper('')|lower('')|substr('', -1, 5)|instr('', 'naïve')|replace('', 'é', 'XY')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '%é%'|'' GLOB '*'|char(70, 380)|'' || 'naïve'|'' < 'naïve'|'' = 'naïve' COLLATE NOCASE
+0||||0|||||''|NULL|0|1|Fż|naïve|1|0
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 4, 2)|instr('delta', 'a%b')|replace('delta', '', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE 'a%'|'delta' GLOB '*[a-m]*'|char(70, 927)|'delta' || 'a%b'|'delta' < 'a%b'|'delta' = 'a%b' COLLATE NOCASE
+5|DELTA|delta|ta|0|delta|delta|delta|64656C7461|'delta'|100|0|1|FΟ|deltaa%b|0|0
+~~~
+# length('kappa')|upper('kappa')|lower('kappa')|substr('kappa', -3, 1)|instr('kappa', 'nu')|replace('kappa', 'a', '_')|trim('kappa')|ltrim('kappa', 'ab')|hex('kappa')|quote('kappa')|unicode('kappa')|'kappa' LIKE '_'|'kappa' GLOB 'a*'|char(80, 773)|'kappa' || 'nu'|'kappa' < 'nu'|'kappa' = 'nu' COLLATE NOCASE
+5|KAPPA|kappa|p|0|k_pp_|kappa|kappa|6B61707061|'kappa'|107|0|0|P̅|kappanu|1|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 3, 0)|instr('psi', 'theta')|replace('psi', 'é', '_')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE '_'|'psi' GLOB '*[a-m]*'|char(71, 900)|'psi' || 'theta'|'psi' < 'theta'|'psi' = 'theta' COLLATE NOCASE
+3|PSI|psi||0|psi|psi|psi|707369|'psi'|112|0|1|G΄|psitheta|1|0
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 1, 0)|instr('a%b', 'alpha')|replace('a%b', 'e', '')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE 'a%'|'a%b' GLOB '*'|char(78, 839)|'a%b' || 'alpha'|'a%b' < 'alpha'|'a%b' = 'alpha' COLLATE NOCASE
+3|A%B|a%b||0|a%b|a%b|%b|612562|'a%b'|97|1|1|N͇|a%balpha|1|0
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+22|22|-9.2233720368547758e+18|-9.2233720368547758e+18|-4.1924418349339891e+17|-9.2233720368547758e+18|47.445|22
+~~~
+# c0|count(*)|group_concat(id)
+-9.2233720368547758e+18|1|13
+-42.911|1|7
+-33.082|1|8
+-28.312|1|3
+-25.852|1|1
+-21.297|1|10
+-14.617|1|16
+-14.11|1|14
+-11.789|1|18
+-1.519|1|22
+-1.0|1|5
+7.929|1|19
+8.401|1|9
+11.018|1|6
+13.011|1|4
+20.998|1|12
+24.425|1|17
+25.295|1|2
+32.296|1|21
+32.9|1|11
+41.516|1|15
+47.445|1|20
+~~~

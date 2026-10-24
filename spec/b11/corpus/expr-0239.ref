@@ -1,0 +1,170 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+# id|(iif(c0 IS NULL, (id || 0), 5) IS NOT -(c3 IS NULL))|CASE WHEN x'98f8cf2f' IS NULL THEN c2 IN (c3, NULL, '日本') ELSE (c2 / c2) IN (c2, '1e3', -5) END
+1|1|0
+2|1|NULL
+3|1|NULL
+4|1|NULL
+5|1|NULL
+6|1|NULL
+7|1|NULL
+8|1|NULL
+9|1|0
+10|1|NULL
+11|1|0
+12|1|NULL
+~~~
+# CAST(CAST(0 IS NULL AS NUMERIC) AS NUMERIC)|108 IN (iif(NULL, NULL, 5), -1, -316) IS NULL
+0|0
+~~~
+# id|coalesce(CASE WHEN iif(c1, id, -4) THEN CAST('theta' AS INTEGER) ELSE -(c3) END, abs(CAST(c1 AS NUMERIC)))|(c0 IS NULL = typeof(NULL IS NULL))
+1|0|0
+2|0|0
+3|0|0
+4|0|0
+5|0|0
+6|0|0
+7|0|0
+8|0|0
+9|0|0
+10|0|0
+11|0|0
+12|0|0
+~~~
+# 5|NULL
+5|NULL
+~~~
+# id|CASE WHEN ref IN (NULL, 'pi', x'58bfe821') THEN c3 ELSE (NULL * c1) END|ref
+16|NULL|1
+15|NULL|NULL
+14|NULL|2
+13|NULL|NULL
+12|NULL|8
+11|NULL|2
+10|NULL|3
+9|NULL|4
+8|NULL|NULL
+7|NULL|6
+6|NULL|7
+5|NULL|6
+4|NULL|NULL
+3|NULL|4
+2|NULL|6
+1|NULL|NULL
+~~~
+# NULL|NOT NULL
+NULL|NULL
+~~~
+# id|CASE WHEN coalesce('nu', 987) THEN -(ref) IN (CAST(c0 AS REAL), NULL, NULL) ELSE coalesce(c0, CAST(4 AS INTEGER)) END|typeof(-(abs(c1)))
+13|0.0|integer
+12|-721.5265|real
+11|X'F77538B1'|integer
+10|X'A5436B3C87A3'|real
+9|4|real
+8|-5.0|real
+7|4|integer
+6|113.0|real
+5|X'BBBFAA'|real
+4|zeta|real
+3|pi|real
+2|-670.6602|integer
+1|488.0|integer
+~~~
+# 1.0e15|typeof(iif(nullif(841, x'6e699e'), 'gamma', -0.0))
+1000000000000000.0|text
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', -2, 0)|instr('zeta', 'eta')|replace('zeta', 'a', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%a_'|'zeta' GLOB 'a*'|char(82, 408)|'zeta' || 'eta'|'zeta' < 'eta'|'zeta' = 'eta' COLLATE NOCASE
+4|ZETA|zeta||2|zet|zeta|zeta|7A657461|'zeta'|122|0|0|RƘ|zetaeta|0|0
+~~~

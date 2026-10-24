@@ -1,0 +1,121 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|700.4630|nullif(0.1, abs(ref))
+1|700.463|0.1
+2|700.463|0.1
+3|700.463|0.1
+~~~
+# -332|typeof(coalesce(x'26ac952d', 0)) BETWEEN nullif(-491, NULL) AND -5
+-332|0
+~~~
+# id|5|(c4 / NOT 2 IN (id, NULL, 3))
+1|5|NULL
+2|5|NULL
+3|5|NULL
+~~~
+# '1e3'|nullif((x'acd06223a112' IN (5, 'xi', 'MU') << -810.0 IN (x'ffc874e061', -779, '')), iif(NULL, iif('kappa', NULL, 464.926), x'167a7394'))
+1e3|0
+~~~
+# id|c1|NOT (x'2f' + c3) IN (c1, '-7', 'nu')
+3|-40|1
+2|NULL|NULL
+1|X'C8553F405FFF'|1
+~~~
+# NOT coalesce(NOT x'593411d07a', nullif(345.79, NULL))|-332
+0|-332
+~~~
+# id|CAST(CASE WHEN c1 THEN c3 ELSE NULL END AS BLOB) IN (c0 BETWEEN c0 AND -409 IN (c0, 4.5e-310, NULL), -2, NULL)|-3
+1|NULL|-3
+2|NULL|-3
+3|NULL|-3
+4|NULL|-3
+5|NULL|-3
+~~~
+# 2|-((CAST(-310 AS TEXT) * abs(x'975c048cfc4a')))
+2|0.0
+~~~
+# id|-(-(id)) BETWEEN typeof(abs(c1)) AND (coalesce(c0, c0) & CASE WHEN c1 THEN c1 ELSE 'sigma' END)|abs(typeof(c0 IN (c1, 'psi', 308.7)))
+1|0|0.0
+2|0|0.0
+3|0|0.0
+4|0|0.0
+5|0|0.0
+6|0|0.0
+7|0|0.0
+8|0|0.0
+9|0|0.0
+10|0|0.0
+11|0|0.0
+12|0|0.0
+13|0|0.0
+~~~
+# NULL|'xi'
+NULL|xi
+~~~
+# id|abs(c0) IN (c1, -3, -963.26)|(iif(-(x'1600ade7'), c0 BETWEEN -3 AND c0, -930.4570) || (751 < 'iota'))
+1|0|-930.4571
+2|NULL|-930.4571
+3|NULL|-930.4571
+4|0|-930.4571
+5|0|-930.4571
+6|NULL|-930.4571
+7|0|-930.4571
+8|0|-930.4571
+9|0|-930.4571
+10|NULL|-930.4571
+11|NULL|-930.4571
+12|0|-930.4571
+13|0|-930.4571
+~~~
+# '1e3'|CASE WHEN nullif(abs('Ελλάδα'), NULL) THEN CASE WHEN CASE WHEN -269 THEN x'66' ELSE NULL END THEN CASE WHEN 1e-7 THEN '-7' ELSE 'epsilon' END ELSE CAST('beta' AS REAL) END ELSE CASE WHEN NULL THEN nullif(-726.9, 239) ELSE 2.5 IN (NULL, '日本', -1e308) END END
+1e3|NULL
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', 3, 4)|instr('gamma', 'eta')|replace('gamma', 'e', '_')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE '%é%'|'gamma' GLOB '?'|char(90, 945)|'gamma' || 'eta'|'gamma' < 'eta'|'gamma' = 'eta' COLLATE NOCASE
+5|GAMMA|gamma|mma|0|gamma|gamma|gamma|67616D6D61|'gamma'|103|0|0|Zα|gammaeta|0|0
+~~~

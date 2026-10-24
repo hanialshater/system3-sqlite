@@ -1,0 +1,151 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c1|c2
+1|6|MU|X'7A'
+2|2|X'A05951'|NULL
+2|3|X'A05951'|833
+3|1|-4|upsilon
+3|9|-4|omicron
+3|11|-4|X'24FF15'
+~~~
+# count(*)
+0
+~~~
+# id|id|c0|c0
+1|6|X'74F29890'|NULL
+2|2|0x1F|0x1F
+2|3|0x1F|0
+3|1|0|X'74F29890'
+3|9|0|NULL
+3|11|0|X'3104B7F3F6'
+4|NULL|0.0|NULL
+5|NULL|-9223372036854775808|NULL
+6|NULL|NULL|NULL
+7|14|X'E987B12D9B86'|NULL
+8|NULL|X'43ADA316'|NULL
+9|NULL|NULL|NULL
+10|NULL|X''|NULL
+11|NULL|X'3104B7F3F6'|NULL
+12|NULL|X'56'|NULL
+13|NULL|-328.4|NULL
+14|NULL|NULL|NULL
+~~~
+# count(*)
+14
+~~~
+# id|id|c1|c2
+1|6|130|X'7A'
+2|2|naïve|NULL
+2|3|naïve|833
+3|1|1.0e-07|upsilon
+3|9|1.0e-07|omicron
+3|11|1.0e-07|X'24FF15'
+4|NULL|X'EBC87B'|NULL
+5|NULL|-2.5|NULL
+6|NULL|-589|NULL
+7|14|-242.8443|iota
+8|NULL|9223372036854775807|NULL
+~~~
+error: near "CASE": syntax error
+~~~
+# id|id|c0|c1
+1|6|X'74F29890'|143
+2|2|0x1F|NULL
+2|3|0x1F|NULL
+3|1|0|nu
+3|9|0|omega
+3|11|0|-186.8749
+7|14|X'E987B12D9B86'|-603
+~~~
+# count(*)
+14
+~~~
+# id|id|c0|ref
+1|6|9.2233720368547758e+18|1
+2|2|1.0e+308|2
+2|3|1.0e+308|2
+3|1|-339.668|3
+3|9|-339.668|3
+3|11|-339.668|3
+4|NULL|X'086CAA'|NULL
+5|NULL|2.0|NULL
+6|NULL|NULL|NULL
+7|14|xi|7
+8|NULL|chi|NULL
+~~~
+error: ambiguous column name: c1
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id)
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+~~~
+# id|coalesce(c0, abs(iif(c1, '1e3', NULL)))|(abs(iif(x'e9f846b580', c3, 'café')) & 1)
+1|NULL|0
+2|NULL|0
+3|154|0
+4|X'12A69353ED20'|0
+~~~
+# 479|iif(1 IS NULL IS NULL, iif(x'f3c2dfbfc9', abs(NULL), x'066bd108cb86'), NULL)
+479|NULL
+~~~

@@ -1,0 +1,146 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|id
+1|7|42|7
+2|NULL|beta|NULL
+3|2|X'B0'|2
+4|NULL|X'40'|NULL
+5|NULL|MU|NULL
+6|3|-2.5|3
+6|4|-2.5|4
+6|5|-2.5|5
+7|6|2.5|6
+8|NULL|5|NULL
+9|NULL|NULL|NULL
+10|NULL|NULL|NULL
+11|NULL|X'F7DF'|NULL
+12|NULL|delta|NULL
+13|NULL|203|NULL
+~~~
+# count(*)
+13
+~~~
+# id|id|ref|c0
+1|7|7|-1.0e+308
+2|NULL|7|NULL
+3|2|7|NULL
+4|NULL|8|NULL
+5|NULL|5|NULL
+6|3|1|café
+6|4|1|295.65
+6|5|1|4.500000000000011e-310
+7|6|NULL|X'F63C36D8304B'
+8|NULL|NULL|NULL
+9|NULL|1|NULL
+10|NULL|5|NULL
+11|NULL|NULL|NULL
+12|NULL|6|NULL
+13|NULL|NULL|NULL
+~~~
+error: near "CASE": syntax error
+~~~
+# id|id|ref|id
+1|7|NULL|7
+2|NULL|3|NULL
+3|2|6|2
+4|NULL|6|NULL
+5|NULL|6|NULL
+6|3|7|3
+6|4|7|4
+6|5|7|5
+7|6|1|6
+~~~
+# count(*)
+7
+~~~
+# length('gamma')|upper('gamma')|lower('gamma')|substr('gamma', -2, 2)|instr('gamma', 'upsilon')|replace('gamma', 'a', 'XY')|trim('gamma')|ltrim('gamma', 'ab')|hex('gamma')|quote('gamma')|unicode('gamma')|'gamma' LIKE '_'|'gamma' GLOB '*[a-m]*'|char(79, 257)|'gamma' || 'upsilon'|'gamma' < 'upsilon'|'gamma' = 'upsilon' COLLATE NOCASE
+5|GAMMA|gamma|ma|0|gXYmmXY|gamma|gamma|67616D6D61|'gamma'|103|0|1|Oā|gammaupsilon|1|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|7
+4|7
+7|7
+5|7
+6|7
+1|7
+3|7
+~~~
+# id
+~~~
+# id
+~~~
+# c1
+-4
+1
+3
+~~~

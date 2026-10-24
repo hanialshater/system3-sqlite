@@ -1,0 +1,242 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+4|9
+7|9
+8|9
+6|9
+9|9
+5|9
+3|9
+2|9
+1|9
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+8
+9
+~~~
+# ref
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+8|9
+7|9
+2|9
+5|9
+9|9
+3|9
+4|9
+1|9
+6|9
+~~~
+# id
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|9
+2|9
+3|9
+5|9
+9|9
+6|9
+4|9
+7|9
+8|9
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# c1
+9223372036854775807
+X'5C9EEC2951'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|9
+2|9
+3|9
+4|9
+5|9
+6|9
+7|9
+8|9
+9|9
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+~~~
+# id
+8
+9
+~~~
+# c2
+4
+5
+6
+7
+8
+9
+249
+beta
+chi
+nu
+sigma
+x_y
+X'51'
+X'B62F04'
+X'CC09CE57'
+~~~
+# id|id|c1|id
+1|NULL|320.1|NULL
+2|6|4|6
+3|8|it's|8
+4|5|NULL|5
+5|9|-74.3|9
+6|1|-508.37|1
+6|2|-508.37|2
+6|4|-508.37|4
+~~~
+error: near "-": syntax error
+~~~

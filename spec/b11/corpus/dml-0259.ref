@@ -1,0 +1,230 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 5
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+5|theta
+~~~
+# id|c0|c1|c2|c3
+1|Lambda|NULL|NULL|NULL
+2|-1|X'EE54EC'|-4|X'8ECABE81'
+3|154|NULL|NULL|NULL
+4|-1|588|NULL|NULL
+5|theta|NULL|NULL|NULL
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|X'4A'
+~~~
+# id|c0|c1|ref
+1|0|NULL|NULL
+2|0|0|5
+3|seÃ±or|-522.7|5
+5|-5|-1|8
+6|_d|Ô!|2|1
+8|X'F0FA'|tau|NULL
+9|0|-3|NULL
+11|-862|NULL|8
+12|808|3|NULL
+14|-296|X'D5'|8
+15|gamma|a%b|8
+16|X'4A'|NULL|NULL
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: UNIQUE constraint failed: t2.c0
+~~~
+# id|c0|c1|c2|c3|ref
+1|X'35FAD24022'|gamma|tau|-2.5|NULL
+2|NULL|0|NULL|NULL|NULL
+4|934.1|rho|3|X'A4CE2A2F4E60'|7
+5|Ÿç¸!|1|NULL|X'BB95DB'|8
+7|NULL|2.5|-714|2.5|NULL
+8|X'8684D686DF'|alpha|X'312D'|X'A4B91116'|1
+10|-778.3209|0|624.9|437|8
+11|X'168FE3A16A'|563.3|-956.8176|NULL|6
+13|beta| pad |NULL|NULL|7
+14|-61.21|X'572AFF9D'|-172|376|4
+16|X'C47D'|0|eta|NULL|2
+17|691.7|123456789012|842|0|8
+19|NULL|chi|-716.5|X'C8'|NULL
+20|NULL|Lambda|X'C33E'|zeta|5
+22|1|-132|-282.7985|-206|1
+23|4.500000000000011e-310|22|X'8E92DF'|198|5
+25|NULL|X''|NULL|-969|NULL
+~~~
+# count(*)|count(ref)|sum(ref)|total(ref)|avg(ref)|min(ref)|max(ref)|count(DISTINCT ref)
+6|5|28|28.0|5.6|1|8|4
+~~~
+# ref|count(*)|group_concat(id, ';')
+NULL|5|1;2;7;19;25
+1|2|8;22
+5|2|20;23
+7|2|4;13
+8|3|5;10;17
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|12
+2|12
+3|12
+5|12
+6|12
+8|12
+9|12
+11|12
+12|12
+14|12
+15|12
+16|12
+~~~
+# id
+1
+2
+3
+5
+6
+8
+9
+11
+12
+14
+15
+16
+~~~
+# id
+1
+2
+5
+8
+11
+14
+15
+~~~
+# c0
+NULL
+NULL
+NULL
+NULL
+NULL
+1
+5
+5
+8
+8
+~~~

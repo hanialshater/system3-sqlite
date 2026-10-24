@@ -1,0 +1,184 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+20|-4
+12|-703
+16|-849
+8|-9223372036854775808
+17|0
+3|0.0
+19|123456789012
+7|219
+10|42
+21|kappa
+4|theta
+9|X''
+6|X'8AD0'
+11|X'8EA572A43E'
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|CASE WHEN id THEN typeof(CAST(ref AS TEXT)) ELSE NOT c0 IN (CASE WHEN ref THEN '1e3' ELSE x'e50efd9f' END, x'bfd2a91f48', x'c9') END|NULL
+1|text|NULL
+2|text|NULL
+3|null|NULL
+4|text|NULL
+5|text|NULL
+6|text|NULL
+7|text|NULL
+8|text|NULL
+9|text|NULL
+10|text|NULL
+11|text|NULL
+12|text|NULL
+13|text|NULL
+14|text|NULL
+15|text|NULL
+~~~
+# x'a185b50c'|x'6b85' IN (NULL, NULL, 567.700)
+X'A185B50C'|NULL
+~~~

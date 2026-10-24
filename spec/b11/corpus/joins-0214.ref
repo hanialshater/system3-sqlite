@@ -1,0 +1,267 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+# id|id|ref|c3
+1|1|8|-185
+1|4|8|X'E498538E'
+2|NULL|5|NULL
+3|NULL|NULL|NULL
+4|15|1|NULL
+5|5|7|2.5
+5|10|7|3
+5|11|7|X'E234D98D'
+5|16|7|NULL
+6|17|8|0
+7|3|3|684
+8|2|6|-606.75
+8|8|6|NULL
+8|9|6|NULL
+9|NULL|8|NULL
+10|NULL|1|NULL
+11|NULL|NULL|NULL
+12|NULL|NULL|NULL
+13|NULL|NULL|NULL
+14|NULL|NULL|NULL
+15|NULL|2|NULL
+16|NULL|NULL|NULL
+17|NULL|5|NULL
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c3|c0
+1|1|-185|5
+1|2|-185|X'2B'
+1|3|-185|X''
+1|4|-185|133
+1|5|-185|X'CFA0DC6B8B'
+1|6|-185|-763.4
+1|7|-185|NULL
+1|8|-185|0.1
+1|9|-185|-5
+1|10|-185|日本
+1|11|-185|X'5A36C3C9'
+1|12|-185|X'BA'
+1|13|-185|4.500000000000011e-310
+1|14|-185|-2
+1|15|-185|NULL
+1|16|-185|-2
+1|17|-185|X'EB68A593DB29'
+2|1|-606.75|5
+2|2|-606.75|X'2B'
+~~~
+# count(*)
+17
+~~~
+# id|id|c0|ref
+1|1|196|1
+1|4|196|1
+4|15|-4|4
+5|5|X'527433A4'|5
+5|10|X'527433A4'|5
+5|11|X'527433A4'|5
+5|16|X'527433A4'|5
+6|17|1000000000000000|6
+7|3|-117|7
+~~~
+# count(*)
+7
+~~~
+# id|id|c0|c4
+1|1|5|NULL
+1|2|5|X'288B18679C'
+1|3|5|278
+1|4|5|NULL
+1|5|5|chi
+1|6|5|MU
+1|7|5|485.8151
+1|8|5|-571
+1|9|5|-5
+1|10|5|NULL
+1|11|5|Lambda
+1|12|5|620.979
+1|13|5|-724
+1|14|5|NULL
+1|15|5|-5
+1|16|5|3
+1|17|5|it's
+2|1|X'2B'|NULL
+2|2|X'2B'|X'288B18679C'
+2|3|X'2B'|278
+2|4|X'2B'|NULL
+2|5|X'2B'|chi
+2|6|X'2B'|MU
+2|7|X'2B'|485.8151
+2|8|X'2B'|-571
+2|9|X'2B'|-5
+2|10|X'2B'|NULL
+2|11|X'2B'|Lambda
+2|12|X'2B'|620.979
+2|13|X'2B'|-724
+2|14|X'2B'|NULL
+2|15|X'2B'|-5
+2|16|X'2B'|3
+2|17|X'2B'|it's
+3|1|X''|NULL
+3|2|X''|X'288B18679C'
+3|3|X''|278
+3|4|X''|NULL
+3|5|X''|chi
+3|6|X''|MU
+3|7|X''|485.8151
+3|8|X''|-571
+3|9|X''|-5
+3|10|X''|NULL
+3|11|X''|Lambda
+3|12|X''|620.979
+~~~
+error: near "(": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+13|13
+3|3
+4|4
+8|8
+5|5
+14|14
+9|9
+10|10
+16|16
+17|17
+1|1
+15|15
+6|6
+11|11
+7|7
+12|12
+2|2
+~~~
+# id
+~~~
+# id
+16
+17
+~~~
+# c1
+NULL
+-763.4
+-5
+-2
+4.500000000000011e-310
+0.1
+5
+133
+ pad 
+-3
+-705.4
+1.0e+308
+123456789012
+163.86
+2
+5
+667.45
+~~~
+# id|x'40'|c0
+1|X'40'|196
+2|X'40'|X'4DB82ADB'
+3|X'40'|NULL
+4|X'40'|-4
+5|X'40'|X'527433A4'
+6|X'40'|1000000000000000
+7|X'40'|-117
+~~~
+# -(-(NULL BETWEEN 1e308 AND 3))|NULL
+NULL|NULL
+~~~

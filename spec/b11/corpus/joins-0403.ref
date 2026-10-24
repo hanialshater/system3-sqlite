@@ -1,0 +1,64 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|ref|id
+1|NULL|4|NULL
+2|NULL|NULL|NULL
+3|3|3|3
+~~~
+# count(*)
+3
+~~~
+# id|id|c2|c1
+3|3|NULL|-604.56
+~~~
+error: near "NOT": syntax error
+~~~
+# id|id|c0|c4
+3|3|883|X'F75CE3A0D6'
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+# id|c3
+1|0
+2|2
+3|5
+~~~
+# count(*)
+3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 2, 4)|instr('it''s', 'epsilon')|replace('it''s', 'é', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '_'|'it''s' GLOB '?'|char(69, 512)|'it''s' || 'epsilon'|'it''s' < 'epsilon'|'it''s' = 'epsilon' COLLATE NOCASE
+4|IT'S|it's|t's|0|it's|it's|it's|69742773|'it''s'|105|0|0|EȀ|it'sepsilon|0|0
+~~~

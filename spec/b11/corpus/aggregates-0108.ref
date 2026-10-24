@@ -1,0 +1,195 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+12|12|78|78.0|6.5|1|12|12
+~~~
+# id|count(*)|group_concat(id)
+~~~
+# count(*)|count(c4)|sum(c4)|total(c4)|avg(c4)|min(c4)|max(c4)|count(DISTINCT c4)
+12|7|1652.1486|1652.1486|236.02122857142857|-38|X'0613416E2BD0'|7
+~~~
+# c4|count(*)|group_concat(id)
+NULL|5|1,5,6,7,12
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+6|6|756.0|756.0|126.0|-32|X''|6
+~~~
+# c1|count(*)|group_concat(id, ';')
+NULL|3|8;9;10
+-914.5|1|2
+-32|1|12
+0|1|7
+3|1|11
+785|1|4
+tau|1|6
+X''|1|1
+X'7CE020'|1|5
+X'ACAC'|1|3
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+12|9|-158.5|-158.5|-17.611111111111111|-914.5|X'ACAC'|9
+~~~
+# c1|count(*)|group_concat(id)
+NULL|3|8,9,10
+-914.5|1|2
+-32|1|12
+0|1|7
+3|1|11
+785|1|4
+tau|1|6
+X''|1|1
+X'7CE020'|1|5
+X'ACAC'|1|3
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id)
+NULL|1|3
+0|1|2
+1.0e-07|1|5
+3.1415926535897931|1|10
+4|1|8
+814|1|7
+ pad |1|9
+café|1|11
+X'685CF6'|1|1
+X'B8C4D4'|1|6
+X'BE4992'|1|4
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c0|count(*)|group_concat(id)
+NULL|1|3
+0|1|2
+1.0e-07|1|5
+3.1415926535897931|1|10
+4|1|8
+814|1|7
+ pad |1|9
+café|1|11
+X'685CF6'|1|1
+X'B8C4D4'|1|6
+X'BE4992'|1|4
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+11|10|821.14159275358975|821.14159275358975|82.114159275358972|0|X'BE4992'|10
+~~~
+# c0|count(*)|group_concat(id)
+NULL|1|3
+0|1|2
+1.0e-07|1|5
+3.1415926535897931|1|10
+4|1|8
+814|1|7
+ pad |1|9
+café|1|11
+X'685CF6'|1|1
+X'B8C4D4'|1|6
+X'BE4992'|1|4
+~~~
+# id|CASE WHEN x'' THEN (c0 * id) BETWEEN c0 IN (id, -2.5, 'pi') AND typeof(-679) ELSE x'ff53e91e80' END|iif(-2.5, CASE WHEN (c0 >> c1) THEN c0 ELSE NOT 'naïve' END, NULL)
+1|X'FF53E91E80'|1
+2|X'FF53E91E80'|1
+3|X'FF53E91E80'|1
+4|X'FF53E91E80'|1
+5|X'FF53E91E80'|1
+6|X'FF53E91E80'|1
+7|X'FF53E91E80'|1
+8|X'FF53E91E80'|4
+9|X'FF53E91E80'|1
+10|X'FF53E91E80'|3.1415926535897931
+11|X'FF53E91E80'|1
+~~~
+# NOT abs(0)|nullif(-(x'a393c9fa0489') BETWEEN 'psi' AND CASE WHEN -2 THEN 5 ELSE 4.5e-310 END, x'851e')
+1|0
+~~~
+# id|id|id|c1
+1|1|1|X'3E9897'
+1|2|1|1
+1|3|1|alpha
+1|4|1|NULL
+1|5|1|NULL
+1|6|1|-965
+1|7|1|738
+1|8|1|MU
+1|9|1|0
+1|10|1|X'5FA5'
+1|11|1|1000000000000000
+2|1|2|X'3E9897'
+2|2|2|1
+2|3|2|alpha
+2|4|2|NULL
+2|5|2|NULL
+2|6|2|-965
+2|7|2|738
+2|8|2|MU
+2|9|2|0
+2|10|2|X'5FA5'
+2|11|2|1000000000000000
+3|1|3|X'3E9897'
+3|2|3|1
+3|3|3|alpha
+3|4|3|NULL
+3|5|3|NULL
+3|6|3|-965
+3|7|3|738
+3|8|3|MU
+3|9|3|0
+~~~
+error: near "(": syntax error
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -3, 5)|instr('theta', 'chi')|replace('theta', 'é', '_')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '_'|'theta' GLOB '?'|char(81, 666)|'theta' || 'chi'|'theta' < 'chi'|'theta' = 'chi' COLLATE NOCASE
+5|THETA|theta|eta|0|theta|theta|theta|7468657461|'theta'|116|0|0|Qʚ|thetachi|0|0
+~~~

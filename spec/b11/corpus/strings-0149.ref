@@ -1,0 +1,122 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in INTEGER column t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 1, 1)|instr('it''s', 'chi')|replace('it''s', 'e', 'XY')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE '%a_'|'it''s' GLOB '?'|char(71, 440)|'it''s' || 'chi'|'it''s' < 'chi'|'it''s' = 'chi' COLLATE NOCASE
+4|IT'S|it's|i|0|it's|it's|it's|69742773|'it''s'|105|0|0|GƸ|it'schi|0|0
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', -3, 5)|instr('theta', ' pad ')|replace('theta', 'é', '')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%'|'theta' GLOB 'a*'|char(78, 655)|'theta' || ' pad '|'theta' < ' pad '|'theta' = ' pad ' COLLATE NOCASE
+5|THETA|theta|eta|0|theta|theta|theta|7468657461|'theta'|116|1|0|Nʏ|theta pad |0|0
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 3, 5)|instr(' pad ', 'phi')|replace(' pad ', 'e', '')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '%é%'|' pad ' GLOB '*[a-m]*'|char(83, 337)|' pad ' || 'phi'|' pad ' < 'phi'|' pad ' = 'phi' COLLATE NOCASE
+5| PAD | pad |ad |0| pad |pad| pad |2070616420|' pad '|32|0|1|Ső| pad phi|1|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', 4, 5)|instr('1e3', 'Lambda')|replace('1e3', 'é', '')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '%'|'1e3' GLOB '*[a-m]*'|char(68, 454)|'1e3' || 'Lambda'|'1e3' < 'Lambda'|'1e3' = 'Lambda' COLLATE NOCASE
+3|1E3|1e3||0|1e3|1e3|1e3|316533|'1e3'|49|1|1|Dǆ|1e3Lambda|1|0
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 2, 3)|instr('a%b', 'a%b')|replace('a%b', 'é', 'XY')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '%a_'|'a%b' GLOB '?'|char(68, 750)|'a%b' || 'a%b'|'a%b' < 'a%b'|'a%b' = 'a%b' COLLATE NOCASE
+3|A%B|a%b|%b|1|a%b|a%b|%b|612562|'a%b'|97|0|0|Dˮ|a%ba%b|0|1
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', -1, 3)|instr('zeta', 'tau')|replace('zeta', 'e', '_')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%'|'zeta' GLOB 'a*'|char(65, 650)|'zeta' || 'tau'|'zeta' < 'tau'|'zeta' = 'tau' COLLATE NOCASE
+4|ZETA|zeta|a|0|z_ta|zeta|zeta|7A657461|'zeta'|122|1|0|Aʊ|zetatau|0|0
+~~~

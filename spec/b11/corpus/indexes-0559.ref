@@ -1,0 +1,188 @@
+changes: 0
+~~~
+error: cannot store REAL value in INTEGER column t0.c2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+11|NULL
+8| pad 
+10|1e3
+7|NULL
+2|café
+14|epsilon
+1|gamma
+4|kappa
+13|naïve
+6|omega
+9|pi
+12|x_y
+5|über
+3|Ελλάδα
+~~~
+# count(*)
+13
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+24
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+12|-965.03
+20|-10
+17|-2
+1|0
+6|0
+7|0
+8|0
+9|0
+19|0
+21|0
+24|0
+16|1
+2|5
+5|430.0412
+3|953.24
+10|iota
+14|it's
+11|rho
+18|tau
+23|theta
+13|X'21'
+15|X'2F39ADF3'
+22|X'8F876B6293'
+4|X'A21214392119'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+1|NULL
+2|NULL
+3|NULL
+~~~
+# count(*)
+0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('it''s')|upper('it''s')|lower('it''s')|substr('it''s', 4, 4)|instr('it''s', 'beta')|replace('it''s', '', '')|trim('it''s')|ltrim('it''s', 'ab')|hex('it''s')|quote('it''s')|unicode('it''s')|'it''s' LIKE 'A%'|'it''s' GLOB '*'|char(82, 609)|'it''s' || 'beta'|'it''s' < 'beta'|'it''s' = 'beta' COLLATE NOCASE
+4|IT'S|it's|s|0|it's|it's|it's|69742773|'it''s'|105|0|1|Rɡ|it'sbeta|0|0
+~~~

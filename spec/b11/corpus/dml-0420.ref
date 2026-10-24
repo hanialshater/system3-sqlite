@@ -1,0 +1,198 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|-609
+~~~
+# id|c0|c1
+10|-609|NULL
+9|0x1F|NULL
+5|X'753507'|-2.5
+3|0|X''
+2|NULL!|0.1
+~~~
+changes: 10
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|X'4A140904C1'
+~~~
+# id|c0|c1|c2|c3|ref
+1|integer|-903|0x1F|X'37ED4089'|1
+2|sigma!|119|X'20F8'|X'8C66CFF157'|7
+3|integer|-7|X'5969579DDA'|X''|3
+5|integer|NULL|X'9FF9DDDA4BB8'|NULL|2
+6|integer| pad |NULL|NULL|4
+7|integer|NULL|X'1A22'| pad |8
+8|X'C33542A7AC'|d|NULL|d|NULL
+9|integer|X'B2172D45C9'|NULL|X'2D0EC0B5C1DB'|NULL
+10|integer|NULL|2| pad |2
+11|X'4A140904C1'|d|NULL|d|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|NULL
+~~~
+# id|c0|c1|c2|c3|ref
+12|NULL|d|NULL|d|NULL
+11|X'4A140904C1'|d|NULL|d|NULL
+9|integer|X'B2172D45C9'|NULL|X'2D0EC0B5C1DB'|NULL
+8|X'C33542A7AC'|d|NULL|d|NULL
+7|integer|NULL|X'1A22'| pad |8
+6|integer| pad |NULL|NULL|4
+4|sigma|d|NULL|d|NULL
+3|integer|-7|X'5969579DDA'|X''|3
+2|sigma!|119|X'20F8'|X'8C66CFF157'|7
+1|integer|-903|0x1F|X'37ED4089'|1
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1
+1|zeta|NULL
+2|NULL!|0.1
+3|0|X''
+4|-879|NULL
+5|u5|-2.5
+9|0x1F|NULL
+10|NULL|NULL
+~~~
+changes: 1
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|X'741F74FBC4'
+~~~
+# id|c0|c1
+1|zeta|NULL
+2|theta!|0.1
+4|0|NULL
+5|9223372036854775807|NULL
+10|NULL|NULL
+11|X'741F74FBC4'|NULL
+~~~
+changes: 10
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|gamma
+~~~
+# id|c0|c1|c2|c3|ref
+1|X'E258EA3256'|d|NULL|d|NULL
+2|0|119|X'20F8'|X'8C66CFF157'|7
+4|0|d|NULL|d|NULL
+6|NULL| pad |NULL|NULL|4
+8|4|d|NULL|d|NULL
+12|0|d|NULL|d|NULL
+13|gamma|d|NULL|d|NULL
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|X'C614AAA7'
+~~~
+# id|c0|c1
+12|X'C614AAA7'|NULL
+11|NULL|NULL
+10|NULL|NULL
+6|X''|NULL
+4|NULL|NULL
+2|1|0.1
+~~~
+# id|id|id|id
+1|NULL|1|NULL
+2|NULL|2|NULL
+4|6|4|6
+6|NULL|6|NULL
+8|NULL|8|NULL
+12|NULL|12|NULL
+13|NULL|13|NULL
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

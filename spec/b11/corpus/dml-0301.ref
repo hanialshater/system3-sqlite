@@ -1,0 +1,220 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|-841.28
+~~~
+# id|c0|c1
+2|2|X'62791C3449'
+3|X'3DF3BC'|NULL
+5|NULL|NULL
+7|704.1|NULL
+8|-841.28|NULL
+~~~
+changes: 5
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|NULL
+~~~
+# id|c0|c1
+2|X''|X'62791C3449'
+4|0.1|NULL
+5|NULL|NULL
+8|X''|NULL
+9|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|NULL
+~~~
+# id|c0|c1
+1|NULL|NULL
+2|X''|X'62791C3449'
+4|0.1|NULL
+5|NULL|NULL
+6|1|NULL
+8|X''|NULL
+9|NULL|NULL
+~~~
+changes: 7
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|NULL
+~~~
+# id|c0|c1
+2|NULL|X'62791C3449'
+4|tau!|NULL
+5|NULL|NULL
+6|NULL|NULL
+8|NULL|NULL
+9|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|NULL
+~~~
+# id|c0|c1
+9|NULL|NULL
+8|NULL|NULL
+6|NULL|NULL
+4|pi!|NULL
+3|-3|NULL
+2|NULL|X'62791C3449'
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|X'6988'
+~~~
+# id|c0|c1
+1|-9223372036854775808|NULL
+2|NULL|X'62791C3449'
+4|X'8C3D'|NULL
+6|NULL|NULL
+8|NULL|NULL
+9|X'6988'|NULL
+~~~
+changes: 6
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|-2.5
+~~~
+# id|c0|c1
+2|-2.5!|X'62791C3449'
+4|1|NULL
+6|NULL|NULL
+8|NULL|NULL
+9|-2.5|NULL
+~~~
+# length('-7')|upper('-7')|lower('-7')|substr('-7', 0, 5)|instr('-7', '日本')|replace('-7', '', '')|trim('-7')|ltrim('-7', 'ab')|hex('-7')|quote('-7')|unicode('-7')|'-7' LIKE '%é%'|'-7' GLOB '*'|char(78, 797)|'-7' || '日本'|'-7' < '日本'|'-7' = '日本' COLLATE NOCASE
+2|-7|-7|-7|0|-7|-7|-7|2D37|'-7'|45|0|1|N̝|-7日本|1|0
+~~~
+changes: 7
+~~~
+changes: 10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|81.5
+~~~
+# id|c0|c1|c2|c3|ref
+20|81.5|NULL|d|NULL|NULL
+19|X'573D9821B3'|575.1386|X'7F2CE1'|iota|1
+17|-1.0e+308|NULL|0|X'37BD'|1
+15|X'D2'|1000000000000000.0|X'D728'|NULL|4
+13|-1.0e+308|NULL|2|X'1D5B8B'|7
+11|X''|1|X'7B'|1.0e+308|5
+9|0.0|1000000000000000.0|X'56E4AAE1C635'|xi|2
+7|-1.0e+308|NULL|-231|-4|8
+5|-1|X'A006'|0.1|-568.33|NULL
+3|-1.0e+308|NULL|NULL|1e3|6
+2|NULL|NULL|d|NULL|NULL
+1|0|162|802|X'EC319FAC327D'|8
+~~~
+changes: 1
+~~~
+# id|c1
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

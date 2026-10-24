@@ -1,0 +1,150 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 4, 0)|instr('señor', 'it''s')|replace('señor', 'é', '')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '%a_'|'señor' GLOB 'a*'|char(81, 652)|'señor' || 'it''s'|'señor' < 'it''s'|'señor' = 'it''s' COLLATE NOCASE
+5|SEñOR|señor||0|señor|señor|señor|7365C3B16F72|'señor'|115|0|0|Qʌ|señorit's|0|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 1, 5)|instr('nu', 'beta')|replace('nu', 'e', '_')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE '%é%'|'nu' GLOB '?'|char(71, 320)|'nu' || 'beta'|'nu' < 'beta'|'nu' = 'beta' COLLATE NOCASE
+2|NU|nu|nu|0|nu|nu|nu|6E75|'nu'|110|0|0|Gŀ|nubeta|0|0
+~~~
+# length('señor')|upper('señor')|lower('señor')|substr('señor', 3, 1)|instr('señor', 'it''s')|replace('señor', 'e', '_')|trim('señor')|ltrim('señor', 'ab')|hex('señor')|quote('señor')|unicode('señor')|'señor' LIKE '%'|'señor' GLOB '*'|char(80, 792)|'señor' || 'it''s'|'señor' < 'it''s'|'señor' = 'it''s' COLLATE NOCASE
+5|SEñOR|señor|ñ|0|s_ñor|señor|señor|7365C3B16F72|'señor'|115|1|1|P̘|señorit's|0|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 3, 0)|instr('pi', 'it''s')|replace('pi', 'a', 'XY')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE 'A%'|'pi' GLOB '*'|char(76, 404)|'pi' || 'it''s'|'pi' < 'it''s'|'pi' = 'it''s' COLLATE NOCASE
+2|PI|pi||0|pi|pi|pi|7069|'pi'|112|0|1|LƔ|piit's|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+~~~
+# id
+2
+4
+5
+9
+10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+~~~
+# c1
+NULL
+NULL
+-532
+-255.24
+-4
+1
+2
+~~~
+# count(*)|count(c1)|sum(c1)|total(c1)|avg(c1)|min(c1)|max(c1)|count(DISTINCT c1)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# c1|count(*)|group_concat(id)
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

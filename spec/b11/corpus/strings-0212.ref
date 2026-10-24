@@ -1,0 +1,76 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t0.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t1.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('x_y')|upper('x_y')|lower('x_y')|substr('x_y', 1, 3)|instr('x_y', 'xi')|replace('x_y', '', '')|trim('x_y')|ltrim('x_y', 'ab')|hex('x_y')|quote('x_y')|unicode('x_y')|'x_y' LIKE 'A%'|'x_y' GLOB 'a*'|char(89, 873)|'x_y' || 'xi'|'x_y' < 'xi'|'x_y' = 'xi' COLLATE NOCASE
+3|X_Y|x_y|x_y|0|x_y|x_y|x_y|785F79|'x_y'|120|0|0|Yͩ|x_yxi|1|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 4, 1)|instr('naïve', 'Ελλάδα')|replace('naïve', 'a', 'XY')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE '%é%'|'naïve' GLOB '?'|char(72, 465)|'naïve' || 'Ελλάδα'|'naïve' < 'Ελλάδα'|'naïve' = 'Ελλάδα' COLLATE NOCASE
+5|NAïVE|naïve|v|0|nXYïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|HǑ|naïveΕλλάδα|1|0
+~~~
+# length('')|upper('')|lower('')|substr('', 1, 0)|instr('', 'MU')|replace('', 'e', '')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '%é%'|'' GLOB '*'|char(66, 586)|'' || 'MU'|'' < 'MU'|'' = 'MU' COLLATE NOCASE
+0||||0|||||''|NULL|0|1|BɊ|MU|1|0
+~~~
+# length('omicron')|upper('omicron')|lower('omicron')|substr('omicron', -2, 1)|instr('omicron', 'epsilon')|replace('omicron', '', '_')|trim('omicron')|ltrim('omicron', 'ab')|hex('omicron')|quote('omicron')|unicode('omicron')|'omicron' LIKE 'A%'|'omicron' GLOB '*'|char(73, 732)|'omicron' || 'epsilon'|'omicron' < 'epsilon'|'omicron' = 'epsilon' COLLATE NOCASE
+7|OMICRON|omicron|o|0|omicron|omicron|omicron|6F6D6963726F6E|'omicron'|111|0|1|I˜|omicronepsilon|0|0
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t0.c2
+~~~
+# id|c0
+error: cannot store TEXT value in REAL column t0.c2
+~~~
+# id|c0|c1|c2|c3
+2|4.500000000000011e-310|29.776|34.375|158
+3|q!|32.276|35.271|438
+4|19|24.11|-27.809|-234
+5|MU|-42.507|123456789012.0|408
+7|NULL|-33.286|3.786|-459
+8|1|46.818|41.024|-5
+9|-390.565|35.28|-37.354|-444
+~~~

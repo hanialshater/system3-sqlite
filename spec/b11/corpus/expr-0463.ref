@@ -1,0 +1,219 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store BLOB value in TEXT column t1.c4
+~~~
+changes: 1
+~~~
+# id|NOT NOT CASE WHEN 'a%b' THEN c0 ELSE c0 END|c4 BETWEEN (c1 - c4) IS NULL AND id
+1|1|0
+2|1|0
+3|0|0
+4|NULL|0
+5|NULL|0
+6|0|0
+7|1|0
+~~~
+# abs(CAST(NULL AS INTEGER))|typeof(CAST('psi' AS INTEGER) IS NULL)
+NULL|integer
+~~~
+# id|iif(-534.1810 IN (-(c1), 4, 822), x'58', -49)|iif(-(coalesce(x'360dd0ad0360', id)), nullif(id, id BETWEEN c1 AND c0), 0)
+1|-49|1
+2|-49|2
+3|-49|3
+4|-49|4
+5|-49|5
+6|-49|6
+7|-49|7
+~~~
+# typeof(x'' IS NULL) BETWEEN 299 AND 'tau'|nullif(abs(-1e308 BETWEEN NULL AND -240), -(CAST('café' AS INTEGER)))
+1|NULL
+~~~
+# id|c2|id
+1|403|1
+2|130|2
+3|112|3
+4|84|4
+5|488|5
+6|-354|6
+7|190|7
+~~~
+# NULL|'it''s'
+NULL|it's
+~~~
+# id|c2 BETWEEN (nullif(c1, c2) < coalesce(c2, 'upsilon')) AND 0 IN (x'2ba4a5' BETWEEN c1 AND id, 'theta', NULL)|typeof(coalesce(c0, 'omega')) IS NULL
+1|1|0
+2|1|0
+3|1|0
+4|1|0
+5|NULL|0
+6|1|0
+7|1|0
+8|1|0
+9|1|0
+10|1|0
+11|1|0
+12|1|0
+13|1|0
+14|1|0
+15|1|0
+16|1|0
+17|1|0
+18|NULL|0
+19|1|0
+20|1|0
+21|1|0
+22|1|0
+23|1|0
+~~~
+# -0.0|typeof(630.0)
+0.0|real
+~~~
+# id|coalesce(id, nullif(-(0.1), -(c2)))|coalesce(iif(123456789012, -2.5, 0) IS NULL, id)
+1|1|0
+2|2|0
+3|3|0
+4|4|0
+5|5|0
+6|6|0
+7|7|0
+8|8|0
+9|9|0
+10|10|0
+11|11|0
+12|12|0
+13|13|0
+14|14|0
+15|15|0
+16|16|0
+17|17|0
+18|18|0
+19|19|0
+20|20|0
+21|21|0
+22|22|0
+23|23|0
+~~~
+# -1 BETWEEN x'b77676687e0f' AND 1|1
+0|1
+~~~
+# id|iif(iif(iif(NULL, c2, x'34'), coalesce(123456789012, c1), 1e-7), CASE WHEN id IN (c2, x'c49b2a', 'theta') THEN NULL ELSE CAST('omicron' AS BLOB) END, '42')|c1 IS NULL
+1|X'6F6D6963726F6E'|0
+2|X'6F6D6963726F6E'|0
+3|X'6F6D6963726F6E'|0
+4|X'6F6D6963726F6E'|0
+5|X'6F6D6963726F6E'|0
+6|X'6F6D6963726F6E'|0
+7|X'6F6D6963726F6E'|0
+8|X'6F6D6963726F6E'|0
+9|X'6F6D6963726F6E'|1
+10|X'6F6D6963726F6E'|0
+11|X'6F6D6963726F6E'|0
+12|X'6F6D6963726F6E'|0
+13|X'6F6D6963726F6E'|0
+14|X'6F6D6963726F6E'|0
+15|X'6F6D6963726F6E'|0
+16|X'6F6D6963726F6E'|0
+17|X'6F6D6963726F6E'|1
+18|X'6F6D6963726F6E'|0
+19|X'6F6D6963726F6E'|0
+20|X'6F6D6963726F6E'|0
+21|X'6F6D6963726F6E'|0
+22|X'6F6D6963726F6E'|0
+23|X'6F6D6963726F6E'|0
+~~~
+# nullif(NOT -('rho'), iif(-425.84, 325.8725, -2.5) IN (NULL IS NULL, x'8084acce', NULL))|'psi'
+1|psi
+~~~
+changes: 1
+~~~
+# id|c2
+4|-1.0e+308
+10|-964
+12|-5
+2|-3
+5|0
+15|0
+18|0
+23|1.0e-07
+9|2
+7|4
+11|5
+17|222.46
+3|396
+20|589.8
+16|alpha
+8|beta
+22|chi
+6|rho
+13|sigma
+21|theta
+1|X''
+14|X'068894563302'
+19|X'0FE815C7E7'
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

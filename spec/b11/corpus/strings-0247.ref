@@ -1,0 +1,106 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 4, 4)|instr('omega', '42')|replace('omega', 'é', '')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE '%é%'|'omega' GLOB '?'|char(83, 556)|'omega' || '42'|'omega' < '42'|'omega' = '42' COLLATE NOCASE
+5|OMEGA|omega|ga|0|omega|omega|omega|6F6D656761|'omega'|111|0|0|SȬ|omega42|0|0
+~~~
+# length('日本')|upper('日本')|lower('日本')|substr('日本', -1, 1)|instr('日本', 'alpha')|replace('日本', '', 'XY')|trim('日本')|ltrim('日本', 'ab')|hex('日本')|quote('日本')|unicode('日本')|'日本' LIKE '%a_'|'日本' GLOB '*[a-m]*'|char(81, 415)|'日本' || 'alpha'|'日本' < 'alpha'|'日本' = 'alpha' COLLATE NOCASE
+2|日本|日本|本|0|日本|日本|日本|E697A5E69CAC|'日本'|26085|0|0|QƟ|日本alpha|0|0
+~~~
+# length('zeta')|upper('zeta')|lower('zeta')|substr('zeta', 1, 5)|instr('zeta', '0x1F')|replace('zeta', 'é', '')|trim('zeta')|ltrim('zeta', 'ab')|hex('zeta')|quote('zeta')|unicode('zeta')|'zeta' LIKE '%a_'|'zeta' GLOB '*'|char(76, 593)|'zeta' || '0x1F'|'zeta' < '0x1F'|'zeta' = '0x1F' COLLATE NOCASE
+4|ZETA|zeta|zeta|0|zeta|zeta|zeta|7A657461|'zeta'|122|0|1|Lɑ|zeta0x1F|0|0
+~~~
+# length('psi')|upper('psi')|lower('psi')|substr('psi', 2, 4)|instr('psi', 'it''s')|replace('psi', 'a', 'XY')|trim('psi')|ltrim('psi', 'ab')|hex('psi')|quote('psi')|unicode('psi')|'psi' LIKE '%a_'|'psi' GLOB 'a*'|char(85, 545)|'psi' || 'it''s'|'psi' < 'it''s'|'psi' = 'it''s' COLLATE NOCASE
+3|PSI|psi|si|0|psi|psi|psi|707369|'psi'|112|0|0|Uȡ|psiit's|0|0
+~~~
+# length('')|upper('')|lower('')|substr('', 0, 5)|instr('', 'kappa')|replace('', 'a', '_')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '%é%'|'' GLOB 'a*'|char(76, 824)|'' || 'kappa'|'' < 'kappa'|'' = 'kappa' COLLATE NOCASE
+0||||0|||||''|NULL|0|0|L̸|kappa|1|0
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', -1, 5)|instr('eta', 'alpha')|replace('eta', 'é', '_')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE 'a%'|'eta' GLOB 'a*'|char(89, 647)|'eta' || 'alpha'|'eta' < 'alpha'|'eta' = 'alpha' COLLATE NOCASE
+3|ETA|eta|a|0|eta|eta|eta|657461|'eta'|101|0|0|Yʇ|etaalpha|0|0
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+11|11
+6|6
+1|1
+8|8
+2|2
+3|3
+7|7
+5|5
+10|10
+4|4
+9|9
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+~~~
+# id
+~~~
+# id
+~~~

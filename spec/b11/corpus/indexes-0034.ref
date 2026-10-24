@@ -1,0 +1,221 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store REAL value in INTEGER column t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: cannot store TEXT value in REAL column t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+15|-3
+6|1
+12|2
+10|15.2016
+3|96
+2|323.2
+16|omega
+4|x_y
+7|X'1AC75F'
+11|X'7B'
+17|X'9B3CF0'
+8|X'BA6BD1299E'
+~~~
+# count(*)
+14
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+18
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+error: no query solution
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('sigma')|upper('sigma')|lower('sigma')|substr('sigma', -2, 5)|instr('sigma', 'rho')|replace('sigma', 'e', 'XY')|trim('sigma')|ltrim('sigma', 'ab')|hex('sigma')|quote('sigma')|unicode('sigma')|'sigma' LIKE '_'|'sigma' GLOB '*[a-m]*'|char(77, 623)|'sigma' || 'rho'|'sigma' < 'rho'|'sigma' = 'rho' COLLATE NOCASE
+5|SIGMA|sigma|ma|0|sigma|sigma|sigma|7369676D61|'sigma'|115|0|1|Mɯ|sigmarho|0|0
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+22|22|253|253.0|11.5|1|22|22
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+5|1|5
+6|1|6
+7|1|7
+8|1|8
+9|1|9
+10|1|10
+11|1|11
+12|1|12
+13|1|13
+14|1|14
+15|1|15
+16|1|16
+17|1|17
+18|1|18
+19|1|19
+20|1|20
+21|1|21
+22|1|22
+~~~
+# id|abs(typeof(c0))|c2
+1|0.0|omicron
+2|0.0|1
+3|0.0|NULL
+4|0.0|-140
+5|0.0|1e3
+6|0.0|2
+7|0.0|NULL
+8|0.0|2
+9|0.0|NULL
+10|0.0|X'1C0A437EA6'
+11|0.0|NULL
+12|0.0|NULL
+13|0.0|1
+14|0.0|243.548
+15|0.0|23.1
+16|0.0|tau
+17|0.0|1
+~~~
+# (CASE WHEN -(NULL) THEN NULL ELSE 117.5 END + 0)|CASE WHEN abs(x'24') THEN 835.11 ELSE typeof(x'b6b78088b38d') IN (coalesce(NULL, NULL), NULL, 536) END
+117.5|NULL
+~~~

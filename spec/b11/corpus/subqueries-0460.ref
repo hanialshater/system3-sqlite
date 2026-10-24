@@ -1,0 +1,130 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+1|1
+2|2
+~~~
+# id
+~~~
+# id
+1
+2
+3
+~~~
+# c4
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+1|1
+2|2
+~~~
+# id
+~~~
+# id
+1
+2
+3
+~~~
+# c2
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+3|3
+2|2
+1|1
+~~~
+# id
+~~~
+# id
+~~~
+# c0
+4
+5
+6
+7
+8
+~~~
+# id|typeof(c3 IN (c0, 570, NULL)) IS NULL|c1
+3|0|X'AA'
+2|0|0
+1|0|it's
+~~~
+# NULL|NULL
+NULL|NULL
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', -3, 3)|instr('eta', 'psi')|replace('eta', '', 'XY')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE '%é%'|'eta' GLOB '*[a-m]*'|char(69, 945)|'eta' || 'psi'|'eta' < 'psi'|'eta' = 'psi' COLLATE NOCASE
+3|ETA|eta|eta|0|eta|eta|eta|657461|'eta'|101|0|1|Eα|etapsi|1|0
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+17
+~~~
+changes: 1
+~~~
+changes: 1
+~~~

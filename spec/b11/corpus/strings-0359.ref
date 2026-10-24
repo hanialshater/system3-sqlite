@@ -1,0 +1,118 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', -2, 3)|instr('0x1F', '0x1F')|replace('0x1F', 'a', 'XY')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE 'a%'|'0x1F' GLOB '*'|char(70, 569)|'0x1F' || '0x1F'|'0x1F' < '0x1F'|'0x1F' = '0x1F' COLLATE NOCASE
+4|0X1F|0x1f|1F|1|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|1|Fȹ|0x1F0x1F|0|1
+~~~
+# length(' pad ')|upper(' pad ')|lower(' pad ')|substr(' pad ', 2, 2)|instr(' pad ', 'psi')|replace(' pad ', '', '_')|trim(' pad ')|ltrim(' pad ', 'ab')|hex(' pad ')|quote(' pad ')|unicode(' pad ')|' pad ' LIKE '_'|' pad ' GLOB '*'|char(69, 260)|' pad ' || 'psi'|' pad ' < 'psi'|' pad ' = 'psi' COLLATE NOCASE
+5| PAD | pad |pa|0| pad |pad| pad |2070616420|' pad '|32|0|1|EĄ| pad psi|1|0
+~~~
+# length('Ελλάδα')|upper('Ελλάδα')|lower('Ελλάδα')|substr('Ελλάδα', 0, 2)|instr('Ελλάδα', 'MU')|replace('Ελλάδα', 'a', 'XY')|trim('Ελλάδα')|ltrim('Ελλάδα', 'ab')|hex('Ελλάδα')|quote('Ελλάδα')|unicode('Ελλάδα')|'Ελλάδα' LIKE '%a_'|'Ελλάδα' GLOB '*[a-m]*'|char(78, 683)|'Ελλάδα' || 'MU'|'Ελλάδα' < 'MU'|'Ελλάδα' = 'MU' COLLATE NOCASE
+6|Ελλάδα|Ελλάδα|Ε|0|Ελλάδα|Ελλάδα|Ελλάδα|CE95CEBBCEBBCEACCEB4CEB1|'Ελλάδα'|917|0|0|Nʫ|ΕλλάδαMU|0|0
+~~~
+# length('a%b')|upper('a%b')|lower('a%b')|substr('a%b', 4, 5)|instr('a%b', 'theta')|replace('a%b', 'e', '')|trim('a%b')|ltrim('a%b', 'ab')|hex('a%b')|quote('a%b')|unicode('a%b')|'a%b' LIKE '_'|'a%b' GLOB '*'|char(65, 224)|'a%b' || 'theta'|'a%b' < 'theta'|'a%b' = 'theta' COLLATE NOCASE
+3|A%B|a%b||0|a%b|a%b|%b|612562|'a%b'|97|0|1|Aà|a%btheta|1|0
+~~~
+# length('über')|upper('über')|lower('über')|substr('über', -3, 4)|instr('über', 'beta')|replace('über', 'é', '')|trim('über')|ltrim('über', 'ab')|hex('über')|quote('über')|unicode('über')|'über' LIKE '%'|'über' GLOB '*[a-m]*'|char(68, 228)|'über' || 'beta'|'über' < 'beta'|'über' = 'beta' COLLATE NOCASE
+4|üBER|über|ber|0|über|über|über|C3BC626572|'über'|252|1|1|Dä|überbeta|0|0
+~~~
+# length('1e3')|upper('1e3')|lower('1e3')|substr('1e3', -1, 5)|instr('1e3', 'iota')|replace('1e3', 'a', '_')|trim('1e3')|ltrim('1e3', 'ab')|hex('1e3')|quote('1e3')|unicode('1e3')|'1e3' LIKE '_'|'1e3' GLOB '*'|char(81, 847)|'1e3' || 'iota'|'1e3' < 'iota'|'1e3' = 'iota' COLLATE NOCASE
+3|1E3|1e3|3|0|1e3|1e3|1e3|316533|'1e3'|49|0|1|Q͏|1e3iota|1|0
+~~~
+# id|id|c0|ref
+1|6|NULL|1
+1|12|NULL|1
+1|13|NULL|1
+3|8|X'A774'|3
+4|1|NULL|4
+4|2|NULL|4
+4|7|NULL|4
+5|10|861|5
+6|3|X'65'|6
+~~~
+# count(*)
+18
+~~~

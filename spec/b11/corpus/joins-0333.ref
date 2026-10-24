@@ -1,0 +1,234 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c2|c1
+1|7|-2.5|123456789012
+1|10|-2.5|-415.4
+2|12|-89|NULL
+3|4|887|-551
+3|14|887|X'8C'
+4|9|X'4FC6AB99F8F2'|X'C5FED30C9D87'
+4|15|X'4FC6AB99F8F2'|pi
+5|16|0|X'3F6D98'
+5|19|0|923.66
+5|24|0|0
+6|13|-97|omicron
+7|3|1|X'3B63381556'
+7|17|1|X'BB1D'
+7|18|1|61.6007
+7|21|1|X'9387'
+7|23|1|21
+8|1|X'6297DF198A5E'|-607
+8|8|X'6297DF198A5E'|421.02
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c1|c3
+1|7|9223372036854775807|NULL
+1|10|9223372036854775807|NULL
+2|12|X''|113.723
+3|4|2|X'59A1F494'
+3|14|2|X''
+4|9|-5|X'DC20EB3475'
+4|15|-5|-4
+5|16|NULL|4.500000000000011e-310
+5|19|NULL|xi
+5|24|NULL|-1.0e+308
+6|13|NULL|upsilon
+7|3|X'43690C0E1A15'|X'19'
+7|17|X'43690C0E1A15'|1000
+7|18|X'43690C0E1A15'|X'F238'
+7|21|X'43690C0E1A15'|NULL
+7|23|X'43690C0E1A15'|a%b
+8|1|418|X'55'
+8|8|418|3
+~~~
+error: ambiguous column name: c4
+~~~
+# id|id|ref|id
+1|7|8|7
+1|10|8|10
+2|12|NULL|12
+3|4|5|4
+3|14|5|14
+4|9|5|9
+4|15|5|15
+5|16|NULL|16
+5|19|NULL|19
+5|24|NULL|24
+6|13|7|13
+7|3|4|3
+7|17|4|17
+7|18|4|18
+7|21|4|21
+7|23|4|23
+8|1|7|1
+8|8|7|8
+9|NULL|6|NULL
+10|NULL|4|NULL
+11|NULL|7|NULL
+12|NULL|4|NULL
+13|NULL|7|NULL
+~~~
+# count(*)
+13
+~~~
+# id|id|c2|c2
+1|1|NULL|NULL
+1|2|NULL|4
+1|3|NULL|X'43718D7064'
+1|4|NULL|X'229EC0'
+1|5|NULL|312
+1|6|NULL|X'91'
+1|7|NULL|-5
+1|8|NULL|X'396ABC'
+1|9|NULL|X'3E5E60FD6F74'
+1|10|NULL|omicron
+1|11|NULL|585
+1|12|NULL|NULL
+1|13|NULL|5
+1|14|NULL|NULL
+1|15|NULL|2
+1|16|NULL|-454.65
+1|17|NULL|iota
+1|18|NULL|NULL
+1|19|NULL|-9223372036854775808
+1|20|NULL|Ελλάδα
+1|21|NULL|0
+1|22|NULL|NULL
+1|23|NULL|68.2
+1|24|NULL|549
+1|25|NULL|712
+2|1|4|NULL
+2|2|4|4
+2|3|4|X'43718D7064'
+2|4|4|X'229EC0'
+2|5|4|312
+2|6|4|X'91'
+2|7|4|-5
+~~~
+# count(*)
+25
+~~~
+# id|id|c2|c0
+1|7|-2.5|410.821
+1|10|-2.5|NULL
+2|12|-89|0.1
+3|4|887|NULL
+3|14|887|-974
+4|9|X'4FC6AB99F8F2'|0
+4|15|X'4FC6AB99F8F2'|-5
+5|16|0|NULL
+5|19|0|it's
+5|24|0|NULL
+6|13|-97|163
+7|3|1|X'CEC422'
+7|17|1|1.0e-07
+7|18|1|NULL
+7|21|1|123456789012
+7|23|1|X'9C'
+8|1|X'6297DF198A5E'|X'FF'
+8|8|X'6297DF198A5E'|-574
+~~~
+error: near ".1": syntax error
+~~~
+# length('0x1F')|upper('0x1F')|lower('0x1F')|substr('0x1F', 4, 1)|instr('0x1F', 'omega')|replace('0x1F', 'a', '')|trim('0x1F')|ltrim('0x1F', 'ab')|hex('0x1F')|quote('0x1F')|unicode('0x1F')|'0x1F' LIKE '%é%'|'0x1F' GLOB 'a*'|char(90, 508)|'0x1F' || 'omega'|'0x1F' < 'omega'|'0x1F' = 'omega' COLLATE NOCASE
+4|0X1F|0x1f|F|0|0x1F|0x1F|0x1F|30783146|'0x1F'|48|0|0|ZǼ|0x1Fomega|1|0
+~~~

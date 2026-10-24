@@ -1,0 +1,310 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+# id|c3|c3
+1|naïve|naïve
+2|NULL|NULL
+3|4.500000000000011e-310|4.500000000000011e-310
+4|-5|-5
+5|-423|-423
+6| pad | pad 
+7|4|4
+8|X'8A319AB9E8'|X'8A319AB9E8'
+9|-5|-5
+10|NULL|NULL
+11|-313|-313
+12|nu|nu
+13|tau|tau
+14|5|5
+15|X'0F3C993A'|X'0F3C993A'
+16|NULL|NULL
+17|-836|-836
+18|NULL|NULL
+19|-469|-469
+20|X'168DDF450DDA'|X'168DDF450DDA'
+~~~
+# 9223372036854775807 IN ('NULL', 'xi', -561.10) IS NULL BETWEEN typeof(' pad ' IN (NULL, NULL, 1e-7)) AND nullif(CAST(-722.5 AS INTEGER), 249.039)|typeof(abs(-812))
+0|integer
+~~~
+# id|typeof(iif(nullif(c0, c2), c2 BETWEEN id AND 2.5, x'f2058d'))|nullif(2, id)
+1|blob|2
+2|integer|NULL
+3|integer|2
+4|blob|2
+5|blob|2
+6|null|2
+7|integer|2
+8|blob|2
+9|blob|2
+10|integer|2
+11|blob|2
+12|blob|2
+13|integer|2
+14|null|2
+15|blob|2
+16|integer|2
+17|blob|2
+18|blob|2
+19|blob|2
+20|null|2
+21|integer|2
+22|integer|2
+~~~
+# x'f3b99b'|'42' IN (NULL, x'340e31', 'upsilon')
+X'F3B99B'|NULL
+~~~
+# id|typeof(nullif((c3 / -2.5), c3))|-(c0)
+1|real|0
+2|real|-1.0e-07
+3|real|-9223372036854775807
+4|real|NULL
+5|null|0
+6|real|-1.0e+308
+7|real|697.715
+8|null|0
+9|real|0
+10|real|6
+11|real|0
+12|real|NULL
+13|real|-1000
+14|real|3
+15|real|0
+16|null|-1000
+17|null|NULL
+18|real|NULL
+19|null|0
+20|real|-1000000000000000
+21|real|5
+22|real|182
+~~~
+# 'iota'|1e-7
+iota|1.0e-07
+~~~
+# id|nullif(c0 BETWEEN c0 AND CAST(c2 AS NUMERIC), nullif(typeof(x''), coalesce(c0, id)))|NULL
+1|0|NULL
+2|1|NULL
+3|0|NULL
+4|NULL|NULL
+5|0|NULL
+6|NULL|NULL
+7|1|NULL
+8|0|NULL
+9|0|NULL
+10|0|NULL
+11|0|NULL
+12|NULL|NULL
+13|0|NULL
+14|NULL|NULL
+15|0|NULL
+16|0|NULL
+17|NULL|NULL
+18|NULL|NULL
+19|0|NULL
+20|NULL|NULL
+21|1|NULL
+22|1|NULL
+~~~
+# abs(iif(-228, iif(NULL, 'xi', 3), 'Lambda'))|typeof(iif((-1 / '-7'), CAST(-148 AS REAL), -4))
+3|integer
+~~~
+# id|-1|1e308 IS NULL BETWEEN 123456789012 IS NULL AND 'a%b' IN (id, '-7', 0) IS NULL
+1|-1|0
+2|-1|0
+3|-1|0
+4|-1|0
+5|-1|0
+6|-1|0
+7|-1|0
+8|-1|0
+9|-1|0
+10|-1|0
+11|-1|0
+12|-1|0
+13|-1|0
+14|-1|0
+15|-1|0
+16|-1|0
+17|-1|0
+18|-1|0
+19|-1|0
+20|-1|0
+~~~
+# -618|3
+-618|3
+~~~
+# id|coalesce(-(c3), abs(c2)) BETWEEN abs(NULL) AND coalesce(1, c1) IS NULL|iif(nullif(('alpha' | c1), 4.5e-310 BETWEEN x'd95d' AND 'beta'), CASE WHEN c2 THEN 'rho' IN (c0, NULL, x'0810623a') ELSE CASE WHEN '日本' THEN 4 ELSE id END END, x'b53da2bc')
+1|1|X'B53DA2BC'
+2|1|X'B53DA2BC'
+3|1|3
+4|0|X'B53DA2BC'
+5|0|5
+6|1|X'B53DA2BC'
+7|1|X'B53DA2BC'
+8|1|X'B53DA2BC'
+9|0|X'B53DA2BC'
+10|1|X'B53DA2BC'
+11|0|X'B53DA2BC'
+12|1|X'B53DA2BC'
+13|1|13
+14|1|X'B53DA2BC'
+15|1|X'B53DA2BC'
+16|1|X'B53DA2BC'
+17|0|X'B53DA2BC'
+18|1|X'B53DA2BC'
+19|0|X'B53DA2BC'
+20|1|X'B53DA2BC'
+~~~
+# -(iif(CAST(-464 AS INTEGER), 4.5e-310, -1))|nullif(CAST(nullif(NULL, NULL) AS INTEGER), 'tau')
+-4.500000000000011e-310|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+10|20
+5|20
+14|20
+17|20
+15|20
+1|20
+9|20
+8|20
+20|20
+4|20
+3|20
+7|20
+12|20
+11|20
+16|20
+6|20
+19|20
+2|20
+13|20
+18|20
+~~~
+# id
+1
+2
+3
+5
+7
+8
+10
+11
+15
+16
+17
+20
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+~~~
+# c1
+~~~

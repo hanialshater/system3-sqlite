@@ -1,0 +1,162 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|coalesce(id, CAST(c0 AS REAL))|typeof('-7')
+12|12|text
+11|11|text
+10|10|text
+9|9|text
+8|8|text
+7|7|text
+6|6|text
+5|5|text
+4|4|text
+3|3|text
+2|2|text
+1|1|text
+~~~
+# -(CASE WHEN x'd0a5214ab5' THEN x'96' ELSE x'' END BETWEEN NOT 5 AND -538 IN (NULL, NULL, -797))|abs('MU') IN ((coalesce(-2, NULL) = coalesce('theta', -1e308)), x'a130', NULL)
+NULL|1
+~~~
+# id|iif(coalesce(c2 BETWEEN 'naïve' AND NULL, coalesce(x'', -505.8)), typeof(ref IN (ref, -9223372036854775808, 344)), -3)|typeof(CASE WHEN (id / ref) THEN abs(429) ELSE c0 END)
+1|-3|real
+2|-3|integer
+3|-3|integer
+4|-3|real
+5|-3|integer
+6|-3|integer
+7|-3|real
+8|-3|integer
+9|-3|integer
+10|-3|text
+~~~
+# nullif(-854, NOT (-1e308 | 0.1))|typeof(NOT 690 IS NULL)
+-854|integer
+~~~
+# id|NOT iif(-(NULL), coalesce('日本', c3), 0)|typeof(typeof(coalesce(x'04', c2)))
+1|1|text
+2|1|text
+3|1|text
+4|1|text
+5|1|text
+6|1|text
+7|1|text
+8|1|text
+9|1|text
+10|1|text
+11|1|text
+12|1|text
+~~~
+# NULL|3.141592653589793
+NULL|3.1415926535897931
+~~~
+changes: 17
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|2
+~~~
+# id|c0|c1|c2|c3
+1|X'4FC442'|NULL|NULL|NULL
+2|NULL|phi|873.314|-753
+3|NULL|NULL|NULL|0
+5|NULL|4|1000000000000000.0|NULL
+6|NULL|585|NULL|X'E7B4EEAE'
+8|NULL|763|-546|-9223372036854775808
+9|NULL|NULL|NULL|NULL
+11|NULL|60|X'E0'|-1
+12|NULL|-4|-970|0x1F
+14|NULL|rho|X'80EF'|5
+15|NULL|NULL|0x1F|644
+17|NULL|eta|X'C7E3'|NULL
+18|2|NULL|NULL|NULL
+~~~
+# length('xi')|upper('xi')|lower('xi')|substr('xi', 4, 4)|instr('xi', 'theta')|replace('xi', 'a', 'XY')|trim('xi')|ltrim('xi', 'ab')|hex('xi')|quote('xi')|unicode('xi')|'xi' LIKE 'a%'|'xi' GLOB '*'|char(81, 870)|'xi' || 'theta'|'xi' < 'theta'|'xi' = 'theta' COLLATE NOCASE
+2|XI|xi||0|xi|xi|xi|7869|'xi'|120|0|1|Qͦ|xitheta|0|0
+~~~

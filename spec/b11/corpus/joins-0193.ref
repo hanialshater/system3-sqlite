@@ -1,0 +1,119 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|c3|c2
+1|1|delta|X'C1335CBE'
+2|1|-657|X'C1335CBE'
+2|2|-657|-3
+3|1|NULL|X'C1335CBE'
+3|2|NULL|-3
+3|3|NULL|1.0e-07
+4|1|698.5513|X'C1335CBE'
+4|2|698.5513|-3
+4|3|698.5513|1.0e-07
+5|1|-260|X'C1335CBE'
+5|2|-260|-3
+5|3|-260|1.0e-07
+6|1|611.8395|X'C1335CBE'
+6|2|611.8395|-3
+6|3|611.8395|1.0e-07
+7|1|señor|X'C1335CBE'
+7|2|señor|-3
+~~~
+error: near ".3": syntax error
+~~~
+# id|id|c0|c3
+1|2|-66|psi
+1|3|-66|X'5C11FE31'
+2|3|X'5013'|X'5C11FE31'
+~~~
+# count(*)
+8
+~~~
+# id|id|c2|c0
+1|1|x_y|-907.633
+2|1|-227.1398|-907.633
+2|2|-227.1398|123456789012
+3|1|X'4783'|-907.633
+3|2|X'4783'|123456789012
+3|3|X'4783'|0x1F
+4|1|NULL|-907.633
+4|2|NULL|123456789012
+~~~
+error: near "x'ffde12b3c100'": syntax error
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+1|3
+2|3
+3|3
+~~~
+# id
+2
+3
+~~~
+# id
+1
+2
+3
+~~~
+# c1
+~~~
+# id|c2|-(CASE WHEN c0 IN (c4, x'', NULL) THEN nullif('it''s', c3) ELSE 4 IS NULL END)
+1|X'C1335CBE'|0
+2|-3|0
+3|1.0e-07|0
+~~~
+# coalesce(x'2a9bf149379b', NULL)|(NULL & -('naïve' BETWEEN -0.0 AND -763))
+X'2A9BF149379B'|NULL
+~~~

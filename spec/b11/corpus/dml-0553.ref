@@ -1,0 +1,206 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|-2.5
+~~~
+# id|c0|c1|c2
+1|0|NULL|779.07
+2|4|NULL|0
+3|0|phi|-901.0902
+4|0||chi
+6|upsilon!|NULL|-167
+7|0|NULL|X'8C4A59'
+8|0|-241.357|X'B608'
+9|0|162.2245|0
+10|-2.5|NULL|0
+~~~
+changes: 9
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|psi
+~~~
+# id|c0|c1|c2
+11|psi|NULL|0
+10|NULL|NULL|0
+9|504|NULL|0
+7|NULL|NULL|X'8C4A59'
+6|NULL|NULL|-167
+5|3.1415926535897931|NULL|0
+3|0|phi|-901.0902
+2|NULL|NULL|0
+1|NULL|NULL|779.07
+~~~
+changes: 9
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|NULL
+~~~
+# id|c0|c1|c2
+2|NULL|NULL|0
+3|-679!|phi|-901.0902
+5|NULL|NULL|0
+7|4.500000000000011e-310|NULL|0
+9|NULL|NULL|0
+10|NULL|NULL|0
+11|NULL|NULL|0
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+18|X'E9D4'
+~~~
+# id|c0|c1|ref
+1|X'690BAF'|536|3
+2|0|naïve|NULL
+4|über|801.7|2
+5|-9223372036854775808|NULL|5
+7|0|MU|6
+8|X'0F3EB437FC'|NULL|8
+9|señor|NULL|NULL
+10|2|NULL|7
+11|123456789012|X'82A3F249'|4
+13|sigma|NULL|1
+14|0|42|NULL
+16|-5|-797.63|NULL
+17|X''|NULL|4
+18|X'E9D4'|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+error: NOT NULL constraint failed: t1.c0
+~~~
+# id|c0|c1|ref
+1|9223372036854775807|NULL|NULL
+2|0|naïve|NULL
+3|pi|NULL|NULL
+4|über|801.7|2
+5|-9223372036854775808|NULL|5
+7|0|MU|6
+8|X'0F3EB437FC'|NULL|8
+9|señor|NULL|NULL
+10|2|NULL|7
+13|sigma|NULL|1
+14|0|42|NULL
+17|X''|NULL|4
+18|X'E9D4'|NULL|NULL
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 6
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+# id|c0
+18|9223372036854775807
+~~~
+# id|c0|c1|ref
+1|9223372036854775807|NULL|NULL
+3|pi|NULL|NULL
+5|-9223372036854775808|NULL|5
+7|4|NULL|NULL
+9|señor|NULL|NULL
+13|sigma|NULL|1
+17|X''|NULL|4
+18|9223372036854775807|NULL|NULL
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+2|1|2
+3|1|3
+5|1|5
+7|1|7
+9|1|9
+10|1|10
+11|1|11
+~~~

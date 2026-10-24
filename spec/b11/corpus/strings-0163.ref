@@ -1,0 +1,79 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('theta')|upper('theta')|lower('theta')|substr('theta', 0, 4)|instr('theta', '1e3')|replace('theta', 'a', '_')|trim('theta')|ltrim('theta', 'ab')|hex('theta')|quote('theta')|unicode('theta')|'theta' LIKE '%'|'theta' GLOB '*[a-m]*'|char(82, 719)|'theta' || '1e3'|'theta' < '1e3'|'theta' = '1e3' COLLATE NOCASE
+5|THETA|theta|the|0|thet_|theta|theta|7468657461|'theta'|116|1|1|Rˏ|theta1e3|0|0
+~~~
+# length('NULL')|upper('NULL')|lower('NULL')|substr('NULL', 1, 0)|instr('NULL', '-7')|replace('NULL', 'é', '')|trim('NULL')|ltrim('NULL', 'ab')|hex('NULL')|quote('NULL')|unicode('NULL')|'NULL' LIKE '%a_'|'NULL' GLOB '*[a-m]*'|char(75, 937)|'NULL' || '-7'|'NULL' < '-7'|'NULL' = '-7' COLLATE NOCASE
+4|NULL|null||0|NULL|NULL|NULL|4E554C4C|'NULL'|78|0|0|KΩ|NULL-7|0|0
+~~~
+# length('rho')|upper('rho')|lower('rho')|substr('rho', -1, 1)|instr('rho', 'delta')|replace('rho', 'é', 'XY')|trim('rho')|ltrim('rho', 'ab')|hex('rho')|quote('rho')|unicode('rho')|'rho' LIKE '_'|'rho' GLOB 'a*'|char(79, 987)|'rho' || 'delta'|'rho' < 'delta'|'rho' = 'delta' COLLATE NOCASE
+3|RHO|rho|o|0|rho|rho|rho|72686F|'rho'|114|0|0|Oϛ|rhodelta|0|0
+~~~
+# length('pi')|upper('pi')|lower('pi')|substr('pi', 0, 3)|instr('pi', 'a%b')|replace('pi', 'e', '')|trim('pi')|ltrim('pi', 'ab')|hex('pi')|quote('pi')|unicode('pi')|'pi' LIKE '_'|'pi' GLOB '*[a-m]*'|char(83, 360)|'pi' || 'a%b'|'pi' < 'a%b'|'pi' = 'a%b' COLLATE NOCASE
+2|PI|pi|pi|0|pi|pi|pi|7069|'pi'|112|0|1|SŨ|pia%b|0|0
+~~~
+# length('omega')|upper('omega')|lower('omega')|substr('omega', 3, 1)|instr('omega', 'xi')|replace('omega', 'e', '')|trim('omega')|ltrim('omega', 'ab')|hex('omega')|quote('omega')|unicode('omega')|'omega' LIKE 'a%'|'omega' GLOB 'a*'|char(85, 890)|'omega' || 'xi'|'omega' < 'xi'|'omega' = 'xi' COLLATE NOCASE
+5|OMEGA|omega|e|0|omga|omega|omega|6F6D656761|'omega'|111|0|0|Uͺ|omegaxi|1|0
+~~~

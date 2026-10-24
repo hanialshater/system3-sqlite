@@ -1,0 +1,246 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c1
+4|NULL
+9|NULL
+13|NULL
+7|355.4582
+3|5
+12|delta
+5|kappa
+1|psi
+10|señor
+2|X'13462F4F7A'
+8|X'6A'
+6|X'A2'
+11|X'FCCCBAC707'
+~~~
+# count(*)
+10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+~~~
+# count(*)
+6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+2|X'61'
+1|X'8BA915F0AA'
+5|X'A5B399'
+~~~
+# count(*)
+5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c3
+~~~
+# count(*)
+12
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|0
+~~~
+# id|c0|c1|c2|ref
+1|X'A3AC7B87'|NULL|X'8BA915F0AA'|4
+2|NULL|-2|X'61'|NULL
+3|pi|NULL|NULL|NULL
+4|2!|1.0e+308|9.2233720368547758e+18|NULL
+5|chi|NULL|X'A5B399'|6
+6|0|NULL|NULL|NULL
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+5|13
+7|13
+2|13
+9|13
+8|13
+10|13
+6|13
+4|13
+3|13
+13|13
+11|13
+1|13
+12|13
+~~~
+# id
+~~~
+# id
+11
+12
+13
+~~~
+# c2
+NULL
+NULL
+NULL
+-1.0e+308
+5
+355.4582
+5
+a%b
+alpha
+café
+delta
+delta
+gamma
+gamma
+kappa
+psi
+psi
+señor
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+2|2
+3|3
+4|4
+6|6
+1|1
+5|5
+~~~
+# id
+1
+2
+3
+4
+5
+6
+~~~
+# id
+~~~
+# ref
+4
+6
+~~~

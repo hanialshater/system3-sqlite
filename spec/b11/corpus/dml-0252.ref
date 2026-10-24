@@ -1,0 +1,237 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|NULL
+~~~
+# id|c0|c1|c2|ref
+10|NULL|NULL|d|NULL
+9|713|X''|omicron|7
+8|-393|NULL|naïve|4
+6|X'0FA6583583A6'|X'4892'|123456789012|NULL
+5|9�67!|-4|0|NULL
+3|0|MU|0.0|NULL
+2|X'DA'|806|NULL|NULL
+1|2.5|NULL|d|NULL
+~~~
+changes: 7
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+16|NULL
+~~~
+# id|c0|c1
+1|0|237
+2|0|144.008
+3|706.7287|omega
+5|X'B7'|0
+6|NULL|X''
+7|0.1|NULL
+9|X'1A1AA9'|sigma
+10|NULL|theta
+11|0|-3
+13|0|9223372036854775807
+14|0|-1.0e+308
+15|0|9223372036854775807
+16|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+13|1000000000000000
+~~~
+# id|c0|c1|c2|c3
+13|1000000000000000|NULL|NULL|NULL
+12|X''|a%b|2.5|511
+11|2.5|señor|omega|638.74
+10|-612|849|NULL|-736
+8|NULL|upsilon|X'0D2429'|NULL
+7|NULL|NULL|NULL|NULL
+6|X''|-377|X'9C'|über
+4|!|-9223372036854775808|3|X'5180258E'
+3|epsilon|-157|NULL|NULL
+2|0|982|NULL|Lambda
+~~~
+changes: 8
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|X'82FFB5081C75'
+~~~
+# id|c0|c1|c2|ref
+2|sigma|NULL|d|NULL
+3|0|MU|0.0|NULL
+4|1000000000000000|NULL|d|NULL
+5|0|-4|0|NULL
+8|0|NULL|naïve|4
+9|0|X''|omicron|7
+10|NULL|NULL|d|NULL
+11|X'82FFB5081C75'|NULL|d|NULL
+~~~
+changes: 0
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|NULL
+~~~
+# id|c0|c1
+2|0|144.008
+3|-1|NULL
+4|1000|NULL
+6|NULL|X''
+10|NULL|theta
+14|0|-1.0e+308
+16|NULL|NULL
+17|NULL|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11| pad 
+~~~
+# id|c0|c1|c2|ref
+1|-4|NULL|d|NULL
+2|sigma|NULL|d|NULL
+3|X'B2792106FE6E'|NULL|d|NULL
+4|1000000000000000|NULL|d|NULL
+8|0|NULL|naïve|4
+10|NULL|NULL|d|NULL
+11| pad |NULL|d|NULL
+~~~
+changes: 1
+~~~
+# id|c2
+1|d
+2|d
+3|d
+4|d
+10|d
+11|d
+8|naïve
+~~~
+# count(*)
+7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+10|8|999999999999390.5|999999999999390.5|124999999999923.81|-612|X''|7
+~~~
+# c0|count(*)|group_concat(id, ';')
+~~~

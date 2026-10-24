@@ -1,0 +1,277 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 18
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+19|NULL
+~~~
+# id|c0|c1|c2
+1|߷�}!|1.0e+308|NULL
+2|0|1|-4
+3|0|NULL|omega
+5|781.3|2|xi
+6|-980.83|d|NULL
+7|1|X'1664DBEDFCE7'|NULL
+9|1|NULL|X'EBD1FE6E83'
+10|1|it's|NULL
+11|1|223|X'A8'
+13|0|42|naïve
+14|0|tau|über
+15|1|NULL|1
+17|781.3|0|249
+18|0|X'47FAC1'|171
+19|NULL|d|NULL
+~~~
+changes: 20
+~~~
+changes: 10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|-1
+~~~
+# id|c0|c1|c2
+21|-1|0|NULL
+20|0|iota|NULL
+18|0|X'D0BD9217D89F'|NULL
+16|0|-67|4.500000000000011e-310
+14|0|X'8E6A216276E1'|-1
+12|0|rho|1
+10|0|0|-250
+8|0|0|2.5
+6|0|0|NULL
+4|X'C124'|0|NULL
+2|NULL|-811.6677|-228.6828
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X'EDAC327696'
+~~~
+# id|c0|c1|c2
+2|NULL|-811.6677|-228.6828
+3|NULL|0|NULL
+4|NULL|0|NULL
+8|0|0|2.5
+10|0|0|-250
+14|0|X'8E6A216276E1'|-1
+16|0|-67|4.500000000000011e-310
+20|0|iota|NULL
+21|X'EDAC327696'|0|NULL
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'AA010848'
+~~~
+# id|c0|c1|c2
+1|963|d|NULL
+3|0|NULL|omega
+5|781.3|2|xi
+6|über|d|NULL
+7|1|X'1664DBEDFCE7'|NULL
+9|1|NULL|X'EBD1FE6E83'
+11|1|223|X'A8'
+13|0|42|naïve
+15|1|NULL|1
+17|781.3|0|249
+19|NULL|d|NULL
+20|X'AA010848'|d|NULL
+~~~
+changes: 0
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|1
+~~~
+# id|c0|c1|c2
+3|0|NULL|omega
+5|-853.5!|2|xi
+7|1|X'1664DBEDFCE7'|NULL
+8|-4|d|NULL
+9|1|NULL|X'EBD1FE6E83'
+13|0|42|naïve
+15|1|NULL|1
+17|781.3|0|249
+19|NULL|d|NULL
+20|X'AA010848'|d|NULL
+21|1|d|NULL
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+17|17|-1.0e+308|-1.0e+308|-5.8823529411764708e+306|-1.0e+308|X'7C'|14
+~~~
+# c2|count(*)|group_concat(id, ';')
+-1.0e+308|1|10
+-329.4336|1|3
+-2|1|7
+0|4|4;5;13;17
+4.500000000000011e-310|1|8
+2|1|1
+361.977|1|12
+928.9|1|2
+|1|6
+Lambda|1|15
+upsilon|1|16
+X'04'|1|14
+X'1806DF'|1|9
+X'7C'|1|11
+~~~
+# count(*)|count(c2)|sum(c2)|total(c2)|avg(c2)|min(c2)|max(c2)|count(DISTINCT c2)
+17|17|-1.0e+308|-1.0e+308|-5.8823529411764708e+306|-1.0e+308|X'7C'|14
+~~~
+# c2|count(*)|group_concat(id, ';')
+-1.0e+308|1|10
+-329.4336|1|3
+-2|1|7
+0|4|4;5;13;17
+4.500000000000011e-310|1|8
+2|1|1
+361.977|1|12
+928.9|1|2
+|1|6
+Lambda|1|15
+upsilon|1|16
+X'04'|1|14
+X'1806DF'|1|9
+X'7C'|1|11
+~~~

@@ -1,0 +1,180 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# length('eta')|upper('eta')|lower('eta')|substr('eta', 4, 2)|instr('eta', 'eta')|replace('eta', 'a', '')|trim('eta')|ltrim('eta', 'ab')|hex('eta')|quote('eta')|unicode('eta')|'eta' LIKE 'a%'|'eta' GLOB 'a*'|char(87, 725)|'eta' || 'eta'|'eta' < 'eta'|'eta' = 'eta' COLLATE NOCASE
+3|ETA|eta||1|et|eta|eta|657461|'eta'|101|0|0|W˕|etaeta|0|1
+~~~
+# length('')|upper('')|lower('')|substr('', 1, 0)|instr('', '42')|replace('', 'e', 'XY')|trim('')|ltrim('', 'ab')|hex('')|quote('')|unicode('')|'' LIKE '_'|'' GLOB '?'|char(80, 483)|'' || '42'|'' < '42'|'' = '42' COLLATE NOCASE
+0||||0|||||''|NULL|0|0|Pǣ|42|1|0
+~~~
+# length('delta')|upper('delta')|lower('delta')|substr('delta', 1, 2)|instr('delta', 'beta')|replace('delta', 'a', '')|trim('delta')|ltrim('delta', 'ab')|hex('delta')|quote('delta')|unicode('delta')|'delta' LIKE '_'|'delta' GLOB 'a*'|char(77, 505)|'delta' || 'beta'|'delta' < 'beta'|'delta' = 'beta' COLLATE NOCASE
+5|DELTA|delta|de|0|delt|delta|delta|64656C7461|'delta'|100|0|0|Mǹ|deltabeta|0|0
+~~~
+# length('nu')|upper('nu')|lower('nu')|substr('nu', 2, 0)|instr('nu', 'iota')|replace('nu', 'é', '')|trim('nu')|ltrim('nu', 'ab')|hex('nu')|quote('nu')|unicode('nu')|'nu' LIKE 'A%'|'nu' GLOB '*'|char(70, 455)|'nu' || 'iota'|'nu' < 'iota'|'nu' = 'iota' COLLATE NOCASE
+2|NU|nu||0|nu|nu|nu|6E75|'nu'|110|0|1|FǇ|nuiota|0|0
+~~~
+# length('naïve')|upper('naïve')|lower('naïve')|substr('naïve', 3, 4)|instr('naïve', 'naïve')|replace('naïve', '', 'XY')|trim('naïve')|ltrim('naïve', 'ab')|hex('naïve')|quote('naïve')|unicode('naïve')|'naïve' LIKE 'a%'|'naïve' GLOB 'a*'|char(87, 627)|'naïve' || 'naïve'|'naïve' < 'naïve'|'naïve' = 'naïve' COLLATE NOCASE
+5|NAïVE|naïve|ïve|1|naïve|naïve|naïve|6E61C3AF7665|'naïve'|110|0|0|Wɳ|naïvenaïve|0|1
+~~~
+# length('beta')|upper('beta')|lower('beta')|substr('beta', 3, 5)|instr('beta', 'psi')|replace('beta', 'e', 'XY')|trim('beta')|ltrim('beta', 'ab')|hex('beta')|quote('beta')|unicode('beta')|'beta' LIKE '%a_'|'beta' GLOB '*[a-m]*'|char(74, 675)|'beta' || 'psi'|'beta' < 'psi'|'beta' = 'psi' COLLATE NOCASE
+4|BETA|beta|ta|0|bXYta|beta|eta|62657461|'beta'|98|0|1|Jʣ|betapsi|1|0
+~~~
+# id|id|c4|c2
+1|1|-2|9223372036854775807
+2|2|-544|psi
+3|3|NULL|-97
+4|4|NULL|-515
+5|5|NULL|660.2828
+6|6|-2.5|NULL
+7|7|-959.4579|1.0e-07
+8|8|NULL|chi
+9|9|NULL|X'136D'
+10|10|X'5A49'|naïve
+11|NULL|NULL|NULL
+12|NULL|-4|NULL
+13|NULL|NULL|NULL
+14|NULL||NULL
+15|NULL|X'7B74BEE819'|NULL
+16|NULL|NULL|NULL
+17|NULL|NULL|NULL
+18|NULL|NULL|NULL
+~~~
+# count(*)
+24
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t0.id)
+24|10
+23|10
+22|10
+21|10
+20|10
+19|10
+18|10
+17|10
+16|10
+15|10
+14|10
+13|10
+12|10
+11|10
+10|10
+9|9
+8|8
+7|7
+6|6
+5|5
+4|4
+3|3
+2|2
+1|1
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# id
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+~~~
+# c1
+42
+alpha
+beta
+café
+epsilon
+gamma
+iota
+MU
+nu
+omicron
+sigma
+tau
+theta
+x_y
+über
+~~~

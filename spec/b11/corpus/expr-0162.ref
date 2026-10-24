@@ -1,0 +1,120 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|nullif(NOT id BETWEEN -350 AND x'efd6a789', typeof(c4 IS NULL))|id IN (c2 IN (id, x'', NULL) IN (nullif(c0, c0), NULL, NULL), -325.6718, 1e-7)
+1|0|NULL
+2|0|NULL
+3|0|NULL
+4|0|NULL
+5|0|NULL
+6|0|NULL
+7|0|NULL
+8|0|NULL
+9|0|NULL
+10|0|NULL
+~~~
+# nullif(iif(-5, 'theta', x'd78dc6cf2f'), NULL IS NULL BETWEEN 'zeta' AND nullif(x'7b5df891', NULL))|iif(NULL, 1e-7 BETWEEN 'señor' AND 'a%b', 2)
+theta|2
+~~~
+# id|iif(abs((c2 <> -873.402)), -(CASE WHEN x'3a' THEN -0.0 ELSE NULL END), -386)|iif(NOT -233 IN (-2, '', NULL), CAST('nu' AS TEXT), x'0f9010751538')
+10|NULL|X'0F9010751538'
+9|NULL|X'0F9010751538'
+8|-386|X'0F9010751538'
+7|NULL|X'0F9010751538'
+6|-386|X'0F9010751538'
+5|NULL|X'0F9010751538'
+4|NULL|X'0F9010751538'
+3|NULL|X'0F9010751538'
+2|NULL|X'0F9010751538'
+1|NULL|X'0F9010751538'
+~~~
+# abs(iif(-5, x'70d1d2', NULL)) IN (CAST(coalesce(3, x'26') AS REAL), 917.71, 'café')|655.3308
+0|655.3308
+~~~
+# id|CAST(CAST(-(c2) AS REAL) AS TEXT)|CAST(typeof(nullif(id, 359.71)) AS INTEGER)
+1|-2.5|0
+2|-135.0|0
+3|0.0|0
+4|0.0|0
+5|0.0|0
+6|NULL|0
+7|0.0|0
+8|NULL|0
+9|0.0|0
+10|0.0|0
+~~~
+# coalesce(abs(-2.5), 777.77)|-(CAST('phi' AS REAL))
+2.5|0.0
+~~~
+changes: 10
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|NULL
+~~~
+# id|c0|c1|c2|c3|c4
+1|1|803.84|2.5|NULL|X'04639D'
+2|-971|NULL|NULL|NULL|NULL
+3|it's|NULL|NULL|NULL|NULL
+4|1|-4|X'2BC23E'|322.8|271
+5|NULL|NULL|beta|rho|café
+7|0|NULL|0|526|-596
+8|NULL|479|NULL|NULL|X'BC022A67FE'
+10|NULL|NULL|Ελλάδα|883|X'5AC08A0ADDFD'
+11|NULL|NULL|NULL|NULL|NULL
+~~~
+# id|c2|NULL
+1|0|NULL
+2|1|NULL
+3|0|NULL
+4|zeta|NULL
+5|805|NULL
+6| pad |NULL
+7|952|NULL
+8|0|NULL
+~~~
+# iif(-(NULL) IN (CASE WHEN 73 THEN 123456789012 ELSE NULL END, 310.172, 24), NOT CASE WHEN NULL THEN NULL ELSE NULL END, -5)|'rho'
+-5|rho
+~~~

@@ -1,0 +1,229 @@
+changes: 0
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 6
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|534
+~~~
+# id|c0|c1
+1|X'17FB89D7'|NULL
+2|NULL|日本
+3|-300|X'9F'
+4|it's|X'416210CA'
+6|NULL|NULL
+7|-812|-5
+8|rho|826.6
+10|1.0e+308|X'048CE5BA'
+11|X'2B56414E9F97'|-4
+12|0|naïve
+14|gamma|1.0e-07
+15|NULL|theta
+16|X'C90C'|9223372036854775807
+18|naïve|865
+19|801|3.1415926535897931
+20|chi|zeta
+21|534|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|340
+~~~
+# id|c0|c1|c2|c3|c4
+9|340|0|NULL|NULL|NULL
+8||psi|-7|X'FCA52E40314E'|42.0
+7|-9223372036854775808|4|X'F9AEFC6D'|4.500000000000011e-310|X'53BF2F60C8'
+5|X'CEE1E9'|epsilon|NULL|NULL|9.2233720368547758e+18
+4|-5|-1.0e+308|-308.34|NULL|NULL
+3|X'E0'|0|NULL|NULL|NULL
+2|omega|X'4FBA'|Ελλάδα|X''|X'DCD0B72626EB'
+1|T�!|0|X''|NULL|0.0
+~~~
+changes: 17
+~~~
+changes: 7
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|NULL
+~~~
+# id|c0|c1
+21|NULL|NULL
+20|tau|zeta
+18|tau|865
+16|tau|9223372036854775807
+14|tau|1.0e-07
+12|tau|naïve
+10|tau|X'048CE5BA'
+8|tau|826.6
+6|tau|NULL
+4|tau|X'416210CA'
+2|-855.91|NULL
+~~~
+changes: 1
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+10|über
+~~~
+# id|c0|c1|c2|c3|c4
+10|über|0|NULL|NULL|NULL
+9|340|0|NULL|NULL|NULL
+8||psi|-7|X'FCA52E40314E'|42.0
+6|-7|0|NULL|NULL|NULL
+5|X'CEE1E9'|epsilon|NULL|NULL|9.2233720368547758e+18
+4|psi|0|NULL|NULL|NULL
+3|X'E0'|0|NULL|NULL|NULL
+2|omega|X'4FBA'|Ελλάδα|X''|X'DCD0B72626EB'
+~~~
+changes: 0
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+22|0
+~~~
+# id|c0|c1
+22|0|NULL
+21|NULL|NULL
+18|tau|865
+14|tau|1.0e-07
+10|tau|X'048CE5BA'
+9|-1|NULL
+6|tau|NULL
+3|NULL|NULL
+2|-855.91|NULL
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+23|-866.366
+~~~
+# id|c0|c1
+2|-855.91|NULL
+4|NULL|NULL
+5|X'A5'|NULL
+6|tau|NULL
+10|tau|X'048CE5BA'
+14|tau|1.0e-07
+18|tau|865
+22|0|NULL
+23|-866.366|NULL
+~~~
+changes: 1
+~~~
+# id|id
+~~~
+# count(*)
+9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|iif(nullif(CAST(c1 AS NUMERIC), iif(c0, id, NULL)), 'delta', 'NULL')|coalesce((-(id) / CASE WHEN c0 THEN c0 ELSE c1 END), 'café')
+2|NULL|0.0023366942786040589
+4|NULL|café
+5|NULL|café
+6|NULL|café
+10|NULL|café
+14|delta|-140000000.0
+18|delta|0
+22|NULL|café
+23|NULL|0.026547671538356767
+~~~
+# abs(468) IN (abs(x'a8'), -878, x'83a3791ba183') IN (coalesce('tau', 326) BETWEEN abs(x'') AND iif('-7', 'a%b', -711), NULL, NULL)|'omega'
+1|omega
+~~~

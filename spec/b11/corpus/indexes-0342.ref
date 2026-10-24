@@ -1,0 +1,240 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t1.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c2
+2|NULL
+7|NULL
+8|NULL
+12|NULL
+16|NULL
+20|NULL
+1|-1.0e+308
+5|-503
+14|116
+9|3.1415926535897931
+3|34
+17|418.8389
+10|47
+13|9223372036854775807
+15|961
+22|964
+21|979.56
+11|xi
+4|X''
+6|X'26'
+19|X'4D'
+18|X'6BA48EDE70B2'
+~~~
+# count(*)
+16
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+~~~
+# count(*)
+19
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id
+1|1
+2|2
+3|3
+4|4
+5|5
+6|6
+7|7
+8|8
+9|9
+10|10
+11|11
+12|12
+13|13
+14|14
+15|15
+~~~
+# count(*)
+15
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+4|NULL
+9|NULL
+12|NULL
+14|NULL
+6|1
+10|1
+15|3
+3|4
+8|4
+11|4
+5|5
+7|6
+2|7
+1|8
+13|8
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|ref
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|c1
+1|6|1|-5
+1|10|1|0
+3|15|3|9223372036854775807
+4|3|4|4
+4|8|4|X'FF6E8F'
+4|11|4|X'8C23CC56'
+5|5|5|-509
+6|7|6|1.0e+308
+7|2|7|587
+8|1|8|-7
+8|13|8|0
+~~~
+error: near "-": syntax error
+~~~
+# id|NULL|(abs(NOT NULL) / -(c1))
+22|NULL|NULL
+21|NULL|NULL
+20|NULL|NULL
+19|NULL|NULL
+18|NULL|NULL
+17|NULL|NULL
+16|NULL|NULL
+15|NULL|NULL
+14|NULL|NULL
+13|NULL|NULL
+12|NULL|NULL
+11|NULL|NULL
+10|NULL|NULL
+9|NULL|NULL
+8|NULL|NULL
+7|NULL|NULL
+6|NULL|NULL
+5|NULL|NULL
+4|NULL|NULL
+3|NULL|NULL
+2|NULL|NULL
+1|NULL|NULL
+~~~
+# iif(-36, NULL IN (x'af028b8d167b', NULL, 3.141592653589793), -1) IN (iif(NOT NULL, 'chi' IN ('MU', x'1a24', x'65'), -512), -919, -31)|NOT CASE WHEN iif(NULL, 'x_y', 916) THEN nullif('iota', -288.52) ELSE coalesce('NULL', x'6833') END
+NULL|1
+~~~

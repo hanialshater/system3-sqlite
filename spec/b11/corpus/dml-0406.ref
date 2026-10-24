@@ -1,0 +1,235 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+6|2
+~~~
+# id|c0|c1|c2
+2|994|sigma|-437.0
+3|1.0e+308!|0|1.0
+4|-787.061|0|NULL
+5|X'B4FF22'|3|MU
+6|2|0|NULL
+~~~
+changes: 5
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+8|0.1
+~~~
+# id|c0|c1|c2
+2|1|sigma|-437.0
+3|zeta!|0|1.0
+4|1|0|NULL
+6|1|0|NULL
+7|nu|0|NULL
+8|0.1|0|NULL
+~~~
+changes: 0
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+9|X'3851EBDC'
+~~~
+# id|c0|c1|c2
+9|X'3851EBDC'|0|NULL
+8|0.1|0|NULL
+6|1|0|NULL
+5|gamma|0|NULL
+3|NULL|0|1.0
+2|1|sigma|-437.0
+~~~
+changes: 24
+~~~
+changes: 6
+~~~
+error: NOT NULL constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+# id|c0
+25|-780.3384
+~~~
+# id|c0|c1
+2|a%b|NULL
+3|3|X'B6BCC7DFD733'
+4|4|406
+6|6|0
+7|7|-480
+8|8|-217.912
+10|10|NULL
+11|11|-904
+12|12|X'AE37'
+14|14|X'149211CB'
+15|15|NULL
+16|16|NULL
+18|18|-1
+19|19|NULL
+20|20|714
+22|22|a%b
+23|23|NULL
+24|24|NULL
+25|-780.3384|NULL
+~~~
+# id|-(c2 BETWEEN typeof(x'b5b7daa50067') AND id)|coalesce(190.268, nullif(x'206bf2', c1) BETWEEN CASE WHEN c2 THEN -2.5 ELSE id END AND nullif('xi', 514))
+2|0|190.268
+3|0|190.268
+5|NULL|190.268
+6|NULL|190.268
+8|NULL|190.268
+9|NULL|190.268
+~~~
+# coalesce(NULL, x'')|typeof(CASE WHEN 4 THEN 3.141592653589793 ELSE 'omega' END IN (-123, 5, NULL))
+X''|null
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+0|0|NULL|0.0|NULL|NULL|NULL|0
+~~~
+# id|count(*)|group_concat(id, ';')
+2|1|2
+3|1|3
+4|1|4
+6|1|6
+7|1|7
+8|1|8
+10|1|10
+11|1|11
+12|1|12
+14|1|14
+15|1|15
+16|1|16
+18|1|18
+19|1|19
+20|1|20
+22|1|22
+23|1|23
+24|1|24
+25|1|25
+~~~

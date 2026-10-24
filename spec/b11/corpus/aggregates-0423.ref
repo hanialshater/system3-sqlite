@@ -1,0 +1,167 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# count(*)|count(c0)|sum(c0)|total(c0)|avg(c0)|min(c0)|max(c0)|count(DISTINCT c0)
+1|1|-7.0|-7.0|-7.0|-7.0|-7.0|1
+~~~
+# c0|count(*)|group_concat(id, ';')
+-7.0|1|3
+-4.0|1|1
+X'80B69C9A3AF4'|1|2
+X'A8'|1|4
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+4|4|10|10.0|2.5|1|4|4
+~~~
+# id|count(*)|group_concat(id, ';')
+1|1|1
+2|1|2
+3|1|3
+4|1|4
+~~~
+# count(*)|count(id)|sum(id)|total(id)|avg(id)|min(id)|max(id)|count(DISTINCT id)
+13|13|184|184.0|14.153846153846153|4|22|13
+~~~
+# id|count(*)|group_concat(id)
+~~~
+changes: 1
+~~~
+# id|c2
+20|-871
+8|-752.8
+12|-589.81
+9|-4
+19|-2
+5|0
+11|4.500000000000011e-310
+22|1
+17|3
+7|5
+18|203.6624
+16|688
+21|766
+~~~
+# count(*)
+21
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+20|24
+18|24
+9|24
+6|24
+22|24
+16|24
+2|24
+1|24
+7|24
+19|24
+13|24
+11|24
+24|24
+10|24
+23|24
+3|24
+5|24
+21|24
+17|24
+15|24
+14|24
+12|24
+8|24
+4|24
+~~~
+# id
+4
+7
+8
+9
+11
+12
+16
+17
+18
+19
+20
+21
+22
+~~~
+# id
+24
+~~~
+# c1
+-5
+-2
+0
+0
+0
+0
+0
+0
+1
+2
+2
+3
+~~~

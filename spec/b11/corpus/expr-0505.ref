@@ -1,0 +1,311 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t0.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c2
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|coalesce(1e-7, NOT c1 IS NULL)|-90
+19|1.0e-07|-90
+18|1.0e-07|-90
+17|1.0e-07|-90
+16|1.0e-07|-90
+15|1.0e-07|-90
+14|1.0e-07|-90
+13|1.0e-07|-90
+12|1.0e-07|-90
+11|1.0e-07|-90
+10|1.0e-07|-90
+9|1.0e-07|-90
+8|1.0e-07|-90
+7|1.0e-07|-90
+6|1.0e-07|-90
+5|1.0e-07|-90
+4|1.0e-07|-90
+3|1.0e-07|-90
+2|1.0e-07|-90
+1|1.0e-07|-90
+~~~
+# coalesce(-462.4 IS NULL, NULL)|9223372036854775807
+0|9223372036854775807
+~~~
+# id|coalesce(CAST(c0 AS INTEGER) BETWEEN 4.5e-310 AND id, nullif(NOT -1e308, -26.68))|coalesce('-7', NULL)
+1|0|-7
+2|0|-7
+3|0|-7
+4|0|-7
+5|0|-7
+6|0|-7
+7|0|-7
+8|0|-7
+9|0|-7
+10|0|-7
+11|0|-7
+12|0|-7
+13|0|-7
+14|0|-7
+15|0|-7
+16|0|-7
+17|0|-7
+18|0|-7
+19|0|-7
+~~~
+# -4|typeof(CASE WHEN abs(-2) THEN nullif(NULL, -2.5) ELSE abs('nu') END)
+-4|null
+~~~
+# id|'nu' IN (c1, x'be8d5bac', -0.0)|NULL
+15|NULL|NULL
+14|0|NULL
+13|0|NULL
+12|0|NULL
+11|0|NULL
+10|0|NULL
+9|0|NULL
+8|0|NULL
+7|NULL|NULL
+6|0|NULL
+5|0|NULL
+4|0|NULL
+3|0|NULL
+2|0|NULL
+1|0|NULL
+~~~
+# NOT x'b144b9'|CAST('NULL' IN (x'72', 685, NULL) BETWEEN x'1b16' BETWEEN NULL AND x'' AND nullif(-910, x'4a1cb640') AS NUMERIC)
+1|NULL
+~~~
+# id|CAST(coalesce(CASE WHEN c1 THEN x'a5' ELSE 'psi' END, id) AS REAL)|CAST(c0 IN ('MU', NULL, 9223372036854775807) AS BLOB)
+1|0.0|NULL
+2|0.0|NULL
+3|0.0|NULL
+4|0.0|NULL
+5|0.0|NULL
+6|0.0|NULL
+7|0.0|NULL
+8|0.0|NULL
+9|0.0|NULL
+10|0.0|NULL
+11|0.0|NULL
+12|0.0|NULL
+13|0.0|NULL
+14|0.0|NULL
+15|0.0|NULL
+~~~
+# typeof(nullif(628.7, iif(NULL, NULL, -9223372036854775808)))|-506
+real|-506
+~~~
+# id|CASE WHEN coalesce(iif(NULL, c0, -2.5), nullif(id, c0)) THEN -(iif(423, id, x'498dd1')) ELSE iif(typeof(c0), -2 IS NULL, 'it''s') END|c0 IS NULL
+1|-1|0
+2|-2|0
+3|-3|0
+4|-4|0
+5|-5|0
+6|-6|0
+7|-7|0
+8|-8|1
+9|-9|0
+10|-10|1
+11|-11|0
+12|-12|0
+13|-13|0
+14|-14|0
+15|-15|0
+~~~
+# x''|typeof(abs(nullif(1e308, NULL)))
+X''|real
+~~~
+# id|x'25d2b4aab330'|id
+1|X'25D2B4AAB330'|1
+2|X'25D2B4AAB330'|2
+3|X'25D2B4AAB330'|3
+4|X'25D2B4AAB330'|4
+5|X'25D2B4AAB330'|5
+6|X'25D2B4AAB330'|6
+7|X'25D2B4AAB330'|7
+8|X'25D2B4AAB330'|8
+9|X'25D2B4AAB330'|9
+10|X'25D2B4AAB330'|10
+11|X'25D2B4AAB330'|11
+12|X'25D2B4AAB330'|12
+13|X'25D2B4AAB330'|13
+14|X'25D2B4AAB330'|14
+15|X'25D2B4AAB330'|15
+~~~
+# NOT coalesce(NOT 'a%b', nullif('señor', 'nu'))|coalesce((-1 AND x'e62f' IS NULL), NULL BETWEEN 'sigma' AND 5 IN (NULL BETWEEN 582 AND 284, -2, x'517108a0'))
+0|0
+~~~
+# id|id|id|ref
+1|5|1|1
+1|10|1|1
+1|11|1|1
+2|3|2|2
+2|13|2|2
+3|14|3|3
+3|15|3|3
+3|18|3|3
+4|6|4|4
+4|16|4|4
+6|2|6|6
+6|8|6|6
+7|7|7|7
+7|19|7|7
+8|4|8|8
+8|17|8|8
+~~~
+error: near "(": syntax error
+~~~
+changes: 1
+~~~
+# id|c2
+4|X'D5'
+14|X'E2DC2928'
+15|X'F4AECC49DC'
+~~~
+# count(*)
+11
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+20|X'A0EE'
+~~~
+# id|c0|c1|c2
+1|0|d|0
+2|omicron|835.42|X'3F24E6'
+3|3|it's|-410.5
+4|-697|-17.631|kappa
+5|4|alpha|phi
+6|X'1F86'|d|0
+7|-5|NULL|X'1C47CEE3'
+8|467.66|phi|sigma
+9|NULL|NULL|2.5
+10|a%b|NULL|0
+12|X'DD85'|NULL|955
+13|NULL|-633|X''
+14|beta|X'F938F27A'|1e3
+15|-856.1|kappa|X'4C23A221'
+17|pi|X'3BD2F5A7'|-409
+18|480|X'C9AC7D5F2C'|1e3
+19|X'8E39928A'|NULL|MU
+20|X'A0EE'|d|0
+~~~

@@ -1,0 +1,172 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|id|id|c3
+1|10|1|4.500000000000011e-310
+1|11|1|-135
+1|19|1|-1.0e+308
+2|3|2|-7
+2|5|2|NULL
+2|12|2|3.1415926535897931
+2|13|2|X'7A788D47E064'
+2|17|2|1.0e+308
+3|22|3|x_y
+5|2|5|upsilon
+5|4|5|629
+5|16|5|0
+5|18|5|NULL
+6|1|6|0x1F
+~~~
+error: ambiguous column name: c3
+~~~
+# id|id|c2|c2
+1|10|473|Lambda
+1|11|473|X'FE55A591'
+1|19|473|NULL
+2|3|omega|NULL
+2|5|omega|-727
+2|12|omega|NULL
+2|13|omega|NULL
+2|17|omega|984
+3|22|NULL|X'51'
+4|NULL|X'F3E6059997'|NULL
+5|2|-727|omega
+5|4|-727|X'F3E6059997'
+5|16|-727|682
+5|18|-727|2.5
+6|1||473
+7|20|X'4B5E9E'|NULL
+7|21|X'4B5E9E'|961
+8|7|-5|X'4B5E9E'
+8|8|-5|-5
+8|14|-5|1.0e+308
+9|NULL|-5|NULL
+10|NULL|Lambda|NULL
+11|NULL|X'FE55A591'|NULL
+12|NULL|NULL|NULL
+13|NULL|NULL|NULL
+14|NULL|1.0e+308|NULL
+15|NULL|X'8A'|NULL
+16|NULL|682|NULL
+17|NULL|984|NULL
+18|NULL|2.5|NULL
+19|NULL|NULL|NULL
+20|NULL|NULL|NULL
+21|NULL|961|NULL
+22|NULL|X'51'|NULL
+~~~
+# count(*)
+7
+~~~
+# id|id|c1|c4
+1|10|-919.13|NULL
+1|11|-919.13|upsilon
+1|19|-919.13|rho
+2|3|NULL|NULL
+2|5|NULL|gamma
+2|12|NULL|-230
+2|13|NULL|-263
+2|17|NULL|123456789012
+3|22|NULL|日本
+4|NULL|0.1|NULL
+5|2|-498|NULL
+5|4|-498|phi
+5|16|-498|iota
+5|18|-498|-399
+6|1|61.74|1000000000000000.0
+7|20|1.0e-07|NULL
+7|21|1.0e-07|beta
+8|7|naïve|X'9731'
+8|8|naïve|-112
+8|14|naïve|X'76C488CF712E'
+~~~
+error: near "(": syntax error
+~~~
+# id|id|c2|c3
+1|10|473|4.500000000000011e-310
+1|11|473|-135
+1|19|473|-1.0e+308
+2|3|omega|-7
+2|5|omega|NULL
+2|12|omega|3.1415926535897931
+2|13|omega|X'7A788D47E064'
+2|17|omega|1.0e+308
+3|22|NULL|x_y
+5|2|-727|upsilon
+5|4|-727|629
+5|16|-727|0
+5|18|-727|NULL
+6|1||0x1F
+7|20|X'4B5E9E'|-2
+7|21|X'4B5E9E'|0
+8|7|-5|1.0e-07
+8|8|-5|sigma
+8|14|-5|epsilon
+~~~
+error: near ".1e-7": syntax error
+~~~

@@ -1,0 +1,314 @@
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t1.c1
+~~~
+changes: 0
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: NOT NULL constraint failed: t2.c1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+error: UNIQUE constraint failed: t2.c3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+changes: 9
+~~~
+changes: 9
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|1
+~~~
+# id|c0|c1|c2|c3|c4
+2|5|0|X''|-4|X'CCB882'
+4|0.1|X''|3.1415926535897931|NULL|-906
+5|pi|0|NULL|NULL|NULL
+6|-2.5|5|110.75|chi|X'2D'
+8|0.1|rho|xi|2|-9223372036854775808
+9|0|0|NULL|NULL|NULL
+10|0.1|-9223372036854775808|delta|naïve|934.946
+12|X'743315CB'|545.5|NULL|X'DF989E'|gamma
+14|5|-884.989|NULL|X'AF7C11'|NULL
+16|X'3E5A3F8576A5'|0|theta|NULL|X'58FB48A4A4'
+17|1|0|NULL|NULL|NULL
+~~~
+changes: 10
+~~~
+changes: 2
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+11|kappa
+~~~
+# id|c0|c1
+1|X'7BC7'|NULL
+2|0|983.69
+3|0|-906.0
+4|1|NULL
+5|naïve|NULL
+7|1|NULL
+8|0|über
+9|0|-88.0
+10|0|MU
+11|kappa|NULL
+~~~
+changes: 20
+~~~
+changes: 10
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+21|X'BCB2D6'
+~~~
+# id|c0|c1
+2|-6!|298
+4|epsilon|X'445392'
+5|X'E64DB64C9A'|NULL
+6|epsilon|X'47EF'
+8|epsilon|X''
+10|epsilon|591
+12|epsilon|-801
+14|epsilon|-381
+16|epsilon|-632
+18|epsilon|X'90C4'
+20|epsilon|X'76A8EAA1864A'
+21|X'BCB2D6'|NULL
+~~~
+changes: 0
+~~~
+changes: 4
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+12|X'6CCA'
+~~~
+# id|c0|c1
+1|�Ӱ�!|NULL
+3|0|-906.0
+5|NULL|NULL
+7|1|NULL
+9|0|-88.0
+11|kappa|NULL
+12|X'6CCA'|NULL
+~~~
+changes: 2
+~~~
+changes: 3
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+17|0.1
+~~~
+# id|c0|c1|c2|c3|c4
+17|0.1|0|NULL|NULL|NULL
+16|X'3E5A3F8576A5'|0|theta|NULL|X'58FB48A4A4'
+14|5|-884.989|NULL|X'AF7C11'|NULL
+12|X'743315CB'|545.5|NULL|X'DF989E'|gamma
+10|0.1|-9223372036854775808|delta|naïve|934.946
+8|0.1|rho|xi|2|-9223372036854775808
+6|-2.5|5|110.75|chi|X'2D'
+4|0.1|X''|3.1415926535897931|NULL|-906
+3|0|0|NULL|NULL|NULL
+2|5|0|X''|-4|X'CCB882'
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t2.id)
+3|1
+14|8
+17|9
+8|5
+4|2
+10|6
+12|7
+6|4
+16|9
+2|1
+~~~
+# id
+3
+4
+6
+8
+17
+~~~
+# id
+4
+6
+8
+10
+12
+14
+16
+~~~
+# c0
+-2.5
+-6!
+0
+0.1
+0.1
+0.1
+0.1
+5
+5
+epsilon
+epsilon
+epsilon
+epsilon
+epsilon
+epsilon
+epsilon
+epsilon
+epsilon
+~~~
+# id|(SELECT count(*) FROM t1 WHERE t1.id <= t1.id)
+2|12
+4|12
+5|12
+6|12
+8|12
+10|12
+12|12
+14|12
+16|12
+18|12
+20|12
+21|12
+~~~
+# id
+~~~
+# id
+2
+5
+18
+~~~
+# id
+2
+4
+5
+6
+~~~
+changes: 10
+~~~
+changes: 8
+~~~
+changes: 1
+~~~
+changes: 1
+~~~
+# id|c0
+18|0
+~~~
+# id|c0|c1|c2|c3|c4
+18|0|0|NULL|NULL|NULL
+17|0|0|NULL|NULL|NULL
+9|iota|0|NULL|NULL|NULL
+5|X'B7454346F6A4'|0|NULL|NULL|NULL
+3|0|0|NULL|NULL|NULL
+~~~
