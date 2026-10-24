@@ -533,9 +533,18 @@
               p2 (if (> (+ p1 p2) n) (max 0 (- n p1)) p2)]
           (if (or (>= p1 n) (<= p2 0)) (Blob. (byte-array 0))
               (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (+ p1 p2)))))))
-        (let [^String s (v/text-of x)
-              cps (.toArray (.codePoints s))
-              n (alength cps)
+        (let [^bytes tb (v/str->utf8 (v/text-of x))
+              nb (alength tb)
+              ;; character start offsets as SQLITE_SKIP_UTF8 sees them
+              starts (loop [i 0 acc (transient [])]
+                       (if (>= i nb)
+                         (persistent! (conj! acc nb))
+                         (let [c (bit-and (aget tb i) 0xff)
+                               j (if (>= c 0xc0)
+                                   (loop [j (inc i)] (if (and (< j nb) (= 0x80 (bit-and (aget tb j) 0xc0))) (recur (inc j)) j))
+                                   (inc i))]
+                           (recur j (conj! acc i)))))
+              n (dec (count starts))
               orig-p2 (if has-len (long p2) 1000000000)
               p1o (long p1)
               negp2 (< orig-p2 0)
@@ -551,7 +560,7 @@
           (if (or (>= p1 n) (<= p2 0))
             ""
             (let [end (min n (+ p1 p2))]
-              (String. cps (int p1) (int (- end p1))))))))))
+              (v/utf8->str (java.util.Arrays/copyOfRange tb (int (nth starts p1)) (int (nth starts end)))))))))))
 
 (defn- sqlite-length [x]
   (cond (nil? x) nil
@@ -655,7 +664,8 @@
         (let [c0 (bit-and (aget b 0) 0xff)]
           (if (< c0 0xc0)
             c0
-            (let [t1 (cond (< c0 0xe0) (bit-and c0 0x1f) (< c0 0xf0) (bit-and c0 0x0f) (< c0 0xf8) (bit-and c0 0x07) :else 0)
+            (let [t1 (cond (< c0 0xe0) (bit-and c0 0x1f) (< c0 0xf0) (bit-and c0 0x0f) (< c0 0xf8) (bit-and c0 0x07)
+                           (< c0 0xfc) (bit-and c0 0x03) (< c0 0xfe) (bit-and c0 0x01) :else 0)
                   c (loop [i 1 c t1]
                       (if (and (< i n) (= 0x80 (bit-and (aget b i) 0xc0)))
                         (recur (inc i) (bit-and 0xffffffff (+ (bit-shift-left c 6) (bit-and (aget b i) 0x3f))))
