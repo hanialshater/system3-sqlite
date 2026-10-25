@@ -1029,7 +1029,7 @@
       (#{"ifnull"} name) (when (not= n 2) (str "wrong number of arguments to function " name "()"))
       (#{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
          "first_value" "last_value" "nth_value"} name) (str "misuse of window function " name "()")
-      (#{"iif" "if"} name) (when-not (#{2 3} n) (str "wrong number of arguments to function " name "()"))
+      (#{"iif" "if"} name) (when-not (>= n 2) (str "wrong number of arguments to function " name "()"))
       :else
       (try (if (compile-scalar-fn name n "BINARY")
              (when (:distinct e) (str "DISTINCT aggregates must have exactly one argument"))
@@ -1088,8 +1088,14 @@
                     (long (or (:last-rowid db) 0)))]
           (mk (fn [_] val)))
         ("iif" "if")
-        (let [[fc ft fe] (cons (condf (first args)) (map :f (rest args)))]
-          (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
+        (let [pairs (vec (partition 2 args))
+              els (when (odd? (count args)) (:f (last args)))
+              pcs (mapv (fn [[c v]] [(condf c) (:f v)]) pairs)]
+          (mk (fn [env] (loop [ps pcs]
+                          (if (empty? ps)
+                            (when els (els env))
+                            (let [[fc fv] (first ps) c (fc env)]
+                              (if (and (not (nil? c)) (v/bool-value c)) (fv env) (recur (rest ps)))))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
         (let [coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
               coll (or (coll-walk args) coll)

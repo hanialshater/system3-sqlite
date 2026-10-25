@@ -112,12 +112,16 @@
   "Computes the generated columns of row (rowid last) in column order."
   [tbl row]
   (if (:has-gen tbl)
-    (reduce (fn [row ci]
-              (let [c (nth (:cols tbl) ci)]
-                (if-let [f (:f (:gen c))]
-                  (assoc row ci (v/apply-affinity (f row) (:aff c)))
-                  row)))
-            row (range (count (:cols tbl))))
+    (let [pass (fn [row]
+                 (reduce (fn [row ci]
+                           (let [c (nth (:cols tbl) ci)]
+                             (if-let [f (:f (:gen c))]
+                               (assoc row ci (v/apply-affinity (f row) (:aff c)))
+                               row)))
+                         row (range (count (:cols tbl)))))
+          n (count (filter :gen (:cols tbl)))]
+      ;; a generated column may depend on a later one: repeat until every dependency has settled
+      (nth (iterate pass row) (if (> n 1) n 1)))
     row))
 
 (defn- ensure-sequence-table [db st]
@@ -1218,6 +1222,8 @@
             _ (when (and notnull (or (nil? dflt) (nil? dv)))
                 (.append out "# raise(ABORT,'Cannot add a NOT NULL column with default value NULL')\n")
                 (when (seq (:rows tbl)) (err "Cannot add a NOT NULL column with default value NULL")))
+            _ (when (and (:strict tbl) (not (and has-check (not notnull))))
+                (.append out "# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END\n"))
             _ (when (and has-check (not notnull))
                 (.append out "# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END\n"))
             ;; the new column goes before the closing parenthesis of the column list
@@ -1231,9 +1237,14 @@
             new-sql (str (subs tsql 0 close) ", " coldef (subs tsql close))
             aff (v/type-affinity (:type d))
             dv (when-not (nil? dv) (v/apply-affinity dv aff))]
-        (rebuild-table db tname new-sql
-                       (fn [r] (conj (pop r) dv (peek r)))
-                       (fn [i] (:sql i))))
+        (try
+          (rebuild-table db tname new-sql
+                         (fn [r] (conj (pop r) dv (peek r)))
+                         (fn [i] (:sql i)))
+          (catch clojure.lang.ExceptionInfo ex
+            (if-let [m (:sql-error (ex-data ex))]
+              (err (str "error in table " (:name tbl) " after add column: " m))
+              (throw ex)))))
       :rename-col
       (let [i (find-col tbl (:old st))
             _ (when-not i (err (str "no such column: \"" (:old st) "\"")))
