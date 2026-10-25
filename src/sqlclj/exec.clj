@@ -460,7 +460,7 @@
                                            (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
                                              (nth (:cols src) (:ipk src))
                                              n))
-                                         (e/text-of-node ctx (:e rc))))
+                                         (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
       {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)})))

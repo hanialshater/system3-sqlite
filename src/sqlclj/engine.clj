@@ -987,7 +987,7 @@
     nil
     (reduce (fn [best a]
               (let [c (v/sql-cmp a best coll)]
-                (if (if max? (> c 0) (< c 0)) a best)))
+                (if (if max? (> c 0) (<= c 0)) a best)))
             (first args) (rest args))))
 
 (defn- abs-impl [x]
@@ -1930,7 +1930,7 @@
               (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
           (:name e)))
-    :else (text-of-node ctx (:e rc))))
+    :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
   (and (= :lit (:op e)) (= :int (:kind e))
