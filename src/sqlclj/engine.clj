@@ -1103,7 +1103,7 @@
       (#{"iif" "if"} name) (when-not (>= n 2) (str "wrong number of arguments to function " name "()"))
       :else
       (try (if (compile-scalar-fn name n "BINARY")
-             (when (:distinct e) (str "DISTINCT aggregates must have exactly one argument"))
+             (when (and (:distinct e) (not= n 1)) (str "DISTINCT aggregates must have exactly one argument"))
              (if (known-unsupported name)
                (str "unsupported function " name "()")
                (str "no such function: " name)))
