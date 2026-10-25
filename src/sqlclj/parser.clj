@@ -76,6 +76,9 @@
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
+(defn- name-raw [^P p start]
+  (some (fn [t] (when (= (:s t) start) (subs (.-sql p) (:s t) (:e t)))) (.-toks p)))
+
 (defn- prev-end [^P p] (:e (nth (.-toks p) (dec (pos p)))))
 
 (defn- parse-type-name
@@ -153,13 +156,29 @@
         :else (fail! p))
       :qid
       (do (advance! p)
+          (cond
+            (and (at-op? p "(") (not (:dq-only t)))
+            (do (advance! p)
+                (let [fa (parse-function-args p)
+                      filt (when (at-kw? p "FILTER")
+                             (advance! p) (expect-op p "(") (expect-kw p "WHERE")
+                             (let [e (parse-expr p)] (expect-op p ")") e))
+                      over (when (accept-kw p "OVER")
+                             (if (accept-op p "(")
+                               (let [w (parse-window-def p)] (expect-op p ")") w)
+                               (parse-nm p)))]
+                  (node (cond-> (merge {:op :fn :name (str/lower-case (:v t)) :rawname (:v t)} fa)
+                          filt (assoc :filter filt)
+                          over (assoc :over over))
+                        s (prev-end p))))
+            :else
           (if (at-op? p ".")
             (do (advance! p)
                 (let [n2 (parse-nm p)]
                   (if (at-op? p ".")
                     (do (advance! p) (let [n3 (parse-nm p)] (node {:op :col :schema (:v t) :table n2 :name n3} s (prev-end p))))
                     (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
-            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t))))
+            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t)))))
       :id
       (let [u (:u t)]
         (cond
@@ -450,7 +469,14 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p false)]
+            alias (parse-alias p false)
+            ;; SQLite's column span runs to the start of the next token (comments included), trailing blanks trimmed
+            e (if (and (nil? alias) (:pe e))
+                (let [^String sql (.-sql p)
+                      ne (long (:s (tok p)))
+                      ne (loop [x ne] (if (and (> x (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec x)))) (recur (dec x)) x))]
+                  (if (> ne (long (:pe e))) (assoc e :pe ne) e))
+                e)]
         {:e e :alias alias}))))
 
 (declare parse-from)
@@ -739,7 +765,7 @@
     (try
     (if (accept-kw p "AS")
       (do (vreset! entered true)
-          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :as (parse-select p)})
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :as (parse-select p)})
       (do
         (expect-op p "(")
         (vreset! entered true)
@@ -752,6 +778,8 @@
                                 (if (accept-kw p "CONSTRAINT") (recur (parse-nm p)) nm)))
                       t (tok p)]
                   (cond
+                    (and cname (empty? cols) (not (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))))
+                    (syntax-error p t0)
                     (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))
                     (if (empty? cols) (syntax-error p t0)
                         (let [tc (case (:u t)
@@ -783,11 +811,11 @@
                                                   (when-not (= "ROWID" (:u t)) (syntax-error p t)))
                                                 (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
                        :else opts))]
-          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :tcons tcons
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
     (catch clojure.lang.ExceptionInfo ex
       (if (and (:sql-error (ex-data ex)) (not ine) @entered)
-        (throw (ex-info (ex-message ex) (assoc (ex-data ex) :pending-create {:name name :schema sch})))
+        (throw (ex-info (ex-message ex) (assoc (ex-data ex) :pending-create {:name name :schema sch :raw (name-raw p @name-s)})))
         (throw ex))))))
 
 ;; ------------------------------------------------------------------ DML
@@ -946,7 +974,7 @@
                                    (expect-op p ")") c))
                       _ (expect-kw p "AS")
                       sel (parse-select p)]
-                  {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :select sel})
+                  {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :select sel})
                 (and (not unique) (accept-kw p "TRIGGER"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
@@ -979,7 +1007,7 @@
                                                   (fail! p))]
                                          (expect-op p ";")
                                          (recur (conj acc st))))))]
-                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine
+                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine
                    :timing timing :event event :cols cols :table tname :table-schema tsch :when wh :body body})
                 :else (fail! p))))
         "DROP"

@@ -79,7 +79,7 @@
   (binding [*budget* (or *budget* (atom 0))]
     (reduce (fn [db trig]
               (if (and (contains? *active* (lc (:name trig)))
-                       (not (get-in db [:pragmas "recursive_triggers"])))
+                       (not= 1 (get-in db [:pragmas "recursive_triggers"])))
                 db
                 (run-program db trig tbl old new)))
             db trigs)))
