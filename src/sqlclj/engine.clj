@@ -2932,7 +2932,7 @@
                     :order-descs (mapv :desc order-c) :order-colls (mapv :coll order-c)
                     :group-exprs group-exprs :group-colls (mapv #(or (:coll %) "BINARY") group-c)
                     :distinct (:distinct core) :result-exprs (mapv rc-ast rcols) :result-colls (mapv :coll rcomp)
-                    :ncols (count rcols) :is-agg is-agg
+                    :ncols (count rcols) :is-agg is-agg :has-agg (boolean (core-has-agg? ctx core))
                     :win? (boolean (some (fn [rc] (and (:e rc) (has-window? (:e rc)))) rcols))
                     :limit limit}))
               (catch Throwable t (when *plan-strict* (throw t)) nil)))

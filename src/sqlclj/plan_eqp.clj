@@ -4,6 +4,7 @@
             [sqlclj.engine :as e]
             [sqlclj.planner :as pl]
             [sqlclj.plan-glue :as g]
+            [sqlclj.plan-ids :as ids]
             [sqlclj.values :as v]))
 
 (def ^:private lc e/lc)
@@ -200,9 +201,8 @@
                   (:distinct info) [:distinctby (:result-exprs info) (repeat false) (:result-colls info)]
                   :else [nil nil nil nil])
             ;; isDistinctRedundant: a unique key is among the DISTINCT columns
-            [okind oexprs odescs ocolls]
-            (if (and (= okind :distinctby) (= 1 (count srcs)) (:table (first srcs))
-                     (let [crs (set (keep #(g/col-ref G (if (= :collate (:op %)) (:e %) %)) oexprs))
+            dred (and (:distinct info) (= 1 (count srcs)) (:table (first srcs))
+                      (let [crs (set (keep #(g/col-ref G (if (= :collate (:op %)) (:e %) %)) (:result-exprs info)))
                            eqc (fn [c] (some (fn [t] (and (= (:left t) [0 c]) (= :eq (:op t)) (zero? (long (:prereq-right t)))))
                                              terms))]
                        (or (contains? crs [0 -1])
@@ -211,6 +211,8 @@
                                                                     (and (contains? crs [0 (:c ic)]) (:notnull ic))))
                                                        (:cols ix))))
                                  (:indexes (first tabs))))))
+            [okind oexprs odescs ocolls]
+            (if (and (= okind :distinctby) dred)
               [nil nil nil nil]
               [okind oexprs odescs ocolls])
             order (when okind (order-spec G oexprs odescs ocolls))
@@ -222,8 +224,26 @@
                                                                                                                    (or (= -1 (:c o)) (some (fn [ic] (= (:c ic) (:c o))) (:cols %)))))
                                                                                                       (:order P))))
                                                                        ixs)))) ts)))
-            plan (pl/plan P)]
-        {:P P :plan plan :G G :okind okind}))))
+            simple-count? (and (:is-agg info) (empty? (:group-exprs info)) (nil? (:where info)) (= 1 (count srcs))
+                               (:table (first srcs)) (not (:distinct info)) (nil? (:on (first from)))
+                               (= 1 (count (:result-exprs info)))
+                               (let [x (first (:result-exprs info))]
+                                 (and (map? x) (= :fn (:op x)) (= "count" (:name x)) (not (:distinct x)) (nil? (:over x)) (nil? (:filter x))
+                                      (or (:star x) (empty? (:args x))))))
+            plan (if simple-count?
+                   (let [tab (first tabs)
+                         best (when-not (:not-indexed tab)
+                                (reduce (fn [bst ix] (if (and (not (:unordered ix)) (< (long (:szidx ix)) (long (:szrow tab)))
+                                                              (not (:partial ix))
+                                                              (or (nil? bst) (< (long (:szidx ix)) (long (:szidx bst)))))
+                                                       ix bst))
+                                        nil (:indexes tab)))
+                         lp (pl/map->Loop {:tab 0 :self 1 :prereq 0 :setup 0 :run 0 :nout 0
+                                           :flags (if best #{:indexed :idx-only} #{:ipk})
+                                           :idx best :neq 0 :nbtm 0 :ntop 0 :nskip 0 :lterms [] :sortidx 0})]
+                     {:path [lp] :nrow-out 0 :ordered 0 :rev-mask 0 :rcost 0 :loops [lp] :count-star true})
+                   (pl/plan P))]
+        {:P P :plan plan :G G :okind (if simple-count? nil okind) :distinct-redundant (boolean dred)}))))
 
 (defn- no-early? [x]
   (let [bad (volatile! false)]
@@ -264,6 +284,8 @@
                                :else (apply max lv)))))
      :ordered (:ordered plan) :nob (count (:order P)) :okind okind
      :loops
+     (if (:count-star plan)
+       [{:src 0 :kind :scan :index nil :nskip 0 :eq [] :btm nil :top nil :rev false}]
      (vec (map-indexed
            (fn [k lp]
              (let [flags (:flags lp)
@@ -306,7 +328,86 @@
                 :nskip nskip :eq eq :btm btm :top top :auto-extra auto-extra
                 :rev (not (zero? (bit-and rev (bit-shift-left 1 k))))
                 :onerow (contains? flags :onerow)}))
-           path))}))
+           path)))}))
+
+(defn- model-ids
+  "Modelled OP_Explain addresses: {:loops [id per path loop] :extra [fn from line index -> id] ...}.
+  flags: whether a sorter/distinct/group structure is built."
+  [{:keys [P plan G] :as r} spec info {:keys [sorter? distinct-bt? ordered-extra? nob sat] :as flags}]
+  (let [path (:path plan)
+        nl (count path)
+        pos (zipmap (map :tab path) (range))
+        used-ids (set (mapcat (fn [lp] (mapcat (fn [t] (when t (let [par (:parent t)
+                                                                         pt (when par (nth (:terms P) par))]
+                                                                     (cond-> [(:id t)]
+                                                                       (and par (not= :like (:op (:expr pt)))) (conj par)))))
+                                               (:lterms lp)))
+                              path))
+        ;; per-level filter ops: base terms evaluated at the level where their last table is bound
+        f-by-level
+        (reduce (fn [m t]
+                  (if (or (:virtual t) (contains? used-ids (:id t)) (zero? (long (:prereq-all t))) (:op-of-or t))
+                    m
+                    (let [lvl (reduce (fn [mx i] (if (zero? (bit-and (long (:prereq-all t)) (bit-shift-left 1 i))) mx (max mx (long (get pos i 0)))))
+                                      0 (range (count (:tables P))))]
+                      (update m lvl (fnil + 0) (ids/pred-ops G (:expr t))))))
+                {} (:terms P))
+        lspec (:loops spec)
+        start-ops
+        (fn [k lp]
+          (let [ls (nth lspec k)
+                flags (:flags lp)
+                idx (:idx lp)
+                kind (:kind ls)
+                keyops (fn [t] (if (= :in (:op t)) (+ 10 (* 3 (count (:in-list t)))) (max 1 (ids/ops G (:rhs t)))))
+                keys (+ (reduce + 0 (map keyops (:eq ls)))
+                        (if (:btm ls) (keyops (:btm ls)) 0)
+                        (if (:top ls) (keyops (:top ls)) 0))]
+            (case kind
+              :scan 1
+              :ipk (if (or (seq (:eq ls)) (:btm ls) (:top ls))
+                     (if (seq (:eq ls)) (+ keys 1) (+ keys 1 (if (:top ls) 1 0)))
+                     1)
+              :index (+ keys 1
+                        (if (or (seq (:eq ls)) (:top ls)) 1 0)
+                        (if (contains? flags :idx-only) 0 1))
+              :auto 20)))
+        opens (reduce + 0 (for [lp path]
+                            (cond (= :auto (:idx lp)) 1
+                                  (contains? (:flags lp) :ipk) 1
+                                  (contains? (:flags lp) :idx-only) 1
+                                  :else 2)))
+        agg? (and (:is-agg info) (empty? (:group-exprs info)))
+        group? (seq (:group-exprs info))
+        partial-extra (reduce + 0 (for [lp path] 0))
+        simple-count (if (:count-star plan) 1 0)
+        first-id (+ 1 opens (if sorter? 1 0) (if distinct-bt? 1 0) (if (:limit info) 1 0)
+                    (cond group? (+ (if (:has-agg info) 4 3)
+                                    (if (some (fn [x] (let [cr (g/col-ref G (if (= :collate (:op x)) (:e x) x))]
+                                                        (and cr (some (fn [t] (and (= (:left t) cr) (= :eq (:op t)) (zero? (long (:prereq-right t))))) (:terms P)))))
+                                              (:group-exprs info))
+                                      1 0))
+                          agg? 1 :else 0) (if ordered-extra? 1 0) partial-extra simple-count)
+        loop-ids (loop [k 0 id first-id out []]
+                   (if (>= k nl) out
+                       (let [lp (nth path k)
+                             nid (+ id 1 (start-ops k lp) (get f-by-level k 0))]
+                         (recur (inc k) nid (conj out id)))))
+        last-id (peek loop-ids)
+        kl (dec nl)
+        s-last (start-ops kl (nth path kl))
+        f-last (get f-by-level kl 0)
+        rops (reduce + 0 (map #(ids/result-ops G %) (:result-exprs info)))
+        same? (fn [x y] (let [cx* (g/col-ref G (if (= :collate (:op x)) (:e x) x)) cy* (g/col-ref G (if (= :collate (:op y)) (:e y) y))]
+                          (if (and cx* cy*) (= cx* cy*) (= (e/strip-ast x) (e/strip-ast y)))))
+        kops (reduce + 0 (for [o (drop (if (and (pos? (long sat)) (< (long sat) (long nob))) (long sat) 0) (:order-exprs info))]
+                           (if (some #(same? o %) (:result-exprs info)) 0 (ids/ops G o))))
+        base (+ last-id 1 s-last f-last)]
+    {:loops loop-ids
+     :sorter-id (+ base rops kops 3 (if (and (pos? (long (:sat flags))) (< (long (:sat flags)) (long (:nob flags)))) 7 0) (if (:limit info) 5 0))
+     :distinct-id (+ base rops 5 (if (:limit info) 1 0))
+     :distinct-order-id (+ base rops kops 7 (if (:limit info) 4 0))
+     :group-id base}))
 
 (defn eqp-rows
   "Plan rows [id parent notused detail] for a planned core."
@@ -315,13 +416,44 @@
         nob (count (:order P))
         ordered (long (:ordered plan))
         sat (if (neg? ordered) 0 ordered)
+        order-line (fn [sat nob]
+                     (cond (zero? sat) "USE TEMP B-TREE FOR ORDER BY"
+                           (= 1 (- nob sat)) "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+                           :else (str "USE TEMP B-TREE FOR LAST " (- nob sat) " TERMS OF ORDER BY")))
+        ;; extra lines: [kind text]
+        extra
+        (if (and (:distinct info) (or (:is-agg info) (seq (:group-exprs info))))
+          (concat (when (and (= okind :groupby) (< sat nob)) [[:group "USE TEMP B-TREE FOR GROUP BY"]])
+                  [[:distinct "USE TEMP B-TREE FOR DISTINCT"]])
+        (case okind
+          :orderby (if (:distinct info)
+                     (if (= (mapv e/strip-ast (:order-exprs info)) (mapv e/strip-ast (:result-exprs info)))
+                       [[:distinct "USE TEMP B-TREE FOR DISTINCT"]]
+                       (let [dspec (order-spec G (:result-exprs info) (repeat false) (:result-colls info))
+                             [dn _] (pl/path-satisfies-order-by P dspec :distinctby #{} path (dec (count path)) (last path))
+                             dordered (= dn (count dspec))]
+                         (concat (when-not (or dordered (:distinct-redundant r)) [[:distinct-order "USE TEMP B-TREE FOR DISTINCT"]])
+                                 (when (< sat nob) [[:order (order-line sat nob)]]))))
+                     (when (< sat nob) [[:order (order-line sat nob)]]))
+          :groupby (concat (when (< sat nob) [[:group "USE TEMP B-TREE FOR GROUP BY"]])
+                           (when (and (seq (:order-exprs info)) (not= (mapv e/strip-ast (:order-exprs info)) (mapv e/strip-ast (:group-exprs info))))
+                             [[:order "USE TEMP B-TREE FOR ORDER BY"]]))
+          :distinctby (when (< sat nob) [[:distinct "USE TEMP B-TREE FOR DISTINCT"]])
+          nil))
+        kinds (set (map first extra))
+        flags {:sorter? (or (contains? kinds :order) (contains? kinds :group))
+               :distinct-bt? (and (:distinct info) (not (:distinct-redundant r)))
+               :ordered-extra? (and (seq (:order-exprs info)) (not (contains? kinds :order)))
+               :nob nob :sat sat}
+        mid (try (model-ids r spec info flags) (catch Throwable _ nil))
         loop-rows
         (vec (mapcat
               (fn [k lp]
                 (let [tab (nth (:tables P) (:tab lp))
                       src (:src tab)
                       left? (contains? (:jointype tab) :left)
-                      detail (loop-detail P lp)]
+                      detail (loop-detail P lp)
+                      id (if mid (nth (:loops mid) k) 0)]
                   (if (= (:idx lp) :auto)
                     (let [eq (:eq (nth (:loops spec) k))
                           cols (str/join " AND " (for [t eq] (str (nth (:cols src) (:col t)) "=?")))
@@ -329,25 +461,27 @@
                                                       (or (nil? (:on-of t)) (= (:on-of t) (:tab lp)))))
                                          (:terms P))
                           tname (or (:alias-display src) (:alias src))]
-                      [[0 0 0 (str "BLOOM FILTER ON " tname " (" cols ")")]
-                       [0 0 (:run lp)
+                      [[id 0 0 (str "BLOOM FILTER ON " tname " (" cols ")")]
+                       [id 0 (:run lp)
                         (str "SEARCH " tname " USING AUTOMATIC " (when partial? "PARTIAL ") "COVERING INDEX (" cols ")" (when left? " LEFT-JOIN"))]])
-                    [[0 0 (:run lp) (str detail (when left? " LEFT-JOIN"))]])))
+                    [[id 0 (:run lp) (str detail (when left? " LEFT-JOIN"))]])))
               (range) path))
-        order-line (fn [sat nob]
-                     (cond (zero? sat) "USE TEMP B-TREE FOR ORDER BY"
-                           (= 1 (- nob sat)) "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
-                           :else (str "USE TEMP B-TREE FOR LAST " (- nob sat) " TERMS OF ORDER BY")))
-        extra
-        (case okind
-          :orderby (concat (when (:distinct info) ["USE TEMP B-TREE FOR DISTINCT"])
-                           (when (< sat nob) [(order-line sat nob)]))
-          :groupby (concat (when (< sat nob) ["USE TEMP B-TREE FOR GROUP BY"])
-                           (when (and (seq (:order-exprs info)) (not= (mapv e/strip-ast (:order-exprs info)) (mapv e/strip-ast (:group-exprs info))))
-                             ["USE TEMP B-TREE FOR ORDER BY"]))
-          :distinctby (when (< sat nob) ["USE TEMP B-TREE FOR DISTINCT"])
-          nil)]
-    (into loop-rows (map (fn [t] [0 0 0 t]) extra))))
+        extra-rows
+        (vec (map-indexed
+              (fn [i [kind text]]
+                (let [id (if mid
+                           (case kind
+                             :order (if (some #(= :distinct-order (first %)) extra)
+                                      (inc (:distinct-order-id mid))
+                                      (:sorter-id mid))
+                             :distinct (:distinct-id mid)
+                             :distinct-order (:distinct-order-id mid)
+                             :group (:group-id mid)
+                             0)
+                           0)]
+                  [id 0 0 text]))
+              extra))]
+    (into loop-rows extra-rows)))
 
 (defn- plan-hook-fn [info]
   (let [r (plan-core info)]

@@ -59,7 +59,7 @@
   (or (nil? new)
       (let [ptbl (get-in db [:tables (parent-key db child fk)])
             raw (if-let [to (:to fk)] (map #(col-index ptbl %) to) (:pk-cols ptbl))]
-        (or (empty? raw)
+        (and (seq raw)
             (some (fn [pi] (or (nil? pi)
                                (let [a (nth old pi) b (nth new pi)]
                                  (not (or (and (nil? a) (nil? b))
@@ -87,7 +87,8 @@
 (defn referencing
   "[child-tbl fk] pairs whose foreign key refers to table ptbl (by name)."
   [db ptbl]
-  (for [[_ c] (:tables db), fk (:fks c) :when (= (parent-key db c fk) (lc (:name ptbl)))] [c fk]))
+  (for [[_ c] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db)), fk (reverse (:fks c))
+        :when (= (parent-key db c fk) (lc (:name ptbl)))] [c fk]))
 
 (defn has-fks? [tbl] (boolean (seq (:fks tbl))))
 
@@ -159,6 +160,26 @@
   (let [cidxs (mapv #(col-index tbl %) (:from fk))]
     (and (every? #(not (nil? (nth row %))) cidxs)
          (not (parent-exists? db tbl fk row)))))
+
+(defn prepare-check!
+  "What SQLite finds out when it prepares a statement on a table with foreign keys: a parent key that is not
+  a PRIMARY KEY / UNIQUE key ('foreign key mismatch') or a parent that does not exist.
+  multi: the statement may write several rows (a single-row INSERT into a parent never checks its children)."
+  [db tbl event set-names & [multi]]
+  (when (enabled? db)
+    (when (seq (:fks tbl))
+      (doseq [fk (reverse (:fks tbl))]
+        (when (or (not= event :update) (some (set set-names) (map lc (:from fk))))
+          (parent-cols db tbl fk))))
+    (doseq [[child fk] (sort-by (fn [[c _]] (- (long (or (:mseq c) 0)))) (referencing db tbl))]
+      (let [refnames (set (map lc (or (:to fk)
+                                      (if (:ipk tbl) [(:name (nth (:cols tbl) (:ipk tbl)))]
+                                          (map #(:name (nth (:cols tbl) %)) (:pk-cols tbl))))))]
+        (when (case event
+                :delete true
+                :update (some refnames set-names)
+                :insert (and (or multi (deferred? db fk))))
+          (parent-cols db child fk))))))
 
 (defn verify
   "End-of-statement check over the touched rows. Raises 'FOREIGN KEY constraint failed' for immediate violations."
