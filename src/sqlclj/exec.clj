@@ -256,7 +256,8 @@
                            (not (and (seq col-pks) (:desc (first pk-cols)))))
                   (:i (first pk-cols)))
             cols (if ipk (assoc-in cols [ipk :aff] :integer) cols)
-            cols (if (:without-rowid st) (reduce (fn [cs pc] (assoc-in cs [(:i pc) :notnull] true)) cols pk-cols) cols)
+            cols (if (or (:without-rowid st) strict) (reduce (fn [cs pc] (cond-> (assoc-in cs [(:i pc) :notnull] true)
+                                                                       (not (:without-rowid st)) (assoc-in [(:i pc) :implicit-nn] true))) cols pk-cols) cols)
             checks (vec (concat
                          (for [[c d] (map vector cols defs), k (:cons d) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
@@ -304,9 +305,11 @@
                                idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" (sch/display-name name {:db (:db st)}) "_" n) true icols nil true)
                                           :pk-auto (:pk (meta icols)) :conflict (:conflict (meta icols)))]
                            ;; skip duplicate identical unique constraints
-                           (if (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))))
-                                     (table-indexes db lname))
-                             db
+                           (if-let [dup (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))) %)
+                                              (table-indexes db lname))]
+                             (if (and (:pk-auto idx) (not (:pk-auto dup)))
+                               (assoc-in db [:indexes (lc (:name dup)) :pk-auto] true)
+                               db)
                              (add-index db idx))))
                        db (map-indexed (fn [i c] [(inc i) c]) uniq-defs))]
         db))))
@@ -706,6 +709,7 @@
                                   (err (str (count (:names sub)) " values for " (count targets) " columns"))
                                   (err (str "table " (if-let [q (:qual-schema st)] (str q "." (sch/display-name (:name tbl) tbl)) (:name tbl)) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
                               sub))
+        _ (when-not vw (fk/locate-child! db tbl nil))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
@@ -771,7 +775,8 @@
               rid-given (atom nil)
               row (reduce (fn [row [ci val]]
                             (if (= ci -1) (do (reset! rid-given val) row) (assoc row ci val)))
-                          row (map vector targets vals))
+                          row (reverse (remove (fn [[ci _]] (and (:ipk tbl) (= ci (:ipk tbl)))) (map vector targets vals))))
+              row (reduce (fn [row [ci val]] (assoc row ci val)) row (filter (fn [[ci _]] (and (:ipk tbl) (= ci (:ipk tbl)))) (map vector targets vals)))
               ipk (:ipk tbl)
               rid-val (if ipk (nth row ipk) @rid-given)
               rid (if (nil? rid-val)
@@ -935,6 +940,7 @@
                            (fn [env] (let [r (first (e/run-select-rows sub env))] (when r (nth r k)))))))]))
         where-f (when (and (:where st) (not from)) (e/condf (e/cx sctx (:where st))))
         where-pre (when (and (:where st) (not from)) (e/where-precheck sctx (:where st)))
+        _ (when-not vw (fk/locate-child! db tbl (set (map #(if (#{"rowid" "oid" "_rowid_"} (lc %)) "rowid" (lc %)) (mapcat first (:sets st))))))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
                              (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ret (compile-returning ctx src (:returning st))
@@ -1041,6 +1047,7 @@
         sctx (assoc ctx :scope {:sources [src] :parent nil})
         where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
         where-pre (when (:where st) (e/where-precheck sctx (:where st)))
+        _ (when-not vw (fk/locate-child! db tbl nil))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
@@ -1673,7 +1680,9 @@
                     (legacy-bad "index" (sch/display-name (:name i) i) (:sql i))))
               db (-> db
                      (update :tables dissoc tname)
-                     (assoc-in [:tables nk] (cond-> (assoc tbl :name (str pfx nn) :sql tsql2) (= pfx "main.") (assoc :db "main")))
+                     (assoc-in [:tables nk] (cond-> (assoc tbl :name (str pfx nn) :sql tsql2
+                                                          :fks (mapv (fn [fk] (if (= (lc (:table fk)) (lc old)) (assoc fk :table nn) fk)) (:fks tbl)))
+                                           (= pfx "main.") (assoc :db "main")))
                      (update :indexes (fn [m] (into {} (map (fn [[k i]]
                                                               (if (= (:table i) tname)
                                                                 (let [i (assoc i :table nk
@@ -1726,7 +1735,7 @@
             _ (when (and notnull (or (nil? dflt) (nil? dv)))
                 (.append out "# raise(ABORT,'Cannot add a NOT NULL column with default value NULL')\n")
                 (when (seq (:rows tbl)) (err "Cannot add a NOT NULL column with default value NULL")))
-            _ (when (and (:strict tbl) (not (and has-check (not notnull))))
+            _ (when (and (:strict tbl) (not (and has-check (not notnull))) (not (and notnull (nil? dv))))
                 (.append out "# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END\n"))
             _ (when (and has-check (not notnull))
                 (.append out "# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END\n"))
@@ -1876,6 +1885,15 @@
                         (let [nxt (first (filter #(> (:s %) (:s after)) toks))] [(:s cd) (:s nxt)])
                         [(:s before) (:e cd)])
             new-sql (str (subs tsql 0 from) (subs tsql to))]
+        ;; the table's own new definition is checked first
+        (try (rebuild-table (update db :indexes (fn [m] (into {} (remove (fn [[_ ix]] (and (= (:table ix) tname) (not (:auto ix)))) m))))
+                            tname new-sql
+                            (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
+                            (fn [ix] (:sql ix)))
+             (catch clojure.lang.ExceptionInfo ex
+               (if-let [m (:sql-error (ex-data ex))]
+                 (err (str "error in table " (:name tbl) " after drop column: " m))
+                 (throw ex))))
         (doseq [ix (vals (:indexes db))
                 :when (and (= (:table ix) tname) (not (:auto ix)))]
           (when (or (some #(= (:col %) i) (:cols ix))
