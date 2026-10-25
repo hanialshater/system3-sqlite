@@ -270,7 +270,7 @@
                 (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
                 (case sc
                   "main" (sch/resolve-key db v "main")
-                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  "temp" (if (or (:temp (get-in db [:tables (lc v)])) (:temp (get-in db [:views (lc v)])) (sch/master-table db (lc v) "temp")) v "\u0000none")
                   (sch/obj-key db v sc))
                 (#{"index_info" "index_xinfo"} n)
                 (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))

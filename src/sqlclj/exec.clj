@@ -614,7 +614,12 @@
       (do (when (:virtual tbl) (err (str "table " tname " may not be modified")))
           [l tbl])
       (if-let [view (get-in db [:views l])]
-        (do (when-not (trg/any-for? db l event)
+        (do (when-not (if (= event :update)
+                        (let [setc (set (map lc (mapcat first (:sets st))))]
+                          (some (fn [t] (and (= (:table t) l) (= (:event t) :update) (= (:timing t) :instead)
+                                             (or (nil? (:cols t)) (some #(contains? setc (lc %)) (:cols t)))))
+                                (vals (:triggers db))))
+                        (trg/any-for? db l event))
               (err (str "cannot modify " tname " because it is a view")))
             (let [ctx (new-ctx db sql)
                   sub (e/compile-select (assoc ctx :sql (or (:src view) sql)) (:select view))
@@ -1111,6 +1116,13 @@
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
       (and (nil? tbl) (get-in db [:views (lc (:table st))])) (err "views may not be indexed")
       (nil? tbl) (err (str "no such table: main." (:table st)))
+      (and (= "temp" (lc (:schema st))) (not (:temp tbl)))
+      (err (str "cannot create a TEMP index on non-TEMP table \"" (sch/display-name (:name tbl) tbl) "\""))
+      (some (fn [ic] (let [e (:e ic)]
+                       (and (= :col (:op e)) (nil? (:table e)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))
+                            (not-any? #(= (lc (:name %)) (lc (:name e))) (:cols tbl)))))
+            (:cols st))
+      (err (str "no such column: " (some (fn [ic] (let [e (:e ic)] (when (and (= :col (:op e)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))) (:name e)))) (:cols st))))
       (and (str/starts-with? lname "sqlite_") (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       :else
       (let [_ (doseq [ic (:cols st) :when (not= :col (:op (:e ic)))] (check-gen-expr (:e ic) "index expressions"))
@@ -1864,6 +1876,29 @@
         rows (vec (for [[rid r] (:rows t2)] [rid (subvec r 0 5)]))]
     (-> db2 (update :tables dissoc k) (assoc-in [:master-edit sch] rows))))
 
+(defn- bump-schema
+  "A DDL statement bumps the schema cookie of the database it changed."
+  [db0 db2 st]
+  (let [lname (lc (or (:name st) (:table st)))
+        sch (case (:kind st)
+              (:create-table :create-view :create-trigger :create-index)
+              (let [s (lc (:schema st))]
+                (cond (or (:temp st) (= s "temp")) "temp"
+                      (and s (not= s "main")) s
+                      (and (:db st) (not= (:db st) "main")) (:db st)
+                      :else (let [o (if (= :create-index (:kind st)) (get-in db2 [:indexes lname]) nil)] (if (and o (:temp o)) "temp" "main"))))
+              :drop (let [o (case (:what st)
+                              :table (get-in db0 [:tables lname]) :view (get-in db0 [:views lname])
+                              :index (get-in db0 [:indexes lname]) :trigger (get-in db0 [:triggers lname]))
+                          q (some-> (:qual-schema st) lc)]
+                      (cond (and q (not (#{"main" "temp"} q))) q (:db o) (:db o) (:temp o) "temp" :else "main"))
+              :alter (let [t (or (get-in db0 [:tables lname]) (get-in db0 [:views lname]))]
+                       (cond (:db t) (:db t) (:temp t) "temp" :else "main"))
+              "main")]
+    (if (= sch "main")
+      (update db2 :schema-version (fnil inc 0))
+      (update-in db2 [:pragmas (str "schema_version." sch)] (fnil inc 0)))))
+
 (defn- exec-statement* [db sql st ^StringBuilder out n0]
   (when-let [m (:schema-error db)]
     (when-not (and (= :pragma (:kind st)) (#{"writable_schema" "schema_version"} (lc (:name st))))
@@ -2070,7 +2105,14 @@
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
         (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
-            (update db2 :schema-version (fnil inc 0)))
+            (bump-schema db db2 st))
+        (and (= :analyze (:kind st)) (nil? (get-in db [:tables "sqlite_stat1"])) (get-in db2 [:tables "sqlite_stat1"]))
+        (do (emit-line out (str "changes: " (:changes db2))) (update db2 :schema-version (fnil inc 0)))
+        (and (= :vacuum (:kind st)) (not (:into st)) (not (#{"temp"} (lc (:schema st)))))
+        (do (emit-line out (str "changes: " (:changes db2)))
+            (if (and (:schema st) (not= "main" (lc (:schema st))))
+              (update-in db2 [:pragmas (str "schema_version." (lc (:schema st)))] (fnil inc 0))
+              (update db2 :schema-version (fnil inc 0))))
         :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0))
                                 (and (= :vacuum (:kind st)) (= "temp" (lc (:schema st)))))
                     (emit-line out (str "changes: " (:changes db2))))
