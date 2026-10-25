@@ -64,5 +64,5 @@ operators commit at the start of each run.
 
 ## Licence
 
-Not chosen yet (the owner's decision). Until one is, all rights are reserved.
+MIT (`LICENSE`).
 SQLite's test files, from which `spec/b12/corpus` is derived, are in the public domain.
