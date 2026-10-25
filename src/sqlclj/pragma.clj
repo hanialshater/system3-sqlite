@@ -203,7 +203,7 @@
             (:cols t))))
     (if-let [v (get-in db [:views (lc tname)])]
       (let [ctx (assoc (e/->Ctx db (or (:src v) "") nil (atom 0) nil nil nil) :refs (atom #{}) :in-view (or (:db v) (if (:temp v) "temp" "main")))
-            sub (try (e/compile-select ctx (:select v)) (catch Exception _ nil))
+            sub (try (e/compile-select (assoc ctx :decl-names true) (:select v)) (catch Exception _ nil))
             names (e/dedup-names (or (:cols v) (:names sub)))
             affs (or (:src-affs sub) (:affs sub))
             decls (try (select-decl-types db (:select v)) (catch Exception _ []))
