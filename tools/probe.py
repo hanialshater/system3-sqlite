@@ -23,5 +23,7 @@ for f in files:
         g = got[i] if i < len(got) else '<missing>\n'
         if g != w:
             bad += 1
-            print('%s:%d: %s\n   want: %r\n   got:  %r' % (name, i + 1, lines[i][:300] if i < len(lines) else '?', w[:300], g[:300]))
+            k = next((j for j in range(min(len(w), len(g))) if w[j] != g[j]), min(len(w), len(g)))
+            a = max(0, k - 150)
+            print('%s:%d: %s\n   want: %r\n   got:  %r' % (name, i + 1, lines[i][:300] if i < len(lines) else '?', w[:60] + ' ... ' + w[a:k + 150], g[:60] + ' ... ' + g[a:k + 150]))
 print('mismatches: %d of %d' % (bad, tot))

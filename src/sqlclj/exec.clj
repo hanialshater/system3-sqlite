@@ -522,13 +522,17 @@
                        tcols)))
         :else false))))
 
+(defn- no-journal? [db] (= "off" (get-in db [:pragmas "journal_mode.main"])))
+
 (defn- fail-partial
-  "Runs (f) for one row; an error under conflict action FAIL keeps the rows done so far."
+  "Runs (f) for one row; an error under conflict action FAIL keeps the rows done so far. With journal_mode=OFF there
+  is no statement journal either, so every error keeps them."
   [db changes tkey tbl f]
   (try (f)
        (catch clojure.lang.ExceptionInfo ex
-         (if (= :fail (:conflict (ex-data ex)))
-           (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update db :tables dissoc tkey) db) :changes changes))))
+         (if (or (= :fail (:conflict (ex-data ex))) (and (no-journal? db) (:sql-error (ex-data ex))))
+           (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update db :tables dissoc tkey) db)
+                                                                     :changes (if (= :fail (:conflict (ex-data ex))) changes 0)))))
            (throw ex)))))
 
 (defn- try-fire
@@ -1465,7 +1469,9 @@
               i (last (keep-indexed (fn [i [nm]] (when (= nm n) i)) sp))]
           (if (nil? i) (err (str "no such savepoint: " (:to st)))
               (let [[_ snap] (nth sp i)]
-                (assoc (restore db snap) :tx (assoc tx :sp (subvec sp 0 (inc i)))))))
+                (assoc (if (no-journal? db) db (restore db snap)) :tx (assoc tx :sp (subvec sp 0 (inc i)))))))
+        ;; journal_mode=OFF: there is no rollback journal, so ROLLBACK [TO] undoes nothing
+        (no-journal? db) (dissoc db :tx)
         :else (dissoc (restore db (:snap tx)) :tx))
       :savepoint (let [tx (or tx {:snap (snapshot db) :sp [] :by-sp true})]
                    (assoc db :tx (update tx :sp conj [(lc (:name st)) (snapshot db)])))
