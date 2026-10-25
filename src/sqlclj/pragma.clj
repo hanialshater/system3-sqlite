@@ -152,6 +152,17 @@
             (none db)
             (none (pset db n b)))))
 
+      (= n "cache_spill")
+      ;; pcache: pages = cache_size, or -1024*cache_size/(page_size+136) when negative; the spill size is
+      ;; max(pages, szSpill); 0 while the CacheSpill flag is off
+      (let [pages (fn [db x] (let [x (long x)] (if (>= x 0) x (quot (* -1024 x) (+ 136 (long (pget db "page_size" 4096)))))))]
+        (if (nil? v)
+          (one db n (if (= 0 (pget db "cache_spill.on" 1)) 0
+                        (max (long (pages db (pget db "cache_size" -2000))) (long (pget db "cache_spill.sz" 1)))))
+          (let [x (int-value v)
+                db (if (and x (not (zero? (long x)))) (pset db "cache_spill.sz" (pages db x)) db)]
+            (none (pset db "cache_spill.on" (bool-value v (if (and x (zero? (long x))) 0 1)))))))
+
       (contains? int-pragmas-echo n)
       (let [[d col] (int-pragmas-echo n)]
         (if (nil? v)
@@ -165,7 +176,9 @@
       (contains? int-pragmas-quiet n)
       (if (nil? v)
         (one db n (long (pget db n (int-pragmas-quiet n))))
-        (let [x (int-value v)]
+        (let [x (int-value v)
+              ;; cache_size reads its value with sqlite3Atoi: no leading integer means 0
+              x (or x (when (= n "cache_size") (or (some-> (re-find #"^\s*[-+]?\d+" (str v)) str/trim parse-long) 0)))]
           (if (nil? x) (none db)
               (if (= n "page_size")
                 (if (and (seq (:tables db)) (not (empty? (get-in db [:pages "main"]))))
@@ -256,7 +269,8 @@
             {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db v)) [])})
         "table_list"
         {:db db :names ["schema" "name" "type" "ncol" "wr" "strict"]
-         :rows (vec (concat
+         :rows (vec (filter (fn [r] (or (nil? v) (= (str/lower-case (str v)) (str/lower-case (nth r 1)))))
+                     (concat
                      (for [[kind t] (sort-by (fn [[_ x]] (- (long (or (:mseq x) 0))))
                                              (concat (map #(vector :table %) (vals (:tables db)))
                                                      (map #(vector :view %) (vals (:views db)))))
@@ -267,7 +281,7 @@
                      [["main" "sqlite_schema" "table" 5 0 0]]
                      (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
                        ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
-                     [["temp" "sqlite_temp_schema" "table" 5 0 0]]))}
+                     [["temp" "sqlite_temp_schema" "table" 5 0 0]])))}
         (none db)))))
 
 ;; pragma_xxx table-valued functions
@@ -293,9 +307,10 @@
                                 "freelist_count" "synchronous" "temp_store" "auto_vacuum" "locking_mode" "data_version"} n))
                      [(if-let [[_ c] (int-pragmas-echo n)] c n)]))
           takes-arg (contains? #{"table_info" "table_xinfo" "index_list" "index_info" "index_xinfo"
-                                 "foreign_key_list" "foreign_key_check" "integrity_check" "quick_check"} n)]
+                                 "foreign_key_list" "foreign_key_check" "integrity_check" "quick_check" "table_list"} n)]
       (when cols
-        {:cols cols :hidden (if takes-arg ["arg" "schema"] ["schema"])
+        ;; table_list has a real schema column; its hidden one must not hide it from *
+        {:cols cols :hidden (if takes-arg ["arg" (if (= n "table_list") "schema " "schema")] ["schema"])
          :rows (fn [db args]
                  (let [[a s] (if takes-arg args [nil (first args)])
                        a (when (some? a) (str a))]
