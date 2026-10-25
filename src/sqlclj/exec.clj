@@ -599,6 +599,8 @@
                (throw (ex-info (ex-message ex) (assoc (ex-data ex) :trig-db db :trig-after (= :after (:timing (first trigs))))))
                :else (throw ex)))))
 
+(declare check-view)
+
 (defn- dml-target
   "[tkey tbl] of the table a DML statement targets; a view becomes a temporary table of its rows
   (INSTEAD OF triggers then stand in for the writes)."
@@ -609,6 +611,8 @@
           [l tbl])
       (if-let [view (get-in db [:views l])]
         (do (when-not (trg/any-for? db l event)
+              ;; the view is expanded first: a view that no longer resolves reports that error
+              (when-let [m (check-view db view)] (err m))
               (err (str "cannot modify " tname " because it is a view")))
             (let [ctx (new-ctx db sql)
                   sub (e/compile-select (assoc ctx :sql (or (:src view) sql)) (:select view))
