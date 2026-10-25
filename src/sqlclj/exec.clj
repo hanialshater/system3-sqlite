@@ -647,7 +647,7 @@
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
-        (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
+        (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* (if (= e/*trigger-schema* "temp") "" (str (or e/*trigger-schema* "main") ".")) ) tname))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
 (defn- end-target [db tkey tbl] (if (:view tbl) (update db :tables dissoc tkey) db))
@@ -673,7 +673,6 @@
         db (with-target db tkey tbl)
         fkt (and (not (:view tbl)) (fk/tracks? db tbl))
         vw (:view tbl)
-        _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ngen (count (filter :gen (:cols tbl)))
@@ -707,6 +706,7 @@
                                   (err (str (count (:names sub)) " values for " (count targets) " columns"))
                                   (err (str "table " (if-let [q (:qual-schema st)] (str q "." (sch/display-name (:name tbl) tbl)) (:name tbl)) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
                               sub))
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
         up-ctx (when (seq upserts) ctx)
@@ -896,8 +896,6 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
-        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
-                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ctx (new-ctx db sql)
@@ -921,7 +919,8 @@
                                        :else (err (str (count cols) " columns assigned 1 values"))))
                                (:sets st)))
         sets (vec (for [[c ex k] set-items]
-                    [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                    [(let [_ (when (and (not from) (nil? k)) (e/cx sctx ex))
+                           i (.indexOf ^java.util.List lnames (lc c))]
                        (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                          (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                        (cond (>= i 0) i
@@ -936,6 +935,8 @@
                            (fn [env] (let [r (first (e/run-select-rows sub env))] (when r (nth r k)))))))]))
         where-f (when (and (:where st) (not from)) (e/condf (e/cx sctx (:where st))))
         where-pre (when (and (:where st) (not from)) (e/where-precheck sctx (:where st)))
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
+                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ret (compile-returning ctx src (:returning st))
         on-conflict (:or st)
         env (object-array (+ 2 @(:slots ctx)))
@@ -1032,7 +1033,6 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
-        _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
         _ (when (and (:indexed-by st) (not= :none (:indexed-by st)))
@@ -1041,6 +1041,7 @@
         sctx (assoc ctx :scope {:sources [src] :parent nil})
         where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
         where-pre (when (:where st) (e/where-precheck sctx (:where st)))
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
@@ -1596,13 +1597,16 @@
              nil
              (catch Throwable ex (sql-err-msg ex)))))))
 
+(def ^:private alter-schema (atom nil))
+
 (defn- validate-schema
-  "SQLite's sqlite_rename_test: the first view or trigger of the schema that no longer resolves, as
+  "SQLite's sqlite_rename_test: the first view or trigger of the altered database that no longer resolves, as
   [kind name message], or nil. Only unresolvable names count."
   [db]
-  (let [objs (sort-by (fn [[_ o]] (or (:mseq o) 0))
-                      (concat (map (fn [v] [:view v]) (vals (:views db)))
-                              (map (fn [t] [:trigger t]) (vals (:triggers db)))))]
+  (let [same (fn [o] (or (nil? @alter-schema) (= @alter-schema (sch/schema-of o))))
+        objs (sort-by (fn [[_ o]] (or (:mseq o) 0))
+                      (concat (map (fn [v] [:view v]) (filter same (vals (:views db))))
+                              (map (fn [t] [:trigger t]) (filter same (vals (:triggers db))))))]
     (some (fn [[kind o]]
             (let [m (if (= kind :view) (check-view db o) (check-trigger db o))]
               (when (and m (str/starts-with? m "no such ")) [(if (= kind :view) "view" "trigger") (sch/display-name (:name o) o) m])))
@@ -1635,15 +1639,22 @@
         tbl (or (let [t (get-in db [:tables tname])] (when (fits? t) t))
                 (when (master-aliases (lc (:table st))) (err (str "table " (:table st) " may not be altered")))
                 (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:table st))))
-        tsql (:sql tbl)]
+        tsql (:sql tbl)
+        _ (reset! alter-schema (sch/schema-of tbl))]
     (when (str/starts-with? tname "sqlite_")
       (err (str "table " (:name tbl) " may not be altered")))
     (case (:action st)
       :rename
-      (let [nn (:to st) pfx (when (:db tbl) (str (:db tbl) ".")) nk (lc (str pfx nn)) old (sch/display-name (:name tbl) tbl)
+      (let [nn (:to st) pfx0 (when (:db tbl) (str (:db tbl) "."))
+            occupied (get-in db [:tables (lc nn)])
+            [db pfx] (cond (and (nil? (:db tbl)) (not (:temp tbl)) occupied (:temp occupied)) [(assoc db :shadow true) "main."]
+                           (and (:temp tbl) occupied (not (:temp occupied)) (nil? (:db occupied))) [(sch/move-main-aside db (lc nn)) nil]
+                           :else [db pfx0])
+            nk (lc (str pfx nn)) old (sch/display-name (:name tbl) tbl)
             legacy (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
             fk-on (let [x (get-in db [:pragmas "foreign_keys"])] (and x (not= 0 x) (not= "off" (lc (str x)))))]
-        (when (or (get-in db [:tables nk]) (get-in db [:indexes nk]) (get-in db [:views nk]))
+        (when (let [clash (fn [o] (and o (= (sch/schema-of o) (sch/schema-of tbl))))]
+                (or (clash (get-in db [:tables nk])) (clash (get-in db [:indexes nk])) (clash (get-in db [:views nk]))))
           (err (str "there is already another table or index with this name: " nn)))
         (when-not legacy (pre-check db))
         (when (str/starts-with? nk "sqlite_") (err (str "object name reserved for internal use: " nn)))
@@ -1662,7 +1673,7 @@
                     (legacy-bad "index" (sch/display-name (:name i) i) (:sql i))))
               db (-> db
                      (update :tables dissoc tname)
-                     (assoc-in [:tables nk] (assoc tbl :name (str pfx nn) :sql tsql2))
+                     (assoc-in [:tables nk] (cond-> (assoc tbl :name (str pfx nn) :sql tsql2) (= pfx "main.") (assoc :db "main")))
                      (update :indexes (fn [m] (into {} (map (fn [[k i]]
                                                               (if (= (:table i) tname)
                                                                 (let [i (assoc i :table nk
@@ -1720,13 +1731,24 @@
             _ (when (and has-check (not notnull))
                 (.append out "# CASE WHEN quick_check GLOB 'CHECK*' THEN raise(ABORT,'CHECK constraint failed') WHEN quick_check GLOB 'non-* value in*' THEN raise(ABORT,'type mismatch on DEFAULT') ELSE raise(ABORT,'NOT NULL constraint failed') END\n"))
             ;; the new column goes before the closing parenthesis of the column list
-            close (let [toks (lx/tokenize tsql)
-                        depth (volatile! 0) last-close (volatile! nil)]
+            close (let [toks (vec (lx/tokenize tsql))
+                        depth (volatile! 0) last-close (volatile! nil)
+                        ;; the comma that starts the table constraints, when there are any
+                        cons-comma (first (keep-indexed
+                                           (fn [i t]
+                                             (when (and (pos? i) (= :id (:t t)) (#{"CONSTRAINT" "PRIMARY" "UNIQUE" "CHECK" "FOREIGN"} (:u t))
+                                                        (tok-op? (nth toks (dec i)) ",")
+                                                        (= 1 (reduce (fn [d t] (cond (tok-op? t "(") (inc d) (tok-op? t ")") (dec d) :else d)) 0 (subvec toks 0 i))))
+                                               (dec i)))
+                                           toks))
+                        cons-comma (when cons-comma
+                                     (let [d (reduce (fn [d t] (cond (tok-op? t "(") (inc d) (tok-op? t ")") (dec d) :else d)) 0 (subvec toks 0 cons-comma))]
+                                       (when (= 1 d) cons-comma)))]
                     (doseq [t toks]
                       (when (= :op (:t t))
                         (cond (= "(" (:v t)) (vswap! depth inc)
                               (= ")" (:v t)) (do (vswap! depth dec) (when (zero? @depth) (vreset! last-close (:s t)))))))
-                    (or @last-close (str/last-index-of tsql ")")))
+                    (if cons-comma (:s (nth toks cons-comma)) (or @last-close (str/last-index-of tsql ")"))))
             new-sql (str (subs tsql 0 close) ", " coldef (subs tsql close))
             aff (v/type-affinity (:type d))
             dv (when-not (nil? dv) (v/apply-affinity dv aff))]
@@ -1742,6 +1764,8 @@
       (let [i (find-col tbl (:old st))
             _ (when-not i (err (str "no such column: \"" (or (:old-raw st) (:old st)) "\"")))
             old (:old st) nn (:to st)
+            legacy (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
+            _ (when-not legacy (pre-check db))
             _ (let [names (mapv :name (:cols tbl))
                     names (assoc names i nn)
                     seen (volatile! #{})]
@@ -1749,8 +1773,6 @@
                   (when (contains? @seen (lc n))
                     (err (str "error in table " (sch/display-name (:name tbl) tbl) " after rename: duplicate column name: " n)))
                   (vswap! seen conj (lc n))))
-            legacy (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
-            _ (when-not legacy (pre-check db))
             tn (sch/display-name (:name tbl) tbl)
             new-sql (rename-column-refs tsql old nn tn nil true)
             db2 (rebuild-table db tname new-sql identity
@@ -1843,6 +1865,8 @@
             _ (when (or (:pk c) (some #(= % i) (:pk-cols tbl))) (err (str "cannot drop PRIMARY KEY column: \"" (:col st) "\"")))
             _ (when (seq (:unique c))
                 (err (str "cannot drop UNIQUE column: \"" (:col st) "\"")))
+            legacy-d (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
+            _ (when-not legacy-d (pre-check db))
             tst (parse-one tsql)
             cd (nth (:cols tst) i)
             toks (lx/tokenize tsql)
@@ -2176,7 +2200,8 @@
                                                                           (:select st))
                                                    (when @refs (err (str "view " (sch/display-name (:name st) st) " cannot reference objects in database " @refs)))))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
-                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
+                                                                              :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql (assoc st :st-e (let [e (min (long (or (:st-next st) (:st-e st))) (count sql))]
+                                                                                                   (loop [e e] (if (and (> e (long (:st-e st))) (Character/isWhitespace (.charAt ^String sql (dec e)))) (recur (dec e)) e)))) "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
                 :drop (let [ln (lc (:name st))
                             t (get-in db [:tables ln])
