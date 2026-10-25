@@ -1070,7 +1070,7 @@
       (let [aggs (:aggs ctx)
             idx (count @aggs)
             slot (long (:agg-slot ctx))]
-        (swap! aggs conj {:name name :args args :star (:star e) :distinct (:distinct e)
+        (swap! aggs conj {:name name :args args :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
                           :filter (when (:filter e) (condf (cx actx (:filter e))))
                           :coll (or (:coll (first args)) "BINARY")})
         (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
@@ -2063,7 +2063,10 @@
                   (cond
                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
                     (try (resolve-column ctx2 nil (:name e) nil) e
-                         (catch clojure.lang.ExceptionInfo _ (get alias-map (lc (:name e)))))
+                         (catch clojure.lang.ExceptionInfo ex
+                           (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "ambiguous"))
+                             e
+                             (get alias-map (lc (:name e))))))
                     (map? e) (if (#{:subq :exists} (:op e)) e (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst x))]) e)))
                     (vector? e) (mapv subst e)
                     :else e))
@@ -2126,7 +2129,9 @@
           order-c (when order
                     (vec (map-indexed
                           (fn [i term]
-                            (let [ri (order-term-index ctx2 term names aliases (ordinal (inc i)))
+                            (let [[e0 ocoll] (if (= :collate (:op (:e term))) [(:e (:e term)) (check-coll (:coll (:e term)))] [(:e term) nil])
+                                  ri (order-term-index ctx2 (assoc term :e e0) names aliases (ordinal (inc i)))
+                                  ocoll (when ri ocoll)
                                   ri (or ri (when (has-window? (:e term))
                                               (first (keep-indexed (fn [k rc] (when (and (:e rc) (expr-equal? (:e rc) (:e term))) k)) rcols))))
                                   c (if ri
@@ -2135,8 +2140,8 @@
                                         (if (and (:e rc) (has-window? (:e rc)))
                                           (assoc (cx (assoc wctx :win-copy true) (:e rc)) :wcopy true)
                                           (nth rcomp ri)))
-                                      (cx wctx (:e term)))]
-                              {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
+                                      (cx wctx (subst (:e term))))]
+                              {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or ocoll (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
                           order)))
           nsrc (count sources)
