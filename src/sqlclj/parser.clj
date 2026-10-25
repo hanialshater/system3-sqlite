@@ -1152,8 +1152,9 @@
         "REINDEX"
         (do (advance! p)
             (let [name (when (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (parse-nm p))
+                  sch (when (and name (at-op? p ".")) name)
                   name (if (and name (accept-op p ".")) (parse-nm p) name)]
-              {:kind :reindex :name name}))
+              {:kind :reindex :name name :schema sch}))
         "ALTER"
         (do (advance! p) (expect-kw p "TABLE")
             (let [n1 (parse-nm p)

@@ -35,6 +35,7 @@
             ok (or (and (= 1 (count idxs)) (= (first idxs) (:ipk ptbl)))
                    (and (= (set idxs) (set (:pk-cols ptbl))) (seq (:pk-cols ptbl)))
                    (some (fn [ix] (and (:unique ix) (nil? (:where ix)) (every? :col (:cols ix))
+                                       (= (count (:cols ix)) (count idxs))
                                        (= (set (map :col (:cols ix))) (set idxs))))
                          (filter #(= (:table %) (lc (:name ptbl))) (vals (:indexes db)))))]
         (when-not ok (mismatch))
@@ -216,3 +217,12 @@
       (doseq [[_ row] (:rows tbl)]
         (when (violation? db tbl fk row)
           (err "FOREIGN KEY constraint failed"))))))
+
+(defn locate-child!
+  "A statement writing to a child table locates the parent key of its foreign keys at prepare time
+  (mismatch / missing parent errors). For an UPDATE only keys whose child columns are set count."
+  [db tbl set-cols]
+  (when (enabled? db)
+    (doseq [fk (reverse (:fks tbl))]
+      (when (or (nil? set-cols) (some #(contains? set-cols (lc %)) (:from fk)))
+        (parent-cols db tbl fk)))))

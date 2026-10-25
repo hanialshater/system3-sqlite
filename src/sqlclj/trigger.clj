@@ -77,6 +77,7 @@
     (if-not ok
       db
       (binding [e/*in-trigger* true
+                e/*trigger-schema* (cond (:temp trig) "temp" (:db trig) (:db trig) :else "main")
                 sqlclj.schema/*home-db* (when-not (:temp trig) (:db trig))
                 *active* (conj *active* (lc (:name trig)))
                 *depth* (inc *depth*)]

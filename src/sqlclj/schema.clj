@@ -212,7 +212,7 @@
         (if (att sch)
           (assoc (walk st) :name (obj-key db (:name st) sch) :table (obj-key db (:table st) sch) :db sch :schema nil)
           (let [st (walk st)
-                k (resolve-key db (:table st) nil)]
+                k (resolve-key db (:table st) (when (= sch "main") "main"))]
             ;; an index lives in its table's database: unqualified means main (or temp for a temp table)
             (when (and (string? k) (some (fn [a] (str/starts-with? k (str a "."))) att))
               (throw (ex-info "sql" {:sql-error (str "no such table: main." (:table st))})))
@@ -231,7 +231,7 @@
         (let [tsch (lc* (:table-schema st))
               tk (cond tsch (resolve-key db (:table st) tsch)
                        (att sch) (obj-key db (:table st) sch)
-                       :else (resolve-key db (:table st) nil))
+                       :else (resolve-key db (:table st) (when (= sch "main") "main")))
               tdb (when (string? tk) (some (fn [a] (when (str/starts-with? tk (str a ".")) a)) att))]
           (cond-> (assoc st :table tk)
             (att sch) (assoc :name (obj-key db (:name st) sch) :db sch :schema nil)
