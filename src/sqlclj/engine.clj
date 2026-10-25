@@ -2786,6 +2786,33 @@
                     (binding [*coll-phase* :where]
                       (let [c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg)) (update :scope assoc :in-where true)) ((if is-agg subst-nw subst-na) (:where core)))] c)))
           where-f (when where-c (condf where-c))
+          ;; WHERE AND-terms evaluated at the first join level where their tables are bound (unplanned joins)
+          level-where
+          (when (and where-c (> (count sources) 1)
+                     (not (some #{:right :full :natural-right :natural-full} (map :join from))))
+            (let [terms (split-and ((if is-agg subst-nw subst-na) (:where core)))
+                  slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) sources))
+                  has-sub? (fn hs [e] (cond (map? e) (or (#{:subq :exists} (:op e)) (and (= :in (:op e)) (or (:select e) (:table e)))
+                                                         (some hs (vals e)))
+                                            (sequential? e) (some hs e)
+                                            :else false))]
+              (when (seq terms)
+                (try
+                  (binding [*coll-phase* :where]
+                    (let [placed (vec (for [t terms]
+                                        (let [ra (atom #{})
+                                              c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg) :refs ra) (update :scope assoc :in-where true)) t)
+                                              lv (when-not (has-sub? t)
+                                                   (let [is (keep (fn [[sl _]] (slot->i sl)) @ra)]
+                                                     (when (seq is) (apply max is))))]
+                                          [lv (condf c)])))]
+                      (when (some (fn [[lv _]] (and lv (< (long lv) (dec (count sources))))) placed)
+                        {:levels (reduce (fn [m [lv f]] (if (and lv (< (long lv) (dec (count sources)))) (update m lv (fnil conj []) f) m)) {} placed)
+                         :rest (let [fs (vec (keep (fn [[lv f]] (when-not (and lv (< (long lv) (dec (count sources)))) f)) placed))]
+                                 (fn [env] (if (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs) 1 0)))})))
+                  (catch clojure.lang.ExceptionInfo _ nil)))))
+          where-f (if level-where (:rest level-where) where-f)
+          lvl-filters (when level-where (:levels level-where))
           where-pre (when (:where core) (binding [*coll-phase* :where] (where-precheck (assoc ctx2 :aggs nil) (subst (:where core)))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
           in-pre (when (and (:where core) (= 1 (count sources)) (:table (first sources)))
@@ -3050,6 +3077,8 @@
                   (doseq [sub in-pre] (doall (run-select-rows sub env)))
                   (level 0)))))
           ;; nested loop over sources
+          lvl-pass? (fn [i env] (let [fs (when lvl-filters (get lvl-filters i))]
+                                  (or (nil? fs) (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs))))
           scan (if plan-spec scan-planned (fn scan [^objects env k]
                  (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
@@ -3069,11 +3098,11 @@
                                  (when (or (nil? onf) (let [r (onf env)] (and (not (nil? r)) (v/bool-value r))))
                                    (aset matched 0 true)
                                    (when rset (.add rset (aget cnt 0)))
-                                   (level (inc i)))
+                                   (when (lvl-pass? i env) (level (inc i))))
                                  (aset cnt 0 (inc (aget cnt 0))))
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
-                                 (level (inc i))))))]
+                                 (when (lvl-pass? i env) (level (inc i)))))))]
                    (when (or (nil? where-pre) (where-pre env))
                      (doseq [sub in-pre] (doall (run-select-rows sub env)))
                      (level 0)
