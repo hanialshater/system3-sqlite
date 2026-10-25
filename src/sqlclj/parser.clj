@@ -450,8 +450,17 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p false)]
-        {:e e :alias alias}))))
+            alias (parse-alias p false)
+            ;; SQLite's column name span runs to the start of the next token, so comments after the
+            ;; expression belong to it; trailing white space is trimmed
+            npe (when-not alias
+                  (let [^String sql (.-sql p) ns (:s (tok p))]
+                    (when (and ns (> (long ns) (long (:pe e))))
+                      (loop [k (long ns)]
+                        (if (and (> k (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec k))))
+                          (recur (dec k))
+                          (when (> k (long (:pe e))) k))))))]
+        (cond-> {:e e :alias alias} npe (assoc :name-pe npe))))))
 
 (declare parse-from)
 

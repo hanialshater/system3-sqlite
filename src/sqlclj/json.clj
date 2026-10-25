@@ -952,9 +952,9 @@
             (if blob? (jsonb-result node) (json-result node))))
       ([x y]
        (if obj?
-         (do (when-not (string? x) (when-not (nil? x) nil))
-             (.add items (sql-text-node (v/text-of x)))
-             (.add items (value->node y)))
+         (when-not (nil? x)
+           (.add items (sql-text-node (v/text-of x)))
+           (.add items (value->node y)))
          (.add items (value->node x)))))))
 
 (defn- hlen [payload] (cond (<= payload 11) 1 (<= payload 0xff) 2 (<= payload 0xffff) 3 :else 5))

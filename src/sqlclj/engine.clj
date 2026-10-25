@@ -10,7 +10,8 @@
             [sqlclj.ext :as ext]
             [sqlclj.json :as js]
             [sqlclj.printf :as pf]
-            [sqlclj.schema :as schema])
+            [sqlclj.schema :as schema]
+            [sqlclj.guard :as g])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -996,7 +997,7 @@
     nil
     (reduce (fn [best a]
               (let [c (v/sql-cmp a best coll)]
-                (if (if max? (> c 0) (< c 0)) a best)))
+                (if (if max? (> c 0) (<= c 0)) a best)))
             (first args) (rest args))))
 
 (defn- abs-impl [x]
@@ -1939,7 +1940,7 @@
               (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
           (:name e)))
-    :else (text-of-node ctx (:e rc))))
+    :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
   (and (= :lit (:op e)) (= :int (:kind e))
@@ -2208,7 +2209,14 @@
                           (= want (set (map (fn [ic] [(:c ic) (if (= (:c ic) (:ncols src)) (or (some (fn [[c coll]] (when (= (norm-col src c) (:c ic)) (or coll "BINARY"))) terms) "BINARY") (:coll ic))]) pre))))]
            idx)))
 
+(declare make-scanner*)
 (defn- make-scanner
+  "make-scanner* with the cooperative time-budget check (sqlclj.guard) at each scan start."
+  [ctx src where-terms]
+  (let [f (make-scanner* ctx src where-terms)]
+    (fn [env] (g/check!) (f env))))
+
+(defn- make-scanner*
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
