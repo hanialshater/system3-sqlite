@@ -443,7 +443,8 @@
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
-                   alt (:alt r)]
+                   alt (:alt r)
+                   _ (when-let [dp (:depth-probe ctx)] (swap! dp conj (long (:depth r))))]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
                (mk (if alt
@@ -1054,8 +1055,8 @@
   (let [name (:name e) n (count (:args e))]
     (cond
       (agg-call? e)
-      (cond (nil? (:aggs ctx)) (str "misuse of aggregate: " name "()")
-            (:in-agg ctx) (str "misuse of aggregate function " name "()")
+      (cond (:in-agg ctx) (str "misuse of aggregate function " name "()")
+            (nil? (:aggs ctx)) (if (:where-ctx ctx) (str "misuse of aggregate function " name "()") (str "misuse of aggregate: " name "()"))
             (and (#{"sum" "total" "avg"} name) (not= n 1)) (str "wrong number of arguments to function " name "()")
             (and (= name "group_concat") (not (#{1 2} n))) (str "wrong number of arguments to function " name "()")
             (and (= name "string_agg") (not= n 2)) (str "wrong number of arguments to function " name "()")
@@ -1064,6 +1065,7 @@
             (and (:distinct e) (not= 1 n)) "DISTINCT aggregates must have exactly one argument"
             :else nil)
       (#{"min" "max"} name) (when (< n 1) (str "wrong number of arguments to function " name "()"))
+      (= name "count") (str "wrong number of arguments to function count()")
       (#{"coalesce"} name) (when (< n 2) (str "wrong number of arguments to function " name "()"))
       (#{"ifnull"} name) (when (not= n 2) (str "wrong number of arguments to function " name "()"))
       (#{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
@@ -1087,14 +1089,42 @@
            (do (when (:pending ctx) (reset! (:pending ctx) m)) nil)
            (throw ex)))))
 
-(declare compile-window compile-function*)
+(declare compile-window compile-function* compile-function**)
 
 (defn compile-function [ctx e]
   (if (:over e)
     (compile-window ctx e)
     (compile-function* ctx e)))
 
+(defn- outer-agg-scope
+  "For an aggregate whose arguments only reference outer queries, the scope of the query it belongs to."
+  [ctx e]
+  (when (and (agg-call? e) (not (:in-agg ctx)) (seq (:args e)))
+    (let [dp (atom [])
+          pctx (assoc ctx :depth-probe dp :aggs nil :in-agg true :wins nil :pending nil :refs nil)]
+      (when (try (doseq [a (:args e)] (cx pctx a)) true (catch clojure.lang.ExceptionInfo _ false))
+        (let [ds @dp]
+          (when (and (seq ds) (every? pos? ds))
+            (let [d (long (apply min ds))
+                  sc (loop [sc (:scope ctx) k d] (if (and sc (pos? k)) (recur (:parent sc) (dec k)) sc))]
+              (when (:q-aggs sc) sc))))))))
+
 (defn- compile-function* [ctx e]
+  (if-let [sc (outer-agg-scope ctx e)]
+    (let [actx (assoc ctx :in-agg true :aggs nil :wins nil)
+          args (mapv #(cx actx %) (:args e))
+          aggs (:q-aggs sc)
+          idx (count @aggs)
+          slot (long (:q-agg-slot sc))]
+      (swap! aggs conj {:name (:name e) :args args :nargs (count args) :ord nil
+                        :star (:star e) :distinct (:distinct e)
+                        :filter (when (:filter e) (condf (cx actx (:filter e))))
+                        :coll (or (:coll (first args)) "BINARY")})
+      (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
+          :coll (when (#{"min" "max"} (:name e)) (:coll (first args)))))
+    (compile-function** ctx e)))
+
+(defn- compile-function** [ctx e]
   (let [name (:name e) n (count (:args e))
         _ (when (and (:filter e) (not (agg-call? e)))
             (err (str "FILTER may not be used with non-aggregate " name "()")))
@@ -1102,14 +1132,17 @@
         _ (when ferr (reset! (:pending ctx) ferr))
         agg (and (agg-call? e) (:aggs ctx) (not (:in-agg ctx)))
         actx (if agg (assoc ctx :in-agg true :aggs nil :wins nil) ctx)
-        args (compile-args actx (:args e))]
+        args (compile-args actx (:args e))
+        ordc (when (and agg (seq (:order e))) (mapv #(cx actx (:e %)) (:order e)))]
     (cond
       (or ferr (nil? args)) (const-c nil)
       agg
       (let [aggs (:aggs ctx)
             idx (count @aggs)
             slot (long (:agg-slot ctx))]
-        (swap! aggs conj {:name name :args args :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
+        (swap! aggs conj {:name name :args (into args ordc) :nargs (count args)
+                          :ord (mapv (fn [o c] {:coll (or (:coll c) "BINARY") :desc (:desc o)}) (:order e) ordc)
+                          :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
                           :filter (when (:filter e) (condf (cx actx (:filter e))))
                           :coll (or (:coll (first args)) "BINARY")})
         (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
@@ -1222,7 +1255,9 @@
                  (let [r (aget rs 0)] (if (overflow? (aget rs 1)) r (+ r (aget rs 1))))
                  (double isum))))))
 
-(defn make-acc
+(declare make-acc compare-keys-fn)
+
+(defn make-acc*
   "Returns {:step (fn [vals] -> updated?) :final (fn [])} for one aggregate spec."
   [spec]
   (let [name (:name spec) coll (:coll spec)
@@ -1276,6 +1311,22 @@
                    (.append sb (v/text-of x)))
                  false)
          :final (fn [] (when (aget has 0) (.toString sb)))}))))
+
+(defn make-acc
+  "make-acc*, plus aggregate ORDER BY: the order keys follow the arguments; rows are fed in key order at the end."
+  [spec]
+  (if-let [ord (seq (:ord spec))]
+    (let [n (long (:nargs spec))
+          rows (java.util.ArrayList.)
+          kc (compare-keys-fn (map (fn [o] [(:coll o) (:desc o) nil]) ord))]
+      {:step (fn [vals] (.add rows [(subvec (vec vals) 0 n) (subvec (vec vals) n)]) false)
+       :final (fn []
+                (let [inner (make-acc* (assoc spec :args (subvec (vec (:args spec)) 0 n) :ord nil))
+                      arr (.toArray rows)]
+                  (java.util.Arrays/sort arr (reify Comparator (compare [_ a b] (.compare ^Comparator kc (second a) (second b)))))
+                  (doseq [r arr] ((:step inner) (first r)))
+                  ((:final inner))))})
+    (make-acc* spec)))
 
 ;; ====================================================================== window functions
 
@@ -1357,7 +1408,7 @@
           idx (count @wins)
           slot (long (:win-slot ctx))]
       (swap! wins conj {:name name :agg aggf :args args :filter filt :part part :order order :frame frame
-                        :star (:star e) :coll (or (:coll (first args)) "BINARY")
+                        :star (or (:star e) (and (= name "count") (empty? args))) :coll (or (:coll (first args)) "BINARY")
                         :copy (boolean (:win-copy ctx))
                         :fkey (strip-pos e)
                         :wkey [pkey okey
@@ -1810,7 +1861,13 @@
     (:star-col rc) (:name rc)
     (= :col (:op (:e rc)))
     (let [e (:e rc)]
-      (or (when (:table e)
+      (or (when (#{"rowid" "oid" "_rowid_"} (lc (:name e)))
+            ;; rowid of a table with an INTEGER PRIMARY KEY is shown by that column's name
+            (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                  s (:src r) tbl (:table s)]
+              (when (and tbl (:ipk tbl) (= (:idx r) (:ncols s)) (not (find-in-source s (lc (:name e)))))
+                (:name (nth (:cols tbl) (:ipk tbl))))))
+          (when (:table e)
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) lt (lc (:table e))]
@@ -1866,20 +1923,58 @@
 (defn- eval-limit [ctx e what]
   (when e
     (let [c (cx (assoc ctx :scope nil) e)
-          x ((:f c) nil)
+          x ((:f c) (object-array (+ 2 (long @(:slots ctx)))))
           x (if (string? x) (v/apply-numeric-text x true) x)
           x (if (instance? Double x) (v/integer-affinity (double x)) x)]
       (if (instance? Long x)
         x
         (err "datatype mismatch")))))
 
+(defn- outer-only-agg?
+  "An aggregate whose argument columns are all qualified by tables not in this FROM clause."
+  [e own]
+  (let [cols (atom [])]
+    (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
+                                      (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
+                         (sequential? x) (doseq [y x] (w y))))]
+      (w (:args e)))
+    (and (seq @cols) (every? #(and (:table %) (not (own (lc (:table %))))) @cols))))
+
+(defn- sub-outer-agg?
+  "Does a scalar subquery hold an aggregate that belongs to the enclosing query (own = its FROM names)?"
+  [sel own]
+  (let [b (:body sel)
+        found (atom false)]
+    (when (= :core (:type b))
+      (let [inner (set (map #(lc (or (:alias %) (:table %))) (:from b)))
+            no-from (empty? (:from b))]
+        (letfn [(outer-col? [c] (if (:table c)
+                                  (and (own (lc (:table c))) (not (inner (lc (:table c)))))
+                                  no-from))
+                (agg-ok? [e] (let [cols (atom [])]
+                               (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
+                                                                 (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
+                                                    (sequential? x) (doseq [y x] (w y))))]
+                                 (w (:args e)))
+                               (and (seq @cols) (every? outer-col? @cols))))
+                (walk [e] (cond (map? e) (cond (#{:subq :exists} (:op e)) nil
+                                               (and (agg-call? e) (agg-ok? e)) (reset! found true)
+                                               :else (doseq [[k x] e :when (not= k :select)] (walk x)))
+                                (sequential? e) (doseq [x e] (walk x))))]
+          (doseq [rc (:cols b)] (walk (:e rc)))
+          (walk (:where b)))))
+    @found))
+
 (defn- core-has-agg? [core]
-  (let [found (atom false)]
+  (let [found (atom false)
+        own (set (map #(lc (or (:alias %) (:table %))) (:from core)))]
     (letfn [(walk [e]
               (cond
                 (map? e) (cond
+                           (and (= :subq (:op e)) (seq own) (sub-outer-agg? (:select e) own)) (reset! found true)
                            (#{:subq :exists} (:op e)) nil
                            (and (= :in (:op e)) (:select e)) (walk (:e e))
+                           (and (agg-call? e) (outer-only-agg? e own)) nil
                            (agg-call? e) (reset! found true)
                            :else (doseq [[k x] e :when (not= k :select)] (walk x)))
                 (sequential? e) (doseq [x e] (walk x))))]
@@ -2051,7 +2146,7 @@
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
-  (let [ctx (assoc ctx :pending nil :merge nil)]
+  (let [ctx (assoc ctx :pending nil :merge nil :where-ctx nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -2076,6 +2171,11 @@
               (let [item (nth from i)
                     s (nth srcs i)
                     jt (:join item)
+                    _ (when (and (#{:natural :natural-left :natural-right :natural-full} jt) (or (:on item) (:using item)))
+                        (err "a NATURAL join may not have an ON or USING clause"))
+                    _ (doseq [u (:using item)]
+                        (when (or (not (some #(find-in-source % (lc u)) (take i srcs))) (not (find-in-source s (lc u))))
+                          (err (str "cannot join using column " u " - column not present in both tables"))))
                     using (cond (:using item) (:using item)
                                 (#{:natural :natural-left :natural-right :natural-full} jt)
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
@@ -2104,7 +2204,10 @@
                                               (mapv (fn [k] [(:slot (nth srcs k)) (find-in-source (nth srcs k) n)]) match)))))
                             sources (distinct (map lc (apply concat (remove nil? join-conds)))))
                     sources)
-          scope {:sources sources :parent (:scope ctx)}
+          is-agg (or (seq (:group core)) (core-has-agg? core))
+          aggs (atom [])
+          agg-slot (new-slot! ctx)
+          scope {:sources sources :parent (:scope ctx) :q-aggs (when is-agg aggs) :q-agg-slot agg-slot}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
           left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
@@ -2113,9 +2216,6 @@
           rcols (expand-star ctx2 sources (:cols core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
-          is-agg (or (seq (:group core)) (core-has-agg? core))
-          aggs (atom [])
-          agg-slot (new-slot! ctx)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
           wins (atom [])
           win-slot (new-slot! ctx)
@@ -2150,7 +2250,7 @@
                     (vector? e) (mapv subst e)
                     :else e))
           where-c (when (:where core)
-                    (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
+                    (let [c (cx (assoc ctx2 :aggs nil :where-ctx (not is-agg)) (subst (:where core)))] c))
           where-f (when where-c (condf where-c))
           where-pre (when (:where core) (where-precheck (assoc ctx2 :aggs nil) (subst (:where core))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
@@ -2174,7 +2274,7 @@
                           (cond
                             (:on item)
                             (let [ra (atom #{})
-                                  c (cx (assoc ctx2 :aggs nil :refs ra) (subst (:on item)))
+                                  c (cx (assoc ctx2 :aggs nil :refs ra :where-ctx (not is-agg)) (subst (:on item)))
                                   _ (when-let [r (:refs ctx2)] (swap! r into @ra))
                                   later (set (map :slot (drop (inc i) sources)))]
                               (if (some #(later (first %)) @ra)
@@ -2217,7 +2317,7 @@
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
-                     (when-not is-agg (err "a GROUP BY clause is required before HAVING"))
+                     (when-not is-agg (err "HAVING clause on a non-aggregate query"))
                      (cx actx (subst (:having core))))
           ;; ORDER BY
           order-c (when order
@@ -2619,12 +2719,27 @@
                               (cons row (lazy-seq (run-rec row) (step skip (inc (long emitted))))))))))]
                (step offset 0))))}))))
 
+(declare compile-select**)
+
 (defn- compile-select*
   [ctx sel]
+  (let [lerr (atom nil)
+        ev (fn [e what] (try (eval-limit ctx e what)
+                             (catch clojure.lang.ExceptionInfo ex
+                               (if (= "datatype mismatch" (:sql-error (ex-data ex)))
+                                 (do (when-not @lerr (reset! lerr "datatype mismatch")) nil)
+                                 (throw ex)))))
+        limit (ev (:limit sel) "LIMIT")
+        offset (ev (:offset sel) "OFFSET")
+        r (compile-select** ctx sel limit offset)]
+    (if-let [m @lerr]
+      (assoc r :rows-fn (fn [_] (err m)) :streaming nil)
+      r)))
+
+(defn- compile-select**
+  [ctx sel limit offset]
   (let [body (:body sel)
-        order (:order sel)
-        limit (eval-limit ctx (:limit sel) "LIMIT")
-        offset (eval-limit ctx (:offset sel) "OFFSET")]
+        order (:order sel)]
     (if (= :compound (:type body))
       (let [b (compile-body (if order (assoc ctx :merge true) ctx) body)
             names (:names b)
