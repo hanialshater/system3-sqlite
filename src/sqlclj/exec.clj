@@ -83,13 +83,15 @@
 (def ^:private nondeterministic-fns #{"random" "randomblob" "changes" "last_insert_rowid" "total_changes"
                                        "current_time" "current_date" "current_timestamp"})
 
-(defn- check-gen-expr [ast]
-  (doseq [x (tree-seq coll? seq ast) :when (map? x)]
-    (case (:op x)
-      :fn (when (nondeterministic-fns (lc (:name x)))
-            (err "non-deterministic functions prohibited in generated columns"))
-      (:subq :exists) (err "subqueries prohibited in generated columns")
-      nil)))
+(defn- check-gen-expr
+  ([ast] (check-gen-expr ast "generated columns"))
+  ([ast what]
+   (doseq [x (tree-seq coll? seq ast) :when (map? x)]
+     (case (:op x)
+       :fn (when (nondeterministic-fns (lc (:name x)))
+             (err (str "non-deterministic functions prohibited in " what)))
+       (:subq :exists) (err (str "subqueries prohibited in " what))
+       nil))))
 
 (defn- check-gen-loops [cols]
   (let [names (mapv (comp lc :name) cols)
@@ -163,7 +165,7 @@
         name (:name st) lname (lc name)]
     (cond
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
-      (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") name " already exists")))
+      (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
       (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
       (get-in db [:indexes lname]) (err (str "there is already an index named " name))
       (:as st)
@@ -246,7 +248,14 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
             fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
+            _ (doseq [k fks]
+                (when (and (:to k) (not= (count (:to k)) (count (:from k))))
+                  (err "number of columns in foreign key does not match the number of columns in the referenced table"))
+                (doseq [f (:from k)]
+                  (when (neg? (.indexOf ^java.util.List lnames (lc f)))
+                    (err (str "unknown column \"" f "\" in foreign key definition")))))
             autoinc (boolean (some (fn [d] (some #(and (= :pk (:c %)) (:auto %)) (:cons d))) defs))
+            _ (when (and autoinc (:without-rowid st)) (err "AUTOINCREMENT not allowed on WITHOUT ROWID tables"))
             _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
             _ (when (and (:without-rowid st) (empty? pk-cols)) (err (str "PRIMARY KEY missing on table " name)))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
@@ -308,20 +317,51 @@
 
 (defn- key-has-null? [k] (some nil? k))
 
+;; The keys of a unique index as a sorted map key -> rowid, built once per table value and index and carried
+;; over the plain inserts that follow (carry-unique!), so that a run of inserts does not scan the table each time.
+(defonce ^:private unique-cache (atom []))
+
+(defn- remember-unique! [tbl idx m]
+  (swap! unique-cache (fn [c] (conj (if (>= (count c) 8) (subvec c 1) c) [tbl idx m]))))
+
+(defn- unique-map [tbl idx]
+  (let [hit (some (fn [[t i m]] (when (and (identical? t tbl) (identical? i idx)) m)) @unique-cache)]
+    (or hit
+        (let [colls (mapv :coll (:cols idx))
+              cmp (reify java.util.Comparator
+                    (compare [_ a b]
+                      (loop [i 0]
+                        (if (>= i (count colls)) 0
+                            (let [c (v/sql-cmp (nth a i) (nth b i) (nth colls i))]
+                              (if (zero? c) (recur (inc i)) c))))))
+              m (reduce (fn [m [rid r]]
+                          (if (or (nil? (:wf idx)) ((:wf idx) r))
+                            (let [k (e/index-key tbl idx r)]
+                              (if (key-has-null? k) m (assoc m k rid)))
+                            m))
+                        (sorted-map-by cmp) (:rows tbl))]
+          (remember-unique! tbl idx m)
+          m))))
+
+(defn- carry-unique!
+  "After a plain insert of the stored row (rowid rid) into old, giving new: the unique maps of old move to new."
+  [old new rid row]
+  (doseq [[t idx m] (filter #(identical? (first %) old) @unique-cache)]
+    (if (or (nil? (:wf idx)) ((:wf idx) row))
+      (let [k (e/index-key new idx row)]
+        (cond (key-has-null? k) (remember-unique! new idx m)
+              (contains? m k) nil
+              :else (remember-unique! new idx (assoc m k rid))))
+      (remember-unique! new idx m))))
+
 (defn- find-conflict
   "Returns rowid of an existing row conflicting with row r under unique index idx, excluding rowid self."
   [tbl idx row self]
   (when (or (nil? (:wf idx)) ((:wf idx) row))
     (let [k (e/index-key tbl idx row)]
       (when-not (key-has-null? k)
-        (let [colls (mapv :coll (:cols idx))]
-          (some (fn [[rid r]]
-                  (when (and (not= rid self)
-                             (or (nil? (:wf idx)) ((:wf idx) r))
-                             (let [k2 (e/index-key tbl idx r)]
-                               (every? true? (map (fn [a b c] (and (not (nil? b)) (zero? (v/sql-cmp a b c)))) k k2 colls))))
-                    rid))
-                (:rows tbl)))))))
+        (let [rid (get (unique-map tbl idx) k)]
+          (when (and rid (not= rid self)) rid))))))
 
 (defn- unique-msg [tbl idx]
   (str "UNIQUE constraint failed: "
@@ -371,11 +411,16 @@
       (when (not= ci (:ipk tbl)) (strict-check tbl ci (nth row ci)))))
   row)
 
+(def ^:private ignore-checks
+  "PRAGMA ignore_check_constraints of the running statement (set in run-line)."
+  (volatile! false))
+
 (defn- check-checks
   "CHECK constraints. Returns row, or nil for IGNORE."
   [tbl row on-conflict]
-  (let [bad (some (fn [ck] (let [x ((:f ck) row)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
-                  (:checks tbl))]
+  (let [bad (when-not @ignore-checks
+            (some (fn [ck] (let [x ((:f ck) row)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
+                  (:checks tbl)))]
     (if bad
       (if (= on-conflict :ignore)
         nil
@@ -446,9 +491,13 @@
      :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? (not (:without-rowid tbl)) :ipk (:ipk tbl)
      :ncols (count cols) :hidden #{}}))
 
+(declare new-ctx)
 (defn- compile-returning [ctx src items]
   (when (seq items)
-    (let [ctx (assoc ctx :scope {:sources [src] :parent nil})
+    (when (some #(and (:star %) (:table %)) items)
+      (err "RETURNING may not use \"TABLE.*\" wildcards"))
+    (let [src (assoc src :alias (lc (:tname src)))
+          ctx (assoc ctx :scope {:sources [src] :parent nil})
           cols (mapcat (fn [rc]
                          (if (:star rc)
                            (for [i (range (:ncols src))]
@@ -464,7 +513,21 @@
                                          (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
-      {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)})))
+      (cond-> {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)}
+        (some (fn [x] (and (map? x) (or (#{:subq :exists} (:op x)) (:select x)))) (tree-seq coll? seq items))
+        (assoc :redo (fn [db']
+                       (let [ctx2 (new-ctx db' (:sql ctx))
+                             src2 (assoc src :slot (e/new-slot! ctx2))
+                             r2 (compile-returning ctx2 src2 items)
+                             env2 (object-array (+ 2 @(:slots ctx2)))]
+                         (fn [row] (aset env2 (long (:slot src2)) row) (mapv #(% env2) (:fs r2))))))))))
+
+(defn- ret-row
+  "The RETURNING row for the row held in env; subqueries see database db' (the state right after the change)."
+  [ret ^objects env db']
+  (if-let [redo (:redo ret)]
+    ((redo db') (aget env (long (:slot ret))))
+    (mapv #(% env) (:fs ret))))
 
 (defn- next-rowid [tbl]
   (if (empty? (:rows tbl))
@@ -588,6 +651,8 @@
         rows (cond
                (:default st) [[]]
                (:rows st) (let [rs (:rows st)]
+                            (when (apply not= (map count rs))
+                              (err "all VALUES must have the same number of terms"))
                             (doseq [r rs]
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
@@ -726,7 +791,7 @@
                               tblu (put-row (update tblu :rows dissoc crid) nrid nrow)]
                           (when ret
                             (aset env (long (:slot ret)) (assoc nrow ncols nrid))
-                            (.add ret-rows (mapv #(% env) (:fs ret))))
+                            (.add ret-rows (ret-row ret env (assoc-in db [:tables tkey] tblu))))
                           (let [db3 (assoc-in db [:tables tkey] tblu)
                                 db3 (if fkt
                                       (do (fk-note! db3 tbl tkey existing (assoc nrow ncols nrid))
@@ -734,7 +799,21 @@
                                       db3)]
                             (after-update db3 tbl existing (assoc nrow ncols nrid) tkey (map first (:sets-c up)) changes)))))))
                 :else
-                (let [tbl3 (put-row tbl2 rid row)
+                (let [replaced (when (and (= 1 (get-in db [:pragmas "recursive_triggers"])) (not vw) (trg/any-for? db tkey :delete))
+                                 (seq (remove (fn [rid0] (contains? (:rows tbl2) rid0)) (keys (:rows tbl)))))
+                      db (if replaced
+                           (let [dbd (assoc-in db [:tables tkey] tbl2)]
+                             (reduce (fn [d rid0]
+                                       (let [old0 (get-in tbl [:rows rid0])
+                                             bts (trg/matching d tkey :before :delete nil)
+                                             d (if (seq bts) (let [r (try-fire d bts tbl old0 nil)] (if (= r ::ignore) d r)) d)
+                                             ats (trg/matching d tkey :after :delete nil)]
+                                         (if (seq ats) (let [r (try-fire d ats tbl old0 nil)] (if (= r ::ignore) d r)) d)))
+                                     dbd replaced))
+                           db)
+                      tbl2 (if replaced (get-in db [:tables tkey]) tbl2)
+                      tbl3 (put-row tbl2 rid row)
+                      _ (carry-unique! tbl2 tbl3 rid (get-in tbl3 [:rows rid]))
                       db2 (assoc-in db [:tables tkey] tbl3)
                       db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
                       db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))
@@ -748,7 +827,7 @@
                             db2)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
-                    (.add ret-rows (mapv #(% env) (:fs ret))))
+                    (.add ret-rows (ret-row ret env db2)))
                   (let [r (if (seq (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil))
                             (try-fire db2 (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil) tbl3 nil (assoc row ncols rid))
                             db2)]
@@ -848,7 +927,7 @@
                        rid-new (let [rv (some (fn [[ci val]] (when (= ci -1) val)) newvals)
                                      rv (if (:ipk tbl) (nth row (:ipk tbl)) (if (some #(= -1 (first %)) newvals) rv rid))]
                                  (if (nil? rv)
-                                   (if (:ipk tbl) (next-rowid tbl) (err "datatype mismatch"))
+                                   (err "datatype mismatch")
                                    (let [x (v/apply-affinity rv :integer)]
                                      (if (instance? Long x) x (err "datatype mismatch")))))
                        row (if (:ipk tbl) (assoc row (:ipk tbl) rid-new) row)
@@ -883,7 +962,7 @@
                                ats (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :update set-names)]
                            (when ret
                              (aset env slot (assoc row ncols rid-new))
-                             (.add ret-rows (mapv #(% env) (:fs ret))))
+                             (.add ret-rows (ret-row ret env db2)))
                            (let [r (if (seq ats) (try-fire db2 ats tbl3 old (assoc row ncols rid-new)) db2)]
                              (if (= r ::ignore) [db2 changes] [r (if vw changes (inc changes))]))))))))))))
            [db 0] targets)]
@@ -908,15 +987,16 @@
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
         _ (prepared! (:names ret))
+        dret-rows (java.util.ArrayList.)
         doomed (vec (filter (fn [[rid row]]
                               (aset env slot row)
                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
                             (if (and where-pre (not (where-pre env))) [] (:rows tbl))))]
-    (when ret
+    (when (and ret (not (:redo ret)))
       (doseq [[_ row] doomed]
         (aset env slot row)
         (emit (mapv #(% env) (:fs ret)))))
-    (if (and (not vw) (not fkt) (not (trg/any-for? db tkey :delete)))
+    (if (and (not vw) (not fkt) (not (:redo ret)) (not (trg/any-for? db tkey :delete)))
       (-> db
           (assoc-in [:tables tkey :rows] (apply dissoc (:rows tbl) (map first doomed)))
           (assoc :changes (count doomed)))
@@ -939,9 +1019,11 @@
                                       (fk/on-parent-change db tbl old nil))
                                   db)
                              ats (trg/matching db (:vkey tbl tkey) (if vw :instead :after) :delete nil)
+                             _ (when (:redo ret) (aset env slot old) (.add dret-rows (ret-row ret env db)))
                              r (if (seq ats) (try-fire db ats (get-in db [:tables tkey]) old nil) db)]
                          (if (= r ::ignore) [db changes] [r (if vw changes (inc changes))])))))))
              [db 0] doomed)]
+        (doseq [r dret-rows] (emit r))
         (assoc (end-target db tkey tbl) :changes changes)))))
 
 ;; ====================================================================== other DDL
@@ -950,7 +1032,10 @@
   (let [name (:name st) ln (lc name) tl (lc (:table st))
         tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
     (cond
-      (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " name " already exists")))
+      (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " (or (:name-raw st) name) " already exists")))
+      (contains? sch/master-names tl) (err "cannot create trigger on system table")
+      (str/starts-with? ln "sqlite_") (err (str "object name reserved for internal use: " name))
+      (some :returning (:body st)) (err "cannot use RETURNING in a trigger")
       (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
@@ -960,7 +1045,7 @@
       (and tbl (or (:virtual tbl) (str/starts-with? tl "sqlite_"))) (err "cannot create trigger on system table")
       :else
       (let [trig (-> (trg/make-trigger st sql)
-                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (= "temp" (lc (:schema st))) (:temp tbl) (:temp view)))
                             :db (when-not (or (:temp st) (= "temp" (lc (:schema st)))) (:db st))
                             :sql (sch/stmt-sql sql st "TRIGGER")))
             [db trig] (sch/register db trig false)]
@@ -980,7 +1065,9 @@
       (nil? tbl) (err (str "no such table: main." (:table st)))
       (str/starts-with? lname "sqlite_") (err (str "object name reserved for internal use: " name))
       :else
-      (let [idx (assoc (build-index db sql tbl name (:unique st) (:cols st) (:where st) false)
+      (let [_ (doseq [ic (:cols st) :when (not= :col (:op (:e ic)))] (check-gen-expr (:e ic) "index expressions"))
+            _ (when (:where st) (check-gen-expr (:where st) "partial index WHERE clauses"))
+            idx (assoc (build-index db sql tbl name (:unique st) (:cols st) (:where st) false)
                        :sql (sch/stmt-sql sql (assoc st :st-e (:st-next st)) (if (:unique st) "UNIQUE INDEX" "INDEX")))]
         ;; uniqueness of existing data
         (when (:unique st)
@@ -1001,9 +1088,14 @@
     db))
 
 (defn- exec-drop [db st]
-  (let [lname (lc (:name st))]
+  (let [lname (lc (:name st))
+        q (some-> (:qual-schema st) lc)
+        q (when (#{"main" "temp"} q) q)
+        miss? (fn [o] (and o q (if (= q "main") (boolean (:temp o)) (not (:temp o)))))
+        look (fn [k] (let [o (get-in db k)] (when-not (miss? o) o)))
+        shown (if q (str q "." (:name st)) (:name st))]
     (case (:what st)
-      :table (if-let [t (get-in db [:tables lname])]
+      :table (if-let [t (look [:tables lname])]
                (let [idxs (filter (fn [i] (= (:table i) lname)) (vals (:indexes db)))
                      db (reduce (fn [db o] (sch/free-page db (sch/schema-of o) (:rootpage o))) db (cons t idxs))]
                  (-> db
@@ -1011,23 +1103,23 @@
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
                      (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
                      (drop-seq-row (:name t))))
-               (cond (get-in db [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
+               (cond (look [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
                      (:if-exists st) db
-                     :else (err (str "no such table: " (:name st)))))
-      :index (if-let [i (get-in db [:indexes lname])]
+                     :else (err (str "no such table: " shown))))
+      :index (if-let [i (look [:indexes lname])]
                (if (:auto i)
                  (err "index associated with UNIQUE or PRIMARY KEY constraint cannot be dropped")
                  (-> db (sch/free-page (sch/schema-of i) (:rootpage i)) (update :indexes dissoc lname)))
-               (if (:if-exists st) db (err (str "no such index: " (:name st)))))
-      :view (if (get-in db [:views lname])
+               (if (:if-exists st) db (err (str "no such index: " shown))))
+      :view (if (look [:views lname])
               (-> db (update :views dissoc lname)
                   (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m)))))
-              (cond (get-in db [:tables lname]) (err (str "use DROP TABLE to delete table " (:name st)))
+              (cond (look [:tables lname]) (err (str "use DROP TABLE to delete table " (:name st)))
                     (:if-exists st) db
-                    :else (err (str "no such view: " (:name st)))))
-      :trigger (if (get-in db [:triggers lname])
+                    :else (err (str "no such view: " shown))))
+      :trigger (if (look [:triggers lname])
                  (update db :triggers dissoc lname)
-                 (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
+                 (if (:if-exists st) ::empty (err (str "no such trigger: " shown)))))))
 
 (defn- index-stat
   "sqlite_stat1 stat text for index idx of tbl, or nil when the index is empty."
@@ -1124,21 +1216,109 @@
 (defn- tok-name? [t nm] (and (#{:id :qid} (:t t)) (= (lc (:v t)) (lc nm))))
 (defn- prev-kw [toks i] (when (pos? i) (:u (nth toks (dec i)))))
 
+(declare kw-tok? tok-op? matching-paren)
+
+(def ^:private alias-stop
+  #{"WHERE" "ON" "USING" "JOIN" "LEFT" "RIGHT" "FULL" "INNER" "CROSS" "NATURAL" "OUTER" "GROUP" "ORDER" "LIMIT" "HAVING"
+    "SET" "WINDOW" "UNION" "INTERSECT" "EXCEPT" "INDEXED" "NOT" "RETURNING" "BEGIN" "END" "VALUES" "SELECT" "DEFAULT"
+    "WHEN" "FOR" "OFFSET" "FROM" "INTO" "AND" "OR" "THEN" "ELSE" "ASC" "DESC" "COLLATE" "IS" "IN" "LIKE" "GLOB" "BETWEEN"
+    "PRIMARY" "UNIQUE" "CHECK" "REFERENCES" "CONSTRAINT" "FOREIGN" "NULL" "AS"})
+
+(defn- aliases-of
+  "Lower-case aliases bound to table tn in the token vector: tn AS a / tn a."
+  [toks tn]
+  (set (for [i (range (dec (count toks)))
+             :let [t (nth toks i) n1 (nth toks (inc i))
+                   n2 (when (< (+ i 2) (count toks)) (nth toks (+ i 2)))]
+             :when (and (tok-name? t tn)
+                        (or (not (pos? i)) (not (tok-op? (nth toks (dec i)) ".")))
+                        (not (tok-op? n1 ".")))
+             a (cond (and (kw-tok? n1 "AS") n2 (#{:id :qid} (:t n2))) [(lc (:v n2))]
+                     (= :qid (:t n1)) [(lc (:v n1))]
+                     (and (= :id (:t n1)) (not (alias-stop (:u n1)))) [(lc (:v n1))]
+                     :else [])]
+         a)))
+
+(defn- fk-parent-spans
+  "Token index ranges [parent-lc from to) of the parent column lists in REFERENCES clauses."
+  [toks]
+  (vec (for [i (range (count toks))
+             :let [t (nth toks i)]
+             :when (and (kw-tok? t "REFERENCES") (< (+ i 2) (count toks)))
+             :let [n1 (nth toks (inc i)) n2 (nth toks (+ i 2))]
+             :when (and (#{:id :qid :str} (:t n1)) (tok-op? n2 "("))
+             :let [close (matching-paren toks (+ i 2))]]
+         [(lc (:v n1)) (+ i 3) close])))
+
+(defn- in-from-list?
+  "Whether token i sits in the table list of a FROM clause (after a comma)."
+  [toks i]
+  (loop [j (dec i) depth 0]
+    (if (neg? j) false
+        (let [t (nth toks j)]
+          (cond (tok-op? t ")") (recur (dec j) (inc depth))
+                (tok-op? t "(") (if (zero? depth) false (recur (dec j) (dec depth)))
+                (pos? depth) (recur (dec j) depth)
+                (and (= :id (:t t)) (#{"FROM" "JOIN"} (:u t))) true
+                (and (= :id (:t t)) (#{"SELECT" "WHERE" "ON" "SET" "GROUP" "ORDER" "HAVING" "VALUES" "USING" "INTO" "UPDATE" "BEGIN" "WHEN"} (:u t))) false
+                (tok-op? t ";") false
+                :else (recur (dec j) depth))))))
+
 (defn- rename-table-refs [sql old new]
+  (let [toks0 (vec (lx/tokenize sql))
+        as-alias (some (fn [[i t]] (and (tok-name? t old) (pos? i) (kw-tok? (nth toks0 (dec i)) "AS"))) (map-indexed vector toks0))]
+    (rewrite-tokens sql (fn [toks i]
+                          (when (tok-name? (nth toks i) old)
+                            (cond
+                              (and (or (#{"FROM" "JOIN" "INTO" "UPDATE" "ON" "TABLE" "REFERENCES"} (prev-kw toks i))
+                                       (and (pos? i) (tok-op? (nth toks (dec i)) ",") (in-from-list? toks i)))
+                                   (not (and (pos? i) (tok-op? (nth toks (dec i)) "."))))
+                              (quote-id new)
+                              ;; qualifier of a column: old.col, when old is not an alias
+                              (and (not as-alias) (< (inc i) (count toks)) (tok-op? (nth toks (inc i)) ".")
+                                   (or (zero? i) (not (tok-op? (nth toks (dec i)) "."))))
+                              (quote-id new)))))))
+
+(defn- rename-trigger-on
+  "legacy_alter_table: only the ON <table> clause of a trigger is rewritten."
+  [sql old new]
   (rewrite-tokens sql (fn [toks i]
-                        (when (and (tok-name? (nth toks i) old)
-                                   (#{"FROM" "JOIN" "INTO" "UPDATE" "ON" "TABLE" "REFERENCES"} (prev-kw toks i)))
+                        (when (and (tok-name? (nth toks i) old) (= "ON" (prev-kw toks i))
+                                   (not-any? #(= "BEGIN" (:u (nth toks %))) (range i)))
                           (quote-id new)))))
 
 (defn- mentions-table? [sql tname]
   (some #(tok-name? % tname) (lx/tokenize sql)))
 
-(defn- rename-column-refs [sql old new]
-  (let [toks (lx/tokenize sql)
-        from (or (first (keep-indexed (fn [i t] (when (and (= :op (:t t)) (= "(" (:v t))) i)) toks)) 0)]
-    (rewrite-tokens sql (fn [toks i]
-                          (when (and (>= i from) (tok-name? (nth toks i) old))
-                            (quote-if-needed new))))))
+(defn- rename-column-refs
+  "Renames column old to new in the text sql. tn: the table (plain name) the column belongs to;
+  trig-table: for a trigger text, the plain name of its table. self?: sql is tn's own CREATE text."
+  ([sql old new] (rename-column-refs sql old new nil nil true))
+  ([sql old new tn trig-table self?]
+   (let [toks (vec (lx/tokenize sql))
+         from (if self? (or (first (keep-indexed (fn [i t] (when (tok-op? t "(") i)) toks)) 0) 0)
+         quals (when tn (conj (aliases-of toks tn) (lc tn)))
+         quals (cond-> (or quals #{}) (and trig-table tn (= (lc trig-table) (lc tn))) (conj "new" "old"))
+         spans (fk-parent-spans toks)
+         in-foreign-parent? (fn [i] (some (fn [[p a b]] (and (>= i a) (< i b) (not= p (lc tn)))) spans))]
+     (rewrite-tokens sql (fn [toks i]
+                           (let [t (nth toks i)]
+                             (when (and (>= i from) (tok-name? t old))
+                               (let [prev (when (pos? i) (nth toks (dec i)))
+                                     nxt (when (< (inc i) (count toks)) (nth toks (inc i)))]
+                                 (cond
+                                   (in-foreign-parent? i) nil
+                                   (and prev (tok-op? prev ".") (>= i 2))
+                                   (when (or (nil? tn) (contains? quals (lc (:v (nth toks (- i 2)))))) (quote-if-needed new))
+                                   (and nxt (tok-op? nxt "(") (not self?)) nil
+                                   :else (quote-if-needed new))))))))))
+
+(defn- rename-fk-parent-col
+  "In the CREATE text of another table: parent column old of REFERENCES parent(...) becomes new."
+  [sql parent old new]
+  (let [toks (vec (lx/tokenize sql))
+        hit (set (mapcat (fn [[p a b]] (when (= p (lc parent)) (range a b))) (fk-parent-spans toks)))]
+    (rewrite-tokens sql (fn [toks i] (when (and (hit i) (tok-name? (nth toks i) old)) (quote-if-needed new))))))
 
 (defn- rebuild-table
   "Replaces table tname by the table the new CREATE TABLE text describes; rows are mapped by row-fn (row incl. rowid).
@@ -1148,7 +1328,9 @@
         idxs (sort-by :mseq (filter #(= (:table %) tname) (vals (:indexes db))))
         db0 (-> db (update :tables dissoc tname)
                 (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) tname)) m)))))
+        pre (when (and (:db old) (not= "main" (:db old))) (str (:db old) "."))
         st (assoc (parse-one new-sql) :temp (:temp old) :internal true)
+        st (if pre (assoc st :name (str pre (:name st)) :db (:db old)) st)
         db1 (create-table db0 new-sql st)
         by-name (into {} (map (fn [i] [(lc (:name i)) i]) idxs))
         restore (fn [db objs-key key o]
@@ -1166,22 +1348,23 @@
               (if (:auto i) db
                   (let [isql (idx-sql-fn i)
                         ist (assoc (parse-one isql) :temp (:temp old) :internal true)
+                        ist (if pre (assoc ist :name (str pre (:name ist)) :table (str pre (:table ist)) :db (:db old)) ist)
                         db' (create-index db isql ist)]
                     (restore db' :indexes (lc (:name i)) i))))
             db1 idxs)))
 
 (defn- reschema-objects
-  "Applies f (sql -> sql) to the text of views and triggers (re-parsing them)."
+  "Applies f (sql obj -> sql) to the text of views and triggers (re-parsing them)."
   [db f]
   (-> db
       (update :views (fn [m] (into {} (map (fn [[k v]]
-                                            (let [ns (when (:sql v) (f (:sql v)))]
+                                            (let [ns (when (:sql v) (f (:sql v) v))]
                                               [k (if (or (nil? ns) (= ns (:sql v))) v
                                                      (let [st (parse-one ns)]
                                                        (assoc v :sql ns :src ns :select (:select st) :cols (:cols st))))]))
                                           m))))
       (update :triggers (fn [m] (into {} (map (fn [[k t]]
-                                               (let [ns (when (:sql t) (f (:sql t)))]
+                                               (let [ns (when (:sql t) (f (:sql t) t))]
                                                  [k (if (or (nil? ns) (= ns (:sql t))) t
                                                         (parse-trigger-text t ns))]))
                                              m))))))
@@ -1228,41 +1411,143 @@
 
 (def ^:private master-aliases #{"sqlite_master" "sqlite_schema" "sqlite_temp_master" "sqlite_temp_schema"})
 
+(defn- simple-default?
+  "What sqlite3ValueFromExpr can evaluate: literals, unary +/-, CAST of those."
+  [e]
+  (and (map? e)
+       (case (:op e)
+         :lit (not (:var e))
+         :unary (and (#{:neg :pos} (:o e)) (simple-default? (:e e)))
+         :cast (simple-default? (:e e))
+         false)))
+
+(defn- sql-err-msg [^Throwable ex]
+  (when (instance? clojure.lang.ExceptionInfo ex) (:sql-error (ex-data ex))))
+
+(defn- obj-ref-sql
+  "SELECT text that reads view v."
+  [v]
+  (str "SELECT * FROM " (cond (:db v) (str (quote-id (:db v)) ".") (:temp v) "temp." :else "main.")
+       (quote-id (sch/display-name (:name v) v))))
+
+(defn- check-view [db v]
+  (let [sql (obj-ref-sql v)]
+    (try (let [st (parse-one sql)]
+           (e/compile-select (new-ctx db sql) (:select st))
+           nil)
+         (catch Throwable ex (sql-err-msg ex)))))
+
+(defn- dry-db [db]
+  (update db :tables (fn [m] (into {} (map (fn [[k t]] [k (assoc t :rows (sorted-map))]) m)))))
+
+(defn- check-trigger [db t]
+  (let [tbl (or (get-in db [:tables (:table t)]) (get-in db [:views (:table t)]))]
+    (when tbl
+      (let [n (count (:cols tbl))
+            row (vec (repeat (inc n) nil))
+            t2 (-> t (dissoc :when) (assoc :name (str "\u0001" (:name t))))]
+        (try (binding [trg/*active* #{}]
+               (trg/fire (dry-db db) [t2] tbl row row))
+             nil
+             (catch Throwable ex (sql-err-msg ex)))))))
+
+(defn- validate-schema
+  "SQLite's sqlite_rename_test: the first view or trigger of the schema that no longer resolves, as
+  [kind name message], or nil. Only unresolvable names count."
+  [db]
+  (let [objs (sort-by (fn [[_ o]] (or (:mseq o) 0))
+                      (concat (map (fn [v] [:view v]) (vals (:views db)))
+                              (map (fn [t] [:trigger t]) (vals (:triggers db)))))]
+    (some (fn [[kind o]]
+            (let [m (if (= kind :view) (check-view db o) (check-trigger db o))]
+              (when (and m (str/starts-with? m "no such ")) [(if (= kind :view) "view" "trigger") (sch/display-name (:name o) o) m])))
+          objs)))
+
+(defn- pre-check [db]
+  (when-let [[k n m] (validate-schema db)]
+    (err (str "error in " k " " n ": " m))))
+
+(defn- post-check [db what]
+  (when-let [[k n m] (validate-schema db)]
+    (err (str "error in " k " " n " after " what ": " m))))
+
 (defn- exec-alter [db sql st ^StringBuilder out]
-  (let [tname (lc (:table st))
-        tbl (or (get-in db [:tables tname])
-                (when (master-aliases tname) (err (str "table " (:table st) " may not be altered")))
+  (let [qs (some-> (:schema st) lc)
+        att? (and qs (not (#{"main" "temp"} qs)))
+        tname (cond (and att? (some #{qs} (sch/attached-names db))) (str qs "." (lc (:table st)))
+                    att? "\u0000"
+                    (= qs "main") (sch/resolve-key db (:table st) "main")
+                    (nil? qs) (sch/resolve-key db (:table st) nil)
+                    :else (lc (:table st)))
+        fits? (fn [o] (and o (or (not (#{"main" "temp"} qs)) (if (= qs "temp") (boolean (:temp o)) (not (:temp o))))))
+        view (let [v (get-in db [:views tname])] (when (fits? v) v))
+        _ (when (and view (nil? (get-in db [:tables tname])))
+            (err (case (:action st)
+                   :add "Cannot add a column to a view"
+                   :rename-col (str "cannot rename columns of view \"" (:name view) "\"")
+                   :drop-col (str "cannot drop column from view \"" (:name view) "\"")
+                   (str "view " (:name view) " may not be altered"))))
+        tbl (or (let [t (get-in db [:tables tname])] (when (fits? t) t))
+                (when (master-aliases (lc (:table st))) (err (str "table " (:table st) " may not be altered")))
                 (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:table st))))
         tsql (:sql tbl)]
     (when (str/starts-with? tname "sqlite_")
       (err (str "table " (:name tbl) " may not be altered")))
     (case (:action st)
       :rename
-      (let [nn (:to st) nk (lc nn) old (:name tbl)]
+      (let [nn (:to st) pfx (when (:db tbl) (str (:db tbl) ".")) nk (lc (str pfx nn)) old (sch/display-name (:name tbl) tbl)
+            legacy (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
+            fk-on (let [x (get-in db [:pragmas "foreign_keys"])] (and x (not= 0 x) (not= "off" (lc (str x)))))]
         (when (or (get-in db [:tables nk]) (get-in db [:indexes nk]) (get-in db [:views nk]))
           (err (str "there is already another table or index with this name: " nn)))
+        (when-not legacy (pre-check db))
         (when (str/starts-with? nk "sqlite_") (err (str "object name reserved for internal use: " nn)))
         (let [tsql2 (let [s1 (rewrite-tokens tsql (fn [toks i] (when (= i 2) (quote-id nn))))]
-                      (rename-table-refs s1 old nn))
+                      (if legacy s1 (rename-table-refs s1 old nn)))
+              legacy-bad (fn [what nm sql*]
+                           (let [toks (vec (lx/tokenize sql*))]
+                             (doseq [i (range (dec (count toks)))]
+                               (when (and (>= i 3) (tok-name? (nth toks i) old) (tok-op? (nth toks (inc i)) ".")
+                                          (not (tok-op? (nth toks (dec i)) ".")))
+                                 (err (str "error in " what " " nm " after rename: no such column: " old "." (:v (nth toks (+ i 2)))))))))
+              _ (when legacy
+                  (legacy-bad "table" nn tsql2)
+                  (doseq [i (vals (:indexes db))
+                          :when (and (= (:table i) tname) (:sql i))]
+                    (legacy-bad "index" (sch/display-name (:name i) i) (:sql i))))
               db (-> db
                      (update :tables dissoc tname)
-                     (assoc-in [:tables nk] (assoc tbl :name nn :sql tsql2))
+                     (assoc-in [:tables nk] (assoc tbl :name (str pfx nn) :sql tsql2))
                      (update :indexes (fn [m] (into {} (map (fn [[k i]]
-                                                              [k (if (= (:table i) tname)
-                                                                   (assoc i :table nk
-                                                                          :sql (when (:sql i) (rename-table-refs (:sql i) old nn)))
-                                                                   i)]) m))))
+                                                              (if (= (:table i) tname)
+                                                                (let [i (assoc i :table nk
+                                                                               :sql (when (:sql i) (if legacy (rename-trigger-on (:sql i) old nn) (rename-table-refs (:sql i) old nn))))
+                                                                      i (if (:auto i)
+                                                                          (let [nm (sch/display-name (:name i) i) p2 (str "sqlite_autoindex_" old "_")]
+                                                                            (if (str/starts-with? (lc nm) (lc p2))
+                                                                              (assoc i :name (str pfx "sqlite_autoindex_" nn "_" (subs nm (count p2))))
+                                                                              i))
+                                                                          i)]
+                                                                  [(lc (:name i)) i])
+                                                                [k i])) m))))
                      ;; foreign keys of other tables
                      (update :tables (fn [m] (into {} (map (fn [[k t]]
-                                                             [k (if (and (not= k nk) (:sql t) (mentions-table? (:sql t) old))
-                                                                  (assoc t :sql (rename-table-refs (:sql t) old nn)) t)]) m))))
+                                                             [k (if (and (not= k nk) (:sql t) (or (not legacy) fk-on) (mentions-table? (:sql t) old))
+                                                                  (assoc t :sql (rename-table-refs (:sql t) old nn)
+                                                                         :fks (mapv (fn [fk] (if (= (lc (:table fk)) (lc old)) (assoc fk :table nn) fk)) (:fks t))) t)]) m))))
                      (update :triggers (fn [m] (into {} (map (fn [[k t]]
                                                                [k (if (= (:table t) tname) (assoc t :table nk :table-name nn) t)]) m)))))
-              db (reschema-objects db (fn [s] (if (and s (mentions-table? s old)) (rename-table-refs s old nn) s)))
+              db (reschema-objects db (fn [s _] (if (and s (mentions-table? s old))
+                                                (if legacy
+                                                  (if (str/starts-with? (str/upper-case (str/triml s)) "CREATE TRIGGER")
+                                                    (rename-trigger-on s old nn) s)
+                                                  (rename-table-refs s old nn))
+                                                s)))
               db (if-let [t (get-in db [:tables "sqlite_sequence"])]
                    (assoc-in db [:tables "sqlite_sequence" :rows]
                              (into (sorted-map) (map (fn [[rid r]] [rid (if (= (lc (first r)) nk) r (if (= (lc (first r)) tname) (assoc r 0 nn) r))]) (:rows t))))
                    db)]
+          (when-not legacy (post-check db "rename"))
           db))
       :add
       (let [d (:col st)
@@ -1278,7 +1563,7 @@
             notnull (some #(= :notnull (:c %)) cons)
             has-check (some #(= :check (:c %)) cons)
             coldef (subs sql (:s d) (:e d))
-            _ (when (and dflt (or (not (e/const-term? dflt)) (some #(and (map? %) (= :fn (:op %))) (tree-seq coll? seq dflt))))
+            _ (when (and dflt (not (simple-default? dflt)))
                 (.append out "# raise(ABORT,'Cannot add a column with non-constant default')\n")
                 (err "Cannot add a column with non-constant default"))
             dv (when dflt ((:f (e/cx (new-ctx db sql) dflt)) (object-array 1)))
@@ -1310,13 +1595,34 @@
               (throw ex)))))
       :rename-col
       (let [i (find-col tbl (:old st))
-            _ (when-not i (err (str "no such column: \"" (:old st) "\"")))
-            _ (when (and (find-col tbl (:to st)) (not= (lc (:old st)) (lc (:to st)))) (err (str "duplicate column name: " (:to st))))
+            _ (when-not i (err (str "no such column: \"" (or (:old-raw st) (:old st)) "\"")))
             old (:old st) nn (:to st)
-            new-sql (rename-column-refs tsql old nn)
+            _ (let [names (mapv :name (:cols tbl))
+                    names (assoc names i nn)
+                    seen (volatile! #{})]
+                (doseq [n names]
+                  (when (contains? @seen (lc n))
+                    (err (str "error in table " (sch/display-name (:name tbl) tbl) " after rename: duplicate column name: " n)))
+                  (vswap! seen conj (lc n))))
+            legacy (let [x (get-in db [:pragmas "legacy_alter_table"])] (and x (not= 0 x) (not= "off" (lc (str x)))))
+            _ (when-not legacy (pre-check db))
+            tn (sch/display-name (:name tbl) tbl)
+            new-sql (rename-column-refs tsql old nn tn nil true)
             db2 (rebuild-table db tname new-sql identity
-                               (fn [ix] (rename-column-refs (:sql ix) old nn)))
-            db2 (reschema-objects db2 (fn [s] (if (and s (mentions-table? s (:name tbl))) (rename-column-refs s old nn) s)))]
+                               (fn [ix] (rename-column-refs (:sql ix) old nn tn nil false)))
+            db2 (reschema-objects db2 (fn [s o] (if (and s (or (mentions-table? s tn) (and (:table o) (= (:table o) tname))))
+                                                  (rename-column-refs s old nn tn (when (:table o) (sch/display-name (or (:table-name o) (:table o)) o)) false)
+                                                  s)))
+            ;; foreign keys of other tables that name this column as the parent column
+            db2 (update db2 :tables (fn [m] (into {} (map (fn [[k t]]
+                                                            [k (if (and (not= k tname) (:sql t) (some #(= (lc (:table %)) (lc tn)) (:fks t)))
+                                                                 (assoc t :sql (rename-fk-parent-col (:sql t) tn old nn)
+                                                                        :fks (mapv (fn [fk] (if (= (lc (:table fk)) (lc tn))
+                                                                                              (update fk :to (fn [c] (when c (mapv #(if (= (lc %) (lc old)) nn %) c))))
+                                                                                              fk))
+                                                                                   (:fks t)))
+                                                                 t)]) m))))]
+        (when-not legacy (post-check db2 "rename"))
         db2)
       :set-notnull
       (let [i (or (find-col tbl (:col st)) (err (str "no such column: \"" (:col st) "\"")))
@@ -1389,8 +1695,9 @@
             _ (when-not i (err (str "no such column: \"" (:col st) "\"")))
             c (nth (:cols tbl) i)
             _ (when (= 1 (count (:cols tbl))) (err (str "cannot drop column \"" (:name c) "\": no other columns exist")))
-            _ (when (:pk c) (err (str "cannot drop PRIMARY KEY column: \"" (:name c) "\"")))
-            _ (when (seq (:unique c)) (err (str "cannot drop UNIQUE column: \"" (:name c) "\"")))
+            _ (when (or (:pk c) (some #(= % i) (:pk-cols tbl))) (err (str "cannot drop PRIMARY KEY column: \"" (:col st) "\"")))
+            _ (when (seq (:unique c))
+                (err (str "cannot drop UNIQUE column: \"" (:col st) "\"")))
             tst (parse-one tsql)
             cd (nth (:cols tst) i)
             toks (lx/tokenize tsql)
@@ -1405,14 +1712,16 @@
           (when (or (some #(= (:col %) i) (:cols ix))
                     (and (:where-ast ix) (some #(and (map? %) (= :col (:op %)) (= (lc (:name %)) (lc (:name c)))) (tree-seq coll? seq (:where-ast ix)))))
             (err (str "error in index " (:name ix) " after drop column: no such column: " (:name c)))))
-        (try
-          (rebuild-table db tname new-sql
-                         (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
-                         (fn [ix] (:sql ix)))
-          (catch clojure.lang.ExceptionInfo ex
-            (if-let [m (:sql-error (ex-data ex))]
-              (err (str "error in table " (:name tbl) " after drop column: " m))
-              (throw ex))))))))
+        (let [db2 (try
+                    (rebuild-table db tname new-sql
+                                   (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
+                                   (fn [ix] (:sql ix)))
+                    (catch clojure.lang.ExceptionInfo ex
+                      (if-let [m (:sql-error (ex-data ex))]
+                        (err (str "error in table " (:name tbl) " after drop column: " m))
+                        (throw ex))))]
+          (post-check db2 "drop column")
+          db2)))))
 
 ;; ====================================================================== driver
 
@@ -1480,6 +1789,9 @@
   (let [n0 (.length out)] (exec-statement* db sql st out n0)))
 
 (defn- exec-statement* [db sql st ^StringBuilder out n0]
+  (when (and (= 1 (get-in db [:pragmas "query_only"]))
+             (#{:insert :update :delete :create-table :create-index :create-view :create-trigger :drop :alter :vacuum :reindex :analyze} (:kind st)))
+    (err "attempt to write a readonly database"))
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
   (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be modified")))
@@ -1487,6 +1799,9 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be indexed")))
+  (when (and (#{:create-table :create-view :create-trigger} (:kind st)) (:temp st) (:schema st)
+             (not= "temp" (lc (:schema st))))
+    (err (str "temporary " (case (:kind st) :create-table "table" :create-view "view" "trigger") " name must be unqualified")))
   (when (= :create-table (:kind st))
     (doseq [d (:cols st)
             k (:cons d) :when (= :default (:c k))]
@@ -1583,7 +1898,7 @@
                                    ln (lc (:name st))]
                                (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
                                      (or (get-in db [:views ln]) (get-in db [:tables ln]))
-                                     (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
+                                     (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (or (:name-raw st) (:name st)) " already exists")))
                                      :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
                                                  (err "parameters are not allowed in views"))
                                                (when-not (or (:temp st) (:db st))
@@ -1651,8 +1966,8 @@
                                                     (cond
                                                       (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (sch/attached-names db))))
                                                       (str "unknown database " (:schema pc))
-                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:tables l])) (str "table " nm " already exists")
-                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:views l])) (str "view " nm " already exists")
+                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:tables l])) (str "table " (or (:raw pc) nm) " already exists")
+                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:views l])) (str "view " (or (:raw pc) nm) " already exists")
                                                       (and (or (nil? sc) (= sc "main")) (get-in db [:indexes l])) (str "there is already an index named " nm)
                                                       :else m))
                                                   m)))
@@ -1665,12 +1980,13 @@
           (let [prep (volatile! false)
                 r (try (binding [*prepared* prep]
                          (vreset! v/enc (case (get-in db [:pragmas "encoding"]) "UTF-16le" :utf16le "UTF-16be" :utf16be :utf8))
+                         (vreset! ignore-checks (= 1 (get-in db [:pragmas "ignore_check_constraints"])))
                          (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
                            (let [d (ex-data ex)]
                              (emit-line out (str "error: " m))
-                             (cond (:partial-db d) [::stop (:partial-db d)]
+                             (cond (:partial-db d) [::stop (let [pd (:partial-db d)] (update pd :total-changes (fnil + 0) (long (or (:changes pd) 0))))]
                                    (:changes-after d) [::stop (assoc db :changes (:changes-after d))]
                                    (and (= :rollback (:conflict d)) (:tx db)) [::stop (assoc (dissoc (restore db (:snap (:tx db))) :tx) :changes 0)]
                                    @prep [::stop (assoc db :changes 0)]
