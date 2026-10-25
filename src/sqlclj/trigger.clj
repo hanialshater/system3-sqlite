@@ -14,6 +14,7 @@
 (def ^:dynamic *active* #{})
 (def ^:dynamic *depth* 0)
 (def ^:dynamic *budget* nil)
+(def ^:dynamic *outer-or* nil)
 
 (defn make-trigger
   "Trigger record from a parsed CREATE TRIGGER statement and the text its spans refer to."
@@ -83,7 +84,11 @@
         (when (> *depth* 1000) (err "too many levels of trigger recursion"))
         (when (and *budget* (> (swap! *budget* inc) 3000)) (err "too many levels of trigger recursion"))
         (let [sb (StringBuilder.)
-              db2 (reduce (fn [db st] (@exec-fn db src (substitute st tbl old new) sb)) db (:body trig))]
+              db2 (reduce (fn [db st]
+                              (let [st (substitute st tbl old new)
+                                    st (if (and *outer-or* (#{:insert :update} (:kind st))) (assoc st :or *outer-or*) st)]
+                                (@exec-fn db src st sb)))
+                            db (:body trig))]
           (assoc db2 :changes changes :last-rowid last-rowid))))))
 
 (def ^:dynamic *validating* nil)

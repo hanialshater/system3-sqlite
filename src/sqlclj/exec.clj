@@ -639,6 +639,13 @@
                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
         (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
 
+(defn- scan-entries
+  "[rowid row] entries of a table in scan order: rowid order, or PRIMARY KEY order for WITHOUT ROWID."
+  [tbl]
+  (if (and (:without-rowid tbl) (seq (:pk-cols tbl)))
+    (let [n (count (:cols tbl))] (map (fn [r] [(nth r n) r]) (e/table-rows tbl)))
+    (:rows tbl)))
+
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
 (defn- end-target [db tkey tbl] (if (:view tbl) (update db :tables dissoc tkey) db))
 
@@ -663,6 +670,7 @@
         db (with-target db tkey tbl)
         fkt (and (not (:view tbl)) (fk/tracks? db tbl))
         vw (:view tbl)
+        _ (when-not (:view tbl) (fk/prepare-check! db tbl :insert nil (boolean (or (:select st) (> (count (:rows st)) 1) (= :replace (:or st)) (trg/any-for? db tkey :insert) (trg/any-for? db tkey :delete)))))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
@@ -779,7 +787,12 @@
                           row (range ncols))
               row (fill-generated tbl (assoc row ncols rid))
               bts (trg/matching db (:vkey tbl tkey) :before :insert nil)
-              bres (if (seq bts) (try-fire db bts tbl nil (assoc row ncols rid)) db)
+              bres (if (seq bts)
+                     ;; a BEFORE trigger sees -1 for a rowid the statement did not give
+                     (try-fire db bts tbl nil (if (nil? rid-val)
+                                                (cond-> (assoc row ncols -1) ipk (assoc ipk -1))
+                                                (assoc row ncols rid)))
+                     db)
               ignored (= bres ::ignore)
               db (if ignored db bres)
               tbl (get-in db [:tables tkey])
@@ -886,6 +899,7 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (when-not (:view tbl) (fk/prepare-check! db tbl :update (mapv lc (mapcat first (:sets st)))))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
                              (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ncols (count (:cols tbl))
@@ -950,7 +964,7 @@
                   (vec (filter (fn [[rid row]]
                                  (aset env slot row)
                                  (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
-                               (if (and where-pre (not (where-pre env))) [] (:rows tbl)))))
+                               (if (and where-pre (not (where-pre env))) [] (scan-entries tbl)))))
         ret-rows (java.util.ArrayList.)]
     (let [set-names (mapv (fn [[ci _]] (if (neg? ci) "rowid" (lc (:name (nth (:cols tbl) ci))))) sets)
           [db changes]
@@ -1017,6 +1031,7 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (when-not (:view tbl) (fk/prepare-check! db tbl :delete nil))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
@@ -1034,7 +1049,7 @@
         doomed (vec (filter (fn [[rid row]]
                               (aset env slot row)
                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
-                            (if (and where-pre (not (where-pre env))) [] (:rows tbl))))]
+                            (if (and where-pre (not (where-pre env))) [] (scan-entries tbl))))]
     (when (and ret (not (:redo ret)))
       (doseq [[_ row] doomed]
         (aset env slot row)
@@ -1939,7 +1954,7 @@
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
-          db2 (binding [e/*with* (:with st) fk/*child* (atom []) fk/*parent* (atom [])]
+          db2 (binding [e/*with* (:with st) fk/*child* (atom []) fk/*parent* (atom []) trg/*outer-or* (:or st)]
                (let [r (f db sql st (fn [r] (.add rows r))
                           (fn [names]
                             (when names (emit-line out (str "# " (str/join "|" names))))
