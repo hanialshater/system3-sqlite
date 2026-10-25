@@ -1753,7 +1753,9 @@
                  (let [t (get-in (:db ctx) [:tables (schema/resolve-key (:db ctx) name "main")])] (when-not (:temp t) t)))
                (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))]))
          ls (lc sch)
-         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
+         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))
+                      (not (and (= iv "main") (:temp t))))
+             t)]
      (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
@@ -2526,18 +2528,18 @@
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil)))))
           nagg-before (count @aggs)
-          group-c (binding [*coll-phase* :group] (mapv (fn [g]
+          group-c (binding [*coll-phase* :group] (vec (map-indexed (fn [gi g]
                           (let [g (subst g)]
                             (when (neg-int-lit? g)
-                              (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
+                              (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
                               (let [k (long (lit-value g))]
                                 (if (or (< k 1) (> k (count rcols)))
-                                  (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols)))
+                                  (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols)))
                                   (nth rcomp (dec k))))
                               (let [c (cx (assoc ctx2 :aggs aggs :agg-slot agg-slot :no-agg-msg true) g)]
                                 c))))
-                        (:group core)))
+                        (:group core))))
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)

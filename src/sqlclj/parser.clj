@@ -90,7 +90,8 @@
         names (loop [acc []]
                 (let [t (tok p)]
                   (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (or (reserved (:u t)) (= "GENERATED" (:u t))))))
+                           (or (= :qid (:t t)) (not (or (reserved (:u t))
+                                                    (and (= "GENERATED" (:u t)) (kw? (tok-at p 1) "ALWAYS") (kw? (tok-at p 2) "AS"))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
     (when (seq names)
@@ -1167,7 +1168,9 @@
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
                                     (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
-                                              (and (= :id (:t t)) (#{"NULL"} (:u t))))
+                                              (and (= :id (:t t)) (#{"NULL"} (:u t)))
+                                              (and (= :id (:t t)) (reserved (:u t)) (not (join-kw (:u t)))
+                                                   (not (#{"ON" "DELETE" "DEFAULT"} (:u t)))))
                                       (syntax-error p t))
                                     (str sign (:v t))))
                            v (cond (accept-op p "=") (pval)
@@ -1202,6 +1205,46 @@
   [^String sql]
   (P. sql (fix-window-keywords (lx/tokenize sql)) (int-array 1)))
 
+(defn- stack-overflow?
+  "Approximates Lemon's parser stack (about 2494 entries) from the nesting of parentheses, calls and CASE."
+  [toks start]
+  (let [n (count toks)]
+    (loop [i start frames [] cur 0 mx 0 prev nil]
+      (if (or (>= i n) (> mx 2493))
+        (> mx 2493)
+        (let [t (nth toks i)]
+          (cond
+            (= :eof (:t t)) false
+            (and (= :op (:t t)) (= ";" (:v t)) (empty? frames)) false
+            (and (= :op (:t t)) (= "(" (:v t)))
+            (let [c (cond (and prev (or (= :qid (:t prev))
+                                        (and (= :id (:t prev)) (not (reserved (:u prev)))
+                                             (not (contains? #{"SELECT" "VALUES" "IN" "FROM" "JOIN" "AS" "WITH" "VIEW" "TABLE" "SET"} (:u prev))))))
+                          3
+                          (and prev (or (and (= :op (:t prev)) (not= ")" (:v prev)) (not= "(" (:v prev)) (not= "," (:v prev)))
+                                        (and (= :id (:t prev)) (contains? #{"AND" "OR" "NOT" "WHEN" "THEN" "ELSE" "IS" "IN" "BETWEEN" "LIKE"} (:u prev)))))
+                          3
+                          (kw? (nth toks (inc i)) "SELECT") 6
+                          :else 1)
+                  cur (+ cur c)]
+              (recur (inc i) (conj frames c) cur (max mx cur) t))
+            (and (= :op (:t t)) (= ")" (:v t)) (seq frames) (not= :case (peek frames)))
+            (recur (inc i) (pop frames) (- cur (long (peek frames))) mx t)
+            (= "CASE" (:u t))
+            (recur (inc i) (conj frames 3) (+ cur 3) (max mx (+ cur 3)) t)
+            (and (= "END" (:u t)) (seq frames) (= 3 (peek frames)))
+            (recur (inc i) (pop frames) (- cur 3) mx t)
+            :else (recur (inc i) frames cur mx t)))))))
+
+(defn- expr-height [x]
+  (cond
+    (map? x) (let [h (reduce (fn [m v] (max m (long (expr-height v)))) 0 (vals x))]
+               (cond (or (#{:subq :exists} (:op x)) (and (:op x) (:select x))) (+ h 23)
+                     (:op x) (inc h)
+                     :else h))
+    (sequential? x) (reduce (fn [m v] (max m (long (expr-height v)))) 0 x)
+    :else 0))
+
 (defn next-statement
   "Returns the next statement AST (with :sql-text) or nil if no more. Skips empty statements."
   [^P p]
@@ -1212,7 +1255,11 @@
         (and (= :op (:t t)) (= ";" (:v t))) (do (advance! p) (recur))
         :else
         (let [st-s (:s t)
+              _ (when (> (count (.-toks p)) 800)
+                  (when (stack-overflow? (.-toks p) (pos p)) (throw (lx/sql-error "Recursion limit"))))
               st (parse-statement* p)
+              _ (when (and (> (count (.-toks p)) 100) (map? st) (> (long (expr-height st)) 1000))
+                  (throw (lx/sql-error "Expression tree is too large (maximum depth 1000)")))
               t (tok p)
               st (if (map? st) (assoc st :st-s st-s :st-e (prev-end p) :st-next (or (:s t) (count (.-sql p)))) st)]
           (cond

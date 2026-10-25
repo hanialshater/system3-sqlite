@@ -549,25 +549,25 @@
       (cond
         (nil? clause) false
         (nil? target) true
-        (= what :rowid) (and (not (:without-rowid tbl)) (= 1 (count (:cols target)))
-                             (= :col (:op (:e (first (:cols target)))))
+        (= what :rowid) (and (= 1 (count (:cols target)))
+                             (nil? (:where target))
                              (let [n (lc (:name (:e (first (:cols target)))))]
-                               (or (#{"rowid" "oid" "_rowid_"} n)
-                                   (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl)))))))))
+                               (or (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+                                   (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} n)))))
         (map? what)
         (let [sp (var-get #'e/strip-pos)
               tw (:where target) iw (:where-ast what)
               tcols (:cols target) icols (:cols what)]
           (and (= (count tcols) (count icols))
                (if tw (or (nil? iw) (= (sp tw) (sp iw))) (nil? iw))
-               (every? (fn [tc]
-                         (some (fn [ic]
+               (every? (fn [ic]
+                         (some (fn [tc]
                                  (and (if (:name ic)
                                         (and (= :col (:op (:e tc))) (= (lc (:name ic)) (lc (:name (:e tc)))))
                                         (and (:ast ic) (= (sp (:e tc)) (sp (:ast ic)))))
                                       (or (nil? (:coll tc)) (= (lc (str (:coll ic))) (lc (str (:coll tc)))))))
-                               icols))
-                       tcols)))
+                               tcols))
+                       icols)))
         :else false))))
 
 (defn- no-journal? [db] (= "off" (get-in db [:pragmas "journal_mode.main"])))
@@ -655,6 +655,7 @@
                (:rows st) (let [rs (:rows st)]
                             (when (apply not= (map count rs))
                               (err "all VALUES must have the same number of terms"))
+                            (doseq [r rs, x r] (e/cx ctx x))
                             (doseq [r rs]
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
@@ -675,6 +676,13 @@
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
+                                (when (:target u)
+                                  (doseq [tc (:cols (:target u))]
+                                    (let [e (:e tc)]
+                                      (when (and (= :col (:op e)) (nil? (:table e))
+                                                 (not (some #(= (lc (:name %)) (lc (:name e))) (:cols tbl)))
+                                                 (not (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e))))))
+                                        (err (str "no such column: " (:name e)))))))
                                 (when (and (:target u) (not (some (fn [idx] ((upsert-matcher tbl u) idx))
                                                                   (cons :rowid (filter :unique (table-indexes db tname))))))
                                   (err "ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint"))
@@ -1039,7 +1047,7 @@
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
       (str/starts-with? ln "sqlite_") (err (str "object name reserved for internal use: " name))
       (some :returning (:body st)) (err "cannot use RETURNING in a trigger")
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (:temp st) (nil? (:table-schema st))) "" (str (or (:table-schema st) "main") "."))
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
@@ -1908,6 +1916,9 @@
                                                  (let [att (set (sch/attached-names db))
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
+                                                                                             (some-> (:schema x) lc (= "temp")))
+                                                                                    (reset! refs "temp"))
+                                                                            (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
                                                                                     (let [k (lc (:table x))
                                                                                           dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
