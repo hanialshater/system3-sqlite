@@ -326,7 +326,7 @@
               (let [cur (long (pget db n 0))
                     blocked (and (seq (get-in db [:pages "main"])) (not= (zero? cur) (zero? (long x))))]
                 (if blocked
-                  (none db)
+                  (none (pset db "auto_vacuum.next" x))
                   {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))))
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
