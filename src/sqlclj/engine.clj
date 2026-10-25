@@ -542,7 +542,7 @@
                  mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
              (mk (fn [env] (if (= k :ignore)
                              (throw (ex-info "raise-ignore" {:raise-ignore true}))
-                             (let [msg (if mf (let [x (mf env)] (if (nil? x) "" (v/text-of x))) msg)]
+                             (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
                                (throw (ex-info msg {:sql-error msg :raise k})))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
@@ -1819,6 +1819,7 @@
           names)))
 
 (declare compile-cte)
+(def ^:dynamic *view-stack* #{})
 
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
