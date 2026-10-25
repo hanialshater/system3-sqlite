@@ -1589,7 +1589,9 @@
           (nil? st) [db (.toString out)]
           :else
           (let [prep (volatile! false)
-                r (try (binding [*prepared* prep] (exec-statement db line st out))
+                r (try (binding [*prepared* prep]
+                         (vreset! v/enc (case (get-in db [:pragmas "encoding"]) "UTF-16le" :utf16le "UTF-16be" :utf16be :utf8))
+                         (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
                            (let [d (ex-data ex)]
