@@ -10,7 +10,8 @@
             [sqlclj.ext :as ext]
             [sqlclj.json :as js]
             [sqlclj.printf :as pf]
-            [sqlclj.schema :as schema])
+            [sqlclj.schema :as schema]
+            [sqlclj.guard :as g])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -52,7 +53,7 @@
   (let [i (.indexOf ^java.util.List (:lcols src) lname)]
     (when (>= i 0) i)))
 
-(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_"} lname))
+(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_" "\u0000rowid"} lname))
 
 (defn resolve-column
   "Returns {:slot :idx :aff :coll :depth :src} or throws."
@@ -71,7 +72,7 @@
                      (concat
                       (for [s srcs :when (= (:alias s) ltq)
                             :let [i (find-in-source s lname)
-                                  i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
+                                  i (or i (when (and (rowid-name? lname) (or (:rowid? s) (and (= lname "\u0000rowid") (:table s)))) (:ncols s)))]
                             :when i]
                         [s i])
                       (for [s srcs :when (and (:quals s) (not= (:alias s) ltq))
@@ -87,6 +88,15 @@
                        (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
+            (and ltq (> (count hits) 1)
+                 (let [h2 (vec (cons (first hits) (remove (fn [[s _]] (contains? (:hidden s) lname)) (rest hits))))]
+                   (when (= 1 (count h2)) h2)))
+            (let [[s i] (first hits)]
+              (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
+              {:slot (:slot s) :idx i :depth depth :src s
+               :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
+               :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
+               :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
             (> (count hits) 1)
             (err (str "ambiguous column name: " (if tq (str tq "." name) name)))
             (= 1 (count hits))
@@ -987,7 +997,7 @@
     nil
     (reduce (fn [best a]
               (let [c (v/sql-cmp a best coll)]
-                (if (if max? (> c 0) (< c 0)) a best)))
+                (if (if max? (> c 0) (<= c 0)) a best)))
             (first args) (rest args))))
 
 (defn- abs-impl [x]
@@ -1814,7 +1824,7 @@
                   (err (str "no such index: " (:indexed-by item)))))
               {:alias (lc (or (:alias item) name)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
-               :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
+               :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
         view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
@@ -1930,7 +1940,7 @@
               (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
           (:name e)))
-    :else (text-of-node ctx (:e rc))))
+    :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
   (and (= :lit (:op e)) (= :int (:kind e))
@@ -2083,7 +2093,7 @@
                                    (or (nil? (:table e)) (= (lc (:table e)) (:alias src))))
                           (let [i (.indexOf ^java.util.List (:lcols src) (lc (:name e)))]
                             (cond (>= i 0) (if (= i (:ipk tbl)) ncols i)
-                                  (#{"rowid" "oid" "_rowid_"} (lc (:name e))) ncols
+                                  (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))) ncols
                                   :else nil))))
         refs-me? (fn refs [e] (cond (map? e) (or (some? (col-idx e)) (some refs (vals e)))
                                     (sequential? e) (some refs e)
@@ -2199,7 +2209,14 @@
                           (= want (set (map (fn [ic] [(:c ic) (if (= (:c ic) (:ncols src)) (or (some (fn [[c coll]] (when (= (norm-col src c) (:c ic)) (or coll "BINARY"))) terms) "BINARY") (:coll ic))]) pre))))]
            idx)))
 
+(declare make-scanner*)
 (defn- make-scanner
+  "make-scanner* with the cooperative time-budget check (sqlclj.guard) at each scan start."
+  [ctx src where-terms]
+  (let [f (make-scanner* ctx src where-terms)]
+    (fn [env] (g/check!) (f env))))
+
+(defn- make-scanner*
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
@@ -2375,7 +2392,7 @@
                                            (let [ce (:e t) ln (lc (:name ce))
                                                  i (.indexOf ^java.util.List (:lcols s0) ln)]
                                              (and (or (nil? (:table ce)) (= (lc (:table ce)) (:alias s0)))
-                                                  (if (>= i 0) (= i (:ipk (:table s0))) (#{"rowid" "oid" "_rowid_"} ln)))))
+                                                  (if (>= i 0) (= i (:ipk (:table s0))) (and (not (:without-rowid (:table s0))) (#{"rowid" "oid" "_rowid_"} ln))))))
                                 :let [sub (compile-select (assoc ctx2 :aggs nil) (:select t))]
                                 :when (not (:correlated sub))]
                             sub))))
@@ -3125,7 +3142,7 @@
                            (let [ln (lc (:name x))
                                  i (.indexOf ^java.util.List (:lcols src) ln)]
                              (or (and (>= i 0) (or (= i (:ipk tbl)) (:notnull (nth (:cols tbl) i))))
-                                 (and (neg? i) (#{"rowid" "oid" "_rowid_"} ln)))))))
+                                 (and (neg? i) (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} ln)))))))
         terms (remove always-true? (or where-terms []))
         strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table)
                                  (map? e) (into {} (for [[k x] e] [k (sq x)]))
