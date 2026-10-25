@@ -98,7 +98,7 @@
 (defn index-list-rows [db tname]
   (if-let [t (find-table db tname)]
     (vec (map-indexed (fn [i idx]
-                        [(long i) (:name idx) (if (:unique idx) 1 0)
+                        [(long i) (sch/display-name (:name idx) idx) (if (:unique idx) 1 0)
                          (cond (not (:auto idx)) "c" (:pk-auto idx) "pk" :else "u")
                          (if (:where idx) 1 0)])
                       (table-indexes db (lc (:name t)))))
@@ -143,6 +143,17 @@
         db (if (= sc "temp") (assoc db :temp-used true) db)]
     (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
+    (let [v (if (and sc v (string? v))
+              (cond
+                (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
+                (case sc
+                  "main" (sch/resolve-key db v "main")
+                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  (sch/obj-key db v sc))
+                (#{"index_info" "index_xinfo"} n)
+                (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))
+                :else v)
+              v)]
     (cond
       (contains? flag-pragmas n)
       (if (nil? v)
@@ -285,7 +296,7 @@
                      (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
                        ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
                      [["temp" "sqlite_temp_schema" "table" 5 0 0]])))}
-        (none db)))))
+        (none db))))))
 
 ;; pragma_xxx table-valued functions
 (def tvf-cols
@@ -317,6 +328,6 @@
          :rows (fn [db args]
                  (let [[a s] (if takes-arg args [nil (first args)])
                        a (when (some? a) (str a))]
-                   (:rows (run db {:name n :value a :schema nil :tvf true}))))}))))
+                   (:rows (run db {:name n :value a :schema (when (some? s) (str s)) :tvf true}))))}))))
 
 (swap! e/tvf-resolvers (fn [rs] (if (some #(= % #'tvf-resolver) rs) rs (conj rs #'tvf-resolver))))
