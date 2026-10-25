@@ -1102,6 +1102,9 @@
         main-only (fn [o] (if (and o (:temp o) (= "main" (some-> (:schema st) lc)) (nil? (:table-schema st))) nil o))
         tbl (main-only (get-in db [:tables tl])) view (main-only (get-in db [:views tl]))]
     (cond
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (or (:temp st) (= "temp" (some-> (:schema st) lc))) (nil? (:table-schema st))) "" (str (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st)) "main") "."))
+                                                      (let [t (str (:table st)) q (some-> (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st))) lc)]
+                                                        (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " (or (:name-raw st) name) " already exists")))
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
       (and (str/starts-with? ln "sqlite_") (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
@@ -1120,9 +1123,6 @@
                                         (filter #(and (map? %) (contains? % :indexed-by) (:table %) (:schema %)))
                                         (map #(lc (:schema %)))))]
                   (first (remove #{own} refs)))))
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (or (:temp st) (= "temp" (some-> (:schema st) lc))) (nil? (:table-schema st))) "" (str (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st)) "main") "."))
-                                                      (let [t (str (:table st)) q (some-> (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st))) lc)]
-                                                        (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
       (err (str "cannot create " (if (= :before (:timing st)) "BEFORE" "AFTER") " trigger on view: " (:table st)))
       (and tbl (= :instead (:timing st))) (err (str "cannot create INSTEAD OF trigger on table: " (:table st)))
@@ -1296,9 +1296,12 @@
                  (nil? lname) :all
                  (and (nil? lsch) (#{"main" "temp"} lname)) :all
                  (and (nil? lsch) (#{"sqlite_master" "sqlite_schema"} lname)) [:table lname]
-                 (get-in db [:indexes lname]) [:index lname]
-                 (get-in db [:tables lname]) [:table lname]
-                 :else (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:name st))))
+                 :else
+                 (let [k (if (and lsch (not (#{"main" "temp"} lsch))) (str lsch "." lname) lname)
+                       fits (fn [o] (and o (or (nil? lsch) (= lsch (sch/schema-of o)))))]
+                   (cond (fits (get-in db [:indexes k])) [:index k]
+                         (fits (get-in db [:tables k])) [:table k]
+                         :else (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:name st))))))
         db (if (get-in db [:tables "sqlite_stat1"])
              db
              (create-table db "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
@@ -1632,7 +1635,7 @@
                               (map (fn [t] [:trigger t]) (filter same (vals (:triggers db))))))]
     (some (fn [[kind o]]
             (let [m (if (= kind :view) (check-view db o) (check-trigger db o))]
-              (when (and m (str/starts-with? m "no such ")) [(if (= kind :view) "view" "trigger") (sch/display-name (:name o) o) m])))
+              (when (and m (or (str/starts-with? m "no such ") (str/starts-with? m "ambiguous column name"))) [(if (= kind :view) "view" "trigger") (sch/display-name (:name o) o) m])))
           objs)))
 
 (defn- pre-check [db]
