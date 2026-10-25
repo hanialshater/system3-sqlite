@@ -1413,7 +1413,8 @@
 (defn- snapshot [db] (dissoc db :tx))
 
 (defn- restore [db snap]
-  (assoc snap :tx (:tx db) :changes (:changes db)))
+  (assoc snap :tx (:tx db) :changes (:changes db) :total-changes (:total-changes db) :last-rowid (:last-rowid db)
+         :pragmas (merge (:pragmas db) (select-keys (:pragmas snap) ["user_version" "application_id"])) :temp-used (:temp-used db)))
 
 (defn- exec-tx [db st]
   (let [tx (:tx db)]
@@ -1491,7 +1492,7 @@
           nm (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx (new-ctx db sql) e)) (object-array 4)))
           lnm (lc (str nm))]
       (when-not (some #{lnm} (sch/attached-names db))
-        (err (if (#{"main" "temp"} lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
+        (err (if (= "main" lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
       (let [keep? (fn [[_ o]] (not= lnm (:db o)))]
         (-> db
             (update :attached (fn [a] (vec (remove #(= lnm (first %)) a))))

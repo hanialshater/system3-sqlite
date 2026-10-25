@@ -132,7 +132,8 @@
   [db st]
   (let [n (lc (:name st))
         v (:value st)
-        sc (some-> (:schema st) lc)]
+        sc (some-> (:schema st) lc)
+        db (if (= sc "temp") (assoc db :temp-used true) db)]
     (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
     (cond
@@ -225,12 +226,10 @@
         "pragma_list" {:db db :names ["name"] :rows (mapv vector ["analysis_limit" "application_id" "auto_vacuum" "automatic_index" "busy_timeout" "cache_size" "cache_spill" "case_sensitive_like" "cell_size_check" "checkpoint_fullfsync" "collation_list" "compile_options" "count_changes" "data_version" "database_list" "defer_foreign_keys" "empty_result_callbacks" "encoding" "foreign_key_check" "foreign_key_list" "foreign_keys" "freelist_count" "full_column_names" "fullfsync" "function_list" "hard_heap_limit" "ignore_check_constraints" "incremental_vacuum" "index_info" "index_list" "index_xinfo" "integrity_check" "journal_mode" "journal_size_limit" "legacy_alter_table" "locking_mode" "max_page_count" "mmap_size" "module_list" "optimize" "page_count" "page_size" "pragma_list" "query_only" "quick_check" "read_uncommitted" "recursive_triggers" "reverse_unordered_selects" "schema_version" "secure_delete" "short_column_names" "shrink_memory" "soft_heap_limit" "synchronous" "table_info" "table_list" "table_xinfo" "temp_store" "temp_store_directory" "threads" "trusted_schema" "user_version" "writable_schema"])}
         "collation_list" {:db db :names ["seq" "name"] :rows [[0 "RTRIM"] [1 "NOCASE"] [2 "BINARY"]]}
         "database_list" {:db db :names ["seq" "name" "file"]
-                         :rows (let [has-temp (or (some :temp (vals (:tables db))) (some :temp (vals (:views db))) (some :temp (vals (:indexes db)))
-                                           (some :temp (vals (:triggers db))))
-                                  base (if has-temp [[0 "main" ""] [1 "temp" ""]] [[0 "main" ""]])
-                                  off (count base)]
-                              (vec (concat base
-                                           (map-indexed (fn [i [k a]] [(long (+ off i)) k (or (:file a) "")]) (:attached db)))))}
+                         :rows (vec (concat [[0 "main" ""]]
+                                            (when (or (:temp-used db) (some :temp (concat (vals (:tables db)) (vals (:views db)) (vals (:triggers db)))))
+                                              [[1 "temp" ""]])
+                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (or (:file a) "")]) (:attached db))))}
         "table_info" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (table-info-rows db v false)} (none db))
         "table_xinfo" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (table-info-rows db v true)} (none db))
         "index_list" (if v {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (index-list-rows db v)} (none db))
