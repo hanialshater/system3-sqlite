@@ -1987,14 +1987,21 @@
                             (when-let [sc (lc (:schema st))]
                               (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
                                 (err (str "unknown database " (:schema st)))))
-                            db))]
+                            (when-let [ie (:into st)]
+                              (let [x ((:f (e/cx (new-ctx db sql) ie)) (object-array 4))]
+                                (when-not (string? x) (err "non-text filename"))))
+                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])]
+                              (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
+                                (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                                db))))]
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
         (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
             (update db2 :schema-version (fnil inc 0)))
-        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0)))
+        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0))
+                                (and (= :vacuum (:kind st)) (= "temp" (lc (:schema st)))))
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 

@@ -3,7 +3,8 @@
   (run db st) -> {:db db' :names [..] :rows [..] :writes bool}; :names nil means no result set."
   (:require [clojure.string :as str]
             [sqlclj.engine :as e :refer [err lc]]
-            [sqlclj.schema :as sch]))
+            [sqlclj.schema :as sch]
+            [sqlclj.values :as vv]))
 
 (def compile-options
   ["ATOMIC_INTRINSICS=1" "COMPILER=gcc-13.3.0" "DEFAULT_AUTOVACUUM" "DEFAULT_CACHE_SIZE=-2000"
@@ -18,20 +19,82 @@
    "OMIT_DEPRECATED" "OMIT_LOAD_EXTENSION" "OMIT_PROGRESS_CALLBACK" "OMIT_SHARED_CACHE" "OMIT_WAL"
    "SYSTEM_MALLOC" "TEMP_STORE=3" "THREADSAFE=0"])
 
+(defn- dig? [c] (and c (<= (int \0) (int c) (int \9))))
+(defn- hexd? [c] (and c (or (dig? c) (<= (int \a) (int c) (int \f)) (<= (int \A) (int c) (int \F)))))
+
+(defn- get-int32
+  "sqlite3GetInt32: a 32-bit integer from the start of z (decimal, or 0x hex), or nil."
+  [^String z]
+  (let [z (or z "") n (count z)
+        at (fn [i] (when (< i n) (.charAt z (int i))))]
+    (cond
+      (and (= (at 0) \0) (#{\x \X} (at 1)) (hexd? (at 2)))
+      (let [i (loop [i 2] (if (= (at i) \0) (recur (inc i)) i))
+            k (loop [k i] (if (and (< (- k i) 8) (hexd? (at k))) (recur (inc k)) k))
+            u (if (> k i) (Long/parseLong (subs z i k) 16) 0)]
+        (when (and (zero? (bit-and u 0x80000000)) (not (hexd? (at k))))
+          (long (unchecked-int u))))
+      :else
+      (let [neg (= (at 0) \-)
+            i0 (if (or neg (= (at 0) \+)) 1 0)]
+        (when (dig? (at i0))
+          (let [i1 (loop [i i0] (if (= (at i) \0) (recur (inc i)) i))
+                i2 (loop [i i1] (if (and (< (- i i1) 11) (dig? (at i))) (recur (inc i)) i))
+                v (if (> i2 i1) (Long/parseLong (subs z i1 i2)) 0)]
+            (when (and (<= (- i2 i1) 10) (<= (- v (if neg 1 0)) 2147483647))
+              (if neg (- v) v))))))))
+
+(defn- atoi [z] (or (get-int32 z) 0))
+
+(defn- dec-or-hex-i64
+  "sqlite3DecOrHexToI64: [ok? value]."
+  [^String z]
+  (let [z (or z "") n (count z)
+        at (fn [i] (when (< i n) (.charAt z (int i))))]
+    (if (and (= (at 0) \0) (#{\x \X} (at 1)))
+      (let [i (loop [i 2] (if (= (at i) \0) (recur (inc i)) i))
+            k (loop [k i] (if (hexd? (at k)) (recur (inc k)) k))
+            u (reduce (fn [^java.math.BigInteger a c] (.add (.multiply a (java.math.BigInteger/valueOf 16)) (java.math.BigInteger/valueOf (Character/digit (char c) 16))))
+                      java.math.BigInteger/ZERO (subs z i k))]
+        [(and (= k n) (<= (- k i) 16)) (.longValue u)])
+      (let [m (count (re-find #"^[+\- \n\t0-9]*" z))
+            sub (subs z 0 m)
+            t (str/triml sub)
+            neg (str/starts-with? t "-")
+            t (if (or neg (str/starts-with? t "+")) (subs t 1) t)
+            digits (re-find #"^[0-9]*" t)
+            rest* (subs t (count digits))
+            d (str/replace digits #"^0+" "")
+            big (java.math.BigInteger. (if (empty? d) "0" d))
+            lim (java.math.BigInteger/valueOf Long/MAX_VALUE)
+            over (> (.compareTo big (if neg (.add lim java.math.BigInteger/ONE) lim)) 0)
+            val (cond over (if neg Long/MIN_VALUE Long/MAX_VALUE)
+                      neg (- (.longValue big))
+                      :else (.longValue big))]
+        [(and (seq digits) (empty? rest*) (not over)) val]))))
+
 (defn- int-value
-  "PRAGMA argument as an integer (sqlite3Atoi-like), nil if not numeric."
+  "PRAGMA argument as an integer: sqlite3Atoi; nil when absent."
   [^String v]
-  (when v
-    (let [m (re-find #"^[+-]?\d+" (str/trim v))]
-      (when m (try (Long/parseLong (str/replace m "+" "")) (catch Exception _ nil))))))
+  (when v (long (atoi v))))
+
+(defn- safety-level
+  "getSafetyLevel for the boolean pragmas."
+  [^String z omit-full dflt]
+  (if (dig? (first z))
+    (bit-and (long (atoi z)) 0xff)
+    (case (lc z) "on" 1 "no" 0 "off" 0 "false" 0 "yes" 1 "true" 1
+      "extra" (if omit-full dflt 3) "full" (if omit-full dflt 2) dflt)))
 
 (defn- bool-value
-  "sqlite3GetBoolean: on/yes/true/full -> 1, off/no/false/none -> 0, numbers."
+  "sqlite3GetBoolean."
   [^String v dflt]
-  (let [u (str/lower-case (or v ""))]
-    (cond (#{"on" "yes" "true"} u) 1
-          (#{"off" "no" "false"} u) 0
-          :else (if-let [n (int-value v)] (if (zero? n) 0 1) dflt))))
+  (if (zero? (long (safety-level (or v "") true dflt))) 0 1))
+
+(defn- skey
+  "Key of a per-schema pragma value."
+  [n sc]
+  (if (and sc (not= sc "main")) (str n "." sc) n))
 
 ;; flag pragmas: name -> default
 (def flag-pragmas
@@ -47,6 +110,10 @@
    "soft_heap_limit" [0 "soft_heap_limit"]
    "hard_heap_limit" [0 "hard_heap_limit"] "threads" [0 "threads"] "analysis_limit" [0 "analysis_limit"]
    "max_page_count" [4294967294 "max_page_count"] "secure_delete" [0 "secure_delete"]})
+
+(defn- page-count [db sc]
+  (long (if (or (seq (get-in db [:pages (or sc "main")])) (and (= (or sc "main") "main") (:schema-version db)))
+          (inc (count (get-in db [:pages (or sc "main")]))) 0)))
 
 ;; integer pragmas silent when set
 (def int-pragmas-quiet
@@ -70,8 +137,11 @@
 
 (defn table-info-rows
   "Rows of table_info (xinfo? adds the hidden column)."
-  [db tname xinfo?]
-  (if-let [t (find-table db tname)]
+  ([db tname xinfo?] (table-info-rows db tname xinfo? nil))
+  ([db tname xinfo? sc]
+  (if-let [t (let [t (find-table db tname)]
+               (if (and t sc (or (and (= sc "temp") (not (:temp t))) (and (= sc "main") (:temp t)))) nil
+                   (or t (sch/master-table db (lc tname) sc))))]
     (let [pks (vec (:pk-cols t))]
       (vec (keep-indexed
             (fn [i c]
@@ -90,7 +160,7 @@
             affs (or (:src-affs sub) (:affs sub))
             tname (fn [i] (case (nth affs i nil) :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" :blob "BLOB" ""))]
         (vec (map-indexed (fn [i n] (cond-> [(long i) n (tname i) 0 nil 0] xinfo? (conj 0))) names)))
-      [])))
+      []))))
 
 (defn- table-indexes [db lname]
   (->> (vals (:indexes db)) (filter #(= (:table %) lname)) (sort-by :seq >)))
@@ -175,14 +245,30 @@
             (none (pset db "cache_spill.on" (bool-value v (if (and x (zero? (long x))) 0 1)))))))
 
       (contains? int-pragmas-echo n)
-      (let [[d col] (int-pragmas-echo n)]
+      (let [[d col] (int-pragmas-echo n)
+            k (if (= n "max_page_count") (skey n sc) n)
+            cur (long (pget db k d))]
         (if (nil? v)
-          (one db col (long (pget db n d)))
-          (let [x (or (int-value v) (when (= n "secure_delete") (bool-value v 0)) (pget db n d))
-                x (if (#{"mmap_size" "threads"} n) 0 x)
-                x (if (= n "secure_delete") (if (= "fast" (some-> v str str/lower-case)) 2 (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x)))) x)
-                db (pset db n x)]
+          (one db col cur)
+          (let [[ok x] (dec-or-hex-i64 v)
+                x (case n
+                    "busy_timeout" (let [ms (atoi v)] (if (> ms 0) ms 0))
+                    ("mmap_size" "threads") 0
+                    "soft_heap_limit" (if (and ok (>= x 0)) x cur)
+                    "hard_heap_limit" (if (and ok (> x 0) (or (zero? cur) (> cur x))) x cur)
+                    "analysis_limit" (if (and ok (>= x 0)) (bit-and x 0x7fffffff) cur)
+                    "journal_size_limit" (let [x (if (< x -1) -1 x)] x)
+                    "max_page_count" (let [x (if ok (max 0 (min x 0xfffffffe)) 0)]
+                                       (if (pos? x) (max x (page-count db sc)) cur))
+                    "secure_delete" (if (= "fast" (lc v)) 2 (bool-value v 0))
+                    cur)
+                db (pset db k x)]
             (one db col (long x)))))
+
+      (= n "cache_size")
+      (let [k (skey n sc)]
+        (if (nil? v) (one db n (long (pget db k -2000)))
+            (none (pset db k (long (atoi v))))))
 
       (contains? int-pragmas-quiet n)
       (if (nil? v)
@@ -199,11 +285,12 @@
                 (none (pset db n x))))))
 
       (contains? header-pragmas n)
-      (if (nil? v)
-        (one db n (long (if (= n "schema_version") (or (:schema-version db) 0) (pget db n 0))))
-        (let [x (or (int-value v) 0)
-              x (if (<= -2147483648 (long x) 2147483647) x 0)]
-          {:db (if (= n "schema_version") (assoc db :schema-version x) (pset db n x)) :names nil :rows [] :writes true}))
+      (let [k (skey n sc)
+            tmp? (= sc "temp")]
+        (if (nil? v)
+          (one db n (long (if (= n "schema_version") (if (or tmp? (and sc (not= sc "main"))) (pget db k 0) (or (:schema-version db) 0)) (pget db k 0))))
+          (let [x (long (atoi v))]
+            {:db (if (and (= n "schema_version") (not tmp?) (or (nil? sc) (= sc "main"))) (assoc db :schema-version x) (pset db k x)) :names nil :rows [] :writes true})))
 
       :else
       (case n
@@ -217,7 +304,8 @@
                  (pset db k nv))
                "journal_mode" nv))
         "locking_mode"
-        (let [cur (pget db "locking_mode" "normal")
+        (let [k (str "locking_mode." (or sc "main"))
+              cur (pget db k (if (= sc "temp") "exclusive" "normal"))
               u (some-> v lc)
               nv (if (#{"normal" "exclusive"} u) u cur)]
           (cond
@@ -228,15 +316,22 @@
         "module_list" {:db db :names ["name"] :rows []}
         "temp_store_directory" {:db db :names ["temp_store_directory"] :rows []}
         "synchronous"
-        (if (nil? v) (one db n (long (pget db n 2)))
-            (let [u (lc v)
-                  x (case u "off" 0 "normal" 1 "full" 2 "extra" 3 (or (int-value v) 0))]
-              (none (pset db n x))))
+        (let [k (skey n sc)]
+          (if (nil? v) (one db n (long (pget db k (if (= sc "temp") 0 2))))
+              (if (:tx db)
+                (err "Safety level may not be changed inside a transaction")
+                (let [x (if (dig? (first v))
+                          (let [l (bit-and (inc (long (atoi v))) 7)] (dec (if (zero? l) 1 l)))
+                          (case (lc v) ("off" "no" "false") 0 ("on" "yes" "true") 1 "extra" 3 "full" 2 1))]
+                  (if (= sc "temp") (none db) (none (pset db k x)))))))
         "temp_store"
         (if (nil? v) (one db n (long (pget db n 0)))
-            (let [u (lc v)
-                  x (case u "default" 0 "file" 1 "memory" 2 (or (int-value v) 0))]
-              (none (pset db n x))))
+            (let [c (first v)
+                  x (cond (and c (<= (int \0) (int c) (int \2))) (- (int c) (int \0))
+                          (= "file" (lc v)) 1 (= "memory" (lc v)) 2 :else 0)]
+              (if (and (:tx db) (not= x (long (pget db n 0))))
+                (err "temporary storage cannot be changed from within a transaction")
+                (none (pset db n x)))))
         "auto_vacuum"
         (if (nil? v) (one db n (long (pget db n 0)))
             (let [u (lc v)
@@ -244,7 +339,7 @@
               (let [cur (long (pget db n 0))
                     blocked (and (seq (get-in db [:pages "main"])) (not= (zero? cur) (zero? (long x))))]
                 (if blocked
-                  (none db)
+                  (none (pset db "auto_vacuum.next" x))
                   {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))))
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
@@ -256,12 +351,21 @@
                                       "utf8" "UTF-8" ("utf16" "utf16le") "UTF-16le" "utf16be" "UTF-16be"
                                       (err (str "unsupported encoding: " v)))]
                              (none (pset db "encoding" nm)))))))
-        "integrity_check" (if (and v (not (int-value v)) (not (find-table db v)))
-                            (err (str "no such table: " v))
-                            (one db n "ok"))
-        "quick_check" (if (and v (not (int-value v)) (not (find-table db v)))
-                        (err (str "no such table: " v))
-                        (one db n "ok"))
+        ("integrity_check" "quick_check")
+        (if (and v (not (dig? (first v))) (not (find-table db v)))
+          (err (str "no such table: " v))
+          (let [limit (if (and v (dig? (first v))) (let [x (atoi v)] (if (pos? x) x 100)) 100)
+                only (when (and v (not (dig? (first v)))) (lc v))
+                ign (= 1 (pget db "ignore_check_constraints" 0))
+                msgs (when-not ign
+                       (for [t (sort-by (fn [t] (- (long (or (:mseq t) 0)))) (vals (:tables db)))
+                             :when (and (seq (:checks t)) (or (nil? only) (= only (lc (:name t))))
+                                        (or (nil? sc) (if (= sc "temp") (:temp t) (and (not (:temp t)) (= (or (:db t) "main") sc)))))
+                             [_ r] (:rows t)
+                             :when (some (fn [ck] (let [x ((:f ck) r)] (and (not (nil? x)) (not (vv/bool-value x))))) (:checks t))]
+                         (str "CHECK constraint failed in " (sch/display-name (:name t) t))))
+                msgs (vec (take limit msgs))]
+            {:db db :names [n] :rows (if (seq msgs) (mapv vector msgs) [["ok"]])}))
         "page_count" (one db n (long (if (or (seq (get-in db [:pages (or sc "main")])) (:schema-version db))
                                        (inc (count (get-in db [:pages (or sc "main")]))) 0)))
         "freelist_count" (one db n 0)
@@ -279,12 +383,12 @@
                                                                                                                                                 (if (or (= f "") (str/starts-with? f "/"))
                                                                                                                                                   f
                                                                                                                                                   (str "/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/" f)))]) (:attached db))))}
-        "table_info" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (table-info-rows db v false)} (none db))
-        "table_xinfo" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (table-info-rows db v true)} (none db))
-        "index_list" (if v {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (index-list-rows db v)} (none db))
-        "index_info" (if v {:db db :names ["seqno" "cid" "name"] :rows (index-info-rows db v false)} (none db))
-        "index_xinfo" (if v {:db db :names ["seqno" "cid" "name" "desc" "coll" "key"] :rows (index-info-rows db v true)} (none db))
-        "foreign_key_list" (if v {:db db :names ["id" "seq" "table" "from" "to" "on_update" "on_delete" "match"] :rows (fk-list-rows db v)} (none db))
+        "table_info" {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (if v (table-info-rows db v false sc) [])}
+        "table_xinfo" {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (if v (table-info-rows db v true sc) [])}
+        "index_list" {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (if v (index-list-rows db v) [])}
+        "index_info" {:db db :names ["seqno" "cid" "name"] :rows (if v (index-info-rows db v false) [])}
+        "index_xinfo" {:db db :names ["seqno" "cid" "name" "desc" "coll" "key"] :rows (if v (index-info-rows db v true) [])}
+        "foreign_key_list" {:db db :names ["id" "seq" "table" "from" "to" "on_update" "on_delete" "match"] :rows (if v (fk-list-rows db v) [])}
         "foreign_key_check"
         (do (when (and v (not (find-table db v))) (err (str "no such table: " v)))
             {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db v)) [])})
