@@ -1196,9 +1196,8 @@
           (when (and (seq ds) (every? pos? ds))
             (let [d (long (apply min ds))
                   sc (loop [sc (:scope ctx) k d] (if (and sc (pos? k)) (recur (:parent sc) (dec k)) sc))]
-              (when (:q-aggs sc)
-                (when (:in-where sc) (err (str "misuse of aggregate: " (:name e) "()")))
-                sc))))))))
+              (when (and sc (:in-where sc)) (err (str "misuse of aggregate: " (:name e) "()")))
+              (when (:q-aggs sc) sc))))))))
 
 (defn- compile-function* [ctx e]
   (if-let [sc (outer-agg-scope ctx e)]
@@ -2777,7 +2776,7 @@
                               (let [x (get alias-map (lc (:name e)))]
                                 (when (and no-agg (expr-has-agg? x))
                                   (err (str "misuse of aliased aggregate " (:name e))))
-                                (when (and no-win (has-window? x))
+                                (when (and (or no-win no-agg) (has-window? x))
                                   (err (str "misuse of aliased window function " (:name e))))
                                 x))))
                      (map? e) (if (#{:subq :exists} (:op e)) e
@@ -3266,7 +3265,8 @@
                         {} (:ctes w))
         all (merge (:ctes ctx) entries)]
     (reset! env all)
-    (assoc ctx :ctes all)))
+    ;; a nested WITH that redefines a name shadows the CTE being defined (no circular reference)
+    (assoc ctx :ctes all :cte-err (apply dissoc (:cte-err ctx) (keys entries)))))
 
 (defn- compile-select-w [ctx sel]
   (if-let [w (:with sel)]
