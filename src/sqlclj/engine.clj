@@ -84,7 +84,7 @@
                        [s i]))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
-                       (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))]] [])))
+                       (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
             (> (count hits) 1)
@@ -1810,7 +1810,12 @@
     (:star-col rc) (:name rc)
     (= :col (:op (:e rc)))
     (let [e (:e rc)]
-      (or (when (:table e)
+      (or (when (rowid-name? (lc (:name e)))
+            (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                  s (:src r) t (:table s)]
+              (when (and t (not (:virtual t)) (= (:idx r) (:ncols s)))
+                (if (:ipk t) (:name (nth (:cols t) (:ipk t))) "rowid"))))
+          (when (:table e)
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) lt (lc (:table e))]
