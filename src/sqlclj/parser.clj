@@ -89,8 +89,8 @@
   (let [start (pos p)
         names (loop [acc []]
                 (let [t (tok p)]
-                  (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (or (reserved (:u t))
+                  (if (and (or (= :id (:t t)) (= :qid (:t t)) (= :str (:t t)))
+                           (or (= :qid (:t t)) (= :str (:t t)) (not (or (reserved (:u t))
                                                     (and (= "GENERATED" (:u t)) (kw? (tok-at p 1) "ALWAYS") (kw? (tok-at p 2) "AS"))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
@@ -1052,7 +1052,7 @@
                                         (and (= :op (:t t)) (= ")" (:v t))) (when (> d 1) (recur (dec d)))
                                         :else (recur d)))))]
                       {:kind :create-vtab :name name :schema sch :module mod :if-not-exists ine}))
-                (accept-kw p "INDEX")
+                (and (not temp) (accept-kw p "INDEX"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
                       n1 (parse-nm p)
