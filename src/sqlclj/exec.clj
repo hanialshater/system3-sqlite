@@ -70,7 +70,7 @@
   [db tname]
   (->> (vals (:indexes db))
        (filter #(= (:table %) (lc tname)))
-       (sort-by :seq >)))
+       (sort-by (fn [i] [(if (and (:pk-auto i) (:without-rowid (get-in db [:tables (lc tname)]))) 0 1) (- (long (:seq i)))]))))
 
 (defn- add-index [db idx]
   (let [s (inc (long (:index-seq db)))
@@ -231,13 +231,14 @@
                                              {:i (col-idx (:name (:e ic))) :desc (:desc ic) :coll (:coll ic)})
                                            (:cols (first tpks)))
                           :else nil)
-            ipk (when (and (= 1 (count pk-cols))
+            ipk (when (and (= 1 (count pk-cols)) (not (:without-rowid st))
                            (let [c (nth cols (:i (first pk-cols)))]
                              (and (:type c) (= "INTEGER" (str/upper-case (:type c))))
                              )
                            (not (and (seq col-pks) (:desc (first pk-cols)))))
                   (:i (first pk-cols)))
             cols (if ipk (assoc-in cols [ipk :aff] :integer) cols)
+            cols (if (:without-rowid st) (reduce (fn [cs pc] (assoc-in cs [(:i pc) :notnull] true)) cols pk-cols) cols)
             checks (vec (concat
                          (for [[c d] (map vector cols defs), k (:cons d) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
@@ -249,7 +250,7 @@
             _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
             _ (when (and (:without-rowid st) (empty? pk-cols)) (err (str "PRIMARY KEY missing on table " name)))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
-                 :pk-cols (mapv :i pk-cols) :fks fks :autoinc autoinc
+                 :pk-cols (mapv :i pk-cols) :pk-desc (mapv (comp boolean :desc) pk-cols) :fks fks :autoinc autoinc
                  :pk-conflict (or (when ipk (:conflict (:pk (nth cols ipk)))) (:conflict (first tpks)))
                  :without-rowid (:without-rowid st) :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)

@@ -169,9 +169,39 @@
 
 (def valid-colls #{"BINARY" "NOCASE" "RTRIM"})
 
+(def ^:dynamic *coll-errs*
+  "While a SELECT compiles: an atom collecting [phase message] for unknown collations (SQLite finds them at
+  code generation, after name resolution)."
+  nil)
+(def ^:dynamic *coll-phase* nil)
+
 (defn check-coll [c]
   (let [u (str/upper-case c)]
-    (if (valid-colls u) u (err (str "no such collation sequence: " c)))))
+    (if (valid-colls u)
+      u
+      (let [m (str "no such collation sequence: " c)]
+        (if-let [a *coll-errs*]
+          (do (swap! a conj [*coll-phase* m]) "BINARY")
+          (err m))))))
+
+(defn strip-collates
+  "[expr-without-COLLATEs outermost-collation-or-nil] for an ORDER BY term; every name is checked."
+  [e]
+  (if (= :collate (:op e))
+    (let [c (check-coll (:coll e))
+          [inner _] (strip-collates (:e e))]
+      [inner c])
+    [e nil]))
+
+(defn pick-coll-error
+  "The message SQLite reports: sort keys (GROUP BY, then ORDER BY) are built first and report their last
+  unknown collation; expressions (WHERE, result columns, HAVING) report the first. A COLLATE on a whole
+  result column is never used."
+  [errs]
+  (some (fn [ph]
+          (let [ms (keep (fn [[p m]] (when (= p ph) m)) errs)]
+            (when (seq ms) (if (#{:group :order} ph) (last ms) (first ms)))))
+        [:group :order :where :result :having nil]))
 
 (defn- compare-fn [op]
   (case op
@@ -1687,10 +1717,26 @@
               (let [c (v/sql-cmp (nth a i) (nth b i) (nth colls i))]
                 (if (zero? c) (recur (inc i)) c))))))))
 
+(declare row-comparator)
+
 (defn table-rows
-  "Rows of a table in rowid order (each row a vector with the rowid appended)."
+  "Rows of a table in rowid order (each row a vector with the rowid appended); a WITHOUT ROWID
+  table in PRIMARY KEY order."
   [tbl]
-  (vals (:rows tbl)))
+  (if (and (:without-rowid tbl) (seq (:pk-cols tbl)))
+    (let [pk (:pk-cols tbl)
+          cmps (mapv #(row-comparator [(or (:coll (nth (:cols tbl) %)) "BINARY")]) pk)
+          desc (:pk-desc tbl)
+          key (fn [r] (mapv #(nth r %) pk))]
+      (sort (fn [a b]
+              (let [ka (key a) kb (key b)]
+                (loop [i 0]
+                  (if (>= i (count pk)) 0
+                      (let [c (.compare ^java.util.Comparator (nth cmps i) [(nth ka i)] [(nth kb i)])
+                            c (if (and desc (nth desc i)) (- c) c)]
+                        (if (zero? c) (recur (inc i)) c))))))
+            (vals (:rows tbl))))
+    (vals (:rows tbl))))
 
 (declare index-order-rows check-indexed-by expr-dtype aff-mask)
 
@@ -1765,10 +1811,11 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+        view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
                                        (:select view))
                    _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
+                       (do (when *coll-errs* (when-let [m (pick-coll-error @*coll-errs*)] (err m))))
                        (err (str "expected " (count (:cols view)) " columns for '" (:name view) "' but got " (count (:names sub)))))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
@@ -1795,7 +1842,7 @@
           (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals :orig-cols (vec (:names sub))
                  :direct-quals (set (for [qs (:star-quals sub) [a _ d] qs :when d] a))))))
     (:subq item)
-    (let [sub (compile-select ctx (:subq item))
+    (let [sub (compile-select (assoc ctx :as-source true) (:subq item))
           slot (new-slot! ctx)
           cols (dedup-names (:names sub))]
       {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
@@ -1880,8 +1927,12 @@
           (:name e)))
     :else (text-of-node ctx (:e rc))))
 
+(defn- int32-lit? [e]
+  (and (= :lit (:op e)) (= :int (:kind e))
+       (let [x (lit-value e)] (and (instance? Long x) (<= (long x) Integer/MAX_VALUE)))))
+
 (defn neg-int-lit? [e]
-  (and (= :unary (:op e)) (= :neg (:o e)) (= :lit (:op (:e e))) (= :int (:kind (:e e)))))
+  (and (= :unary (:op e)) (= :neg (:o e)) (int32-lit? (:e e))))
 
 (defn- order-term-index
   "If ORDER BY term refers to a result column (integer or alias), returns its 0-based index."
@@ -1890,7 +1941,7 @@
     (cond
       (neg-int-lit? e)
       (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
-      (and (= :lit (:op e)) (= :int (:kind e)))
+      (int32-lit? e)
       (let [k (long (lit-value e))]
         (if (or (< k 1) (> k (count names)))
           (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
@@ -2150,7 +2201,8 @@
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
-  (let [ctx (assoc ctx :pending nil :merge nil :where-ctx nil)]
+  (let [as-source (:as-source ctx)
+        ctx (assoc ctx :pending nil :merge nil :where-ctx nil :as-source nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -2228,6 +2280,7 @@
           wctx (assoc actx :wins wins :win-slot win-slot :windefs windefs)
           ;; result column compile
           rcomp (mapv (fn [rc]
+                        (binding [*coll-phase* (if (and (= :collate (:op (:e rc))) (not as-source)) :result-top :result)]
                         (if-let [[s i] (:star-col rc)]
                           (let [sl (long (:slot s)) i (long i)
                                 alt (when (:unq rc) (get (:coalesce s) (nth (:lcols s) i)))]
@@ -2238,7 +2291,7 @@
                              :aff (nth (:affs s) i)
                              :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
                              :col {:slot (:slot s) :idx i :depth 0}})
-                          (cx wctx (:e rc))))
+                          (cx wctx (:e rc)))))
                       rcols)
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
@@ -2254,9 +2307,10 @@
                     (vector? e) (mapv subst e)
                     :else e))
           where-c (when (:where core)
-                    (let [c (cx (assoc ctx2 :aggs nil :where-ctx (not is-agg)) (subst (:where core)))] c))
+                    (binding [*coll-phase* :where]
+                      (let [c (cx (assoc ctx2 :aggs nil :where-ctx (not is-agg)) (subst (:where core)))] c)))
           where-f (when where-c (condf where-c))
-          where-pre (when (:where core) (where-precheck (assoc ctx2 :aggs nil) (subst (:where core))))
+          where-pre (when (:where core) (binding [*coll-phase* :where] (where-precheck (assoc ctx2 :aggs nil) (subst (:where core)))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
           in-pre (when (and (:where core) (= 1 (count sources)) (:table (first sources)))
                    (let [s0 (first sources)]
@@ -2271,7 +2325,7 @@
                             sub))))
           ;; join conditions
           deferred-on (atom [])
-          on-fns (vec (for [i (range (count sources))]
+          on-fns (binding [*coll-phase* :where] (vec (for [i (range (count sources))]
                         (let [item (nth from i)
                               using (nth join-conds i)
                               s (nth sources i)]
@@ -2304,9 +2358,9 @@
                                                       :aff (nth (:affs s) ri) :coll (or (nth (:colls s) ri) "BINARY")}]
                                             (:f (make-compare :eq lcmp rcmp)))))]
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
-                            :else nil))))
+                            :else nil)))))
           nagg-before (count @aggs)
-          group-c (mapv (fn [g]
+          group-c (binding [*coll-phase* :group] (mapv (fn [g]
                           (let [g (subst g)]
                             (when (neg-int-lit? g)
                               (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
@@ -2317,19 +2371,22 @@
                                   (nth rcomp (dec k))))
                               (let [c (cx (assoc ctx2 :aggs aggs :agg-slot agg-slot :no-agg-msg true) g)]
                                 c))))
-                        (:group core))
+                        (:group core)))
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
                      (when-not is-agg (err "HAVING clause on a non-aggregate query"))
-                     (cx actx (subst (:having core))))
+                     (binding [*coll-phase* :having] (cx actx (subst (:having core)))))
           ;; ORDER BY
           order-c (when order
-                    (vec (map-indexed
+                    (binding [*coll-phase* :order] (vec (map-indexed
                           (fn [i term]
-                            (let [[e0 ocoll] (if (= :collate (:op (:e term))) [(:e (:e term)) (check-coll (:coll (:e term)))] [(:e term) nil])
+                            (let [[e0 ocoll] (strip-collates (:e term))
                                   ri (order-term-index ctx2 (assoc term :e e0) names aliases (ordinal (inc i)))
                                   ocoll (when ri ocoll)
+                                  ;; the sort key of a result column reference uses that column's own COLLATE
+                                  _ (when (and ri (not ocoll))
+                                      (let [rc (nth rcols ri)] (when (= :collate (:op (:e rc))) (check-coll (:coll (:e rc))))))
                                   ri (or ri (when (has-window? (:e term))
                                               (first (keep-indexed (fn [k rc] (when (and (:e rc) (expr-equal? (:e rc) (:e term))) k)) rcols))))
                                   c (if ri
@@ -2341,7 +2398,7 @@
                                       (cx wctx (subst (:e term))))]
                               {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or ocoll (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
-                          order)))
+                          order))))
           nsrc (count sources)
           don @deferred-on
           win-specs @wins
@@ -2571,7 +2628,7 @@
   the left-most first."
   [ctx e n infos nth-word]
   (when (neg-int-lit? e) (err (str nth-word " ORDER BY term out of range - should be between 1 and " n)))
-  (if (and (= :lit (:op e)) (= :int (:kind e)))
+  (if (int32-lit? e)
     (let [k (long (lit-value e))]
       (if (or (< k 1) (> k n))
         (err (str nth-word " ORDER BY term out of range - should be between 1 and " n))
@@ -2600,12 +2657,20 @@
     (reset! env all)
     (assoc ctx :ctes all)))
 
-(defn compile-select
-  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :rows-fn (fn [env])}."
-  [ctx sel]
+(defn- compile-select-w [ctx sel]
   (if-let [w (:with sel)]
     (compile-select* (add-ctes ctx w) (dissoc sel :with))
     (compile-select* ctx sel)))
+
+(defn compile-select
+  "Compiles a full select (body + ORDER BY + LIMIT). Returns {:names :affs :colls :rows-fn (fn [env])}."
+  [ctx sel]
+  (if *coll-errs*
+    (compile-select-w ctx sel)
+    (binding [*coll-errs* (atom [])]
+      (let [r (compile-select-w ctx sel)]
+        (when-let [m (pick-coll-error @*coll-errs*)] (err m))
+        r))))
 
 (defn- compound-terms
   "Flattens a left-deep compound body into [[nil t0] [op1 t1] ...]."
@@ -2672,7 +2737,7 @@
                     (vec (map-indexed
                           (fn [i term]
                             (let [e (:e term)
-                                  [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
+                                  [e coll] (strip-collates e)
                                   infos (for [[_ t] terms :when (= :core (:type t))]
                                           [(mapv #(lc (:alias %)) (:cols t)) (mapv :e (:cols t))])
                                   ri (or (compound-order-index ctx e (count names) infos (ordinal (inc i)))
@@ -2753,7 +2818,7 @@
                     (vec (map-indexed
                           (fn [i term]
                             (let [e (:e term)
-                                  [e coll] (if (= :collate (:op e)) [(:e e) (check-coll (:coll e))] [e nil])
+                                  [e coll] (strip-collates e)
                                   ri (or (compound-order-index ctx e (count names) (:order-infos b) (ordinal (inc i)))
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))

@@ -603,7 +603,11 @@
                          (let [a (parse-expr p)]
                            (cond (accept-kw p "OFFSET") [a (parse-expr p)]
                                  (accept-op p ",") [(parse-expr p) a]
-                                 :else [a nil])))]
+                                 :else [a nil])))
+        _ (when (and (or order limit) (or (at-kw? p "UNION") (at-kw? p "INTERSECT") (at-kw? p "EXCEPT")))
+            (let [op (cond (at-kw? p "INTERSECT") "INTERSECT" (at-kw? p "EXCEPT") "EXCEPT"
+                           (kw? (tok-at p 1) "ALL") "UNION ALL" :else "UNION")]
+              (throw (lx/sql-error (str (if order "ORDER BY" "LIMIT") " clause should come after " op " not before")))))]
     (cond-> {:body body :order order :limit limit :offset offset}
       with (assoc :with with))))
 
@@ -623,7 +627,7 @@
       (or (at-op? p "-") (at-op? p "+"))
       (let [o (:v (advance! p))
             t (tok p)]
-        (if (#{:int :float :hex} (:t t))
+        (if (or (#{:int :float :hex :str :blob} (:t t)) (and (= :id (:t t)) (#{"NULL" "CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u t))))
           (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:pe e)))
           (fail! p)))
       :else (parse-primary p))))
@@ -1041,7 +1045,7 @@
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
-                                    (when (or (= :eof (:t t)) (= :op (:t t))
+                                    (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
                                               (and (= :id (:t t)) (#{"NULL"} (:u t))))
                                       (syntax-error p t))
                                     (str sign (:v t))))
