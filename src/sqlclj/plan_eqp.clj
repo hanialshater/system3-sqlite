@@ -136,30 +136,52 @@
            :else ""))))
 
 (defn plan-core
-  "Plans a SELECT core. info: {:db :ctx :sources :from :where :on-terms :order-exprs ...}. Returns {:P :plan} or nil."
+  "Plans a SELECT core. info: see the hook call in engine/compile-core. Returns {:P :plan :G} or nil."
   [info]
   (let [srcs (:sources info)
         from (:from info)]
     (when (and (seq srcs)
                (< (count srcs) 63)
                (every? (fn [s] (and (not (:tvf s)) (or (:sub s) (:table s)))) srcs)
+               (every? (fn [s] (or (not (:table s)) (not (:without-rowid (:table s))))) srcs)
                (every? (fn [it] (not (#{:right :full :natural-right :natural-full} (:join it)))) from))
       (let [G {:ctx (assoc (:ctx info) :refs nil) :sources srcs
                :slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) srcs))
                :case-sensitive-like (:case-sensitive-like info)}
-            ;; WHERE and ON terms
-            conjuncts (concat
-                       (for [x (e/split-and* (:where info))] {:expr x})
-                       (for [[i it] (map-indexed vector from)
-                                    :let [left? (#{:left :natural-left} (:join it))]
-                                    x (when (:on it) (e/split-and* (:on it)))]
-                                {:expr x :on-of (when left? i)}))
+            using-conj (fn [i it]
+                         (let [using (nth (:join-conds info) i nil)
+                               left? (#{:left :natural-left} (:join it))
+                               s (nth srcs i)]
+                           (for [u using
+                                 :let [lu (lc u)
+                                       lsrc (first (filter #(some #{lu} (:lcols %)) (take i srcs)))]
+                                 :when lsrc]
+                             {:expr {:op :bin :o :eq
+                                     :l {:op :colref :slot (:slot lsrc) :idx (.indexOf ^java.util.List (:lcols lsrc) lu)}
+                                     :r {:op :colref :slot (:slot s) :idx (.indexOf ^java.util.List (:lcols s) lu)}}
+                              :on-of (when left? i)})))
+            conjuncts (vec (concat
+                            (for [x (e/split-and* (:where info))] {:expr x})
+                            (apply concat
+                                   (for [[i it] (map-indexed vector from)
+                                         :let [left? (#{:left :natural-left} (:join it))]]
+                                     (concat (for [x (when (:on it) (e/split-and* (:on it)))]
+                                               {:expr x :on-of (when left? i)})
+                                             (using-conj i it))))))
+            conjuncts (try (g/propagate-constants G conjuncts) (catch clojure.lang.ExceptionInfo _ conjuncts))
             terms (mapv #(assoc % :ucols (g/ucols G (:expr %))) (g/analyze-where G conjuncts))
-            ;; per-term used columns and prerequisites
             tabs (vec (map-indexed (fn [i [s it]] (build-tab (assoc info :auto-ok true) G i s it)) (map vector srcs from)))
-            order (:order-spec info)
-            P {:tables tabs :terms terms :order (or order []) :order-kind (:order-kind info) :ncols (:ncols info)
-               :limit (:limit-est info) :want-distinct (:want-distinct info) :nquery-loop 0}
+            ;; the ORDER BY the planner sees: GROUP BY, else ORDER BY, else DISTINCT
+            [okind oexprs odescs ocolls]
+            (cond (seq (:group-exprs info)) [:groupby (:group-exprs info) (repeat false) (:group-colls info)]
+                  (:is-agg info) [nil nil nil nil]
+                  (:win? info) [nil nil nil nil]
+                  (seq (:order-exprs info)) [:orderby (:order-exprs info) (:order-descs info) (:order-colls info)]
+                  (:distinct info) [:distinctby (:result-exprs info) (repeat false) (:result-colls info)]
+                  :else [nil nil nil nil])
+            order (when okind (order-spec G oexprs odescs ocolls))
+            P {:tables tabs :terms terms :order (or order []) :order-kind okind :ncols (:ncols info)
+               :limit (:limit-est info) :want-distinct (boolean (:distinct info)) :nquery-loop 0}
             P (update P :tables (fn [ts] (mapv (fn [t] (update t :indexes
                                                                (fn [ixs] (mapv #(assoc % :might-help-order
                                                                                        (boolean (some (fn [o] (and (= (:t o) (:i t)) (:c o)
@@ -167,7 +189,66 @@
                                                                                                       (:order P))))
                                                                        ixs)))) ts)))
             plan (pl/plan P)]
-        {:P P :plan plan}))))
+        {:P P :plan plan :G G :okind okind}))))
+
+(defn- no-early? [x]
+  (let [bad (volatile! false)]
+    (letfn [(walk [x]
+              (cond (map? x)
+                    (do (when (or (#{:subq :exists :window} (:op x)) (:select x) (:over x) (and (= :fn (:op x)) (g/nondeterministic? x))) (vreset! bad true))
+                        (doseq [[_ v] x] (walk v)))
+                    (sequential? x) (doseq [y x] (walk y))))]
+      (walk x))
+    @bad))
+
+(defn- early-level
+  "Plan level at which an expression can be evaluated (all its tables bound), or nil to evaluate at the leaf."
+  [G pos x]
+  (when (and x (not (no-early? x)))
+    (let [m (g/expr-tables G x)]
+      (when-not (zero? (long m))
+        (reduce (fn [mx i] (if (zero? (bit-and m (bit-shift-left 1 i))) mx (max mx (long (get pos i 0)))))
+                0 (range (count (:sources G))))))))
+
+(defn exec-spec
+  "What the executor needs from a plan."
+  [{:keys [P plan okind G]} info]
+  (let [path (:path plan)
+        rev (long (:rev-mask plan))
+        pos (zipmap (map :tab path) (range))
+        from (:from info)]
+    {:order (mapv :tab path)
+     :wconj (vec (for [x (e/split-and* (:where info))] {:expr x :level (early-level G pos x)}))
+     :on-levels (vec (for [[i it] (map-indexed vector from)]
+                       (let [using (nth (:join-conds info) i nil)
+                             lv (concat (for [x (when (:on it) (e/split-and* (:on it)))] (early-level G pos x))
+                                        (for [u using] (let [lu (lc u)
+                                                             lsrc (first (keep-indexed (fn [j s] (when (some #{lu} (:lcols s)) j)) (take i (:sources G))))]
+                                                         (when lsrc (max (long (get pos lsrc 0)) (long (get pos i 0)))))))]
+                         (cond (some nil? lv) nil
+                               (empty? lv) nil
+                               :else (apply max lv)))))
+     :ordered (:ordered plan) :nob (count (:order P)) :okind okind
+     :loops
+     (vec (map-indexed
+           (fn [k lp]
+             (let [flags (:flags lp)
+                   idx (:idx lp)
+                   neq (long (:neq lp)) nskip (long (:nskip lp))
+                   lterms (:lterms lp)
+                   tm (fn [t] (when t {:op (:op t) :rhs (:rhs t) :in-list (:in-list t) :in-select (:in-select t)
+                                       :col (second (:left t)) :likeopt (:likeopt t)}))
+                   eq (vec (for [j (range nskip neq)] (assoc (tm (nth lterms j)) :pos j)))
+                   btm (when (contains? flags :btm-limit) (tm (nth lterms neq nil)))
+                   top (when (contains? flags :top-limit)
+                         (tm (if (contains? flags :btm-limit) (nth lterms (inc neq) nil) (nth lterms neq nil))))]
+               {:src (:tab lp)
+                :kind (cond (contains? flags :ipk) :ipk (= idx :auto) :auto (map? idx) :index :else :scan)
+                :index (when (map? idx) (:idx idx))
+                :nskip nskip :eq eq :btm btm :top top
+                :rev (not (zero? (bit-and rev (bit-shift-left 1 k))))
+                :onerow (contains? flags :onerow)}))
+           path))}))
 
 (defn eqp-rows
   "Plan rows [id parent notused detail] for a planned core."
@@ -175,14 +256,10 @@
   (vec (for [lp (:path plan)]
          [0 0 (:run lp) (loop-detail P lp)])))
 
-(defn- eqp-hook [info]
-  (let [info (assoc info
-                    :order-spec (when (seq (:order-exprs info))
-                                  (let [G {:ctx (assoc (:ctx info) :refs nil) :sources (:sources info)
-                                           :slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) (:sources info)))}]
-                                    (order-spec G (:order-exprs info) (:order-descs info) (:order-colls info))))
-                    :order-kind :orderby)
-        r (plan-core info)]
-    (when r (vswap! e/*eqp* into (eqp-rows r)))))
+(defn- plan-hook-fn [info]
+  (let [r (plan-core info)]
+    (when r
+      (when e/*eqp* (vswap! e/*eqp* into (eqp-rows r)))
+      (exec-spec r info))))
 
-(reset! e/plan-hook eqp-hook)
+(reset! e/plan-hook plan-hook-fn)
