@@ -1038,7 +1038,7 @@
                                         (and (= :op (:t t)) (= ")" (:v t))) (when (> d 1) (recur (dec d)))
                                         :else (recur d)))))]
                       {:kind :create-vtab :name name :schema sch :module mod :if-not-exists ine}))
-                (accept-kw p "INDEX")
+                (and (not temp) (accept-kw p "INDEX"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
                       n1 (parse-nm p)

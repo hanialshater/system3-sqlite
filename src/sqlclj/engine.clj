@@ -551,7 +551,7 @@
              (mk (fn [env] (if (= k :ignore)
                              (throw (ex-info "raise-ignore" {:raise-ignore true}))
                              (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
-                               (throw (ex-info msg {:sql-error msg :raise k})))))))
+                               (throw (ex-info msg (cond-> {:sql-error msg :raise k} (= k :rollback) (assoc :conflict :rollback)))))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1872,7 +1872,8 @@
     (:table item)
     (let [name (:table item)
           tbl (table-of ctx name (:schema item))
-          view (when-not tbl (view-of ctx name))]
+          view (when-not tbl (let [v (view-of ctx name) sc (lc (:schema item))]
+                               (when (and v (or (nil? sc) (and (= sc "temp") (:temp v)) (and (= sc "main") (not (:temp v))) (not (#{"temp" "main"} sc)))) v)))]
       (cond
         tbl (let [slot (new-slot! ctx)
                   cols (mapv :name (:cols tbl))]

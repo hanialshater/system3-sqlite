@@ -100,8 +100,9 @@
   ([ast what]
    (doseq [x (tree-seq coll? seq ast) :when (map? x)]
      (case (:op x)
-       :fn (when (nondeterministic-fns (lc (:name x)))
+       :fn (when (and (nondeterministic-fns (lc (:name x))) (not= what "CHECK constraints"))
              (err (str "non-deterministic functions prohibited in " what)))
+       :lit (when (:var x) (err (str "parameters prohibited in " what)))
        (:subq :exists) (err (str "subqueries prohibited in " what))
        nil))))
 
@@ -164,6 +165,9 @@
           :else (let [k (if (empty? (:rows sq)) 1 (inc (long (key (first (rseq (:rows sq)))))))]
                   (assoc-in db [:tables "sqlite_sequence" :rows k] [(:name tbl) rid k])))))))
 
+(defn- writable-schema? [db]
+  (let [x (get-in db [:pragmas "writable_schema"])] (boolean (and x (not= 0 x)))))
+
 (defn- create-table [db sql st]
   (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
         lname0 (lc (:name st))
@@ -178,7 +182,7 @@
     (cond
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
-      (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
+      (and (str/starts-with? lname "sqlite_") (not (:internal st)) (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
@@ -258,6 +262,7 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
                          (for [k (:tcons st) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
+            _ (doseq [ck checks] (check-gen-expr (:e ck) "CHECK constraints"))
             fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             _ (doseq [k fks]
@@ -624,7 +629,12 @@
       (do (when (:virtual tbl) (err (str "table " tname " may not be modified")))
           [l tbl])
       (if-let [view (get-in db [:views l])]
-        (do (when-not (trg/any-for? db l event)
+        (do (when-not (if (= event :update)
+                        (let [setc (set (map lc (mapcat first (:sets st))))]
+                          (some (fn [t] (and (= (:table t) l) (= (:event t) :update) (= (:timing t) :instead)
+                                             (or (nil? (:cols t)) (some #(contains? setc (lc %)) (:cols t)))))
+                                (vals (:triggers db))))
+                        (trg/any-for? db l event))
               ;; the view is expanded first: a view that no longer resolves reports that error
               (when-let [m (check-view db view)] (err m))
               (err (str "cannot modify " tname " because it is a view")))
@@ -930,6 +940,11 @@
         on-conflict (:or st)
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (when (and fkt (not vw))
+            (let [n (inc (count (:cols tbl)))
+                  old (vec (repeat n 0))
+                  new (reduce (fn [r [i]] (if (and (>= i 0) (< i n)) (assoc r i 1) r)) old sets)]
+              (fk/locate-all! db tbl old new)))
         _ (prepared! (:names ret))
         join-count (volatile! nil)
         targets (if from
@@ -1029,6 +1044,7 @@
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (when (and fkt (not vw)) (fk/locate-all! db tbl [] nil))
         _ (prepared! (:names ret))
         dret-rows (java.util.ArrayList.)
         doomed (vec (filter (fn [[rid row]]
@@ -1077,7 +1093,7 @@
     (cond
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " (or (:name-raw st) name) " already exists")))
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
-      (str/starts-with? ln "sqlite_") (err (str "object name reserved for internal use: " name))
+      (and (str/starts-with? ln "sqlite_") (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (some :returning (:body st)) (err "cannot use RETURNING in a trigger")
       (and (not (:temp st)) (not= "temp" (some-> (:schema st) lc))
            (let [own (or (some-> (:schema st) lc) (:db st) "main")
@@ -1121,7 +1137,14 @@
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
       (and (nil? tbl) (get-in db [:views (lc (:table st))])) (err "views may not be indexed")
       (nil? tbl) (err (str "no such table: main." (:table st)))
-      (str/starts-with? lname "sqlite_") (err (str "object name reserved for internal use: " name))
+      (and (= "temp" (lc (:schema st))) (not (:temp tbl)))
+      (err (str "cannot create a TEMP index on non-TEMP table \"" (sch/display-name (:name tbl) tbl) "\""))
+      (some (fn [ic] (let [e (:e ic)]
+                       (and (= :col (:op e)) (nil? (:table e)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))
+                            (not-any? #(= (lc (:name %)) (lc (:name e))) (:cols tbl)))))
+            (:cols st))
+      (err (str "no such column: " (some (fn [ic] (let [e (:e ic)] (when (and (= :col (:op e)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))) (:name e)))) (:cols st))))
+      (and (str/starts-with? lname "sqlite_") (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       :else
       (let [_ (doseq [ic (:cols st) :when (not= :col (:op (:e ic)))] (check-gen-expr (:e ic) "index expressions"))
             _ (when (:where st) (check-gen-expr (:where st) "partial index WHERE clauses"))
@@ -1145,7 +1168,16 @@
               (into (sorted-map) (remove (fn [[_ r]] (= (first r) tname)) (:rows t))))
     db))
 
+(declare exec-drop*)
 (defn- exec-drop [db st]
+  (let [lname (lc (:name st))
+        was-temp (boolean (or (:temp (get-in db [:tables lname])) (:temp (get-in db [:views lname]))))
+        r (exec-drop* db st)]
+    (if (and was-temp (map? r) (not (str/includes? lname ".")))
+      (sch/move-main-back r lname)
+      r)))
+
+(defn- exec-drop* [db st]
   (let [lname (lc (:name st))
         q (some-> (:qual-schema st) lc)
         q (when (#{"main" "temp"} q) q)
@@ -1154,13 +1186,15 @@
         shown (if q (str q "." (:name st)) (:name st))]
     (case (:what st)
       :table (if-let [t (look [:tables lname])]
+               (if (and (str/starts-with? lname "sqlite_") (not (str/starts-with? lname "sqlite_stat")) (not (str/starts-with? lname "sqlite_parameters")))
+                 (err (str "table " (:name st) " may not be dropped"))
                (let [idxs (filter (fn [i] (= (:table i) lname)) (vals (:indexes db)))
                      db (reduce (fn [db o] (sch/free-page db (sch/schema-of o) (:rootpage o))) db (cons t idxs))]
                  (-> db
                      (update :tables dissoc lname)
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
                      (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
-                     (drop-seq-row (:name t))))
+                     (drop-seq-row (:name t)))))
                (cond (look [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
                      (:if-exists st) db
                      :else (err (str "no such table: " shown))))
@@ -1846,16 +1880,70 @@
   [db sql st ^StringBuilder out]
   (let [n0 (.length out)] (exec-statement* db sql st out n0)))
 
+(declare reload-schema exec-statement**)
+
+(defn- exec-master-dml
+  "INSERT / UPDATE / DELETE on sqlite_master under PRAGMA writable_schema: runs the statement on a real copy
+  of the table and keeps the resulting rows as the database's master rows (the in-memory schema is untouched)."
+  [db sql st out n0]
+  (let [sch (sch/master-edit-schema (lc (:table st)) (:schema st))
+        mt (sch/master-table db "sqlite_master" (if (= sch "main") nil sch))
+        k (lc (:table st))
+        mt (assoc mt :name (:table st) :virtual false :checks [] :fks [] :pk-cols [] :pk-desc [] :ipk nil)
+        db1 (assoc-in db [:tables k] mt)
+        st1 (assoc st :schema nil :master-dml true)
+        db2 (exec-statement** db1 sql st1 out n0)
+        t2 (get-in db2 [:tables k])
+        rows (vec (for [[rid r] (:rows t2)] [rid (subvec r 0 5)]))]
+    (-> db2 (update :tables dissoc k) (assoc-in [:master-edit sch] rows))))
+
+(defn- bump-schema
+  "A DDL statement bumps the schema cookie of the database it changed."
+  [db0 db2 st]
+  (let [lname (lc (or (:name st) (:table st)))
+        sch (case (:kind st)
+              (:create-table :create-view :create-trigger :create-index)
+              (let [s (lc (:schema st))]
+                (cond (or (:temp st) (= s "temp")) "temp"
+                      (and s (not= s "main")) s
+                      (and (:db st) (not= (:db st) "main")) (:db st)
+                      :else (let [o (if (= :create-index (:kind st)) (get-in db2 [:indexes lname]) nil)] (if (and o (:temp o)) "temp" "main"))))
+              :drop (let [o (case (:what st)
+                              :table (get-in db0 [:tables lname]) :view (get-in db0 [:views lname])
+                              :index (get-in db0 [:indexes lname]) :trigger (get-in db0 [:triggers lname]))
+                          q (some-> (:qual-schema st) lc)]
+                      (cond (and q (not (#{"main" "temp"} q))) q (:db o) (:db o) (:temp o) "temp" :else "main"))
+              :alter (let [t (or (get-in db0 [:tables lname]) (get-in db0 [:views lname]))]
+                       (cond (:db t) (:db t) (:temp t) "temp" :else "main"))
+              "main")]
+    (if (= sch "main")
+      (update db2 :schema-version (fnil inc 0))
+      (update-in db2 [:pragmas (str "schema_version." sch)] (fnil inc 0)))))
+
 (defn- exec-statement* [db sql st ^StringBuilder out n0]
+  (when-let [m (:schema-error db)]
+    (when-not (and (= :pragma (:kind st)) (#{"writable_schema" "schema_version"} (lc (:name st))))
+      (err m)))
+  (if (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (writable-schema? db))
+    (exec-master-dml db sql st out n0)
+    (let [db2 (exec-statement** db sql st out n0)]
+      ;; defer_foreign_keys switches itself off at every COMMIT / ROLLBACK (autocommit statements included)
+      (if (and (map? db2) (not= 0 (get-in db2 [:pragmas "defer_foreign_keys"] 0))
+               (or (#{:commit :rollback} (:kind st))
+                   (and (nil? (:tx db2)) (not (readonly? st)) (not= :pragma (:kind st)))))
+        (assoc-in db2 [:pragmas "defer_foreign_keys"] 0)
+        db2))))
+
+(defn- exec-statement** [db sql st ^StringBuilder out n0]
   (when (and (= 1 (get-in db [:pragmas "query_only"]))
              (#{:insert :update :delete :create-table :create-index :create-view :create-trigger :drop :alter :vacuum :reindex :analyze} (:kind st)))
     (err "attempt to write a readonly database"))
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
-  (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
+  (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (not (:master-dml st)))
     (err (str "table " (:table st) " may not be modified")))
   (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
     (err (str "table " (:name st) " may not be dropped")))
-  (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
+  (when (and (= :create-index (:kind st)) (or (contains? sch/master-names (lc (:table st))) (str/starts-with? (lc (:table st)) "sqlite_")))
     (err (str "table " (:table st) " may not be indexed")))
   ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
   ;; and its table must be there too
@@ -1935,7 +2023,12 @@
         (doseq [row (:rows r)] (write-row out row)))
       (when (and (nil? (:names r)) (:writes r))
         (emit-line out (str "changes: " (:changes db))))
-      (:db r))
+      (let [nm (lc (:name st)) rdb (:db r)]
+        (if (and (or (:master-edit rdb) (:schema-error rdb))
+                 (or (and (= nm "writable_schema") (= "reset" (some-> (:value st) lc)))
+                     (and (= nm "schema_version") (:value st))))
+          (reload-schema rdb)
+          rdb)))
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
@@ -1947,7 +2040,7 @@
                  (when (or (seq @fk/*child*) (seq @fk/*parent*))
                    (try (fk/verify r @fk/*child* @fk/*parent*)
                         (catch clojure.lang.ExceptionInfo ex
-                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*)) 1 0)))))))
+                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st))) 1 0)))))))
                  r))]
       (cond
         (seq (:returning st)) (doseq [r rows] (write-row out r))
@@ -2006,8 +2099,10 @@
                                                                  (some #(= (lc (:table %)) (lc (sch/display-name (:name t) t))) (:fks ct))))
                                                (:tables db)))
                             db (if parent?
-                                 (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
-                                   (assoc d :changes (:changes db)))
+                                 (try (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
+                                        (assoc d :changes (:changes db)))
+                                      (catch clojure.lang.ExceptionInfo ex
+                                        (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "foreign key mismatch")) db (throw ex))))
                                  db)]
                         (exec-drop db st))
                 :reindex (exec-reindex db st)
@@ -2031,11 +2126,77 @@
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
         (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
-            (update db2 :schema-version (fnil inc 0)))
+            (bump-schema db db2 st))
+        (and (= :analyze (:kind st)) (nil? (get-in db [:tables "sqlite_stat1"])) (get-in db2 [:tables "sqlite_stat1"]))
+        (do (emit-line out (str "changes: " (:changes db2))) (update db2 :schema-version (fnil inc 0)))
+        (and (= :vacuum (:kind st)) (not (:into st)) (not (#{"temp"} (lc (:schema st)))))
+        (do (emit-line out (str "changes: " (:changes db2)))
+            (if (and (:schema st) (not= "main" (lc (:schema st))))
+              (update-in db2 [:pragmas (str "schema_version." (lc (:schema st)))] (fnil inc 0))
+              (update db2 :schema-version (fnil inc 0))))
         :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0))
                                 (and (= :vacuum (:kind st)) (= "temp" (lc (:schema st)))))
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
+
+(defn- reload-schema
+  "Rebuilds the in-memory schema from the (edited) sqlite_master rows, as SQLite does after the schema cookie
+  changes. Table data is carried over by root page."
+  [db]
+  (let [edits (:master-edit db)
+        in-sch (fn [sch o] (= sch (sch/schema-of o)))]
+    (try
+      (reduce
+       (fn [db [sch rows]]
+         (let [old-tables (filter #(in-sch sch %) (vals (:tables db)))
+               by-root (into {} (for [t old-tables :when (:rootpage t)] [(:rootpage t) t]))
+               strip (fn [m] (into {} (remove (fn [[_ o]] (in-sch sch o)) m)))
+               db (-> db (update :tables strip) (update :indexes strip) (update :views strip) (update :triggers strip)
+                      (assoc-in [:pages sch] #{}))
+               rows (sort-by first rows)]
+           (reduce
+            (fn [db [rid [typ nm tbl root sql]]]
+              (if (nil? sql)
+                (let [k (lc (if (= sch "main") nm (str sch "." nm)))]
+                  (if (get-in db [:indexes k])
+                    (-> db (assoc-in [:indexes k :rootpage] root) (assoc-in [:indexes k :mseq] rid))
+                    db))
+                (let [st (try (parse-one sql)
+                              (catch clojure.lang.ExceptionInfo ex
+                                (throw (ex-info "bad" {:sql-error (str "malformed database schema (" nm ") - " (:sql-error (ex-data ex)))}))))
+                      _ (when-not (#{:create-table :create-index :create-view :create-trigger} (:kind st))
+                          (throw (ex-info "bad" {:sql-error (str "malformed database schema (" nm ")")})))
+                      st (assoc st :temp (= sch "temp") :internal true)
+                      db2 (try (exec-statement** db sql st (StringBuilder.) 0)
+                               (catch clojure.lang.ExceptionInfo ex
+                                 (throw (ex-info "bad" {:sql-error (str "malformed database schema (" nm ") - " (:sql-error (ex-data ex)))}))))
+                      key (lc (:name st))
+                      key (if (and (not= sch "main") (not= sch "temp")) (str sch "." key) key)
+                      [coll] (case (:kind st) :create-table [:tables] :create-index [:indexes] :create-view [:views] :create-trigger [:triggers])
+                      o (get-in db2 [coll key])]
+                  (if o
+                    (let [o (assoc o :mseq rid)
+                          o (if (#{:tables :indexes} coll) (assoc o :rootpage root) o)
+                          o (if (and (= coll :tables) (get by-root root))
+                                (let [nc (count (:cols o))
+                                      defs (mapv (fn [i] (try (default-value db2 sql o i) (catch Exception _ nil))) (range nc))]
+                                  (assoc o :rows (into (sorted-map)
+                                                       (for [[rid r] (:rows (get by-root root))]
+                                                         [rid (let [n0 (dec (count r))
+                                                                    data (if (>= n0 nc) (subvec r 0 nc) (into (subvec r 0 n0) (subvec defs n0 nc)))]
+                                                                (conj data (peek r)))]))))
+                                o)]
+                      (cond-> (assoc-in db2 [coll key] o)
+                        (and (#{:tables :indexes} coll) (pos? (long (or root 0)))) (update-in [:pages sch] (fnil conj #{}) root)))
+                    db2))))
+            db rows)))
+       (dissoc db :schema-error)
+       edits)
+      (catch clojure.lang.ExceptionInfo ex
+        (if-let [m (:sql-error (ex-data ex))]
+          (assoc db :schema-error m)
+          (throw ex)))
+      (finally nil))))
 
 (alter-var-root #'pragma/*fk-check* (constantly fk/check-all))
 

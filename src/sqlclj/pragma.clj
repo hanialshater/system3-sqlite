@@ -251,7 +251,7 @@
       (vec (for [[id fk] (map-indexed vector fks)
                  [seq from] (map-indexed vector (:from fk))]
              [(long id) (long seq) (:table fk) from (get (:to fk) seq)
-              (act-name (:on-update fk)) (act-name (:on-delete fk)) (or (some-> (:match fk) str/upper-case) "NONE")])))
+              (act-name (:on-update fk)) (act-name (:on-delete fk)) "NONE"])))
     []))
 
 (def ^:dynamic *fk-check* nil)
@@ -271,7 +271,7 @@
                     (and (#{"integrity_check" "quick_check"} n) (nil? (int-value v))))
                 (case sc
                   "main" (sch/resolve-key db v "main")
-                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  "temp" (if (or (:temp (get-in db [:tables (lc v)])) (:temp (get-in db [:views (lc v)])) (sch/master-table db (lc v) "temp")) v "\u0000none")
                   (sch/obj-key db v sc))
                 (#{"index_info" "index_xinfo"} n)
                 (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))
