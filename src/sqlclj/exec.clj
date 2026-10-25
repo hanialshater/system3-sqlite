@@ -1554,7 +1554,18 @@
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
-                :drop (exec-drop db st)
+                :drop (let [ln (lc (:name st))
+                            t (get-in db [:tables ln])
+                            parent? (and t (= :table (:what st)) (= 1 (get-in db [:pragmas "foreign_keys"]))
+                                         (seq (:rows t))
+                                         (some (fn [[k ct]] (and (not= k ln)
+                                                                 (some #(= (lc (:table %)) (lc (sch/display-name (:name t) t))) (:fks ct))))
+                                               (:tables db)))
+                            db (if parent?
+                                 (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
+                                   (assoc d :changes (:changes db)))
+                                 db)]
+                        (exec-drop db st))
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st out)
                 :analyze (exec-analyze db sql st)
