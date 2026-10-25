@@ -2333,7 +2333,10 @@
               (fn [_] (index-order-rows (:db ctx) plan)))
             (if (:virtual (:table src))
               (let [t (:table src)] (fn [_] (table-rows t)))
-              (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
+              ;; a scan that a WHERE equality with an outer value (a correlated subquery) can narrow by an index
+              (or (when (and (nil? ib) (seq where-terms))
+                    (join-probe-scanner ctx [src] nil where-terms 0))
+                  (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))))
     (:sub src)
     (let [sub (:sub src)]
       (if (or (:correlated sub) (:lazy sub))
@@ -3167,11 +3170,14 @@
                               aff (when (< c ncols) (nth (:affs src) c))
                               idx (if (= c ncols)
                                     :rowid
-                                    (first (for [idx (plain-indexes db src)
-                                                 :when (and (= c (norm-col src (:col (first (:cols idx)))))
-                                                            (every? :col (:cols idx))
-                                                            (= coll (or (:coll (first (:cols idx))) "BINARY")))]
-                                             idx)))]
+                                    (or (first (for [idx (plain-indexes db src)
+                                                     :when (and (= c (norm-col src (:col (first (:cols idx)))))
+                                                                (every? :col (:cols idx))
+                                                                (= coll (or (:coll (first (:cols idx))) "BINARY")))]
+                                                 idx))
+                                        ;; no index: an automatic one (built once per table value, as SQLite's own)
+                                        (when (not= c ipk)
+                                          {:table tname :wf nil :cols [{:col c :coll coll :desc false}]})))]
                         :when idx]
                     {:c c :idx idx :f (:f cb) :aff aff :oaff (:aff cb)})
             cand (first cands)]
