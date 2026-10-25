@@ -664,7 +664,7 @@
                 (let [tbl3 (put-row tbl2 rid row)
                       db2 (assoc-in db [:tables tkey] tbl3)
                       db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
-                      db2 (assoc db2 :last-rowid rid)]
+                      db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
@@ -1092,6 +1092,42 @@
   (let [i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) (lc n))]
     (when (>= i 0) i)))
 
+(declare kw-tok?)
+(defn- find-constraint
+  "Index of the CONSTRAINT keyword token of the constraint called nm in the table text, or nil."
+  [toks nm]
+  (first (keep-indexed (fn [i t]
+                         (when (and (= :id (:t t)) (= "CONSTRAINT" (:u t))
+                                    (< (inc i) (count toks)) (tok-name? (nth toks (inc i)) nm))
+                           i))
+                       toks)))
+
+(defn- tok-op? [t o] (and (= :op (:t t)) (= o (:v t))))
+
+(defn- matching-paren
+  "Index of the ) closing the ( at token index i."
+  [toks i]
+  (loop [j (inc i) depth 1]
+    (let [t (nth toks j)]
+      (cond (= :eof (:t t)) j
+            (tok-op? t "(") (recur (inc j) (inc depth))
+            (tok-op? t ")") (if (= 1 depth) j (recur (inc j) (dec depth)))
+            :else (recur (inc j) depth)))))
+
+(defn- constraint-extent
+  "Token index one past the constraint starting at token k (the token after the constraint name), or :undroppable
+  / :name-only."
+  [toks k]
+  (let [t (nth toks k)]
+    (case (:u t)
+      "CHECK" (inc (matching-paren toks (inc k)))
+      "NOT" (let [e (+ k 2)]
+              (if (and (kw-tok? (nth toks e) "ON") (kw-tok? (nth toks (inc e)) "CONFLICT")) (+ e 3) e))
+      ("PRIMARY" "UNIQUE" "FOREIGN" "REFERENCES") :undroppable
+      :name-only)))
+
+(defn- kw-tok? [t k] (and (= :id (:t t)) (= k (:u t))))
+
 (def ^:private master-aliases #{"sqlite_master" "sqlite_schema" "sqlite_temp_master" "sqlite_temp_schema"})
 
 (defn- exec-alter [db sql st ^StringBuilder out]
@@ -1177,6 +1213,72 @@
                                (fn [ix] (rename-column-refs (:sql ix) old nn)))
             db2 (reschema-objects db2 (fn [s] (if (and s (mentions-table? s (:name tbl))) (rename-column-refs s old nn) s)))]
         db2)
+      :set-notnull
+      (let [i (or (find-col tbl (:col st)) (err (str "no such column: \"" (:col st) "\"")))
+            c (nth (:cols tbl) i)
+            tst (parse-one tsql)
+            cd (nth (:cols tst) i)]
+        (.append out "# sqlite_fail('constraint failed', 19)\n")
+        (if (:notnull c)
+          db
+          (do (when (some (fn [[_ r]] (nil? (nth r i))) (:rows tbl)) (err "constraint failed"))
+              (rebuild-table db tname (str (subs tsql 0 (:e cd)) " NOT NULL" (subs tsql (:e cd))) identity (fn [ix] (:sql ix))))))
+      :drop-notnull
+      (let [i (or (find-col tbl (:col st)) (err (str "no such column: \"" (:col st) "\"")))
+            c (nth (:cols tbl) i)]
+        (if-not (:notnull c)
+          db
+          (let [tst (parse-one tsql)
+                cd (nth (:cols tst) i)
+                toks (vec (filter #(and (>= (:s %) (:s cd)) (< (:s %) (:e cd))) (lx/tokenize tsql)))
+                k (first (keep-indexed (fn [j t] (when (and (kw-tok? t "NOT") (< (inc j) (count toks)) (kw-tok? (nth toks (inc j)) "NULL")) j)) toks))
+                named (and (>= k 2) (kw-tok? (nth toks (- k 2)) "CONSTRAINT"))
+                from-tok (if named (nth toks (- k 2)) (nth toks k))
+                prev-end (:e (nth toks (dec (if named (- k 2) k))))
+                ext (let [e (+ k 2)]
+                      (if (and (< (inc e) (count toks)) (kw-tok? (nth toks e) "ON") (kw-tok? (nth toks (inc e)) "CONFLICT")) (+ e 3) e))
+                end (:e (nth toks (dec ext)))]
+            (rebuild-table db tname (str (subs tsql 0 prev-end) (subs tsql end)) identity (fn [ix] (:sql ix))))))
+      :add-constraint
+      (let [toks (lx/tokenize tsql)
+            _ (when (and (:cname st) (find-constraint toks (:cname st)))
+                (.append out (str "# sqlite_fail('constraint " (:cname st) " already exists', 1)\n"))
+                (err (str "constraint " (:cname st) " already exists")))
+            _ (.append out (str "# sqlite_fail('constraint " (:cname st) " already exists', 1)\n"))
+            close (let [depth (volatile! 0) last-close (volatile! nil)]
+                    (doseq [t toks]
+                      (when (= :op (:t t))
+                        (cond (= "(" (:v t)) (vswap! depth inc)
+                              (= ")" (:v t)) (do (vswap! depth dec) (when (zero? @depth) (vreset! last-close (:s t)))))))
+                    (or @last-close (str/last-index-of tsql ")")))
+            new-sql (str (subs tsql 0 close) ", " (subs sql (:text-s st) (:text-e st)) (subs tsql close))
+            db2 (rebuild-table db tname new-sql identity (fn [ix] (:sql ix)))
+            nt (get-in db2 [:tables tname])
+            ck (last (:checks nt))]
+        (doseq [[_ r] (:rows nt)]
+          (let [x ((:f ck) r)]
+            (when (and (not (nil? x)) (not (v/bool-value x)))
+              (err (str "CHECK constraint failed: " (or (:name ck) (:text ck)))))))
+        db2)
+      :drop-constraint
+      (let [toks (vec (lx/tokenize tsql))
+            i (or (find-constraint toks (:cname st)) (err (str "no such constraint: " (:cname st))))
+            k (+ i 2)
+            ext (constraint-extent toks k)
+            _ (when (= ext :undroppable) (err (str "constraint may not be dropped: " (:cname st))))
+            s0 (:s (nth toks i))
+            [from to] (if (= ext :name-only)
+                        [s0 (:s (nth toks k))]
+                        (let [e (:e (nth toks (dec ext)))
+                              nt (nth toks ext)
+                              pt (nth toks (dec i))]
+                          (cond
+                            (and (or (tok-op? nt ")") (tok-op? nt ",")) (tok-op? pt ","))
+                            (if (tok-op? nt ")") [(:s pt) (:s nt)]
+                                [s0 (:s (nth toks (inc ext)))])
+                            (or (tok-op? nt ")") (tok-op? nt ",")) [(:e pt) e]
+                            :else [s0 (:s nt)])))]
+        (rebuild-table db tname (str (subs tsql 0 from) (subs tsql to)) identity (fn [ix] (:sql ix))))
       :drop-col
       (let [i (find-col tbl (:col st))
             _ (when-not i (err (str "no such column: \"" (:col st) "\"")))
@@ -1261,10 +1363,15 @@
 
 (def ^:dynamic *prepared* (volatile! false))
 
+(declare exec-statement*)
+
 (defn exec-statement
   "Executes one parsed statement. Writes its output into out. Returns the new db. Throws on error
   (after any rows already written)."
   [db sql st ^StringBuilder out]
+  (let [n0 (.length out)] (exec-statement* db sql st out n0)))
+
+(defn- exec-statement* [db sql st ^StringBuilder out n0]
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
   (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be modified")))
@@ -1380,10 +1487,10 @@
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
-        (do (when-not (and (= :alter (:kind st)) (pos? (.length out)))
+        (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
             (update db2 :schema-version (fnil inc 0)))
-        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (pos? (.length out))))
+        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0)))
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 

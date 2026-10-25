@@ -54,6 +54,7 @@
   [db trig tbl old new]
   (let [src (:src trig)
         changes (:changes db)
+        last-rowid (:last-rowid db)
         ctx (assoc (e/->Ctx db src nil (atom 0) nil nil nil) :refs (atom #{}))
         ok (if-let [w (:when trig)]
              (let [c (e/cx ctx (substitute w tbl old new))
@@ -69,7 +70,7 @@
         (when (and *budget* (> (swap! *budget* inc) 3000)) (err "too many levels of trigger recursion"))
         (let [sb (StringBuilder.)
               db2 (reduce (fn [db st] (@exec-fn db src (substitute st tbl old new) sb)) db (:body trig))]
-          (assoc db2 :changes changes))))))
+          (assoc db2 :changes changes :last-rowid last-rowid))))))
 
 (defn fire
   "Runs the triggers trigs for one row event. old/new: row vectors (rowid last) or nil. Returns the new db.
