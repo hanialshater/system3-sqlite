@@ -1316,7 +1316,7 @@
                    (if (not (aget has 0))
                      (do (aset best 0 x) (aset has 0 true) true)
                      (let [c (v/sql-cmp (aget best 0) x coll)]
-                       (if (if mx (< c 0) (> c 0))
+                       (if (or (if mx (< c 0) (> c 0)) (and (:ties-last spec) (zero? c)))
                          (do (aset best 0 x) true)
                          false)))
                    (aget last-hit 0)))]
@@ -2155,6 +2155,45 @@
     (when (seq cands)
       (second (reduce (fn [best c] (if (< (long (first c)) (long (first best))) c best)) (first cands) (rest cands))))))
 
+(defn- plain-indexes [db src]
+  (let [tname (lc (:tname src))]
+    (sort-by :seq > (filter #(and (= (:table %) tname) (nil? (:where %)) (every? :col (:cols %))) (vals (:indexes db))))))
+
+(defn- norm-col ^long [src c]
+  (let [ncols (long (:ncols src)) ipk (:ipk (:table src))]
+    (if (and ipk (= (long c) (long ipk))) ncols (long c))))
+
+(defn- ext-index-cols
+  "Index columns followed by the rowid, columns normalized (IPK = rowid)."
+  [src idx]
+  (conj (mapv (fn [ic] {:c (norm-col src (:col ic)) :coll (or (:coll ic) "BINARY") :desc (boolean (:desc ic))}) (:cols idx))
+        {:c (:ncols src) :coll "BINARY" :desc false}))
+
+(defn order-index
+  "An index whose order satisfies ORDER BY terms ([col coll desc nulls]) of a single table: [idx reverse?]."
+  [db src terms]
+  (first (for [idx (plain-indexes db src)
+               :let [ics (ext-index-cols src idx)]
+               :when (and (<= (count terms) (count ics))
+                          (every? true? (map (fn [[c coll desc nulls] ic]
+                                               (and (= (norm-col src c) (:c ic))
+                                                    (or (= (:c ic) (:ncols src)) (= (or coll "BINARY") (:coll ic)))))
+                                             terms ics)))
+               :let [flips (map (fn [[_ _ desc] ic] (not= (boolean desc) (:desc ic))) terms ics)]
+               :when (apply = flips)]
+           [idx (first flips)])))
+
+(defn group-index
+  "An index whose leading columns are exactly the GROUP BY columns (in any order)."
+  [db src terms]
+  (first (for [idx (plain-indexes db src)
+               :let [ics (ext-index-cols src idx)
+                     want (set (map (fn [[c coll]] [(norm-col src c) (or coll "BINARY")]) terms))
+                     pre (take (count want) ics)]
+               :when (and (= (count want) (count pre))
+                          (= want (set (map (fn [ic] [(:c ic) (if (= (:c ic) (:ncols src)) (or (some (fn [[c coll]] (when (= (norm-col src c) (:c ic)) (or coll "BINARY"))) terms) "BINARY") (:coll ic))]) pre))))]
+           idx)))
+
 (defn- make-scanner
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
@@ -2179,14 +2218,26 @@
         (let [plan (when (and (:scan-refs src) (nil? ib))
                      (let [si (search-index (:db ctx) src (or where-terms []) (:scan-refs src))]
                        (cond (= si :rowid) nil
+                             ;; a range-only index search loses to an index that gives the ORDER BY order
+                             (and si (vector? (:order-plan src))
+                                  (let [c0 (norm-col src (:col (first (:cols si))))]
+                                    (not (some #(and (= (norm-col src (first %)) c0) (= :eq (second %)))
+                                               (keep #(term-target src %) (or where-terms []))))))
+                             (let [[idx rev] (:order-plan src)] (if rev [:rev idx] idx))
                              si si
                              :else (or (first (for [idx (sort-by :seq > (filter #(= (:table %) tname) (vals (:indexes (:db ctx)))))
                                                     :when (and (:where idx) (seq where-terms)
                                                                (check-indexed-by ctx idx where-terms src))]
                                                 idx))
-                                       (covering-index (:db ctx) src (:scan-refs src))))))]
+                                       ;; an index that delivers the ORDER BY / GROUP BY order saves the sort
+                                       (let [op (:order-plan src)]
+                                         (cond (= op :rowid) nil
+                                               op (let [[idx rev] op] (if rev [:rev idx] idx))
+                                               :else (covering-index (:db ctx) src (:scan-refs src))))))))]
           (if plan
-            (fn [_] (index-order-rows (:db ctx) plan))
+            (if (vector? plan)
+              (fn [_] (reverse (index-order-rows (:db ctx) (second plan))))
+              (fn [_] (index-order-rows (:db ctx) plan)))
             (if (:virtual (:table src))
               (let [t (:table src)] (fn [_] (table-rows t)))
               (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
@@ -2410,12 +2461,30 @@
                                      (or (= (:idx col) (:ncols s0)) (= (:idx col) (:ipk (:table s0)))))
                             (if (:desc o) :desc :asc))))
           null-rows (mapv (fn [s] (vec (repeat (inc (:ncols s)) nil))) sources)
+          order-plan (when (and (= 1 nsrc) (:table (first sources)) (not rowid-order) (nil? (:indexed-by (first sources))))
+                       (let [s0 (first sources)
+                             tcol (fn [c] (let [col (:col c)]
+                                            (when (and col (= (:slot col) (:slot s0)) (zero? (long (:depth col))) (nil? (:alt col))
+                                                       (<= (long (:idx col)) (long (:ncols s0))))
+                                              (:idx col))))]
+                         (cond
+                           (seq group-c) (let [cs (map tcol group-c)
+                                               gi (when (every? some? cs)
+                                                    (group-index (:db ctx2) s0 (map (fn [c g] [c (:coll g)]) cs group-c)))]
+                                           (cond gi [gi false]
+                                                 (some #(= (:ncols s0) (some->> % (norm-col s0))) cs) :rowid
+                                                 :else nil))
+                           (and order-c (not is-agg) (not win?))
+                           (let [cs (map tcol order-c)]
+                             (when (every? some? cs)
+                               (order-index (:db ctx2) s0 (map (fn [c o] [c (:coll o) (:desc o) (:nulls o)]) cs order-c)))))))
           scanners (if (= rowid-order :desc)
                      (let [tname (lc (:tname (first sources)))]
                        [(fn [_] (map val (rseq (:rows (get-in (:db ctx2) [:tables tname])))))])
                      (mapv #(make-scanner ctx2
                                           (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
-                                            (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2))))
+                                            (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2)))
+                                                     :order-plan order-plan)
                                             %)
                                           (when (:where core) (split-and (:where core))))
                            sources))
@@ -2424,6 +2493,19 @@
                       (mapv :f rcomp) order-c)
           ofs (mapv :f order-c)
           agg-specs @aggs
+          ;; min/max optimization: a lone min()/max() on an indexed column reads the index from one end, so among
+          ;; equal values the row with the largest rowid wins when that end is the index's last entry
+          agg-specs (let [sp (first agg-specs) s0 (first sources) col (:col (first (:args sp)))]
+                      (if (and (= 1 (count agg-specs)) (#{"min" "max"} (:name sp)) (empty? (:group core))
+                               (= 1 nsrc) (:table s0) (nil? (:indexed-by s0)) col
+                               (= (:slot col) (:slot s0)) (zero? (long (:depth col))) (< (long (:idx col)) (long (:ncols s0))))
+                        (if-let [idx (first (filter (fn [idx] (let [ic (first (:cols idx))]
+                                                                 (and (= (:col ic) (:idx col)) (= (or (:coll ic) "BINARY") (or (:coll sp) "BINARY")))))
+                                                    (plain-indexes (:db ctx2) s0)))]
+                          (let [desc (boolean (:desc (first (:cols idx))))]
+                            (if (= (= "max" (:name sp)) (not desc)) [(assoc sp :ties-last true)] agg-specs))
+                          agg-specs)
+                        agg-specs))
           minmax-only (and (seq agg-specs) (every? #(#{"min" "max"} (:name %)) agg-specs))
           has-minmax (some #(#{"min" "max"} (:name %)) agg-specs)
           control (last (keep-indexed (fn [i sp] (when (#{"min" "max"} (:name sp)) i)) agg-specs))
@@ -2494,7 +2576,7 @@
           (if is-agg
             (fn [^objects env emit]
               (let [groups (if (seq gfs) (TreeMap. ^Comparator (row-comparator gcolls)) nil)
-                    gorder (when (and groups rowid-group) (java.util.ArrayList.))
+                    gorder (when (and groups (or rowid-group (and order-plan (seq group-c)))) (java.util.ArrayList.))
                     single (volatile! nil)
                     new-group (fn [] {:accs (mapv make-acc agg-specs) :snap (object-array nsrc) :init (boolean-array 1)})
                     snapshot! (fn [g] (let [^objects sn (:snap g)] (dotimes [i nsrc] (aset sn i (aget env (long (nth slots i)))))))]
