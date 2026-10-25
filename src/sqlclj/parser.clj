@@ -617,7 +617,7 @@
       (or (at-op? p "-") (at-op? p "+"))
       (let [o (:v (advance! p))
             t (tok p)]
-        (if (#{:int :float :hex} (:t t))
+        (if (or (#{:int :float :hex :str :blob} (:t t)) (and (= :id (:t t)) (#{"NULL" "CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u t))))
           (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:pe e)))
           (fail! p)))
       :else (parse-primary p))))
@@ -1035,7 +1035,7 @@
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
-                                    (when (or (= :eof (:t t)) (= :op (:t t))
+                                    (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
                                               (and (= :id (:t t)) (#{"NULL"} (:u t))))
                                       (syntax-error p t))
                                     (str sign (:v t))))

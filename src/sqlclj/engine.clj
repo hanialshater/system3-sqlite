@@ -1687,10 +1687,26 @@
               (let [c (v/sql-cmp (nth a i) (nth b i) (nth colls i))]
                 (if (zero? c) (recur (inc i)) c))))))))
 
+(declare row-comparator)
+
 (defn table-rows
-  "Rows of a table in rowid order (each row a vector with the rowid appended)."
+  "Rows of a table in rowid order (each row a vector with the rowid appended); a WITHOUT ROWID
+  table in PRIMARY KEY order."
   [tbl]
-  (vals (:rows tbl)))
+  (if (and (:without-rowid tbl) (seq (:pk-cols tbl)))
+    (let [pk (:pk-cols tbl)
+          cmps (mapv #(row-comparator [(or (:coll (nth (:cols tbl) %)) "BINARY")]) pk)
+          desc (:pk-desc tbl)
+          key (fn [r] (mapv #(nth r %) pk))]
+      (sort (fn [a b]
+              (let [ka (key a) kb (key b)]
+                (loop [i 0]
+                  (if (>= i (count pk)) 0
+                      (let [c (.compare ^java.util.Comparator (nth cmps i) [(nth ka i)] [(nth kb i)])
+                            c (if (and desc (nth desc i)) (- c) c)]
+                        (if (zero? c) (recur (inc i)) c))))))
+            (vals (:rows tbl))))
+    (vals (:rows tbl))))
 
 (declare index-order-rows check-indexed-by expr-dtype aff-mask)
 
@@ -1877,8 +1893,12 @@
           (:name e)))
     :else (text-of-node ctx (:e rc))))
 
+(defn- int32-lit? [e]
+  (and (= :lit (:op e)) (= :int (:kind e))
+       (let [x (lit-value e)] (and (instance? Long x) (<= (long x) Integer/MAX_VALUE)))))
+
 (defn neg-int-lit? [e]
-  (and (= :unary (:op e)) (= :neg (:o e)) (= :lit (:op (:e e))) (= :int (:kind (:e e)))))
+  (and (= :unary (:op e)) (= :neg (:o e)) (int32-lit? (:e e))))
 
 (defn- order-term-index
   "If ORDER BY term refers to a result column (integer or alias), returns its 0-based index."
@@ -1887,7 +1907,7 @@
     (cond
       (neg-int-lit? e)
       (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
-      (and (= :lit (:op e)) (= :int (:kind e)))
+      (int32-lit? e)
       (let [k (long (lit-value e))]
         (if (or (< k 1) (> k (count names)))
           (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
@@ -2568,7 +2588,7 @@
   the left-most first."
   [ctx e n infos nth-word]
   (when (neg-int-lit? e) (err (str nth-word " ORDER BY term out of range - should be between 1 and " n)))
-  (if (and (= :lit (:op e)) (= :int (:kind e)))
+  (if (int32-lit? e)
     (let [k (long (lit-value e))]
       (if (or (< k 1) (> k n))
         (err (str nth-word " ORDER BY term out of range - should be between 1 and " n))
