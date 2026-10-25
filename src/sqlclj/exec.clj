@@ -287,7 +287,7 @@
             tbl (if (some :gen cols)
                   (do (check-gen-loops cols)
                       (assoc tbl :has-gen true
-                             :cols (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) cols)))
+                             :cols (vec (rseq (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) (vec (rseq (vec cols))))))))
                   tbl)
             db (assoc-in db [:tables lname] tbl)
             ;; autoindexes: PK (non-ipk) and UNIQUE in declaration order
@@ -2019,6 +2019,13 @@
              (#{:insert :update :delete :create-table :create-index :create-view :create-trigger :drop :alter :vacuum :reindex :analyze} (:kind st)))
     (err "attempt to write a readonly database"))
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  ;; the stored text is parsed again: an object called IF reads as the start of IF NOT EXISTS
+  (when (and (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (:name-s st) (not (:internal st))
+             (not (get-in db [:tables (lc (:name st))])) (not (get-in db [:views (lc (:name st))])))
+    (let [toks (lx/tokenize (subs sql (:name-s st)))
+          t0 (first toks) t1 (second toks)]
+      (when (and t0 (= :id (:t t0)) (= "IF" (:u t0)) t1 (not= :eof (:t t1)))
+        (err (str "malformed database schema (" (:v t0) ") - near \"" (subs sql (+ (:name-s st) (:s t1)) (+ (:name-s st) (:e t1))) "\": syntax error")))))
   (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (not (:master-dml st)))
     (err (str "table " (:table st) " may not be modified")))
   (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
