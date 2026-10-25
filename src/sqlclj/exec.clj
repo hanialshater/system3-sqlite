@@ -165,6 +165,7 @@
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") name " already exists")))
       (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
+      (get-in db [:indexes lname]) (err (str "there is already an index named " name))
       (:as st)
       (let [ctx (new-ctx db sql)
             sub (e/compile-select ctx (:as st))
@@ -982,7 +983,9 @@
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
                      (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
                      (drop-seq-row (:name t))))
-               (if (:if-exists st) db (err (str "no such table: " (:name st)))))
+               (cond (get-in db [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
+                     (:if-exists st) db
+                     :else (err (str "no such table: " (:name st)))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
                  (err "index associated with UNIQUE or PRIMARY KEY constraint cannot be dropped")
@@ -991,7 +994,9 @@
       :view (if (get-in db [:views lname])
               (-> db (update :views dissoc lname)
                   (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m)))))
-              (if (:if-exists st) db (err (str "no such view: " (:name st)))))
+              (cond (get-in db [:tables lname]) (err (str "use DROP TABLE to delete table " (:name st)))
+                    (:if-exists st) db
+                    :else (err (str "no such view: " (:name st)))))
       :trigger (if (get-in db [:triggers lname])
                  (update db :triggers dissoc lname)
                  (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
@@ -1536,7 +1541,8 @@
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
                 :create-view (let [ln (lc (:name st))]
-                               (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
+                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
+                                     (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
                                                  (err "parameters are not allowed in views"))
