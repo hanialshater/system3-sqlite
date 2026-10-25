@@ -385,9 +385,15 @@
                          r (parse-expr-prec p 5)
                          isnot (if dist (not n2) n2)]
                      (recur (let [n (node {:op :is :not isnot :l left :r r} s (:pe r))]
-                              (if (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
+                              (cond
+                                (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
                                 (fold-null-test n left (not isnot))
-                                n))))
+                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
+                                ;; x IS [NOT] TRUE/FALSE tests truthiness: mode bit 1 = FALSE, bit 2 = NOT
+                                (node {:op :fn :name "\u0000truth"
+                                       :args [left {:op :lit :kind :int :text (str (+ (if (= "false" (str/lower-case (:name r))) 1 0) (if isnot 2 0)))}]}
+                                      s (:pe r))
+                                :else n))))
               "IN" (recur (parse-in-rhs p left s negate))
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
@@ -621,7 +627,7 @@
       (or (at-op? p "-") (at-op? p "+"))
       (let [o (:v (advance! p))
             t (tok p)]
-        (if (#{:int :float :hex} (:t t))
+        (if (or (#{:int :float :hex :str :blob} (:t t)) (and (= :id (:t t)) (#{"NULL" "CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u t))))
           (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:pe e)))
           (fail! p)))
       :else (parse-primary p))))
@@ -1039,7 +1045,7 @@
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
-                                    (when (or (= :eof (:t t)) (= :op (:t t))
+                                    (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
                                               (and (= :id (:t t)) (#{"NULL"} (:u t))))
                                       (syntax-error p t))
                                     (str sign (:v t))))
