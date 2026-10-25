@@ -1296,9 +1296,12 @@
                  (nil? lname) :all
                  (and (nil? lsch) (#{"main" "temp"} lname)) :all
                  (and (nil? lsch) (#{"sqlite_master" "sqlite_schema"} lname)) [:table lname]
-                 (get-in db [:indexes lname]) [:index lname]
-                 (get-in db [:tables lname]) [:table lname]
-                 :else (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:name st))))
+                 :else
+                 (let [k (if (and lsch (not (#{"main" "temp"} lsch))) (str lsch "." lname) lname)
+                       fits (fn [o] (and o (or (nil? lsch) (= lsch (sch/schema-of o)))))]
+                   (cond (fits (get-in db [:indexes k])) [:index k]
+                         (fits (get-in db [:tables k])) [:table k]
+                         :else (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:name st))))))
         db (if (get-in db [:tables "sqlite_stat1"])
              db
              (create-table db "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
