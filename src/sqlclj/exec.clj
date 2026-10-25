@@ -32,7 +32,7 @@
         slot (e/new-slot! ctx)
         cols (mapv :name (:cols tbl))
         src {:alias (lc (:name tbl)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
-             :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? true
+             :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? (not (:without-rowid tbl))
              :ncols (count cols) :hidden #{}}
         ctx (assoc ctx :scope {:sources [src] :parent nil})
         c (e/cx ctx ast)
@@ -49,7 +49,7 @@
                             ci (when (and (= :col (:op ast)) (nil? (:table ast)))
                                  (let [i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) (lc (:name ast)))]
                                    (cond (>= i 0) i
-                                         (#{"rowid" "oid" "_rowid_"} (lc (:name ast))) ncols
+                                         (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name ast)))) ncols
                                          :else (err (str "no such column: " (:name ast))))))
                             c (when-not ci (compile-row-expr db sql tbl ast))]
                         {:col ci :ast ast :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
@@ -451,7 +451,7 @@
   (let [slot (e/new-slot! ctx)
         cols (mapv :name (:cols tbl))]
     {:alias (lc (or alias (:name tbl))) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
-     :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? true :ipk (:ipk tbl)
+     :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? (not (:without-rowid tbl)) :ipk (:ipk tbl)
      :ncols (count cols) :hidden #{}}))
 
 (defn- compile-returning [ctx src items]
@@ -468,7 +468,7 @@
                                            (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
                                              (nth (:cols src) (:ipk src))
                                              n))
-                                         (e/text-of-node ctx (:e rc))))
+                                         (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
       {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)})))
@@ -478,12 +478,12 @@
     1
     (let [m (long (key (first (rseq (:rows tbl)))))]
       (if (= m Long/MAX_VALUE)
-        (loop [n 0]
-          (let [r (inc (long (rand-int Integer/MAX_VALUE)))
-                r (+ r (* (long (rand-int Integer/MAX_VALUE)) 1024))]
-            (cond (not (contains? (:rows tbl) r)) r
-                  (> n 100) (err "database or disk is full")
-                  :else (recur (inc n)))))
+        ;; SQLite then tries random rowids (deterministic here: a fixed-seed generator)
+        (let [rnd (java.util.Random. (count (:rows tbl)))]
+          (or (some (fn [_] (let [r (bit-and (.nextLong rnd) Long/MAX_VALUE)]
+                              (when (and (pos? r) (not (contains? (:rows tbl) r))) r)))
+                    (range 100))
+              (err "database or disk is full")))
         (inc m)))))
 
 (defn- upsert-matcher
@@ -581,7 +581,7 @@
                                   (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                                     (err (str "cannot INSERT into generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                   (cond (>= i 0) i
-                                        (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
+                                        (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc c))) (or (:ipk tbl) -1)
                                         :else (err (str "table " (:name tbl) " has no column named " c)))))
                         (:cols st))
                   (vec (remove #(:gen (nth (:cols tbl) %)) (range ncols)))))
@@ -811,7 +811,7 @@
                        (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                          (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                        (cond (>= i 0) i
-                             (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
+                             (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc c))) (or (:ipk tbl) -1)
                              :else (err (str "no such column: " c))))
                      (when-not from
                        (if (nil? k)
@@ -830,7 +830,7 @@
         join-count (volatile! nil)
         targets (if from
                   (let [sctx2 (new-ctx db sql)
-                        cols (into [{:e {:op :col :table (or (:alias st) tname) :name "rowid"} :alias "rid"}]
+                        cols (into [{:e {:op :col :table (or (:alias st) tname) :name "\u0000rowid"} :alias "rid"}]
                                    (map-indexed (fn [i [_ ex k]] {:e (if k {:op :lit :v nil} ex) :alias (str "c" i)}) set-items))
                         sel {:body {:type :core :cols cols
                                     :from (into [{:table (if vw tkey tname) :schema (:schema st) :alias (or (:alias st) tname)}]

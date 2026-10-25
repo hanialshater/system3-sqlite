@@ -137,7 +137,13 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
+      :var (do (advance! p)
+               (let [vv ^String (:v t)]
+                 (when (and (> (.length vv) 1) (= \? (.charAt vv 0)))
+                   (let [x (try (Long/parseLong (subs vv 1)) (catch Exception _ -1))]
+                     (when-not (and (> x 0) (<= x 32766))
+                       (throw (lx/sql-error "variable number must be between ?1 and ?32766"))))))
+               (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
@@ -470,14 +476,16 @@
       :else
       (let [e (parse-expr p)
             alias (parse-alias p false)
-            ;; SQLite's column span runs to the start of the next token (comments included), trailing blanks trimmed
-            e (if (and (nil? alias) (:pe e))
-                (let [^String sql (.-sql p)
-                      ne (long (:s (tok p)))
-                      ne (loop [x ne] (if (and (> x (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec x)))) (recur (dec x)) x))]
-                  (if (> ne (long (:pe e))) (assoc e :pe ne) e))
-                e)]
-        {:e e :alias alias}))))
+            ;; SQLite's column name span runs to the start of the next token, so comments after the
+            ;; expression belong to it; trailing white space is trimmed
+            npe (when-not alias
+                  (let [^String sql (.-sql p) ns (:s (tok p))]
+                    (when (and ns (> (long ns) (long (:pe e))))
+                      (loop [k (long ns)]
+                        (if (and (> k (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec k))))
+                          (recur (dec k))
+                          (when (> k (long (:pe e))) k))))))]
+        (cond-> {:e e :alias alias} npe (assoc :name-pe npe))))))
 
 (declare parse-from)
 
