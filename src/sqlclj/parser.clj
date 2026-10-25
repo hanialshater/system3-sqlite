@@ -73,6 +73,8 @@
 
 (declare parse-expr parse-select parse-expr-prec parse-window-def)
 (def ^:dynamic *in-trigger* false)
+(def ^:dynamic *trigger-cmd* false)
+(def ^:dynamic *trigger-temp* false)
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
@@ -88,7 +90,8 @@
         names (loop [acc []]
                 (let [t (tok p)]
                   (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (or (reserved (:u t)) (= "GENERATED" (:u t))))))
+                           (or (= :qid (:t t)) (not (or (reserved (:u t))
+                                                    (and (= "GENERATED" (:u t)) (kw? (tok-at p 1) "ALWAYS") (kw? (tok-at p 2) "AS"))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
     (when (seq names)
@@ -137,7 +140,8 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p)
+      :var (do (when *in-trigger* (throw (lx/sql-error "trigger cannot use variables")))
+               (advance! p)
                (let [vv ^String (:v t)]
                  (when (and (> (.length vv) 1) (= \? (.charAt vv 0)))
                    (let [x (try (Long/parseLong (subs vv 1)) (catch Exception _ -1))]
@@ -226,11 +230,13 @@
                         (case (:u t) "IGNORE" :ignore "ROLLBACK" :rollback "ABORT" :abort "FAIL" :fail (syntax-error p t)))
                     msg (when (not= k :ignore)
                           (expect-op p ",")
-                          (let [t (tok p)]
-                            (if (= :str (:t t)) (do (advance! p) (:v t)) (fail! p))))]
+                          (let [t (tok p) t1 (tok-at p 1)]
+                            (if (and (= :str (:t t)) (= :op (:t t1)) (= ")" (:v t1)))
+                              (do (advance! p) (:v t))
+                              (parse-expr p))))]
                 (expect-op p ")")
-                (when-not *in-trigger* (throw (lx/sql-error "RAISE() may only be used within a trigger-program")))
-                (node {:op :raise :kind k :msg msg} s (prev-end p))))
+                (node (cond-> {:op :raise :kind k :msg (if (string? msg) msg nil) :msg-e (when-not (string? msg) msg)}
+                        (not *in-trigger*) (assoc :outside-trigger true)) s (prev-end p))))
           (reserved u) (fail! p)
           :else
           (do (advance! p)
@@ -701,7 +707,10 @@
         (if (or (#{:int :float :hex :str :blob} (:t t)) (and (= :id (:t t)) (#{"NULL" "CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u t))))
           (let [e (parse-primary p)] (node {:op :unary :o (if (= o "-") :neg :pos) :e e} s (:pe e)))
           (fail! p)))
-      :else (parse-primary p))))
+      (let [t (tok p)]
+        (or (#{:int :float :hex :str :blob} (:t t)) (and (= :id (:t t)) (#{"NULL" "CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u t)))))
+      (parse-primary p)
+      :else (fail! p))))
 
 (defn- parse-fk-tail
   "After REFERENCES: parent table, optional column list, actions. Returns a map."
@@ -762,7 +771,10 @@
                        (let [e (cond
                                  (at-op? p "(") (do (advance! p) (let [e (parse-expr p)] (expect-op p ")") e))
                                  (and (:u (tok p)) (#{"CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u (tok p)))) (parse-primary p)
-                                 (ident-tok? (tok p)) (let [t (advance! p)] (node {:op :lit :v (:v t)} (:s t) (:e t)))
+                                 (ident-tok? (tok p)) (let [t (advance! p)]
+                                                        (if (and (= :id (:t t)) (#{"TRUE" "FALSE"} (:u t)))
+                                                          (node {:op :lit :kind :int :text (if (= "TRUE" (:u t)) "1" "0")} (:s t) (:e t))
+                                                          (node {:op :lit :v (:v t)} (:s t) (:e t))))
                                  :else (parse-signed-literal p))]
                          (recur (conj acc {:c :default :e e}))))
                    (kw? t "COLLATE")
@@ -844,10 +856,15 @@
                        (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o true) o))
                        (at-kw? p "WITHOUT") (do (advance! p)
                                                 (let [t (advance! p)]
-                                                  (when-not (= "ROWID" (:u t)) (syntax-error p t)))
+                                                  (when-not (= "ROWID" (:u t))
+                                                    (if (or (ident-tok? t) (= :str (:t t)))
+                                                      (throw (lx/sql-error (str "unknown table option: " (tok-text p t))))
+                                                      (syntax-error p t))))
                                                 (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o true) o)))
                        need (fail! p)
                        (and (empty? opts) (accept-op p ",")) (recur opts true)
+                       (and (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (not (reserved (:u (tok p)))))
+                       (throw (lx/sql-error (str "unknown table option: " (tok-text p (tok p)))))
                        :else opts))]
           {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
@@ -895,13 +912,14 @@
   (expect-kw p "INTO")
   (let [n1 (parse-nm p)
         [sch tname] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+        _ (when (and *trigger-cmd* sch (not *trigger-temp*)) (throw (lx/sql-error "qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers")))
         alias (when (accept-kw p "AS") (parse-nm p))
         cols (when (at-op? p "(")
                (advance! p)
                (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
                  (expect-op p ")") c))
         src (cond
-              (at-kw? p "DEFAULT") (do (advance! p) (expect-kw p "VALUES") {:default true})
+              (and (at-kw? p "DEFAULT") (not *trigger-cmd*)) (do (advance! p) (expect-kw p "VALUES") {:default true})
               (at-kw? p "VALUES")
               (let [save (pos p)
                     _ (advance! p)
@@ -918,7 +936,10 @@
 (defn- parse-qualified-table [^P p]
   (let [n1 (parse-nm p)
         [sch tname] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+        _ (when (and *trigger-cmd* sch (not *trigger-temp*)) (throw (lx/sql-error "qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers")))
         alias (when (accept-kw p "AS") (parse-nm p))
+        _ (when (and *trigger-cmd* (at-kw? p "INDEXED")) (throw (lx/sql-error "the INDEXED BY clause is not allowed on UPDATE or DELETE statements within triggers")))
+        _ (when (and *trigger-cmd* (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (throw (lx/sql-error "the NOT INDEXED clause is not allowed on UPDATE or DELETE statements within triggers")))
         ib (cond (at-kw? p "INDEXED") (do (advance! p) (expect-kw p "BY") (parse-nm p))
                  (and (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (do (advance! p) (advance! p) :none)
                  :else nil)]
@@ -939,7 +960,9 @@
                  (if (accept-op p ",") (recur acc) acc)))
         from (when (accept-kw p "FROM") (parse-from p))
         where (when (accept-kw p "WHERE") (parse-expr p))
+        _ (when (and *trigger-cmd* (at-kw? p "RETURNING")) (fail! p))
         ret (parse-returning p)
+        _ (when (and *trigger-cmd* (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
         _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
         _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :update :or or-action :sets sets :from from :where where :returning ret} qt)))
@@ -948,7 +971,9 @@
   (expect-kw p "FROM")
   (let [qt (parse-qualified-table p)
         where (when (accept-kw p "WHERE") (parse-expr p))
+        _ (when (and *trigger-cmd* (at-kw? p "RETURNING")) (fail! p))
         ret (parse-returning p)
+        _ (when (and *trigger-cmd* (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
         _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
         _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :delete :where where :returning ret} qt)))
@@ -967,7 +992,7 @@
                          t2 (tok p)]
                      (if (and (= :id (:t t2)) (#{"SELECT" "VALUES"} (:u t2)))
                        {:kind :select :select (assoc (parse-select p) :with w)}
-                       (if (and (= :id (:t t2)) (#{"INSERT" "REPLACE" "UPDATE" "DELETE"} (:u t2)))
+                       (if (and (= :id (:t t2)) (#{"INSERT" "REPLACE" "UPDATE" "DELETE"} (:u t2)) (not *trigger-cmd*))
                          (assoc (parse-statement* p) :with w)
                          (fail! p)))))
         "INSERT" (do (advance! p)
@@ -1035,7 +1060,7 @@
                       _ (when (accept-kw p "FOR") (expect-kw p "EACH") (expect-kw p "ROW"))
                       wh (when (accept-kw p "WHEN") (binding [*in-trigger* true] (parse-expr p)))
                       _ (expect-kw p "BEGIN")
-                      body (binding [*in-trigger* true]
+                      body (binding [*in-trigger* true *trigger-cmd* true *trigger-temp* (boolean (or temp (some-> sch str/lower-case (= "temp"))))]
                              (loop [acc []]
                                (cond
                                  (accept-kw p "END") acc
@@ -1072,7 +1097,7 @@
                  (cond
                    (accept-kw p "TO") {:action :rename :to (parse-nm p)}
                    :else (do (accept-kw p "COLUMN")
-                             (let [old (parse-nm p)] (expect-kw p "TO") {:action :rename-col :old old :to (parse-nm p)})))
+                             (let [rt (tok p) old (parse-nm p)] (expect-kw p "TO") {:action :rename-col :old old :old-raw (tok-text p rt) :to (parse-nm p)})))
                  (accept-kw p "ADD")
                  (if (or (at-kw? p "CONSTRAINT") (at-kw? p "CHECK"))
                    (let [cs (:s (tok p))
@@ -1128,7 +1153,9 @@
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
                                     (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
-                                              (and (= :id (:t t)) (#{"NULL"} (:u t))))
+                                              (and (= :id (:t t)) (#{"NULL"} (:u t)))
+                                              (and (= :id (:t t)) (reserved (:u t)) (not (join-kw (:u t)))
+                                                   (not (#{"ON" "DELETE" "DEFAULT"} (:u t)))))
                                       (syntax-error p t))
                                     (str sign (:v t))))
                            v (cond (accept-op p "=") (pval)
@@ -1163,6 +1190,46 @@
   [^String sql]
   (P. sql (fix-window-keywords (lx/tokenize sql)) (int-array 1)))
 
+(defn- stack-overflow?
+  "Approximates Lemon's parser stack (about 2494 entries) from the nesting of parentheses, calls and CASE."
+  [toks start]
+  (let [n (count toks)]
+    (loop [i start frames [] cur 0 mx 0 prev nil]
+      (if (or (>= i n) (> mx 2493))
+        (> mx 2493)
+        (let [t (nth toks i)]
+          (cond
+            (= :eof (:t t)) false
+            (and (= :op (:t t)) (= ";" (:v t)) (empty? frames)) false
+            (and (= :op (:t t)) (= "(" (:v t)))
+            (let [c (cond (and prev (or (= :qid (:t prev))
+                                        (and (= :id (:t prev)) (not (reserved (:u prev)))
+                                             (not (contains? #{"SELECT" "VALUES" "IN" "FROM" "JOIN" "AS" "WITH" "VIEW" "TABLE" "SET"} (:u prev))))))
+                          3
+                          (and prev (or (and (= :op (:t prev)) (not= ")" (:v prev)) (not= "(" (:v prev)) (not= "," (:v prev)))
+                                        (and (= :id (:t prev)) (contains? #{"AND" "OR" "NOT" "WHEN" "THEN" "ELSE" "IS" "IN" "BETWEEN" "LIKE"} (:u prev)))))
+                          3
+                          (kw? (nth toks (inc i)) "SELECT") 6
+                          :else 1)
+                  cur (+ cur c)]
+              (recur (inc i) (conj frames c) cur (max mx cur) t))
+            (and (= :op (:t t)) (= ")" (:v t)) (seq frames) (not= :case (peek frames)))
+            (recur (inc i) (pop frames) (- cur (long (peek frames))) mx t)
+            (= "CASE" (:u t))
+            (recur (inc i) (conj frames 3) (+ cur 3) (max mx (+ cur 3)) t)
+            (and (= "END" (:u t)) (seq frames) (= 3 (peek frames)))
+            (recur (inc i) (pop frames) (- cur 3) mx t)
+            :else (recur (inc i) frames cur mx t)))))))
+
+(defn- expr-height [x]
+  (cond
+    (map? x) (let [h (reduce (fn [m v] (max m (long (expr-height v)))) 0 (vals x))]
+               (cond (or (#{:subq :exists} (:op x)) (and (:op x) (:select x))) (+ h 23)
+                     (:op x) (inc h)
+                     :else h))
+    (sequential? x) (reduce (fn [m v] (max m (long (expr-height v)))) 0 x)
+    :else 0))
+
 (defn next-statement
   "Returns the next statement AST (with :sql-text) or nil if no more. Skips empty statements."
   [^P p]
@@ -1173,7 +1240,11 @@
         (and (= :op (:t t)) (= ";" (:v t))) (do (advance! p) (recur))
         :else
         (let [st-s (:s t)
+              _ (when (> (count (.-toks p)) 800)
+                  (when (stack-overflow? (.-toks p) (pos p)) (throw (lx/sql-error "Recursion limit"))))
               st (parse-statement* p)
+              _ (when (and (> (count (.-toks p)) 100) (map? st) (> (long (expr-height st)) 1000))
+                  (throw (lx/sql-error "Expression tree is too large (maximum depth 1000)")))
               t (tok p)
               st (if (map? st) (assoc st :st-s st-s :st-e (prev-end p) :st-next (or (:s t) (count (.-sql p)))) st)]
           (cond

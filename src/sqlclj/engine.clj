@@ -490,12 +490,11 @@
       (err @pend)))
   (case (:op e)
     :lit (let [v (lit-value e)
-               c (const-c v)]
+               c (cond-> (const-c v) (:tmeta e) (assoc :aff (:taff e) :coll (:tcoll e)))]
            ;; integer literals stored as 32-bit values count as always true/false for AND/OR simplification
            (cond
              (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
-             (or (:aff e) (:coll e)) (assoc c :aff (:aff e) :coll (:coll e))
              :else c))
     :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
                       (catch clojure.lang.ExceptionInfo ex
@@ -540,10 +539,14 @@
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
-    :raise (let [k (:kind e) msg (:msg e)]
-             (mk (fn [_] (if (= k :ignore)
-                           (throw (ex-info "raise-ignore" {:raise-ignore true}))
-                           (throw (ex-info msg {:sql-error msg :raise k}))))))
+    :raise (let [k (:kind e) msg (:msg e)
+                 _ (when (and (:outside-trigger e) (not *in-trigger*))
+                     (err "RAISE() may only be used within a trigger-program"))
+                 mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
+             (mk (fn [env] (if (= k :ignore)
+                             (throw (ex-info "raise-ignore" {:raise-ignore true}))
+                             (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
+                               (throw (ex-info msg {:sql-error msg :raise k})))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1753,7 +1756,9 @@
                  (let [t (get-in (:db ctx) [:tables (schema/resolve-key (:db ctx) name "main")])] (when-not (:temp t) t)))
                (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))]))
          ls (lc sch)
-         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
+         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))
+                      (not (and (= iv "main") (:temp t))))
+             t)]
      (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
@@ -1819,6 +1824,7 @@
           names)))
 
 (declare compile-cte)
+(def ^:dynamic *view-stack* #{})
 
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
@@ -2525,18 +2531,18 @@
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil)))))
           nagg-before (count @aggs)
-          group-c (binding [*coll-phase* :group] (mapv (fn [g]
+          group-c (binding [*coll-phase* :group] (vec (map-indexed (fn [gi g]
                           (let [g (subst g)]
                             (when (neg-int-lit? g)
-                              (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
+                              (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
                               (let [k (long (lit-value g))]
                                 (if (or (< k 1) (> k (count rcols)))
-                                  (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols)))
+                                  (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols)))
                                   (nth rcomp (dec k))))
                               (let [c (cx (assoc ctx2 :aggs aggs :agg-slot agg-slot :no-agg-msg true) g)]
                                 c))))
-                        (:group core)))
+                        (:group core))))
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
