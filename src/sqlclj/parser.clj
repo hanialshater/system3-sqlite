@@ -137,7 +137,13 @@
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
       :var (do (when *in-trigger* (throw (lx/sql-error "trigger cannot use variables")))
-               (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
+               (advance! p)
+               (let [vv ^String (:v t)]
+                 (when (and (> (.length vv) 1) (= \? (.charAt vv 0)))
+                   (let [x (try (Long/parseLong (subs vv 1)) (catch Exception _ -1))]
+                     (when-not (and (> x 0) (<= x 32766))
+                       (throw (lx/sql-error "variable number must be between ?1 and ?32766"))))))
+               (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
@@ -162,7 +168,7 @@
                   (if (at-op? p ".")
                     (do (advance! p) (let [n3 (parse-nm p)] (node {:op :col :schema (:v t) :table n2 :name n3} s (prev-end p))))
                     (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
-            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t))))
+            (node {:op :col :name (:v t) :dq (:dq t) :quoted true} s (:e t))))
       :id
       (let [u (:u t)]
         (cond
@@ -399,7 +405,7 @@
                               (cond
                                 (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
                                 (fold-null-test n left (not isnot))
-                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
+                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (not (:quoted r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
                                 ;; x IS [NOT] TRUE/FALSE tests truthiness: mode bit 1 = FALSE, bit 2 = NOT
                                 (node {:op :fn :name "\u0000truth"
                                        :args [left {:op :lit :kind :int :text (str (+ (if (= "false" (str/lower-case (:name r))) 1 0) (if isnot 2 0)))}]}
@@ -455,8 +461,17 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p false)]
-        {:e e :alias alias}))))
+            alias (parse-alias p false)
+            ;; SQLite's column name span runs to the start of the next token, so comments after the
+            ;; expression belong to it; trailing white space is trimmed
+            npe (when-not alias
+                  (let [^String sql (.-sql p) ns (:s (tok p))]
+                    (when (and ns (> (long ns) (long (:pe e))))
+                      (loop [k (long ns)]
+                        (if (and (> k (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec k))))
+                          (recur (dec k))
+                          (when (> k (long (:pe e))) k))))))]
+        (cond-> {:e e :alias alias} npe (assoc :name-pe npe))))))
 
 (declare parse-from)
 
@@ -492,11 +507,24 @@
     (accept-op p ",") :cross-comma
     (at-kw? p "JOIN") (do (advance! p) :inner)
     (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-    (let [kws (loop [acc []]
-                (if (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-                  (recur (conj acc (:u (advance! p))))
-                  acc))]
-      (expect-kw p "JOIN")
+    (let [t0 (advance! p)
+          more (loop [acc []]
+                 (let [t (tok p)]
+                   (if (and (< (count acc) 2) (not (kw? t "JOIN"))
+                            (or (ident-tok? t) (= :str (:t t))))
+                     (do (advance! p) (recur (conj acc t)))
+                     acc)))
+          _ (expect-kw p "JOIN")
+          all (cons t0 more)
+          codes {"NATURAL" #{:nat} "LEFT" #{:left :outer} "OUTER" #{:outer} "RIGHT" #{:right :outer}
+                 "FULL" #{:left :right :outer} "INNER" #{:inner} "CROSS" #{:inner :cross}}
+          bits (reduce (fn [acc t] (let [c (and (= :id (:t t)) (codes (:u t)))]
+                                     (if c (into acc c) (reduced (conj acc :error)))))
+                       #{} all)
+          _ (when (or (and (bits :inner) (bits :outer)) (bits :error)
+                      (and (bits :outer) (not (bits :left)) (not (bits :right))))
+              (throw (lx/sql-error (str "unknown join type: " (str/join " " (map #(tok-text p %) all))))))
+          kws (map :u all)]
       (let [s (set kws)]
         (cond
           (s "NATURAL") (cond (s "LEFT") :natural-left (s "RIGHT") :natural-right (s "FULL") :natural-full :else :natural)
@@ -507,18 +535,29 @@
           :else :inner)))
     :else nil))
 
+(defn- valid-after-from? [^P p]
+  (let [t (tok p)]
+    (or (= :eof (:t t))
+        (and (= :op (:t t)) (#{";" ")" ","} (:v t)))
+        (and (= :id (:t t))
+             (contains? #{"WHERE" "GROUP" "HAVING" "WINDOW" "ORDER" "LIMIT" "UNION" "INTERSECT" "EXCEPT" "JOIN"
+                          "LEFT" "RIGHT" "FULL" "INNER" "CROSS" "NATURAL" "RETURNING" "OUTER"} (:u t))))))
+
 (defn parse-from [^P p]
   (loop [items (let [first-ref (parse-table-ref p)]
                  (cond
                    (at-kw? p "ON")
                    (do (advance! p) (parse-expr p)
-                       (when (at-kw? p "USING") (fail! p))
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before ON")))
                    (at-kw? p "USING")
                    (do (advance! p) (expect-op p "(")
                        (loop [] (parse-nm p) (when (accept-op p ",") (recur)))
                        (expect-op p ")")
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before USING")))
+                   ;; SQLite's parser flattens an unaliased parenthesized join in the first position
+                   (and (:nested first-ref) (nil? (:alias first-ref))) (vec (:nested first-ref))
                    :else [first-ref]))]
     (let [save (pos p)
           jt (parse-join-op p)]
@@ -786,16 +825,18 @@
                       (cond (accept-op p ",") (recur cols tcons)
                             (accept-op p ")") [cols tcons]
                             :else (fail! p))))))
-              opts (loop [opts #{}]
+              opts (loop [opts #{} need false]
                      (cond
-                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o) o))
+                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o true) o))
                        (at-kw? p "WITHOUT") (do (advance! p)
                                                 (let [t (advance! p)]
                                                   (when-not (= "ROWID" (:u t))
                                                     (if (or (ident-tok? t) (= :str (:t t)))
                                                       (throw (lx/sql-error (str "unknown table option: " (tok-text p t))))
                                                       (syntax-error p t))))
-                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
+                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o true) o)))
+                       need (fail! p)
+                       (and (empty? opts) (accept-op p ",")) (recur opts true)
                        (and (or (ident-tok? (tok p)) (= :str (:t (tok p)))) (not (reserved (:u (tok p)))))
                        (throw (lx/sql-error (str "unknown table option: " (tok-text p (tok p)))))
                        :else opts))]
