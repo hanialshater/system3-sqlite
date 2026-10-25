@@ -73,6 +73,7 @@
 ;; ------------------------------------------------------------------ expressions
 
 (declare parse-expr parse-select parse-expr-prec parse-window-def)
+(def ^:dynamic *in-trigger* false)
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
@@ -85,7 +86,7 @@
         names (loop [acc []]
                 (let [t (tok p)]
                   (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (reserved (:u t)))))
+                           (or (= :qid (:t t)) (not (or (reserved (:u t)) (= "GENERATED" (:u t))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
     (when (seq names)
@@ -192,7 +193,17 @@
               (let [sel (parse-select p)]
                 (expect-op p ")")
                 (node {:op :exists :select sel} s (prev-end p))))
-          (= u "RAISE") (fail! p)
+          (and (= u "RAISE") (let [n (tok-at p 1)] (and (= :op (:t n)) (= "(" (:v n)))))
+          (do (advance! p) (advance! p)
+              (let [k (let [t (advance! p)]
+                        (case (:u t) "IGNORE" :ignore "ROLLBACK" :rollback "ABORT" :abort "FAIL" :fail (syntax-error p t)))
+                    msg (when (not= k :ignore)
+                          (expect-op p ",")
+                          (let [t (tok p)]
+                            (if (= :str (:t t)) (do (advance! p) (:v t)) (fail! p))))]
+                (expect-op p ")")
+                (when-not *in-trigger* (throw (lx/sql-error "RAISE() may only be used within a trigger-program")))
+                (node {:op :raise :kind k :msg msg} s (prev-end p))))
           (reserved u) (fail! p)
           :else
           (do (advance! p)
@@ -381,7 +392,7 @@
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
                     esc (when (accept-kw p "ESCAPE") (parse-expr-prec p 5))]
-                (recur (node {:op :like :o (keyword (str/lower-case u)) :e left :pat r :esc esc :not negate}
+                (recur (node {:op :like :o (keyword (str/lower-case u)) :ostr (:v t) :e left :pat r :esc esc :not negate}
                              s (prev-end p))))
               "BETWEEN"
               (let [lo (loop [lo (parse-expr-prec p 3)]
@@ -665,8 +676,13 @@
                    (kw? t "REFERENCES")
                    (do (advance! p)
                        (recur (conj acc (assoc (parse-fk-tail p) :c :fk :from [name]))))
-                   (kw? t "GENERATED") (fail! p)
-                   (kw? t "AS") (fail! p)
+                   (or (kw? t "GENERATED") (kw? t "AS"))
+                   (do (when (accept-kw p "GENERATED") (expect-kw p "ALWAYS"))
+                       (expect-kw p "AS") (expect-op p "(")
+                       (let [e (parse-expr p)]
+                         (expect-op p ")")
+                         (let [stored (cond (accept-kw p "STORED") true (accept-kw p "VIRTUAL") false :else false)]
+                           (recur (conj acc {:c :generated :e e :stored stored})))))
                    :else (do (when cname (fail! p)) acc))))]
     {:name name :type type :cons cons :s cs :e (prev-end p)}))
 
@@ -674,6 +690,7 @@
   (expect-op p "(")
   (let [cols (loop [acc []]
                (let [e (parse-expr p)
+                     e (if (and (= :lit (:op e)) (string? (:v e)) (nil? (:kind e))) (assoc e :op :col :name (:v e)) e)
                      [e coll] (if (= :collate (:op e)) [(:e e) (:coll e)] [e nil])
                      desc (cond (accept-kw p "DESC") true (accept-kw p "ASC") false :else false)
                      acc (conj acc {:e e :coll coll :desc desc})]
@@ -883,6 +900,40 @@
                       _ (expect-kw p "AS")
                       sel (parse-select p)]
                   {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :select sel})
+                (and (not unique) (accept-kw p "TRIGGER"))
+                (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+                      name-s (volatile! (:s (tok p)))
+                      n1 (parse-nm p)
+                      [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
+                      timing (cond (accept-kw p "BEFORE") :before
+                                   (accept-kw p "AFTER") :after
+                                   (at-kw? p "INSTEAD") (do (advance! p) (expect-kw p "OF") :instead)
+                                   :else :before)
+                      [event cols] (cond (accept-kw p "DELETE") [:delete nil]
+                                         (accept-kw p "INSERT") [:insert nil]
+                                         (accept-kw p "UPDATE")
+                                         (if (accept-kw p "OF")
+                                           [:update (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
+                                           [:update nil])
+                                         :else (fail! p))
+                      _ (expect-kw p "ON")
+                      t1 (parse-nm p)
+                      [tsch tname] (if (accept-op p ".") [t1 (parse-nm p)] [nil t1])
+                      _ (when (accept-kw p "FOR") (expect-kw p "EACH") (expect-kw p "ROW"))
+                      wh (when (accept-kw p "WHEN") (binding [*in-trigger* true] (parse-expr p)))
+                      _ (expect-kw p "BEGIN")
+                      body (binding [*in-trigger* true]
+                             (loop [acc []]
+                               (cond
+                                 (accept-kw p "END") acc
+                                 :else (let [t (tok p)
+                                             st (case (:u t)
+                                                  ("SELECT" "VALUES" "INSERT" "REPLACE" "UPDATE" "DELETE" "WITH") (parse-statement* p)
+                                                  (fail! p))]
+                                         (expect-op p ";")
+                                         (recur (conj acc st))))))]
+                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine
+                   :timing timing :event event :cols cols :table tname :table-schema tsch :when wh :body body})
                 :else (fail! p))))
         "DROP"
         (do (advance! p)
@@ -946,7 +997,9 @@
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
-                                    (when (= :eof (:t t)) (syntax-error p t))
+                                    (when (or (= :eof (:t t)) (= :op (:t t))
+                                              (and (= :id (:t t)) (#{"NULL"} (:u t))))
+                                      (syntax-error p t))
                                     (str sign (:v t))))
                            v (cond (accept-op p "=") (pval)
                                    (accept-op p "(") (let [x (pval)] (expect-op p ")") x)

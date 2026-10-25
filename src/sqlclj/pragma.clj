@@ -71,9 +71,10 @@
       (vec (keep-indexed
             (fn [i c]
               (let [pkpos (let [j (.indexOf ^java.util.List pks i)] (if (neg? j) 0 (inc j)))
-                    hidden (long (or (:hidden-kind c) 0))]
+                    hidden (long (or (:hidden-kind c) 0))
+                    cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long i) (:name c) (or (:type c) "") (if (:notnull c) 1 0)
+                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (:notnull c) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))
@@ -196,7 +197,7 @@
         (if (nil? v) (one db n (long (pget db n 0)))
             (let [u (lc v)
                   x (case u "none" 0 "full" 1 "incremental" 2 (or (int-value v) 0))]
-              (none (if (empty? (get-in db [:pages "main"])) (pset db n x) db))))
+              {:db (pset db n x) :names nil :rows [] :writes true}))
         "encoding" (if (nil? v) (one db n "UTF-8") (none db))
         "integrity_check" (if (and v (not (int-value v)) (not (find-table db v)))
                             (err (str "no such table: " v))

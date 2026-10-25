@@ -8,6 +8,7 @@
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
             [sqlclj.ext :as ext]
+            [sqlclj.printf :as pf]
             [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
@@ -17,6 +18,8 @@
 (defn err [msg] (throw (lx/sql-error msg)))
 
 (defn lc ^String [s] (when s (str/lower-case s)))
+
+(def ^:dynamic *in-trigger* false)
 
 ;; ====================================================================== compile context
 
@@ -454,6 +457,10 @@
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
+    :raise (let [k (:kind e) msg (:msg e)]
+             (mk (fn [_] (if (= k :ignore)
+                           (throw (ex-info "raise-ignore" {:raise-ignore true}))
+                           (throw (ex-info msg {:sql-error msg :raise k}))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (v/type-affinity (:type e))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -569,8 +576,9 @@
           fx (:f x) fp (:f pt) fe (:f es)
           glob? (= :glob (:o e))
           negate (:not e)]
-      (when (#{:match :regexp} (:o e)) (err (str "no such function: " (name (:o e)))))
+      (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
       (mk (fn [env]
+            (when (= :match (:o e)) (err "unable to use function MATCH in the requested context"))
             (let [s (fx env) pat (fp env) esc (when fe (fe env))]
               (if (or (nil? s) (nil? pat) (and fe (nil? esc)))
                 nil
@@ -904,8 +912,8 @@
         (cond
           (or (< r -4503599627370496.0) (> r 4503599627370496.0)) r
           (= n 0) (let [r2 (double (long (+ (Math/abs r) 0.5)))] (if (neg? r) (- r2) r2))
-          :else (let [s (format (str "%." n "f") r)]
-                  (first (num/atof (num/real->text (Double/parseDouble s))))))))))
+          :else (let [s (pf/sql-printf "%!.*f" [(long n) r])]
+                  (first (num/atof s))))))))
 
 (defn- hex-impl [x]
   (if (nil? x) "" (v/hex-upper (v/bytes-of x))))
@@ -1001,8 +1009,7 @@
       (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
-  #{"random" "randomblob" "changes" "total_changes" "last_insert_rowid"
-    "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
+  #{"json"})
 
 (defn- function-level-error
   "Errors SQLite reports for the function node itself (before resolving its arguments)."
@@ -1075,6 +1082,11 @@
         (let [fs (mapv :f args)]
           (mk (fn [env] (loop [fs fs] (when (seq fs) (let [x ((first fs) env)] (if (nil? x) (recur (rest fs)) x)))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
+        ("changes" "total_changes" "last_insert_rowid")
+        (let [db (:db ctx)
+              val (case name "changes" (long (or (:changes db) 0)) "total_changes" (long (or (:total-changes db) 0))
+                    (long (or (:last-rowid db) 0)))]
+          (mk (fn [_] val)))
         ("iif" "if")
         (let [[fc ft fe] (cons (condf (first args)) (map :f (rest args)))]
           (mk (fn [env] (let [c (fc env)] (if (and (not (nil? c)) (v/bool-value c)) (ft env) (when fe (fe env)))))
@@ -1645,13 +1657,22 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))) (:select view))
+        view (let [sub (compile-select (assoc ctx :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                              :in-view (or (:db view) (if (:temp view) "temp" "main")))
+                                       (:select view))
+                   _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
+                       (err (str "expected " (count (:cols view)) " columns for '" (:name view) "' but got " (count (:names sub)))))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
                {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
-        :else (err (str "no such table: " (if (:schema item) (str (:schema item) "." name) name)))))
+        (and (nil? (:schema item)) (tvf-entry (:db ctx) (lc name)))
+        (make-source ctx (assoc item :tvf name :args []))
+        :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
+                                                 (:in-view ctx) (str (:in-view ctx) "." name)
+                                                 *in-trigger* (str "main." name)
+                                                 :else name)))))
     (:nested item)
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))
