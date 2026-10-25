@@ -69,8 +69,13 @@
 
 (defn resolve-column
   "Returns {:slot :idx :aff :coll :depth :src} or throws. quoted: the name was a quoted identifier (never TRUE/FALSE)."
-  [ctx tq name dq & [quoted]]
-  (let [lname (lc name) ltq (lc tq)]
+  [ctx tq name dq & [quoted sc]]
+  (let [lname (lc name) ltq (lc tq)
+        lsc (lc sc)
+        db-ok? (fn [s] (or (nil? lsc)
+                           (let [t (:table s)]
+                             (or (not (map? t))
+                                 (= lsc (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main"))))))]
     (loop [scope (:scope ctx) depth 0]
       (if (nil? scope)
         (cond
@@ -78,11 +83,11 @@
           (and (nil? tq) (not quoted) (= lname "false")) {:const 0}
           :else
           (err (str "no such column: "
-                    (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
+                    (if tq (str (when sc (str sc ".")) tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
         (let [srcs (:sources scope)
               hits (if ltq
                      (concat
-                      (for [s srcs :when (= (:alias s) ltq)
+                      (for [s srcs :when (and (= (:alias s) ltq) (db-ok? s))
                             :let [i (find-in-source s lname)
                                   i (or i (when (and (rowid-name? lname) (or (:rowid? s) (and (= lname "\u0000rowid") (:table s)))) (:ncols s)))]
                             :when i]
@@ -123,8 +128,8 @@
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
-            (and ltq (some #(or (= (:alias %) ltq) (get-in % [:quals ltq])) srcs))
-            (err (str "no such column: " tq "." name))
+            (and ltq (some #(or (and (= (:alias %) ltq) (db-ok? %)) (get-in % [:quals ltq])) srcs))
+            (err (str "no such column: " (when sc (str sc ".")) tq "." name))
             :else (recur (:parent scope) (inc depth))))))))
 
 ;; ====================================================================== expressions
@@ -496,7 +501,7 @@
              (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              :else c))
-    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
+    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e) (:schema e))
                       (catch clojure.lang.ExceptionInfo ex
                         (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
                           {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
@@ -1869,7 +1874,7 @@
               (when (and (:indexed-by item) (not= :none (:indexed-by item)))
                 (when-not (get-in (:db ctx) [:indexes (lc (:indexed-by item))])
                   (err (str "no such index: " (:indexed-by item)))))
-              {:alias (lc (or (:alias item) name)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
+              {:alias (lc (or (:alias item) name)) :aname (or (:alias item) name) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
@@ -1884,12 +1889,14 @@
                        (err (str "expected " (count (:cols view)) " columns for '" (:name view) "' but got " (count (:names sub)))))
                    slot (new-slot! ctx)
                    cols (dedup-names (or (:cols view) (:names sub)))]
-               {:alias (lc (or (:alias item) name)) :tname name :cols (vec cols) :lcols (mapv lc cols)
+               {:alias (lc (or (:alias item) name)) :aname (or (:alias item) name) :tname name :cols (vec cols) :lcols (mapv lc cols)
                 :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols)
                 :hidden #{} :sub sub})
         (and (nil? (:schema item)) (tvf-entry (:db ctx) (lc name)))
         (make-source ctx (assoc item :tvf name :args []))
         :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
+                                                 ;; a stored reference to a (since detached) database keeps its prefix
+                                                 (and (:in-view ctx) (str/includes? (str name) ".")) name
                                                  (:in-view ctx) (str (:in-view ctx) "." name)
                                                  *in-trigger* (str "main." name)
                                                  :else name)))))
@@ -1926,7 +1933,7 @@
     (let [sub (compile-select (assoc ctx :as-source true) (:subq item))
           slot (new-slot! ctx)
           cols (dedup-names (:names sub))]
-      {:alias (lc (:alias item)) :tname nil :cols (vec cols) :lcols (mapv lc cols)
+      {:alias (lc (:alias item)) :aname (:alias item) :tname (:alias item) :cols (vec cols) :lcols (mapv lc cols)
        :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :slot slot :rowid? false :ncols (count cols) :hidden #{} :sub sub})
     :else (err "unsupported FROM item")))
 
@@ -2008,14 +2015,17 @@
 (defn- col-name [ctx rc]
   (cond
     (:alias rc) (:alias rc)
-    (:star-col rc) (:name rc)
+    (:star-col rc) (let [pr (when-not (:as-source ctx) (:pragmas (:db ctx))) src (first (:star-col rc))]
+                     (if (and (= 1 (get pr "full_column_names" 0)) (= 0 (get pr "short_column_names" 1)) (:tname src))
+                       (str (or (:aname src) (:tname src)) "." (:name rc))
+                       (:name rc)))
     (and (= :col (:op (:e rc)))
-         (let [pr (:pragmas (:db ctx))]
+         (let [pr (when-not (:as-source ctx) (:pragmas (:db ctx)))]
            (and (not= 0 (get pr "short_column_names" 1)) (= 0 (get pr "full_column_names" 0)) true)
            ;; short names on (default) or full names on: the column's own name; short off and full off: the text
            (or (not= 0 (get pr "short_column_names" 1)) (= 1 (get pr "full_column_names" 0)))))
     (let [e (:e rc)
-          full (= 1 (get-in ctx [:db :pragmas "full_column_names"]))
+          full (and (not (:as-source ctx)) (= 1 (get-in ctx [:db :pragmas "full_column_names"])))
           base
       (or (when (rowid-name? (lc (:name e)))
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
@@ -2028,6 +2038,10 @@
                   s (:src r) lt (lc (:table e))]
               (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
+          (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                s (:src r)]
+            (when (and s (:idx r) (< (long (:idx r)) (count (:cols s))) (not (:sub s)))
+              (nth (:cols s) (:idx r))))
           (:name e))]
       (if full
         (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
@@ -2686,7 +2700,7 @@
           right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
           any-rj (some true? right-join)
           rcols (expand-star ctx2 sources (:cols core) (:nested-from core))
-          names (mapv #(col-name ctx2 %) rcols)
+          names (mapv #(col-name (assoc ctx2 :as-source as-source) %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
           wins (atom [])
