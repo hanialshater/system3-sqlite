@@ -148,7 +148,9 @@
       (let [[d col] (int-pragmas-echo n)]
         (if (nil? v)
           (one db col (long (pget db n d)))
-          (let [x (or (int-value v) (pget db n d))
+          (let [x (or (int-value v) (when (= n "secure_delete") (bool-value v 0)) (pget db n d))
+                x (if (#{"mmap_size" "threads"} n) 0 x)
+                x (if (= n "secure_delete") (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x))) x)
                 db (pset db n x)]
             (one db col (long x)))))
 
@@ -197,7 +199,7 @@
         (if (nil? v) (one db n (long (pget db n 0)))
             (let [u (lc v)
                   x (case u "none" 0 "full" 1 "incremental" 2 (or (int-value v) 0))]
-              {:db (pset db n x) :names nil :rows [] :writes true}))
+              {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
                        (one db n cur)
