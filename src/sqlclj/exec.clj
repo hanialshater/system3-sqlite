@@ -561,7 +561,6 @@
         (nil? clause) false
         (nil? target) true
         (= what :rowid) (and (= 1 (count (:cols target)))
-                             (nil? (:where target))
                              (let [n (lc (:name (:e (first (:cols target)))))]
                                (or (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl))))))
                                    (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} n)))))
@@ -648,6 +647,7 @@
         db (with-target db tkey tbl)
         fkt (and (not (:view tbl)) (fk/tracks? db tbl))
         vw (:view tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ngen (count (filter :gen (:cols tbl)))
@@ -740,7 +740,7 @@
               ;; defaults first
               provided (set targets)
               row (reduce (fn [row ci]
-                            (if (provided ci) row (assoc row ci (default-value db sql tbl ci))))
+                            (if (or (provided ci) (= ci (:ipk tbl))) row (assoc row ci (default-value db sql tbl ci))))
                           row (range ncols))
               rid-given (atom nil)
               row (reduce (fn [row [ci val]]
@@ -870,6 +870,8 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
+                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ctx (new-ctx db sql)
@@ -999,6 +1001,7 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
         _ (when (and (:indexed-by st) (not= :none (:indexed-by st)))
