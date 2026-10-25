@@ -132,7 +132,8 @@
   [db st]
   (let [n (lc (:name st))
         v (:value st)
-        sc (some-> (:schema st) lc)]
+        sc (some-> (:schema st) lc)
+        db (if (= sc "temp") (assoc db :temp-used true) db)]
     (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
     (cond
@@ -222,8 +223,10 @@
         "compile_options" {:db db :names ["compile_options"] :rows (mapv vector compile-options)}
         "collation_list" {:db db :names ["seq" "name"] :rows [[0 "RTRIM"] [1 "NOCASE"] [2 "BINARY"]]}
         "database_list" {:db db :names ["seq" "name" "file"]
-                         :rows (vec (concat [[0 "main" ""] [1 "temp" ""]]
-                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) k (or (:file a) "")]) (:attached db))))}
+                         :rows (vec (concat [[0 "main" ""]]
+                                            (when (or (:temp-used db) (some :temp (concat (vals (:tables db)) (vals (:views db)) (vals (:triggers db)))))
+                                              [[1 "temp" ""]])
+                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (or (:file a) "")]) (:attached db))))}
         "table_info" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (table-info-rows db v false)} (none db))
         "table_xinfo" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (table-info-rows db v true)} (none db))
         "index_list" (if v {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (index-list-rows db v)} (none db))

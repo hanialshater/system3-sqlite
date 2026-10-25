@@ -1696,7 +1696,9 @@
 (defn- table-of
   ([ctx name] (table-of ctx name nil))
   ([ctx name sch]
-   (let [t (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))])
+   (let [iv (:in-view ctx)
+         t (or (when (and iv (nil? sch) (not (#{"main" "temp"} iv))) (get-in (:db ctx) [:tables (str iv "." (lc name))]))
+               (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))]))
          ls (lc sch)
          t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
      (or t (schema/master-table (:db ctx) (lc name) sch)))))
