@@ -184,7 +184,7 @@
                   (if (at-op? p ".")
                     (do (advance! p) (let [n3 (parse-nm p)] (node {:op :col :schema (:v t) :table n2 :name n3} s (prev-end p))))
                     (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
-            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t)))))
+            (node {:op :col :name (:v t) :dq (:dq t) :quoted true} s (:e t)))))
       :id
       (let [u (:u t)]
         (cond
@@ -419,7 +419,7 @@
                               (cond
                                 (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
                                 (fold-null-test n left (not isnot))
-                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
+                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (not (:quoted r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
                                 ;; x IS [NOT] TRUE/FALSE tests truthiness: mode bit 1 = FALSE, bit 2 = NOT
                                 (node {:op :fn :name "\u0000truth"
                                        :args [left {:op :lit :kind :int :text (str (+ (if (= "false" (str/lower-case (:name r))) 1 0) (if isnot 2 0)))}]}
@@ -521,11 +521,24 @@
     (accept-op p ",") :cross-comma
     (at-kw? p "JOIN") (do (advance! p) :inner)
     (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-    (let [kws (loop [acc []]
-                (if (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-                  (recur (conj acc (:u (advance! p))))
-                  acc))]
-      (expect-kw p "JOIN")
+    (let [t0 (advance! p)
+          more (loop [acc []]
+                 (let [t (tok p)]
+                   (if (and (< (count acc) 2) (not (kw? t "JOIN"))
+                            (or (ident-tok? t) (= :str (:t t))))
+                     (do (advance! p) (recur (conj acc t)))
+                     acc)))
+          _ (expect-kw p "JOIN")
+          all (cons t0 more)
+          codes {"NATURAL" #{:nat} "LEFT" #{:left :outer} "OUTER" #{:outer} "RIGHT" #{:right :outer}
+                 "FULL" #{:left :right :outer} "INNER" #{:inner} "CROSS" #{:inner :cross}}
+          bits (reduce (fn [acc t] (let [c (and (= :id (:t t)) (codes (:u t)))]
+                                     (if c (into acc c) (reduced (conj acc :error)))))
+                       #{} all)
+          _ (when (or (and (bits :inner) (bits :outer)) (bits :error)
+                      (and (bits :outer) (not (bits :left)) (not (bits :right))))
+              (throw (lx/sql-error (str "unknown join type: " (str/join " " (map #(tok-text p %) all))))))
+          kws (map :u all)]
       (let [s (set kws)]
         (cond
           (s "NATURAL") (cond (s "LEFT") :natural-left (s "RIGHT") :natural-right (s "FULL") :natural-full :else :natural)
@@ -552,6 +565,8 @@
                        (loop [] (parse-nm p) (when (accept-op p ",") (recur)))
                        (expect-op p ")")
                        (throw (lx/sql-error "a JOIN clause is required before USING")))
+                   ;; SQLite's parser flattens an unaliased parenthesized join in the first position
+                   (and (:nested first-ref) (nil? (:alias first-ref))) (vec (:nested first-ref))
                    :else [first-ref]))]
     (let [save (pos p)
           jt (parse-join-op p)]
