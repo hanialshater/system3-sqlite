@@ -7,6 +7,7 @@
             [sqlclj.engine :as e :refer [err lc]]
             [sqlclj.schema :as sch]
             [sqlclj.trigger :as trg]
+            [sqlclj.fk :as fk]
             [sqlclj.pragma :as pragma]))
 
 (set! *warn-on-reflection* true)
@@ -508,10 +509,18 @@
         r (if (seq trigs) (try-fire db trigs tbl old new) db)]
     (if (= r ::ignore) [db changes] [r (inc changes)])))
 
+(defn- fk-note!
+  "Records a touched row for the end-of-statement foreign key check."
+  [db tbl tkey old new]
+  (when fk/*child*
+    (when (seq (:fks tbl)) (swap! fk/*child* conj [tkey old new]))
+    (when (seq (fk/referencing db tbl)) (swap! fk/*parent* conj [tkey old new]))))
+
 (defn- exec-insert [db sql st emit prepared!]
   (let [tname (:table st)
         [tkey tbl] (dml-target db sql st :insert)
         db (with-target db tkey tbl)
+        fkt (and (not (:view tbl)) (fk/tracks? db tbl))
         vw (:view tbl)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
@@ -658,13 +667,25 @@
                           (when ret
                             (aset env (long (:slot ret)) (assoc nrow ncols nrid))
                             (.add ret-rows (mapv #(% env) (:fs ret))))
-                          (let [db3 (assoc-in db [:tables tkey] tblu)]
+                          (let [db3 (assoc-in db [:tables tkey] tblu)
+                                db3 (if fkt
+                                      (do (fk-note! db3 tbl tkey existing (assoc nrow ncols nrid))
+                                          (fk/on-parent-change db3 tbl existing (assoc nrow ncols nrid)))
+                                      db3)]
                             (after-update db3 tbl existing (assoc nrow ncols nrid) tkey (map first (:sets-c up)) changes)))))))
                 :else
                 (let [tbl3 (put-row tbl2 rid row)
                       db2 (assoc-in db [:tables tkey] tbl3)
                       db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
-                      db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))]
+                      db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))
+                      _ (when fkt (fk-note! db2 tbl tkey nil (assoc row ncols rid)))
+                      db2 (if fkt
+                            (reduce (fn [d rid0]
+                                      (let [old0 (get-in tbl [:rows rid0])]
+                                        (fk-note! d tbl tkey old0 nil)
+                                        (fk/on-parent-change d tbl old0 nil)))
+                                    db2 (remove (fn [rid0] (contains? (:rows tbl2) rid0)) (keys (:rows tbl))))
+                            db2)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
@@ -684,6 +705,7 @@
   (let [tname (:table st)
         [tkey tbl] (dml-target db sql st :update)
         vw (:view tbl)
+        fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
@@ -794,6 +816,10 @@
                          [db changes]
                          (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)
                                db2 (assoc-in db [:tables tkey] tbl3)
+                               db2 (if fkt
+                                     (do (fk-note! db2 tbl tkey old (assoc row ncols rid-new))
+                                         (fk/on-parent-change db2 tbl old (assoc row ncols rid-new)))
+                                     db2)
                                ats (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :update set-names)]
                            (when ret
                              (aset env slot (assoc row ncols rid-new))
@@ -808,6 +834,7 @@
   (let [tname (:table st)
         [tkey tbl] (dml-target db sql st :delete)
         vw (:view tbl)
+        fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
@@ -829,7 +856,7 @@
       (doseq [[_ row] doomed]
         (aset env slot row)
         (emit (mapv #(% env) (:fs ret)))))
-    (if (and (not vw) (not (trg/any-for? db tkey :delete)))
+    (if (and (not vw) (not fkt) (not (trg/any-for? db tkey :delete)))
       (-> db
           (assoc-in [:tables tkey :rows] (apply dissoc (:rows tbl) (map first doomed)))
           (assoc :changes (count doomed)))
@@ -847,6 +874,10 @@
                        (let [db (if (contains? (get-in bres [:tables tkey :rows]) rid)
                                   (update-in bres [:tables tkey :rows] dissoc rid)
                                   bres)
+                             db (if fkt
+                                  (do (fk-note! db tbl tkey old nil)
+                                      (fk/on-parent-change db tbl old nil))
+                                  db)
                              ats (trg/matching db (:vkey tbl tkey) (if vw :instead :after) :delete nil)
                              r (if (seq ats) (try-fire db ats (get-in db [:tables tkey]) old nil) db)]
                          (if (= r ::ignore) [db changes] [r (if vw changes (inc changes))])))))))
@@ -1330,7 +1361,7 @@
     (case (:kind st)
       :begin (if tx (err "cannot start a transaction within a transaction")
                  (assoc db :tx {:snap (snapshot db) :sp [] :by-sp false}))
-      :commit (if tx (dissoc db :tx) (err "cannot commit - no transaction is active"))
+      :commit (if tx (do (fk/commit-check db) (dissoc db :tx)) (err "cannot commit - no transaction is active"))
       :rollback
       (cond
         (nil? tx) (err (if (:to st) (str "no such savepoint: " (:to st)) "cannot rollback - no transaction is active"))
@@ -1442,11 +1473,16 @@
     (:insert :update :delete)
     (let [rows (java.util.ArrayList.)
           f (case (:kind st) :insert exec-insert :update exec-update :delete exec-delete)
-          db2 (binding [e/*with* (:with st)]
-               (f db sql st (fn [r] (.add rows r))
-                 (fn [names]
-                   (when names (emit-line out (str "# " (str/join "|" names))))
-                   (vreset! *prepared* true))))]
+          db2 (binding [e/*with* (:with st) fk/*child* (atom []) fk/*parent* (atom [])]
+               (let [r (f db sql st (fn [r] (.add rows r))
+                          (fn [names]
+                            (when names (emit-line out (str "# " (str/join "|" names))))
+                            (vreset! *prepared* true)))]
+                 (when (or (seq @fk/*child*) (seq @fk/*parent*))
+                   (try (fk/verify r @fk/*child* @fk/*parent*)
+                        (catch clojure.lang.ExceptionInfo ex
+                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*)) 1 0)))))))
+                 r))]
       (if (seq (:returning st))
         (doseq [r rows] (write-row out r))
         (emit-line out (str "changes: " (:changes db2))))
@@ -1494,6 +1530,8 @@
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 
+(alter-var-root #'pragma/*fk-check* (constantly fk/check-all))
+
 (reset! trg/exec-fn (fn [db sql st out] (binding [*prepared* (volatile! false)] (exec-statement db sql st out))))
 
 (defn run-line
@@ -1518,6 +1556,7 @@
                            (let [d (ex-data ex)]
                              (emit-line out (str "error: " m))
                              (cond (:partial-db d) [::stop (:partial-db d)]
+                                   (:changes-after d) [::stop (assoc db :changes (:changes-after d))]
                                    (and (= :rollback (:conflict d)) (:tx db)) [::stop (assoc (dissoc (restore db (:snap (:tx db))) :tx) :changes 0)]
                                    @prep [::stop (assoc db :changes 0)]
                                    :else ::stop))
