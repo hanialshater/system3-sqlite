@@ -469,7 +469,14 @@
   (if (empty? (:rows tbl))
     1
     (let [m (long (key (first (rseq (:rows tbl)))))]
-      (if (= m Long/MAX_VALUE) (err "database or disk is full") (inc m)))))
+      (if (= m Long/MAX_VALUE)
+        ;; SQLite then tries random rowids (deterministic here: a fixed-seed generator)
+        (let [rnd (java.util.Random. (count (:rows tbl)))]
+          (or (some (fn [_] (let [r (bit-and (.nextLong rnd) Long/MAX_VALUE)]
+                              (when (and (pos? r) (not (contains? (:rows tbl) r))) r)))
+                    (range 100))
+              (err "database or disk is full")))
+        (inc m)))))
 
 (defn- upsert-matcher
   "Returns (fn [conflict-target]) deciding whether an upsert clause applies to a conflict."

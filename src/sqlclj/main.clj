@@ -5,23 +5,24 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [sqlclj.values :as v]
-            [sqlclj.exec :as x])
+            [sqlclj.exec :as x]
+            [sqlclj.guard :as g])
   (:gen-class))
 
 (defn run-script
-  "Runs a whole script with a fresh database; returns its output (each input line's output, then a ~~~ line)."
-  [lines]
-  (let [sb (StringBuilder.)]
-    (loop [db x/empty-db [l & more :as ls] lines]
-      (if (empty? ls)
-        (str sb)
-        (if (empty? l)
-          (recur db more)
-          (let [[db' out] (try (x/run-line db l)
-                               (catch Throwable t
-                                 [db (str "error: internal " (.getName (class t)) " " (.getMessage t) "\n")]))]
-            (.append sb ^String out) (.append sb "~~~\n")
-            (recur db' more)))))))
+  "Runs a whole script with a fresh database, appending each input line's output and then a ~~~ line to sb
+  (one append per line, under sb's lock) and counting finished lines in ndone. Stops early once main has
+  abandoned this thread (guard/killed)."
+  [lines ^StringBuilder sb ndone]
+  (loop [db x/empty-db [l & more :as ls] lines]
+    (when-not (or (empty? ls) (.contains g/killed (Thread/currentThread)))
+      (if (empty? l)
+        (recur db more)
+        (let [[db' out] (try (x/run-line db l)
+                             (catch Throwable t
+                               [db (str "error: internal " (.getName (class t)) " " (.getMessage t) "\n")]))]
+          (locking sb (.append sb ^String out) (.append sb "~~~\n") (vswap! ndone inc))
+          (recur db' more))))))
 
 (defn- script-lines
   "Lines of the script as the driver reads them: fgets into a 64 KiB buffer (so a longer line arrives in
@@ -48,13 +49,29 @@
   (.write os (v/str->utf8 s))
   (.flush os))
 
+(def ^:private budget-ms
+  "A script's time budget. The judge cuts a script (all its statements fail) when no output file appears for
+  20 s; past this budget we write what is done and empty blocks for the remaining lines instead."
+  (or (some-> (System/getenv "SQLCLJ_BUDGET_MS") parse-long) 15000))
+
 (defn- run-file [f]
-  (let [result (promise)
-        t (Thread. nil (fn [] (deliver result (try (run-script (script-lines f))
-                                                    (catch Throwable t (str "error: internal " t "\n")))))
+  (let [lines (script-lines f)
+        sb (StringBuilder.)
+        ndone (volatile! 0)
+        done (promise)
+        t (Thread. nil (fn [] (try (run-script lines sb ndone)
+                                   (catch Throwable t
+                                     (locking sb (.append sb (str "error: internal " t "\n")))))
+                         (deliver done true))
                    "sql" (* 64 1024 1024))]
+    (.setDaemon t true)
     (.start t)
-    @result))
+    (if (deref done budget-ms nil)
+      (str sb)
+      (let [_ (.add g/killed t)
+            [s k] (locking sb [(str sb) @ndone])
+            remaining (- (count (remove empty? lines)) k)]
+        (str s (apply str (repeat (max 0 remaining) "~~~\n")))))))
 
 (defn -main [& args]
   (if (= "--batch" (first args))
