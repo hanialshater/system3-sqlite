@@ -168,7 +168,7 @@
       (get-in db [:indexes lname]) (err (str "there is already an index named " name))
       (:as st)
       (let [ctx (new-ctx db sql)
-            sub (e/compile-select ctx (:as st))
+            sub (e/compile-select (assoc ctx :decl-names true) (:as st))
             rows (e/run-select-rows sub (object-array (inc @(:slots ctx))))
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
@@ -459,7 +459,8 @@
                                          (let [n (:name (:e rc))]
                                            (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
                                              (nth (:cols src) (:ipk src))
-                                             n))
+                                             (let [i (.indexOf ^java.util.List (mapv lc (:cols src)) (lc n))]
+                                               (if (>= i 0) (nth (:cols src) i) n))))
                                          (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
@@ -1519,7 +1520,7 @@
             (update :pages dissoc lnm))))
     :select
     (let [ctx (new-ctx db sql)
-          sub (e/compile-select ctx (:select st))]
+          sub (e/compile-select (assoc ctx :decl-names true) (:select st))]
       (emit-line out (str "# " (str/join "|" (:names sub))))
       (let [env (object-array (+ 2 @(:slots ctx)))]
         (if-let [run (:streaming sub)]

@@ -85,7 +85,7 @@
             (:cols t))))
     (if-let [v (get-in db [:views (lc tname)])]
       (let [ctx (assoc (e/->Ctx db "" nil (atom 0) nil nil nil) :refs (atom #{}))
-            sub (try (e/compile-select ctx (:select v)) (catch Exception _ nil))
+            sub (try (e/compile-select (assoc ctx :decl-names true) (:select v)) (catch Exception _ nil))
             names (or (:cols v) (:names sub))]
         (vec (map-indexed (fn [i n] (cond-> [(long i) n "" 0 nil 0] xinfo? (conj 0))) names)))
       [])))
