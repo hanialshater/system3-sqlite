@@ -52,7 +52,7 @@
                                          (#{"rowid" "oid" "_rowid_"} (lc (:name ast))) ncols
                                          :else (err (str "no such column: " (:name ast))))))
                             c (when-not ci (compile-row-expr db sql tbl ast))]
-                        {:col ci :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
+                        {:col ci :ast ast :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
                          :coll (if (:coll ic) (e/check-coll (:coll ic))
                                    (if ci (or (when (< ci ncols) (:coll (nth (:cols tbl) ci))) "BINARY")
                                        (or (:coll c) "BINARY")))
@@ -413,7 +413,7 @@
                          :rowid (when (:ipk tbl) (:pk-conflict tbl)))
                  tbl))
              (index-steps [tbl]
-               (loop [tbl tbl idxs idxs]
+               (loop [tbl tbl idxs (sort-by #(if (upsert-target? %) 0 1) idxs)]
                  (if (empty? idxs)
                    tbl
                    (let [idx (first idxs)
@@ -477,8 +477,20 @@
         (nil? target) true
         (= what :rowid) (and (:ipk tbl) (= 1 (count (:cols target)))
                              (= (lc (:name (:e (first (:cols target))))) (lc (:name (nth (:cols tbl) (:ipk tbl))))))
-        (map? what) (= (set (map (comp lc :name :e) (:cols target)))
-                       (set (map (comp lc :name) (:cols what))))
+        (map? what)
+        (let [sp (var-get #'e/strip-pos)
+              tw (:where target) iw (:where-ast what)
+              tcols (:cols target) icols (:cols what)]
+          (and (= (count tcols) (count icols))
+               (if tw (or (nil? iw) (= (sp tw) (sp iw))) (nil? iw))
+               (every? (fn [tc]
+                         (some (fn [ic]
+                                 (and (if (:name ic)
+                                        (and (= :col (:op (:e tc))) (= (lc (:name ic)) (lc (:name (:e tc)))))
+                                        (and (:ast ic) (= (sp (:e tc)) (sp (:ast ic)))))
+                                      (or (nil? (:coll tc)) (= (lc (str (:coll ic))) (lc (str (:coll tc)))))))
+                               icols))
+                       tcols)))
         :else false))))
 
 (defn- fail-partial
@@ -575,8 +587,8 @@
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
         up-ctx (when (seq upserts) ctx)
-        tsrc (when (seq upserts) (table-source ctx tbl nil))
-        xsrc (when (seq upserts) (assoc (table-source ctx tbl "excluded") :rowid? false :qualified-only true))
+        tsrc (when (seq upserts) (table-source ctx tbl (:alias st)))
+        xsrc (when (seq upserts) (assoc (table-source ctx tbl (if (and (nil? (:alias st)) (= "excluded" (lc (:name tbl)))) "\u0000x" "excluded")) :rowid? false :qualified-only true))
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
