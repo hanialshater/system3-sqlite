@@ -53,6 +53,18 @@
   (let [i (.indexOf ^java.util.List (:lcols src) lname)]
     (when (>= i 0) i)))
 
+(defn ename-hits
+  "lookupName over a parenthesized-join (SF_NestedFrom) source: unqualified names match the inner
+  columns' own names; a USING term ends the search."
+  [s lname]
+  (loop [i 0 acc []]
+    (if (>= i (count (:enames s)))
+      acc
+      (let [[c u] (nth (:enames s) i)]
+        (if (= c lname)
+          (if u (conj acc i) (recur (inc i) (conj acc i)))
+          (recur (inc i) acc))))))
+
 (defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_" "\u0000rowid"} lname))
 
 (defn resolve-column
@@ -79,10 +91,14 @@
                             :let [i (get-in (:quals s) [ltq lname])]
                             :when i]
                         [s i]))
-                     (for [s srcs
-                           :let [i (find-in-source s lname)]
-                           :when (and i (not (:qualified-only s)) (or (:tvf s) (not (contains? (:hidden s) lname))))]
-                       [s i]))
+                     (mapcat (fn [s]
+                               (if (:enames s)
+                                 (when-not (contains? (:hidden s) lname)
+                                   (for [i (ename-hits s lname)] [s i]))
+                                 (let [i (find-in-source s lname)]
+                                   (when (and i (not (:qualified-only s)) (or (:tvf s) (not (contains? (:hidden s) lname))))
+                                     [[s i]]))))
+                             srcs))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
                        (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
@@ -479,7 +495,13 @@
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))]
+    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
+                      (catch clojure.lang.ExceptionInfo ex
+                        (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
+                          {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
+                          (throw ex))))]
+           (if (:alias-c r)
+             (do (when (:outer-refs ctx) (reset! (:outer-refs ctx) true)) (:alias-c r))
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -490,7 +512,7 @@
                (mk (if alt
                      (coalesce-reader alt)
                      (fn [^objects env] (nth (aget env slot) idx)))
-                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
+                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r)))))
     :unary
     (let [o (:o e) inner (:e e)]
       (case o
@@ -1837,7 +1859,10 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+        view (let [_ (when (some #(identical? % view) (:view-chain ctx))
+                       (err (str "view " (:name view) " is circularly defined")))
+                   sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                              :view-chain (conj (or (:view-chain ctx) []) view)
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
                                        (:select view))
                    _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
@@ -1858,14 +1883,30 @@
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))
         (make-source ctx (merge (first items) (select-keys item [:join :on :using])))
-        (let [sel {:body {:type :core :cols [{:star true}] :from items}}
+        (let [sel {:body {:type :core :cols [{:star true}] :from items :nested-from true}}
               sub (compile-select ctx sel)
               slot (new-slot! ctx)
-              cols (dedup-names (:names sub))
+              uterms (or (:using-terms sub) (repeat false))
+              [cols noexpand]
+              (let [seen (java.util.HashMap.)]
+                (loop [k 0 names (seq (:names sub)) us (seq uterms) out [] nx (set (keep-indexed #(when %2 %1) (:nx-terms sub)))]
+                  (if (empty? names)
+                    [out nx]
+                    (let [^String n (first names) u (first us)
+                          [nm nx] (loop [nm n cnt 1 nx nx]
+                                    (if (.containsKey seen (lc nm))
+                                      (let [nx (if (.get seen (lc nm)) (conj nx k) nx)
+                                            base (let [j (loop [j (dec (count nm))] (if (and (> j 0) (Character/isDigit (.charAt nm j))) (recur (dec j)) j))]
+                                                   (if (and (pos? (count nm)) (= \: (.charAt nm (int j)))) (subs nm 0 j) nm))]
+                                        (recur (str base ":" cnt) (inc cnt) nx))
+                                      (do (.put seen (lc nm) (boolean u)) [nm nx])))]
+                      (recur (inc k) (next names) (next us) (conj out nm) nx)))))
+              enames (mapv (fn [n u] [(lc n) (boolean u)]) (:names sub) uterms)
               ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
               quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
                             {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
           (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals :orig-cols (vec (:names sub))
+                 :enames enames :noexpand noexpand
                  :direct-quals (set (for [qs (:star-quals sub) [a _ d] qs :when d] a))))))
     (:subq item)
     (let [sub (compile-select (assoc ctx :as-source true) (:subq item))
@@ -1901,7 +1942,7 @@
 
 (defn- expand-star
   "Result column list with * expanded: [{:e ast-or-nil :src-col [slot idx] :name ...}]"
-  [ctx sources cols]
+  [ctx sources cols nested-from]
   (vec
    (mapcat
     (fn [rc]
@@ -1915,21 +1956,37 @@
                                           :when c]
                                       [d c]))]
             (err (str "ambiguous column name: main." (if (= (lc (:tname dup)) (:alias dup)) (:tname dup) (:alias dup)) "." col))
-          (for [s sources, i (range (:ncols s))
-                :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
-            {:star-col [s i] :name (nth (:cols s) i) :unq true})))
+          (if nested-from
+            ;; SF_NestedFrom: the USING columns of the next join come first, then every column
+            (apply concat
+                   (for [k (range (count sources)) :let [s (nth sources k) nx (get sources (inc k))]]
+                     (concat
+                      (for [u (:using-cols nx)] {:e {:op :col :name u} :using-term true})
+                      (for [i (range (:ncols s))
+                            :when (or (not (contains? (:hidden s) (nth (:lcols s) i)))
+                                      (some #(= (lc %) (nth (:lcols s) i)) (:using-cols s)))]
+                        {:star-col [s i] :name (nth (:cols s) i) :unq true :nx (contains? (:noexpand s) i)}))))
+            (for [s sources, i (range (:ncols s))
+                  :when (and (not (contains? (:hidden s) (nth (:lcols s) i)))
+                             (not (contains? (:noexpand s) i))
+                             (or (not (:enames s)) (not= 1 (count sources))
+                                 (let [h (ename-hits s (nth (:lcols s) i))]
+                                   (cond (> (count h) 1) (err (str "ambiguous column name: " (nth (:cols s) i)))
+                                         (empty? h) (err (str "no such column: " (nth (:cols s) i)))
+                                         :else true))))]
+              {:star-col [s i] :name (nth (:cols s) i) :unq true}))))
         (:star rc)
         (let [lt (lc (:table rc))
               _ (when (> (count (filter #(= (:alias %) lt) sources)) 1)
                   (let [d (first (filter #(= (:alias %) lt) sources))]
                     (err (str "ambiguous column name: main." (:tname d) "." (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))))))
-              s (first (filter #(= (:alias %) lt) sources))
+              s (first (filter #(and (= (:alias %) lt) (not (:enames %))) sources))
               ns (when-not s (first (filter #(get-in % [:quals lt]) sources)))]
           (when-not (or s ns) (err (str "no such table: " (:table rc))))
           (if s
             (for [i (range (:ncols s)) :when (not (and (:tvf s) (contains? (:hidden s) (nth (:lcols s) i))))] {:star-col [s i] :name (nth (:cols s) i)})
             ;; t.* of a table inside a parenthesized join
-            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (if ((:direct-quals ns) lt) (:orig-cols ns) (:cols ns)) i)})))
+            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (:cols ns) i)})))
         :else [rc]))
     cols)))
 
@@ -1948,7 +2005,7 @@
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) lt (lc (:table e))]
-              (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
+              (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
           (:name e)))
     :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
@@ -2324,7 +2381,7 @@
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
                                   (filter #(prev-cols (lc %)) (:cols s)))
                                 :else nil)
-                    s (if using (update s :hidden into (map lc using)) s)
+                    s (if using (assoc (update s :hidden into (map lc using)) :using-cols (vec using)) s)
                     srcs (assoc srcs i s)]
                 (recur (inc i) srcs (conj conds using)))))
           any-rj-join (boolean (some #{:right :full :natural-right :natural-full} (map :join from)))
@@ -2356,7 +2413,7 @@
           left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
           right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
           any-rj (some true? right-join)
-          rcols (expand-star ctx2 sources (:cols core))
+          rcols (expand-star ctx2 sources (:cols core) (:nested-from core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
@@ -2382,6 +2439,7 @@
                       rcols)
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
+          ctx2 (if (seq alias-map) (assoc ctx2 :outer-aliases (cons {:map alias-map :ctx ctx2} (:outer-aliases ctx2))) ctx2)
           subst (fn subst [e]
                   (cond
                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
@@ -2667,6 +2725,8 @@
        :presorted (boolean rowid-order)
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
        :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
+       :using-terms (mapv (comp boolean :using-term) rcols)
+       :nx-terms (mapv (comp boolean :nx) rcols)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
                                     (cons [(:alias s) (nth (:lcols s) i) true]
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
@@ -2844,13 +2904,15 @@
             cols (cte-check-cols cte (:names setup))
             cell (volatile! nil)
             rctx (assoc ctx
-                        :cte-err (assoc (:cte-err ctx) lname "recursive reference in a subquery: ")
+                        :cte-err (assoc (:cte-err ctx) lname "multiple recursive references: ")
                         :rec-cells (assoc (:rec-cells ctx) lname {:cell cell :cols cols :affs (:affs setup) :colls (:colls setup)}))
             recs (vec (for [[_ t] (subvec terms rec-idx)]
                         (let [t (update t :from (fn [items] (mapv #(if (and (:table %) (nil? (:schema %)) (= lname (lc (:table %))))
                                                                       (assoc % :rec-ref true) %) items)))]
                           (when (or (seq (:group t)) (core-has-agg? t))
                             (err "recursive aggregate queries not supported"))
+                          (when (has-window? (mapv :e (:cols t)))
+                            (err "cannot use window functions in recursive queries"))
                           (let [r (compile-select rctx {:body t})]
                             (when (not= (count (:names r)) (count cols))
                               (err (str "SELECTs to the left and right of "
@@ -2972,7 +3034,7 @@
                       (apply-limit rows limit offset)))})
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
-        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c)
+        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c) :using-terms (:using-terms c) :nx-terms (:nx-terms c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp
