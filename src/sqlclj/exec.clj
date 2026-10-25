@@ -627,11 +627,13 @@
   "[tkey tbl] of the table a DML statement targets; a view becomes a temporary table of its rows
   (INSTEAD OF triggers then stand in for the writes)."
   [db sql st event]
-  (let [tname (:table st) l (lc tname)]
-    (if-let [tbl (get-in db [:tables l])]
+  (let [tname (:table st) l (lc tname)
+        q (some-> (:qual-schema st) lc)
+        wrong-sch (fn [o] (and o (or (and (= q "main") (:temp o)) (and (= q "temp") (not (:temp o))))))]
+    (if-let [tbl (let [t (get-in db [:tables l])] (when-not (wrong-sch t) t))]
       (do (when (:virtual tbl) (err (str "table " tname " may not be modified")))
           [l tbl])
-      (if-let [view (get-in db [:views l])]
+      (if-let [view (let [v (get-in db [:views l])] (when-not (wrong-sch v) v))]
         (do (when-not (if (= event :update)
                         (let [setc (set (map lc (mapcat first (:sets st))))]
                           (some (fn [t] (and (= (:table t) l) (= (:event t) :update) (= (:timing t) :instead)
@@ -650,7 +652,7 @@
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
-        (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* (if (= e/*trigger-schema* "temp") "" (str (or e/*trigger-schema* "main") ".")) ) tname))))))
+        (err (str "no such table: " (cond (or (:schema st) (:qual-schema st)) (str (or (:schema st) (:qual-schema st)) ".") e/*in-trigger* (if (= e/*trigger-schema* "temp") "" (str (or e/*trigger-schema* "main") ".")) ) (let [q (some-> (or (:schema st) (:qual-schema st)) lc)] (if (and q (str/starts-with? (lc tname) (str q "."))) (subs tname (inc (count q))) tname))))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
 (defn- end-target [db tkey tbl] (if (:view tbl) (update db :tables dissoc tkey) db))
@@ -1097,7 +1099,8 @@
 
 (defn- create-trigger [db sql st]
   (let [name (:name st) ln (lc name) tl (lc (:table st))
-        tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
+        main-only (fn [o] (if (and o (:temp o) (= "main" (some-> (:schema st) lc)) (nil? (:table-schema st))) nil o))
+        tbl (main-only (get-in db [:tables tl])) view (main-only (get-in db [:views tl]))]
     (cond
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " (or (:name-raw st) name) " already exists")))
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
@@ -1117,8 +1120,8 @@
                                         (filter #(and (map? %) (contains? % :indexed-by) (:table %) (:schema %)))
                                         (map #(lc (:schema %)))))]
                   (first (remove #{own} refs)))))
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (:temp st) (nil? (:table-schema st))) "" (str (or (:table-schema st) "main") "."))
-                                                      (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (or (:temp st) (= "temp" (some-> (:schema st) lc))) (nil? (:table-schema st))) "" (str (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st)) "main") "."))
+                                                      (let [t (str (:table st)) q (some-> (or (:table-schema st) (when (and (:db st) (not= (:db st) "main")) (:db st))) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
       (err (str "cannot create " (if (= :before (:timing st)) "BEFORE" "AFTER") " trigger on view: " (:table st)))
@@ -1139,12 +1142,15 @@
 
 (defn- create-index [db sql st]
   (let [name (:name st) lname (lc name)
-        tbl (get-in db [:tables (lc (:table st))])]
+        tbl (let [t (get-in db [:tables (lc (:table st))])]
+              (if (and t (:temp t) (= "main" (some-> (:schema st) lc))) nil t))]
     (cond
       (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " (sch/display-name name st) " already exists")))
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
       (and (nil? tbl) (get-in db [:views (lc (:table st))])) (err "views may not be indexed")
-      (nil? tbl) (err (str "no such table: main." (:table st)))
+      (nil? tbl) (err (str "no such table: " (cond (and (:db st) (not= (:db st) "main")) (str (:db st) "." (subs (:table st) (inc (count (:db st)))))
+                                         (= "temp" (some-> (:qual-schema st) lc)) (:table st)
+                                         :else (str "main." (:table st)))))
       (and (= "temp" (lc (:schema st))) (not (:temp tbl)))
       (err (str "cannot create a TEMP index on non-TEMP table \"" (sch/display-name (:name tbl) tbl) "\""))
       (some (fn [ic] (let [e (:e ic)]
@@ -1285,13 +1291,14 @@
 
 (defn- exec-analyze [db sql st]
   (let [lname (lc (:name st)) lsch (lc (:schema st))
+        _ (when lsch (sch/check-schema db lsch))
         target (cond
                  (nil? lname) :all
                  (and (nil? lsch) (#{"main" "temp"} lname)) :all
                  (and (nil? lsch) (#{"sqlite_master" "sqlite_schema"} lname)) [:table lname]
                  (get-in db [:indexes lname]) [:index lname]
                  (get-in db [:tables lname]) [:table lname]
-                 :else (err (str "no such table: " (:name st))))
+                 :else (err (str "no such table: " (when (:schema st) (str (:schema st) ".")) (:name st))))
         db (if (get-in db [:tables "sqlite_stat1"])
              db
              (create-table db "CREATE TABLE sqlite_stat1(tbl,idx,stat)"
@@ -1325,13 +1332,19 @@
   "Returns db, or ::empty when there is nothing to rebuild (SQLite then prepares no statement)."
   [db st]
   (let [n (lc (:name st))
-        idxs (vals (:indexes db))
+        sc (some-> (:schema st) lc)
+        _ (when sc (sch/check-schema db sc))
+        att? (and sc (not (#{"main" "temp"} sc)))
+        key (fn [x] (if att? (str sc "." x) x))
+        in-sc (fn [o] (and o (or (nil? sc) (= sc (sch/schema-of o)))))
+        idxs (filter in-sc (vals (:indexes db)))
         hit (cond
               (nil? n) (seq idxs)
-              (#{"binary" "nocase" "rtrim"} n)
+              (and (nil? sc) (#{"binary" "nocase" "rtrim"} n))
               (some (fn [i] (some #(= (str/upper-case n) (:coll %)) (:cols i))) idxs)
-              (get-in db [:tables n]) (some #(= (:table %) n) idxs)
-              (get-in db [:indexes n]) true
+              (in-sc (get-in db [:tables (if sc (key n) (sch/resolve-key db n nil))]))
+              (some #(= (:table %) (if sc (key n) (sch/resolve-key db n nil))) idxs)
+              (in-sc (get-in db [:indexes (if sc (key n) (or (some (fn [k] (when (get-in db [:indexes k]) k)) (cons n (map #(str % "." n) (sch/attached-names db)))) n))])) true
               :else (err "unable to identify the object to be reindexed"))]
     (if hit db ::empty)))
 
@@ -2027,6 +2040,7 @@
               (:create-table :create-view :create-trigger :create-index)
               (let [s (lc (:schema st))]
                 (cond (or (:temp st) (= s "temp")) "temp"
+                      (and (nil? s) (= :create-trigger (:kind st)) (:temp (get-in db2 [:triggers lname]))) "temp"
                       (and s (not= s "main")) s
                       (and (:db st) (not= (:db st) "main")) (:db st)
                       :else (let [o (if (= :create-index (:kind st)) (get-in db2 [:indexes lname]) nil)] (if (and o (:temp o)) "temp" "main"))))
@@ -2048,7 +2062,14 @@
       (err m)))
   (if (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (writable-schema? db))
     (exec-master-dml db sql st out n0)
-    (let [db2 (exec-statement** db sql st out n0)]
+    (let [db2 (exec-statement** db sql st out n0)
+          db2 (if (and (map? db2) (not (:temp-used db2))
+                       (or (and (#{:create-table :create-view :create-trigger :create-index} (:kind st))
+                                (or (:temp st) (= "temp" (some-> (:schema st) lc))))
+                           (and (= :select (:kind st)) (re-find #"(?i)\btemp\.|sqlite_temp_" sql))
+                           (some :temp (concat (vals (:tables db2)) (vals (:views db2)) (vals (:triggers db2))))))
+                (assoc db2 :temp-used true)
+                db2)]
       ;; defer_foreign_keys switches itself off at every COMMIT / ROLLBACK (autocommit statements included)
       (if (and (map? db2) (not= 0 (get-in db2 [:pragmas "defer_foreign_keys"] 0))
                (or (#{:commit :rollback} (:kind st))
@@ -2207,7 +2228,7 @@
                                                        home (or (some-> (:db st) lc) "main")
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
-                                                                                             (some-> (:schema x) lc (#{"temp" "main"})) (not= home (lc (:schema x))))
+                                                                                             (:schema x) (not= home (lc (:schema x))))
                                                                                     (reset! refs (lc (:schema x))))
                                                                             (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
