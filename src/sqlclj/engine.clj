@@ -479,7 +479,13 @@
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
+    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))
+               _ (when-let [sc (:schema e)]
+                   (when-let [t (:table (:src r))]
+                     (when (map? t)
+                       (let [tdb (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main")]
+                         (when (not= tdb (lc sc))
+                           (err (str "no such column: " sc "." (:table e) "." (:name e))))))))]
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -1933,8 +1939,14 @@
   (cond
     (:alias rc) (:alias rc)
     (:star-col rc) (:name rc)
-    (= :col (:op (:e rc)))
-    (let [e (:e rc)]
+    (and (= :col (:op (:e rc)))
+         (let [pr (:pragmas (:db ctx))]
+           (and (not= 0 (get pr "short_column_names" 1)) (= 0 (get pr "full_column_names" 0)) true)
+           ;; short names on (default) or full names on: the column's own name; short off and full off: the text
+           (or (not= 0 (get pr "short_column_names" 1)) (= 1 (get pr "full_column_names" 0)))))
+    (let [e (:e rc)
+          full (= 1 (get-in ctx [:db :pragmas "full_column_names"]))
+          base
       (or (when (rowid-name? (lc (:name e)))
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) t (:table s)]
@@ -1946,7 +1958,13 @@
                   s (:src r) lt (lc (:table e))]
               (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
-          (:name e)))
+          (:name e))]
+      (if full
+        (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+              s (:src r)
+              tn (or (:tname s) (:alias s))]
+          (if tn (str tn "." base) base))
+        base))
     :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
@@ -1999,7 +2017,7 @@
 
 (defn- eval-limit [ctx e what]
   (when e
-    (let [c (cx (assoc ctx :scope nil) e)
+    (let [c (cx (assoc ctx :scope nil :aggs nil :where-ctx true) e)
           x ((:f c) (object-array (+ 2 (long @(:slots ctx)))))
           x (if (string? x) (v/apply-numeric-text x true) x)
           x (if (instance? Double x) (v/integer-affinity (double x)) x)]

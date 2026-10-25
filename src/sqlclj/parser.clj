@@ -541,6 +541,10 @@
                  (cond
                    (at-kw? p "ON")
                    (do (advance! p) (parse-expr p)
+                       (let [t (tok p)]
+                         (when-not (or (= :eof (:t t)) (and (= :op (:t t)) (#{";" ")" ","} (:v t)))
+                                       (and (= :id (:t t)) (#{"WHERE" "GROUP" "HAVING" "ORDER" "LIMIT" "UNION" "INTERSECT" "EXCEPT" "WINDOW" "RETURNING" "JOIN" "NATURAL" "LEFT" "RIGHT" "FULL" "INNER" "CROSS" "OUTER"} (:u t))))
+                           (fail! p)))
                        (when (at-kw? p "USING") (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before ON")))
                    (at-kw? p "USING")
@@ -552,7 +556,11 @@
     (let [save (pos p)
           jt (parse-join-op p)]
       (if (nil? jt)
-        items
+        ;; a leading parenthesized join without alias is simply spliced into the FROM list (as SQLite's parser does)
+        (let [f (first items)]
+          (if (and (:nested f) (nil? (:alias f)) (nil? (:on f)) (nil? (:using f)) (nil? (:join f)))
+            (into (vec (:nested f)) (rest items))
+            items))
         (let [ref (parse-table-ref p)
               ref (cond
                     (accept-kw p "ON") (assoc ref :on (parse-expr p))

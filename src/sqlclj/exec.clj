@@ -255,6 +255,7 @@
                   (when (neg? (.indexOf ^java.util.List lnames (lc f)))
                     (err (str "unknown column \"" f "\" in foreign key definition")))))
             autoinc (boolean (some (fn [d] (some #(and (= :pk (:c %)) (:auto %)) (:cons d))) defs))
+            _ (when (and autoinc (:without-rowid st)) (err "AUTOINCREMENT not allowed on WITHOUT ROWID tables"))
             _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
             _ (when (and (:without-rowid st) (empty? pk-cols)) (err (str "PRIMARY KEY missing on table " name)))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
@@ -1497,6 +1498,9 @@
   (let [n0 (.length out)] (exec-statement* db sql st out n0)))
 
 (defn- exec-statement* [db sql st ^StringBuilder out n0]
+  (when (and (= 1 (get-in db [:pragmas "query_only"]))
+             (#{:insert :update :delete :create-table :create-index :create-view :create-trigger :drop :alter :vacuum :reindex :analyze} (:kind st)))
+    (err "attempt to write a readonly database"))
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
   (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be modified")))
