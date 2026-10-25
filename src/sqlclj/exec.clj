@@ -1064,7 +1064,7 @@
 (defn- parse-trigger-text [old ns]
   (let [st (p/next-statement (p/parse-statements ns))]
     (-> (trg/make-trigger st ns)
-        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :mseq (:mseq old) :sql ns))))
+        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :db (:db old) :mseq (:mseq old) :sql ns))))
 
 (defn- create-index [db sql st]
   (let [name (:name st) lname (lc name)
@@ -1442,7 +1442,7 @@
 
 (defn- check-view [db v]
   (let [sql (obj-ref-sql v)]
-    (try (let [st (parse-one sql)]
+    (try (let [st (sch/qualify-stmt db (parse-one sql))]
            (e/compile-select (new-ctx db sql) (:select st))
            nil)
          (catch Throwable ex (sql-err-msg ex)))))
