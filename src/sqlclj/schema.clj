@@ -155,8 +155,11 @@
   (let [l (lc* name) s (lc* sch)
         exists? (fn [k] (or (get-in db [:tables k]) (get-in db [:views k])))]
     (cond
-      (nil? s) (if (exists? l) l (or (some (fn [a] (let [k (str a "." l)] (when (exists? k) k))) (attached-names db)) l))
-      (#{"main" "temp"} s) l
+      (nil? s) (cond (exists? l) l
+                     (exists? (str "main." l)) (str "main." l)
+                     :else (or (some (fn [a] (let [k (str a "." l)] (when (exists? k) k))) (attached-names db)) l))
+      (= "main" s) (if (exists? (str "main." l)) (str "main." l) l)
+      (= "temp" s) l
       :else (str s "." l))))
 
 (defn- qualify-from-item [db item]
@@ -164,15 +167,16 @@
            (not (contains? master-names (lc* (:table item)))))
     (assoc item :table (resolve-key db (:table item) (:schema item)) :schema nil
            :alias (or (:alias item) (:table item)))
-    (if (and (:table item) (not (:op item)) (nil? (:schema item)) (seq (:attached db)))
+    (if (and (:table item) (not (:op item)) (or (nil? (:schema item)) (= "main" (lc* (:schema item))))
+             (or (seq (:attached db)) (:shadow db)))
       (let [k (resolve-key db (:table item) nil)]
-        (if (= k (lc* (:table item))) item (assoc item :table k :alias (or (:alias item) (:table item)))))
+        (if (= k (lc* (:table item))) item (assoc item :table k :schema nil :alias (or (:alias item) (:table item)))))
       item)))
 
 (defn qualify-stmt
   "Rewrites table references of a statement for attached databases (identity when none attached)."
   [db st]
-  (if (and (empty? (:attached db)) (let [s (lc* (:schema st))] (or (nil? s) (#{"main" "temp"} s))))
+  (if (and (empty? (:attached db)) (not (:shadow db)) (let [s (lc* (:schema st))] (or (nil? s) (#{"main" "temp"} s))))
     st
     (let [att (set (attached-names db))
           sch (lc* (:schema st))
@@ -193,8 +197,9 @@
           (assoc (walk st) :name (obj-key db (:name st) sch) :table (obj-key db (:table st) sch) :db sch :schema nil)
           (let [st (walk st)] (assoc st :table (resolve-key db (:table st) nil))))
         :drop
-        (assoc st :name (if (and sch (not (#{"main" "temp"} sch))) (obj-key db (:name st) sch)
-                            (if (and (nil? sch) (#{:table :view} (:what st))) (resolve-key db (:name st) nil) (:name st))))
+        (assoc st :name (cond (and sch (not (#{"main" "temp"} sch))) (obj-key db (:name st) sch)
+                              (and (#{:table :view} (:what st)) (not= sch "temp")) (resolve-key db (:name st) sch)
+                              :else (:name st)))
         (:insert :update :delete)
         (let [t (:table st) s (:schema st)
               st (walk st)]
@@ -215,3 +220,15 @@
               (sequential? x) (every? walk x)
               :else true))]
     (walk e)))
+
+(defn move-main-aside
+  "A temp table is being created with the name of main table l: the main table moves to key main.l."
+  [db l]
+  (let [k (str "main." l)
+        t (get-in db [:tables l])]
+    (-> db
+        (update :tables dissoc l)
+        (assoc-in [:tables k] (assoc t :name (str "main." (:name t)) :db "main"))
+        (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) l) (assoc i :table k) i)]) m))))
+        (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) l) (assoc g :table k) g)]) m))))
+        (assoc :shadow true))))
