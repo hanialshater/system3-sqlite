@@ -190,14 +190,12 @@
                     (fail! fk)))))))))))
 
 (defn check-all
-  "Violating rows of all (or one) child tables: [table rowid parent fkid]. Newest tables first."
-  [db table-name]
-  (when table-name
-    (when-not (some (fn [[_ t]] (= (lc (:name t)) (lc table-name))) (:tables db))
-      (err (str "no such table: " table-name))))
+  "Violating rows of all (or one, by storage key) child tables: [table rowid parent fkid]. Newest tables first.
+  in-scope?: optional table predicate (the PRAGMA's database)."
+  [db tkey & [in-scope?]]
   (vec
-   (for [[_ tbl] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db))
-         :when (and (seq (:fks tbl)) (or (nil? table-name) (= (lc table-name) (lc (:name tbl)))))
+   (for [[k tbl] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db))
+         :when (and (seq (:fks tbl)) (or (nil? tkey) (= tkey k)) (or (nil? in-scope?) (in-scope? tbl)))
          [fkid fk] (map-indexed vector (reverse (:fks tbl)))
          :let [ptbl (get-in db [:tables (parent-key db tbl fk)])
                _ (when ptbl (parent-cols db tbl fk))
@@ -205,7 +203,8 @@
          [rid row] (:rows tbl)
          :when (and (every? #(not (nil? (nth row %))) cidxs)
                     (or (nil? ptbl) (not (parent-exists? db tbl fk row))))]
-     [(:name tbl) (when-not (:without-rowid tbl) rid) (:table fk) (long fkid)])))
+     [(let [n (:name tbl) d (:db tbl)] (if (and d (str/starts-with? (lc n) (str d "."))) (subs n (inc (count d))) n))
+      (when-not (:without-rowid tbl) rid) (:table fk) (long fkid)])))
 
 (defn commit-check
   "At COMMIT: deferred constraints must hold."

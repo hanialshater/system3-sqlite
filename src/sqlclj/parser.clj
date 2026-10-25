@@ -1194,7 +1194,13 @@
                                    (accept-op p "(") (let [x (pval)] (expect-op p ")") x)
                                    :else nil)]
                        {:kind :pragma :schema sch :name n :value v}))
-        "EXPLAIN" (fail! p)
+        "EXPLAIN" (do (advance! p)
+                      (let [qp (when (at-kw? p "QUERY")
+                                 (advance! p)
+                                 (when-not (at-kw? p "PLAN") (fail! p))
+                                 (advance! p)
+                                 true)]
+                        {:kind :explain :qp (boolean qp) :stmt (parse-statement* p)}))
         (fail! p)))))
 
 ;; SQLite's tokenizer (analyzeWindowKeyword etc.): WINDOW is a keyword only before "id AS", OVER only after ")"
