@@ -2218,7 +2218,6 @@
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
-                :create-vtab (err (str "no such module: " (:module st)))
                 :create-view (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
                                    ln0 (lc (:name st))
                                    exv (get-in db [:views ln0])
