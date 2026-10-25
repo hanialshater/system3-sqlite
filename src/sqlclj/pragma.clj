@@ -393,20 +393,23 @@
         (do (when (and v (not (find-table db v))) (err (str "no such table: " v)))
             {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db v)) [])})
         "table_list"
-        {:db db :names ["schema" "name" "type" "ncol" "wr" "strict"]
-         :rows (vec (filter (fn [r] (or (nil? v) (= (str/lower-case (str v)) (str/lower-case (nth r 1)))))
-                     (concat
-                     (for [[kind t] (sort-by (fn [[_ x]] (- (long (or (:mseq x) 0))))
-                                             (concat (map #(vector :table %) (vals (:tables db)))
-                                                     (map #(vector :view %) (vals (:views db)))))
-                           :when (not (:temp t))]
-                       (if (= kind :table)
-                         ["main" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)]
-                         ["main" (:name t) "view" (long (count (:cols t))) 0 0]))
-                     [["main" "sqlite_schema" "table" 5 0 0]]
-                     (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
-                       ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
-                     [["temp" "sqlite_temp_schema" "table" 5 0 0]])))}
+        (let [obj-db (fn [o] (cond (:temp o) "temp" (:db o) (lc (:db o)) :else "main"))
+              row (fn [d kind t]
+                    (if (= kind :table)
+                      [d (sch/display-name (:name t) t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)]
+                      [d (sch/display-name (:name t) t) "view" (long (count (:cols t))) 0 0]))
+              objs (concat (map #(vector :table %) (vals (:tables db))) (map #(vector :view %) (vals (:views db))))
+              part (fn [d]
+                     (if (= d "temp")
+                       (concat (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)] (row "temp" :table t))
+                               [["temp" "sqlite_temp_schema" "table" 5 0 0]])
+                       (concat (for [[kind t] (sort-by (fn [[_ x]] (- (long (or (:mseq x) 0)))) objs)
+                                     :when (= d (obj-db t))]
+                                 (row d kind t))
+                               [[d "sqlite_schema" "table" 5 0 0]])))]
+          {:db db :names ["schema" "name" "type" "ncol" "wr" "strict"]
+           :rows (vec (filter (fn [r] (or (nil? v) (= (str/lower-case (str v)) (str/lower-case (nth r 1)))))
+                              (mapcat part (if sc [sc] (concat ["main" "temp"] (map first (:attached db)))))))})
         (none db))))))
 
 ;; pragma_xxx table-valued functions
