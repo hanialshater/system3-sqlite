@@ -1182,6 +1182,7 @@
                            [sch n] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
                            pval (fn []
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
+                                        _ (check-illegal p)
                                         t (advance! p)]
                                     (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
                                               (and (= :id (:t t)) (#{"NULL"} (:u t)))
