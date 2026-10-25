@@ -308,20 +308,51 @@
 
 (defn- key-has-null? [k] (some nil? k))
 
+;; The keys of a unique index as a sorted map key -> rowid, built once per table value and index and carried
+;; over the plain inserts that follow (carry-unique!), so that a run of inserts does not scan the table each time.
+(defonce ^:private unique-cache (atom []))
+
+(defn- remember-unique! [tbl idx m]
+  (swap! unique-cache (fn [c] (conj (if (>= (count c) 8) (subvec c 1) c) [tbl idx m]))))
+
+(defn- unique-map [tbl idx]
+  (let [hit (some (fn [[t i m]] (when (and (identical? t tbl) (identical? i idx)) m)) @unique-cache)]
+    (or hit
+        (let [colls (mapv :coll (:cols idx))
+              cmp (reify java.util.Comparator
+                    (compare [_ a b]
+                      (loop [i 0]
+                        (if (>= i (count colls)) 0
+                            (let [c (v/sql-cmp (nth a i) (nth b i) (nth colls i))]
+                              (if (zero? c) (recur (inc i)) c))))))
+              m (reduce (fn [m [rid r]]
+                          (if (or (nil? (:wf idx)) ((:wf idx) r))
+                            (let [k (e/index-key tbl idx r)]
+                              (if (key-has-null? k) m (assoc m k rid)))
+                            m))
+                        (sorted-map-by cmp) (:rows tbl))]
+          (remember-unique! tbl idx m)
+          m))))
+
+(defn- carry-unique!
+  "After a plain insert of the stored row (rowid rid) into old, giving new: the unique maps of old move to new."
+  [old new rid row]
+  (doseq [[t idx m] (filter #(identical? (first %) old) @unique-cache)]
+    (if (or (nil? (:wf idx)) ((:wf idx) row))
+      (let [k (e/index-key new idx row)]
+        (cond (key-has-null? k) (remember-unique! new idx m)
+              (contains? m k) nil
+              :else (remember-unique! new idx (assoc m k rid))))
+      (remember-unique! new idx m))))
+
 (defn- find-conflict
   "Returns rowid of an existing row conflicting with row r under unique index idx, excluding rowid self."
   [tbl idx row self]
   (when (or (nil? (:wf idx)) ((:wf idx) row))
     (let [k (e/index-key tbl idx row)]
       (when-not (key-has-null? k)
-        (let [colls (mapv :coll (:cols idx))]
-          (some (fn [[rid r]]
-                  (when (and (not= rid self)
-                             (or (nil? (:wf idx)) ((:wf idx) r))
-                             (let [k2 (e/index-key tbl idx r)]
-                               (every? true? (map (fn [a b c] (and (not (nil? b)) (zero? (v/sql-cmp a b c)))) k k2 colls))))
-                    rid))
-                (:rows tbl)))))))
+        (let [rid (get (unique-map tbl idx) k)]
+          (when (and rid (not= rid self)) rid))))))
 
 (defn- unique-msg [tbl idx]
   (str "UNIQUE constraint failed: "
@@ -754,6 +785,7 @@
                             (after-update db3 tbl existing (assoc nrow ncols nrid) tkey (map first (:sets-c up)) changes)))))))
                 :else
                 (let [tbl3 (put-row tbl2 rid row)
+                      _ (carry-unique! tbl2 tbl3 rid (get-in tbl3 [:rows rid]))
                       db2 (assoc-in db [:tables tkey] tbl3)
                       db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
                       db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))
