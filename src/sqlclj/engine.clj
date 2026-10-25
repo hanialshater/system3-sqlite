@@ -83,7 +83,7 @@
           (and (nil? tq) (not quoted) (= lname "false")) {:const 0}
           :else
           (err (str "no such column: "
-                    (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
+                    (if tq (str (when sc (str sc ".")) tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
         (let [srcs (:sources scope)
               hits (if ltq
                      (concat
@@ -128,8 +128,8 @@
                :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
                :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
                :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
-            (and ltq (some #(or (= (:alias %) ltq) (get-in % [:quals ltq])) srcs))
-            (err (str "no such column: " tq "." name))
+            (and ltq (some #(or (and (= (:alias %) ltq) (db-ok? %)) (get-in % [:quals ltq])) srcs))
+            (err (str "no such column: " (when sc (str sc ".")) tq "." name))
             :else (recur (:parent scope) (inc depth))))))))
 
 ;; ====================================================================== expressions
