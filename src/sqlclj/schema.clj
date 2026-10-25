@@ -200,10 +200,21 @@
         :create-index
         (if (att sch)
           (assoc (walk st) :name (obj-key db (:name st) sch) :table (obj-key db (:table st) sch) :db sch :schema nil)
-          (let [st (walk st)] (assoc st :table (resolve-key db (:table st) nil))))
+          (let [st (walk st)
+                k (resolve-key db (:table st) nil)]
+            ;; an index lives in its table's database: unqualified means main (or temp for a temp table)
+            (when (and (string? k) (some (fn [a] (str/starts-with? k (str a "."))) att))
+              (throw (ex-info "sql" {:sql-error (str "no such table: main." (:table st))})))
+            (assoc st :table k)))
         :drop
         (assoc st :name (cond (and sch (not (#{"main" "temp"} sch))) (obj-key db (:name st) sch)
                               (and (#{:table :view} (:what st)) (not= sch "temp")) (resolve-key db (:name st) sch)
+                              ;; DROP INDEX/TRIGGER x: main and temp first, then the attached databases in order
+                              (and (nil? sch) (#{:index :trigger} (:what st))
+                                   (not (get-in db [(if (= :index (:what st)) :indexes :triggers) (lc* (:name st))])))
+                              (let [m (if (= :index (:what st)) :indexes :triggers)]
+                                (or (some (fn [a] (let [k (str a "." (lc* (:name st)))] (when (get-in db [m k]) k))) (attached-names db))
+                                    (:name st)))
                               :else (:name st)))
         :create-trigger
         (let [tsch (lc* (:table-schema st))

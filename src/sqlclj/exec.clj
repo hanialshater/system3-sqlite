@@ -1,6 +1,7 @@
 (ns sqlclj.exec
   "Statement execution: DDL, DML with constraints, and the per-line driver output."
   (:require [sqlclj.jsontvf]
+            [sqlclj.plan-eqp]
             [clojure.string :as str]
             [sqlclj.values :as v]
             [sqlclj.lexer :as lx]
@@ -170,7 +171,7 @@
       (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
-            sub (e/compile-select ctx (:as st))
+            sub (e/compile-select (assoc ctx :decl-names true) (:as st))
             rows (e/run-select-rows sub (object-array (inc @(:slots ctx))))
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
@@ -508,7 +509,8 @@
                                          (let [n (:name (:e rc))]
                                            (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
                                              (nth (:cols src) (:ipk src))
-                                             n))
+                                             (let [i (.indexOf ^java.util.List (mapv lc (:cols src)) (lc n))]
+                                               (if (>= i 0) (nth (:cols src) i) n))))
                                          (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
@@ -1881,9 +1883,19 @@
             (update :views #(into {} (filter keep? %)))
             (update :triggers #(into {} (filter keep? %)))
             (update :pages dissoc lnm))))
+    :explain
+    (let [inner (:stmt st)
+          ctx (new-ctx db sql)
+          rows (volatile! [])]
+      (when-not (and (:qp st) (= :select (:kind inner)))
+        (err "EXPLAIN is not supported"))
+      (binding [e/*eqp* rows] (e/compile-select ctx (:select inner)))
+      (emit-line out "# id|parent|notused|detail")
+      (doseq [row @rows] (write-row out row))
+      db)
     :select
     (let [ctx (new-ctx db sql)
-          sub (e/compile-select ctx (:select st))]
+          sub (e/compile-select (assoc ctx :decl-names true) (:select st))]
       (emit-line out (str "# " (str/join "|" (:names sub))))
       (let [env (object-array (+ 2 @(:slots ctx)))]
         (if-let [run (:streaming sub)]
@@ -1994,14 +2006,21 @@
                             (when-let [sc (lc (:schema st))]
                               (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
                                 (err (str "unknown database " (:schema st)))))
-                            db))]
+                            (when-let [ie (:into st)]
+                              (let [x ((:f (e/cx (new-ctx db sql) ie)) (object-array 4))]
+                                (when-not (string? x) (err "non-text filename"))))
+                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])]
+                              (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
+                                (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                                db))))]
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
         (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
             (update db2 :schema-version (fnil inc 0)))
-        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0)))
+        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0))
+                                (and (= :vacuum (:kind st)) (= "temp" (lc (:schema st)))))
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 
