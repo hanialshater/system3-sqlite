@@ -267,7 +267,8 @@
       (err (str "unknown database " (:schema st))))
     (let [v (if (and sc v (string? v))
               (cond
-                (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
+                (or (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
+                    (and (#{"integrity_check" "quick_check"} n) (nil? (int-value v))))
                 (case sc
                   "main" (sch/resolve-key db v "main")
                   "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
