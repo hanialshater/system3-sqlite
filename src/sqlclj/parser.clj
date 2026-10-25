@@ -877,8 +877,8 @@
 ;; ------------------------------------------------------------------ DML
 
 (defn- parse-returning [^P p & [kind]]
-  (when (and *in-trigger* (at-kw? p "RETURNING"))
-    (if (= kind :insert) (throw (lx/sql-error "cannot use RETURNING in a trigger")) (fail! p)))
+  (when (and *in-trigger* (at-kw? p "RETURNING") (not= kind :insert))
+    (fail! p))
   (when (accept-kw p "RETURNING")
     (loop [acc [(parse-result-col p)]] (if (accept-op p ",") (recur (conj acc (parse-result-col p))) acc))))
 
@@ -1075,7 +1075,7 @@
                                              st (case (:u t)
                                                   ("SELECT" "VALUES" "INSERT" "REPLACE" "UPDATE" "DELETE" "WITH") (parse-statement* p)
                                                   (fail! p))
-                                             _ (when (and (#{:insert :update :delete} (:kind st)) (:schema st))
+                                             _ (when (and (#{:insert :update :delete} (:kind st)) (:schema st) (not temp) (not= "temp" (some-> sch str/lower-case)))
                                                  (throw (lx/sql-error "qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers")))
                                              _ (when (and (#{:update :delete} (:kind st)) (:indexed-by st))
                                                  (throw (lx/sql-error (if (= :none (:indexed-by st))
