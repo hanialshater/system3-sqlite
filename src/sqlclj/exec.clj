@@ -1555,7 +1555,16 @@
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
-                :create-view (let [ln (lc (:name st))]
+                :create-view (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
+                                   ln0 (lc (:name st))
+                                   exv (get-in db [:views ln0])
+                                   [db st] (cond
+                                             (and (:temp st) exv (not (:temp exv)) (nil? (:db exv)) (not (:db st)))
+                                             [(sch/move-main-aside db ln0) st]
+                                             (and (not (:temp st)) (nil? (:db st)) exv (:temp exv))
+                                             [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
+                                             :else [db st])
+                                   ln (lc (:name st))]
                                (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
                                      (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))

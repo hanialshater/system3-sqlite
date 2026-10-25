@@ -1698,13 +1698,18 @@
   ([ctx name sch]
    (let [iv (:in-view ctx)
          t (or (when (and iv (nil? sch) (not (#{"main" "temp"} iv))) (get-in (:db ctx) [:tables (str iv "." (lc name))]))
+               (when (and (= iv "main") (nil? sch) (:shadow (:db ctx)))
+                 (let [t (get-in (:db ctx) [:tables (schema/resolve-key (:db ctx) name "main")])] (when-not (:temp t) t)))
                (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))]))
          ls (lc sch)
          t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
      (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
-  (get-in (:db ctx) [:views (lc name)]))
+  (let [db (:db ctx)]
+    (or (when (and (= "main" (:in-view ctx)) (:shadow db))
+          (let [v (get-in db [:views (schema/resolve-key db name "main")])] (when-not (:temp v) v)))
+        (get-in db [:views (lc name)]))))
 
 (defn row-comparator
   "Comparator over vectors of values with per-position collations."
