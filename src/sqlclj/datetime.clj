@@ -277,26 +277,61 @@
                    false)
                true)
           (\+ \- \0 \1 \2 \3 \4 \5 \6 \7 \8 \9)
-          (let [nn (loop [k 1] (if (and (< k n) (not= (.charAt zin k) \:) (not (space? (.charAt zin k)))) (recur (inc k)) k))
+          (let [nn (loop [k 1]
+                     (cond (or (>= k n) (= (.charAt zin k) \:) (space? (.charAt zin k))) k
+                           (and (= (.charAt zin k) \-)
+                                (or (and (= k 5) (get-digits zin 1 "40f"))
+                                    (and (= k 6) (get-digits zin 1 "50f")))) k
+                           :else (recur (inc k))))
                 [r rc] (num/atof (subs zin 0 nn))
-                r (double r)]
+                r (double r)
+                time-part
+                (fn [zo z2]
+                  ;; (+|-)HH:MM:SS.FFF added to the time; zo = offset of z[0], z2 = start of the time text
+                  (let [z2 (if (digit? (.charAt zin z2)) z2 (inc z2))
+                        tx (new-dt)]
+                    (if (parse-hhmmss tx zin z2)
+                      true
+                      (do (compute-jd tx)
+                          (s! tx :iJD (- (long (g tx :iJD)) 43200000))
+                          (let [day (quot (long (g tx :iJD)) 86400000)
+                                t (- (long (g tx :iJD)) (* day 86400000))
+                                t (if (= (.charAt zin zo) \-) (- t) t)]
+                            (compute-jd p)
+                            (clear-ymd-hms-tz p)
+                            (s! p :iJD (+ (long (g p :iJD)) t) :rawS false :nFloor 0)
+                            false)))))]
             (cond
               (<= (long rc) 0) true
-              (and (< nn n) (= (.charAt zin nn) \:))
-              ;; (+|-)HH:MM:SS.FFF
-              (let [z2 (if (digit? (.charAt zin 0)) 0 1)
-                    tx (new-dt)]
-                (if (parse-hhmmss tx zin z2)
+              (and (< nn n) (= (.charAt zin nn) \-))
+              (let [z0 (.charAt zin 0)
+                    zo (if (= nn 6) 1 0)]
+                (if (or (and (not= z0 \+) (not= z0 \-)) (not (#{5 6} nn)))
                   true
-                  (do (compute-jd tx)
-                      (s! tx :iJD (- (long (g tx :iJD)) 43200000))
-                      (let [day (quot (long (g tx :iJD)) 86400000)
-                            t (- (long (g tx :iJD)) (* day 86400000))
-                            t (if (= (.charAt zin 0) \-) (- t) t)]
-                        (compute-jd p)
-                        (clear-ymd-hms-tz p)
-                        (s! p :iJD (+ (long (g p :iJD)) t) :rawS false)
-                        false))))
+                  (if-let [[Y M D] (get-digits zin 1 (if (= nn 5) "40f-20a-20d" "50f-20a-20d"))]
+                    (if (or (>= M 12) (>= D 31))
+                      true
+                      (do (compute-ymd-hms p)
+                          (s! p :validJD false)
+                          (let [[Y M D] (if (= z0 \-)
+                                          [(- Y) (- M) (- D)]
+                                          [Y M D])
+                                _ (s! p :Y (+ (long (g p :Y)) Y) :M (+ (long (g p :M)) M))
+                                Mv (long (g p :M))
+                                x (if (> Mv 0) (quot (dec Mv) 12) (quot (- Mv 12) 12))]
+                            (s! p :Y (+ (long (g p :Y)) x) :M (- Mv (* x 12)))
+                            (compute-jd p)
+                            (s! p :validHMS false :validYMD false)
+                            (s! p :iJD (+ (long (g p :iJD)) (* (long D) 86400000)))
+                            (let [e (+ zo 11)]
+                              (cond
+                                (>= e n) false
+                                (and (space? (.charAt zin e)) (get-digits zin (inc e) "20c:20e"))
+                                (time-part zo (inc e))
+                                :else true)))))
+                    true)))
+              (and (< nn n) (= (.charAt zin nn) \:))
+              (time-part 0 (if (digit? (.charAt zin 0)) 0 1))
               :else
               (let [rest (.trim (subs zin nn))
                     rest (loop [i 0] (if (and (< i (count (subs zin nn))) (space? (.charAt (subs zin nn) i))) (recur (inc i)) i))
@@ -500,16 +535,16 @@
               (compute-ymd-hms r)
               (fmt (str "+%04d-%02d-%02d %02d:%02d:%06.3f") Y M (dec (long (g r :D))) (long (g r :h)) (long (g r :m)) (double (g r :s))))
             (let [Y (- (long (g d2 :Y)) (long (g d1 :Y)))
-                  _ (when-not (zero? Y) (s! d1 :Y (g d2 :Y)) (recompute d1))
+                  _ (when-not (zero? Y) (s! d2 :Y (g d1 :Y)) (recompute d2))
                   M (- (long (g d2 :M)) (long (g d1 :M)))
                   [Y M] (if (neg? M) [(dec Y) (+ M 12)] [Y M])
-                  _ (when-not (zero? M) (s! d1 :M (g d2 :M)) (recompute d1))
+                  _ (when-not (zero? M) (s! d2 :M (g d1 :M)) (recompute d2))
                   [Y M] (loop [Y Y M M]
-                          (if (> (jd d1) (jd d2))
+                          (if (< (jd d2) (jd d1))
                             (let [M (dec M) [Y M] (if (neg? M) [(dec Y) 11] [Y M])]
-                              (s! d1 :M (dec (long (g d1 :M))))
-                              (when (< (long (g d1 :M)) 1) (s! d1 :M 12 :Y (dec (long (g d1 :Y)))))
-                              (recompute d1)
+                              (s! d2 :M (inc (long (g d2 :M))))
+                              (when (> (long (g d2 :M)) 12) (s! d2 :M 1 :Y (inc (long (g d2 :Y)))))
+                              (recompute d2)
                               (recur Y M))
                             [Y M]))
                   r (volatile! {:iJD (+ (- (jd d2) (jd d1)) 148699540800000) :validJD true :Y 0 :M 0 :D 0 :h 0 :m 0 :tz 0 :s 0.0})]

@@ -149,10 +149,15 @@
     (when (and s (not (#{"main" "temp"} s)) (not (some #{s} (attached-names db))))
       (throw (ex-info "sql" {:sql-error (str "unknown database " sch)})))))
 
+(def ^:dynamic *home-db*
+  "While the program of a trigger of an attached database runs: that database's name. Unqualified names in a
+  non-TEMP trigger resolve only in the trigger's own database (sqlite3FixSrcList)."
+  nil)
+
 (defn resolve-key
   "Key of an existing table or view called name, as seen from schema qualifier sch (nil = search order)."
   [db name sch]
-  (let [l (lc* name) s (lc* sch)
+  (let [l (lc* name) s (or (lc* sch) *home-db*)
         exists? (fn [k] (or (get-in db [:tables k]) (get-in db [:views k])))]
     (cond
       (nil? s) (cond (exists? l) l

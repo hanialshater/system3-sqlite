@@ -63,6 +63,11 @@
 (defn- find-table [db tname]
   (get-in db [:tables (lc tname)]))
 
+(defn- std-type [t]
+  (let [t (or t "")
+        u (.toUpperCase ^String t)]
+    (if (contains? #{"ANY" "BLOB" "INT" "INTEGER" "REAL" "TEXT"} u) u t)))
+
 (defn table-info-rows
   "Rows of table_info (xinfo? adds the hidden column)."
   [db tname xinfo?]
@@ -74,15 +79,17 @@
                     hidden (long (or (:hidden-kind c) 0))
                     cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
+                  (cond-> [(long cid) (:name c) (std-type (:type c)) (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))
     (if-let [v (get-in db [:views (lc tname)])]
-      (let [ctx (assoc (e/->Ctx db "" nil (atom 0) nil nil nil) :refs (atom #{}))
+      (let [ctx (assoc (e/->Ctx db (or (:src v) "") nil (atom 0) nil nil nil) :refs (atom #{}) :in-view (or (:db v) (if (:temp v) "temp" "main")))
             sub (try (e/compile-select ctx (:select v)) (catch Exception _ nil))
-            names (or (:cols v) (:names sub))]
-        (vec (map-indexed (fn [i n] (cond-> [(long i) n "" 0 nil 0] xinfo? (conj 0))) names)))
+            names (e/dedup-names (or (:cols v) (:names sub)))
+            affs (or (:src-affs sub) (:affs sub))
+            tname (fn [i] (case (nth affs i nil) :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" :blob "BLOB" ""))]
+        (vec (map-indexed (fn [i n] (cond-> [(long i) n (tname i) 0 nil 0] xinfo? (conj 0))) names)))
       [])))
 
 (defn- table-indexes [db lname]
@@ -91,7 +98,7 @@
 (defn index-list-rows [db tname]
   (if-let [t (find-table db tname)]
     (vec (map-indexed (fn [i idx]
-                        [(long i) (:name idx) (if (:unique idx) 1 0)
+                        [(long i) (sch/display-name (:name idx) idx) (if (:unique idx) 1 0)
                          (cond (not (:auto idx)) "c" (:pk-auto idx) "pk" :else "u")
                          (if (:where idx) 1 0)])
                       (table-indexes db (lc (:name t)))))
@@ -136,6 +143,17 @@
         db (if (= sc "temp") (assoc db :temp-used true) db)]
     (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
+    (let [v (if (and sc v (string? v))
+              (cond
+                (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
+                (case sc
+                  "main" (sch/resolve-key db v "main")
+                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  (sch/obj-key db v sc))
+                (#{"index_info" "index_xinfo"} n)
+                (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))
+                :else v)
+              v)]
     (cond
       (contains? flag-pragmas n)
       (if (nil? v)
@@ -144,6 +162,17 @@
           (if (and (= n "foreign_keys") (:tx db))
             (none db)
             (none (pset db n b)))))
+
+      (= n "cache_spill")
+      ;; pcache: pages = cache_size, or -1024*cache_size/(page_size+136) when negative; the spill size is
+      ;; max(pages, szSpill); 0 while the CacheSpill flag is off
+      (let [pages (fn [db x] (let [x (long x)] (if (>= x 0) x (quot (* -1024 x) (+ 136 (long (pget db "page_size" 4096)))))))]
+        (if (nil? v)
+          (one db n (if (= 0 (pget db "cache_spill.on" 1)) 0
+                        (max (long (pages db (pget db "cache_size" -2000))) (long (pget db "cache_spill.sz" 1)))))
+          (let [x (int-value v)
+                db (if (and x (not (zero? (long x)))) (pset db "cache_spill.sz" (pages db x)) db)]
+            (none (pset db "cache_spill.on" (bool-value v (if (and x (zero? (long x))) 0 1)))))))
 
       (contains? int-pragmas-echo n)
       (let [[d col] (int-pragmas-echo n)]
@@ -158,7 +187,9 @@
       (contains? int-pragmas-quiet n)
       (if (nil? v)
         (one db n (long (pget db n (int-pragmas-quiet n))))
-        (let [x (int-value v)]
+        (let [x (int-value v)
+              ;; cache_size reads its value with sqlite3Atoi: no leading integer means 0
+              x (or x (when (= n "cache_size") (or (some-> (re-find #"^\s*[-+]?\d+" (str v)) str/trim parse-long) 0)))]
           (if (nil? x) (none db)
               (if (= n "page_size")
                 (if (and (seq (:tables db)) (not (empty? (get-in db [:pages "main"]))))
@@ -211,12 +242,13 @@
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
                        (one db n cur)
-                       (let [nm (case (lc (str/replace (str v) #"-" ""))
-                                  "utf8" "UTF-8" ("utf16" "utf16le") "UTF-16le" "utf16be" "UTF-16be"
-                                  (err (str "unsupported encoding: " v)))]
-                         (if (and (empty? (:tables db)) (empty? (:views db)) (= cur "UTF-8"))
-                           (none (pset db "encoding" nm))
-                           (none db)))))
+                       (let [fixed (not (and (empty? (:tables db)) (empty? (:views db)) (= cur "UTF-8")))]
+                         (if fixed
+                           (none db)
+                           (let [nm (case (lc (str/replace (str v) #"-" ""))
+                                      "utf8" "UTF-8" ("utf16" "utf16le") "UTF-16le" "utf16be" "UTF-16be"
+                                      (err (str "unsupported encoding: " v)))]
+                             (none (pset db "encoding" nm)))))))
         "integrity_check" (if (and v (not (int-value v)) (not (find-table db v)))
                             (err (str "no such table: " v))
                             (one db n "ok"))
@@ -236,7 +268,10 @@
                          :rows (vec (concat [[0 "main" ""]]
                                             (when (or (:temp-used db) (some :temp (concat (vals (:tables db)) (vals (:views db)) (vals (:triggers db)))))
                                               [[1 "temp" ""]])
-                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (or (:file a) "")]) (:attached db))))}
+                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (let [f (or (:file a) "")]
+                                                                                                                                                (if (or (= f "") (str/starts-with? f "/"))
+                                                                                                                                                  f
+                                                                                                                                                  (str "/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/" f)))]) (:attached db))))}
         "table_info" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (table-info-rows db v false)} (none db))
         "table_xinfo" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (table-info-rows db v true)} (none db))
         "index_list" (if v {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (index-list-rows db v)} (none db))
@@ -248,7 +283,8 @@
             {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db v)) [])})
         "table_list"
         {:db db :names ["schema" "name" "type" "ncol" "wr" "strict"]
-         :rows (vec (concat
+         :rows (vec (filter (fn [r] (or (nil? v) (= (str/lower-case (str v)) (str/lower-case (nth r 1)))))
+                     (concat
                      (for [[kind t] (sort-by (fn [[_ x]] (- (long (or (:mseq x) 0))))
                                              (concat (map #(vector :table %) (vals (:tables db)))
                                                      (map #(vector :view %) (vals (:views db)))))
@@ -259,8 +295,8 @@
                      [["main" "sqlite_schema" "table" 5 0 0]]
                      (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
                        ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
-                     [["temp" "sqlite_temp_schema" "table" 5 0 0]]))}
-        (none db)))))
+                     [["temp" "sqlite_temp_schema" "table" 5 0 0]])))}
+        (none db))))))
 
 ;; pragma_xxx table-valued functions
 (def tvf-cols
@@ -285,12 +321,13 @@
                                 "freelist_count" "synchronous" "temp_store" "auto_vacuum" "locking_mode" "data_version"} n))
                      [(if-let [[_ c] (int-pragmas-echo n)] c n)]))
           takes-arg (contains? #{"table_info" "table_xinfo" "index_list" "index_info" "index_xinfo"
-                                 "foreign_key_list" "foreign_key_check" "integrity_check" "quick_check"} n)]
+                                 "foreign_key_list" "foreign_key_check" "integrity_check" "quick_check" "table_list"} n)]
       (when cols
-        {:cols cols :hidden (if takes-arg ["arg" "schema"] ["schema"])
+        ;; table_list has a real schema column; its hidden one must not hide it from *
+        {:cols cols :hidden (if takes-arg ["arg" (if (= n "table_list") "schema " "schema")] ["schema"])
          :rows (fn [db args]
                  (let [[a s] (if takes-arg args [nil (first args)])
                        a (when (some? a) (str a))]
-                   (:rows (run db {:name n :value a :schema nil :tvf true}))))}))))
+                   (:rows (run db {:name n :value a :schema (when (some? s) (str s)) :tvf true}))))}))))
 
 (swap! e/tvf-resolvers (fn [rs] (if (some #(= % #'tvf-resolver) rs) rs (conj rs #'tvf-resolver))))

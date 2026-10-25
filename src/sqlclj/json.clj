@@ -21,7 +21,7 @@
 (defn jerr [msg] (throw (ex-info msg {:sql-error msg})))
 
 ;; ---------------------------------------------------------------- subtype registry (identity based)
-(def ^:private subtypes (java.util.IdentityHashMap.))
+(def ^:private subtypes v/subtypes)
 (defn mark-json
   "returns a fresh String instance carrying the JSON subtype"
   ^String [^String s]
@@ -612,6 +612,13 @@
     (json-subtype? x) (let [r (parse-text x)] (if (:node r) (:node r) (jerr "malformed JSON")))
     :else (sql-text-node x)))
 
+(defn value->node-edit
+  "value->node for json_set / json_insert / json_replace / json_array_insert: Infinity is written as 9e999"
+  [x]
+  (if (and (instance? Double x) (Double/isInfinite (double x)))
+    [T-FLOAT (if (pos? (double x)) "9e999" "-9e999")]
+    (value->node x)))
+
 ;; ---------------------------------------------------------------- argument parsing
 (defn arg->node
   "Parses a SQL argument as JSON. nil for SQL NULL; throws 'malformed JSON'."
@@ -688,8 +695,6 @@
       (case mode :get node (:set :replace) val :insert node :delete ::del :ainsert node)
       (= c 46)
       (let [[lab raw nx] (parse-label path (inc pos))]
-        (when (and (= mode :ainsert) (>= nx n))
-          (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
         (if (not= (ntype node) T-OBJECT)
           ::nf
           (let [kids (npay node)
@@ -697,6 +702,8 @@
                 idx (loop [i 0] (cond (>= i (count kids)) nil
                                       (= (key-str (nth kids i)) lab-s) i
                                       :else (recur (+ i 2))))]
+            (when (and idx (= mode :ainsert) (>= nx n))
+              (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
             (if idx
               (let [r (edit (nth kids (inc idx)) path nx mode val)]
                 (cond (= r ::nf) ::nf
@@ -799,7 +806,7 @@
           (if (empty? rs)
             (if blob? (jsonb-result root) (json-result root))
             (let [p (path-arg (first rs))
-                  val (value->node (second rs))]
+                  val (value->node-edit (second rs))]
               (if (nil? p)
                 (recur root (nnext rs))
                 (do
@@ -952,9 +959,9 @@
             (if blob? (jsonb-result node) (json-result node))))
       ([x y]
        (if obj?
-         (do (when-not (string? x) (when-not (nil? x) nil))
-             (.add items (sql-text-node (v/text-of x)))
-             (.add items (value->node y)))
+         (when-not (nil? x)
+           (.add items (sql-text-node (v/text-of x)))
+           (.add items (value->node y)))
          (.add items (value->node x)))))))
 
 (defn- hlen [payload] (cond (<= payload 11) 1 (<= payload 0xff) 2 (<= payload 0xffff) 3 :else 5))

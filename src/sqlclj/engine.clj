@@ -10,7 +10,8 @@
             [sqlclj.ext :as ext]
             [sqlclj.json :as js]
             [sqlclj.printf :as pf]
-            [sqlclj.schema :as schema])
+            [sqlclj.schema :as schema]
+            [sqlclj.guard :as g])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -52,17 +53,29 @@
   (let [i (.indexOf ^java.util.List (:lcols src) lname)]
     (when (>= i 0) i)))
 
-(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_"} lname))
+(defn ename-hits
+  "lookupName over a parenthesized-join (SF_NestedFrom) source: unqualified names match the inner
+  columns' own names; a USING term ends the search."
+  [s lname]
+  (loop [i 0 acc []]
+    (if (>= i (count (:enames s)))
+      acc
+      (let [[c u] (nth (:enames s) i)]
+        (if (= c lname)
+          (if u (conj acc i) (recur (inc i) (conj acc i)))
+          (recur (inc i) acc))))))
+
+(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_" "\u0000rowid"} lname))
 
 (defn resolve-column
-  "Returns {:slot :idx :aff :coll :depth :src} or throws."
-  [ctx tq name dq]
+  "Returns {:slot :idx :aff :coll :depth :src} or throws. quoted: the name was a quoted identifier (never TRUE/FALSE)."
+  [ctx tq name dq & [quoted]]
   (let [lname (lc name) ltq (lc tq)]
     (loop [scope (:scope ctx) depth 0]
       (if (nil? scope)
         (cond
-          (and (nil? tq) (= lname "true")) {:const 1}
-          (and (nil? tq) (= lname "false")) {:const 0}
+          (and (nil? tq) (not quoted) (= lname "true")) {:const 1}
+          (and (nil? tq) (not quoted) (= lname "false")) {:const 0}
           :else
           (err (str "no such column: "
                     (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
@@ -71,22 +84,35 @@
                      (concat
                       (for [s srcs :when (= (:alias s) ltq)
                             :let [i (find-in-source s lname)
-                                  i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
+                                  i (or i (when (and (rowid-name? lname) (or (:rowid? s) (and (= lname "\u0000rowid") (:table s)))) (:ncols s)))]
                             :when i]
                         [s i])
                       (for [s srcs :when (and (:quals s) (not= (:alias s) ltq))
                             :let [i (get-in (:quals s) [ltq lname])]
                             :when i]
                         [s i]))
-                     (for [s srcs
-                           :let [i (find-in-source s lname)]
-                           :when (and i (not (:qualified-only s)) (or (:tvf s) (not (contains? (:hidden s) lname))))]
-                       [s i]))
+                     (mapcat (fn [s]
+                               (if (:enames s)
+                                 (when-not (contains? (:hidden s) lname)
+                                   (for [i (ename-hits s lname)] [s i]))
+                                 (let [i (find-in-source s lname)]
+                                   (when (and i (not (:qualified-only s)) (or (:tvf s) (not (contains? (:hidden s) lname))))
+                                     [[s i]]))))
+                             srcs))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
                        (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
+            (and ltq (> (count hits) 1)
+                 (let [h2 (vec (cons (first hits) (remove (fn [[s _]] (contains? (:hidden s) lname)) (rest hits))))]
+                   (when (= 1 (count h2)) h2)))
+            (let [[s i] (first hits)]
+              (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
+              {:slot (:slot s) :idx i :depth depth :src s
+               :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
+               :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
+               :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
             (> (count hits) 1)
             (err (str "ambiguous column name: " (if tq (str tq "." name) name)))
             (= 1 (count hits))
@@ -464,12 +490,25 @@
       (err @pend)))
   (case (:op e)
     :lit (let [v (lit-value e)
-               c (const-c v)]
+               c (cond-> (const-c v) (:tmeta e) (assoc :aff (:taff e) :coll (:tcoll e)))]
            ;; integer literals stored as 32-bit values count as always true/false for AND/OR simplification
-           (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
+           (cond
+             (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
-             c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
+             :else c))
+    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
+                      (catch clojure.lang.ExceptionInfo ex
+                        (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
+                          {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
+                          (throw ex))))
+               _ (when-let [sc (and (not (:alias-c r)) (:schema e))]
+                   (when-let [t (:table (:src r))]
+                     (when (map? t)
+                       (let [tdb (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main")]
+                         (when (not= tdb (lc sc))
+                           (err (str "no such column: " sc "." (:table e) "." (:name e))))))))]
+           (if (:alias-c r)
+             (do (when (:outer-refs ctx) (reset! (:outer-refs ctx) true)) (:alias-c r))
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -480,7 +519,7 @@
                (mk (if alt
                      (coalesce-reader alt)
                      (fn [^objects env] (nth (aget env slot) idx)))
-                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
+                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r)))))
     :unary
     (let [o (:o e) inner (:e e)]
       (case o
@@ -500,10 +539,14 @@
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
-    :raise (let [k (:kind e) msg (:msg e)]
-             (mk (fn [_] (if (= k :ignore)
-                           (throw (ex-info "raise-ignore" {:raise-ignore true}))
-                           (throw (ex-info msg {:sql-error msg :raise k}))))))
+    :raise (let [k (:kind e) msg (:msg e)
+                 _ (when (and (:outside-trigger e) (not *in-trigger*))
+                     (err "RAISE() may only be used within a trigger-program"))
+                 mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
+             (mk (fn [env] (if (= k :ignore)
+                             (throw (ex-info "raise-ignore" {:raise-ignore true}))
+                             (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
+                               (throw (ex-info msg {:sql-error msg :raise k})))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -621,6 +664,7 @@
           cs-like (let [x (get-in (:db ctx) [:pragmas "case_sensitive_like"])] (boolean (and x (not= x 0) (not= x false))))
           negate (:not e)]
       (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
+      (when (and glob? es) (err "wrong number of arguments to function GLOB()"))
       (mk (fn [env]
             (when (= :match (:o e)) (err "unable to use function MATCH in the requested context"))
             (let [s (fx env) pat (fp env) esc (when fe (fe env))]
@@ -672,7 +716,11 @@
         (:list e)
         (let [items (mapv #(cx ctx %) (:list e))
               aff (:aff x)
-              coll (or (:coll x) "BINARY")
+              ;; the parser turns "x IN (c)" with one constant c (no columns, subqueries or function calls)
+              ;; into "x = +c", so a COLLATE on c counts
+              one-const? (and (= 1 (count items)) (const-term? (:list e))
+                              (not (str/includes? (pr-str (:list e)) ":op :fn")))
+              coll (or (if one-const? (binary-coll x (first items)) (:coll x)) "BINARY")
               fs0 (mapv :f items)
               ;; a constant list of 3+ items becomes an ephemeral table: every item is evaluated (once)
               fs (if (and (>= (count fs0) 3) (every? const-term? (:list e)))
@@ -892,9 +940,13 @@
       (v/utf8->str (java.util.Arrays/copyOfRange b (int st) (int en))))))
 
 (defn- quote-impl [x]
+  (when (and (v/blob? x) (> (* 2 (alength ^bytes (v/blob-bytes x))) 1000000000))
+    (err "string or blob too big"))
   (cond (nil? x) "NULL"
         (instance? Long x) (str x)
-        (instance? Double x) (num/real->text (double x))
+        (instance? Double x) (let [d (double x)]
+                               (cond (Double/isInfinite d) (if (pos? d) "9.0e+999" "-9.0e+999")
+                                     :else (num/real->text d)))
         (string? x) (let [k (.indexOf ^String x (int 0)) x (if (neg? k) x (subs x 0 k))]
                       (str "'" (str/replace x "'" "''") "'"))
         :else (str "X'" (v/hex-upper (v/blob-bytes x)) "'")))
@@ -960,6 +1012,8 @@
                   (first (num/atof s))))))))
 
 (defn- hex-impl [x]
+  (when (and (or (string? x) (v/blob? x)) (> (* 2 (if (string? x) (.length ^String x) (alength ^bytes (v/blob-bytes x)))) 1000000000))
+    (err "string or blob too big"))
   (if (nil? x) "" (v/hex-upper (if (or (instance? Long x) (instance? Double x)) (v/str->utf8 (v/text-of x)) (v/bytes-of x)))))
 
 (defn- unicode-impl
@@ -987,7 +1041,7 @@
     nil
     (reduce (fn [best a]
               (let [c (v/sql-cmp a best coll)]
-                (if (if max? (> c 0) (< c 0)) a best)))
+                (if (if max? (> c 0) (<= c 0)) a best)))
             (first args) (rest args))))
 
 (defn- abs-impl [x]
@@ -1702,7 +1756,9 @@
                  (let [t (get-in (:db ctx) [:tables (schema/resolve-key (:db ctx) name "main")])] (when-not (:temp t) t)))
                (get-in (:db ctx) [:tables (if (:shadow (:db ctx)) (schema/resolve-key (:db ctx) name sch) (lc name))]))
          ls (lc sch)
-         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))) t)]
+         t (when (and t (or (nil? ls) (and (= ls "main") (not (:temp t))) (and (= ls "temp") (:temp t)))
+                      (not (and (= iv "main") (:temp t))))
+             t)]
      (or t (schema/master-table (:db ctx) (lc name) sch)))))
 
 (defn- view-of [ctx name]
@@ -1743,7 +1799,7 @@
             (vals (:rows tbl))))
     (vals (:rows tbl))))
 
-(declare index-order-rows check-indexed-by expr-dtype aff-mask)
+(declare index-order-rows index-keyed join-probe-scanner check-indexed-by expr-dtype aff-mask)
 
 (defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
   {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
@@ -1768,6 +1824,7 @@
           names)))
 
 (declare compile-cte)
+(def ^:dynamic *view-stack* #{})
 
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
@@ -1814,9 +1871,12 @@
                   (err (str "no such index: " (:indexed-by item)))))
               {:alias (lc (or (:alias item) name)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
-               :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
+               :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+        view (let [_ (when (some #(identical? % view) (:view-chain ctx))
+                       (err (str "view " (:name view) " is circularly defined")))
+                   sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                              :view-chain (conj (or (:view-chain ctx) []) view)
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
                                        (:select view))
                    _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
@@ -1837,14 +1897,30 @@
     (let [items (:nested item)]
       (if (and (= 1 (count items)) (nil? (:alias item)))
         (make-source ctx (merge (first items) (select-keys item [:join :on :using])))
-        (let [sel {:body {:type :core :cols [{:star true}] :from items}}
+        (let [sel {:body {:type :core :cols [{:star true}] :from items :nested-from true}}
               sub (compile-select ctx sel)
               slot (new-slot! ctx)
-              cols (dedup-names (:names sub))
+              uterms (or (:using-terms sub) (repeat false))
+              [cols noexpand]
+              (let [seen (java.util.HashMap.)]
+                (loop [k 0 names (seq (:names sub)) us (seq uterms) out [] nx (set (keep-indexed #(when %2 %1) (:nx-terms sub)))]
+                  (if (empty? names)
+                    [out nx]
+                    (let [^String n (first names) u (first us)
+                          [nm nx] (loop [nm n cnt 1 nx nx]
+                                    (if (.containsKey seen (lc nm))
+                                      (let [nx (if (.get seen (lc nm)) (conj nx k) nx)
+                                            base (let [j (loop [j (dec (count nm))] (if (and (> j 0) (Character/isDigit (.charAt nm j))) (recur (dec j)) j))]
+                                                   (if (and (pos? (count nm)) (= \: (.charAt nm (int j)))) (subs nm 0 j) nm))]
+                                        (recur (str base ":" cnt) (inc cnt) nx))
+                                      (do (.put seen (lc nm) (boolean u)) [nm nx])))]
+                      (recur (inc k) (next names) (next us) (conj out nm) nx)))))
+              enames (mapv (fn [n u] [(lc n) (boolean u)]) (:names sub) uterms)
               ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
               quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
                             {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
           (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals :orig-cols (vec (:names sub))
+                 :enames enames :noexpand noexpand
                  :direct-quals (set (for [qs (:star-quals sub) [a _ d] qs :when d] a))))))
     (:subq item)
     (let [sub (compile-select (assoc ctx :as-source true) (:subq item))
@@ -1880,7 +1956,7 @@
 
 (defn- expand-star
   "Result column list with * expanded: [{:e ast-or-nil :src-col [slot idx] :name ...}]"
-  [ctx sources cols]
+  [ctx sources cols nested-from]
   (vec
    (mapcat
     (fn [rc]
@@ -1888,27 +1964,44 @@
         (and (:star rc) (nil? (:table rc)))
         (if (empty? sources)
           (err "no tables specified")
-          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (and a (> (count ss) 1))
+          (if-let [[dup col] (first (for [[[a] ss] (group-by (fn [s] [(:alias s) (let [t (str (:tname s))] (when (str/includes? t ".") (lc (subs t 0 (str/index-of t ".")))))]) sources)
+                                          :when (and a (> (count ss) 1))
                                           :let [d (second ss)
                                                 c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
                                           :when c]
                                       [d c]))]
             (err (str "ambiguous column name: main." (if (= (lc (:tname dup)) (:alias dup)) (:tname dup) (:alias dup)) "." col))
-          (for [s sources, i (range (:ncols s))
-                :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
-            {:star-col [s i] :name (nth (:cols s) i) :unq true})))
+          (if nested-from
+            ;; SF_NestedFrom: the USING columns of the next join come first, then every column
+            (apply concat
+                   (for [k (range (count sources)) :let [s (nth sources k) nx (get sources (inc k))]]
+                     (concat
+                      (for [u (:using-cols nx)] {:e {:op :col :name u} :using-term true})
+                      (for [i (range (:ncols s))
+                            :when (or (not (contains? (:hidden s) (nth (:lcols s) i)))
+                                      (some #(= (lc %) (nth (:lcols s) i)) (:using-cols s)))]
+                        {:star-col [s i] :name (nth (:cols s) i) :unq true :nx (contains? (:noexpand s) i)}))))
+            (for [s sources, i (range (:ncols s))
+                  :when (and (not (contains? (:hidden s) (nth (:lcols s) i)))
+                             (not (contains? (:noexpand s) i))
+                             (or (not (:enames s)) (not= 1 (count sources))
+                                 (let [h (ename-hits s (nth (:lcols s) i))]
+                                   (cond (> (count h) 1) (err (str "ambiguous column name: " (nth (:cols s) i)))
+                                         (empty? h) (err (str "no such column: " (nth (:cols s) i)))
+                                         :else true))))]
+              {:star-col [s i] :name (nth (:cols s) i) :unq true}))))
         (:star rc)
         (let [lt (lc (:table rc))
               _ (when (> (count (filter #(= (:alias %) lt) sources)) 1)
                   (let [d (first (filter #(= (:alias %) lt) sources))]
                     (err (str "ambiguous column name: main." (:tname d) "." (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))))))
-              s (first (filter #(= (:alias %) lt) sources))
+              s (first (filter #(and (= (:alias %) lt) (not (:enames %))) sources))
               ns (when-not s (first (filter #(get-in % [:quals lt]) sources)))]
           (when-not (or s ns) (err (str "no such table: " (:table rc))))
           (if s
             (for [i (range (:ncols s)) :when (not (and (:tvf s) (contains? (:hidden s) (nth (:lcols s) i))))] {:star-col [s i] :name (nth (:cols s) i)})
             ;; t.* of a table inside a parenthesized join
-            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (if ((:direct-quals ns) lt) (:orig-cols ns) (:cols ns)) i)})))
+            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (:cols ns) i)})))
         :else [rc]))
     cols)))
 
@@ -1916,8 +2009,14 @@
   (cond
     (:alias rc) (:alias rc)
     (:star-col rc) (:name rc)
-    (= :col (:op (:e rc)))
-    (let [e (:e rc)]
+    (and (= :col (:op (:e rc)))
+         (let [pr (:pragmas (:db ctx))]
+           (and (not= 0 (get pr "short_column_names" 1)) (= 0 (get pr "full_column_names" 0)) true)
+           ;; short names on (default) or full names on: the column's own name; short off and full off: the text
+           (or (not= 0 (get pr "short_column_names" 1)) (= 1 (get pr "full_column_names" 0)))))
+    (let [e (:e rc)
+          full (= 1 (get-in ctx [:db :pragmas "full_column_names"]))
+          base
       (or (when (rowid-name? (lc (:name e)))
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) t (:table s)]
@@ -1927,10 +2026,16 @@
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) lt (lc (:table e))]
-              (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
+              (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
-          (:name e)))
-    :else (text-of-node ctx (:e rc))))
+          (:name e))]
+      (if full
+        (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+              s (:src r)
+              tn (or (:tname s) (:alias s))]
+          (if tn (str tn "." base) base))
+        base))
+    :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
   (and (= :lit (:op e)) (= :int (:kind e))
@@ -1982,7 +2087,7 @@
 
 (defn- eval-limit [ctx e what]
   (when e
-    (let [c (cx (assoc ctx :scope nil) e)
+    (let [c (cx (assoc ctx :scope nil :aggs nil :where-ctx true) e)
           x ((:f c) (object-array (+ 2 (long @(:slots ctx)))))
           x (if (string? x) (v/apply-numeric-text x true) x)
           x (if (instance? Double x) (v/integer-affinity (double x)) x)]
@@ -2083,7 +2188,7 @@
                                    (or (nil? (:table e)) (= (lc (:table e)) (:alias src))))
                           (let [i (.indexOf ^java.util.List (:lcols src) (lc (:name e)))]
                             (cond (>= i 0) (if (= i (:ipk tbl)) ncols i)
-                                  (#{"rowid" "oid" "_rowid_"} (lc (:name e))) ncols
+                                  (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))) ncols
                                   :else nil))))
         refs-me? (fn refs [e] (cond (map? e) (or (some? (col-idx e)) (some refs (vals e)))
                                     (sequential? e) (some refs e)
@@ -2199,7 +2304,14 @@
                           (= want (set (map (fn [ic] [(:c ic) (if (= (:c ic) (:ncols src)) (or (some (fn [[c coll]] (when (= (norm-col src c) (:c ic)) (or coll "BINARY"))) terms) "BINARY") (:coll ic))]) pre))))]
            idx)))
 
+(declare make-scanner*)
 (defn- make-scanner
+  "make-scanner* with the cooperative time-budget check (sqlclj.guard) at each scan start."
+  [ctx src where-terms]
+  (let [f (make-scanner* ctx src where-terms)]
+    (fn [env] (g/check!) (f env))))
+
+(defn- make-scanner*
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
@@ -2245,13 +2357,16 @@
               (fn [_] (index-order-rows (:db ctx) plan)))
             (if (:virtual (:table src))
               (let [t (:table src)] (fn [_] (table-rows t)))
-              (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
+              ;; a scan that a WHERE equality with an outer value (a correlated subquery) can narrow by an index
+              (or (when (and (nil? ib) (seq where-terms))
+                    (join-probe-scanner ctx [src] nil where-terms 0))
+                  (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))))
     (:sub src)
     (let [sub (:sub src)]
       (if (or (:correlated sub) (:lazy sub))
-        (fn [env] (run-select-rows sub env))
+        (fn [env] (map v/strip-row (run-select-rows sub env)))
         (let [cache (volatile! nil)]
-          (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))))
+          (fn [env] (or @cache (vreset! cache (mapv v/strip-row (run-select-rows sub env))))))))))
 
 ;; ---------------------------------------------------------------------- planner-driven scans
 
@@ -2538,7 +2653,7 @@
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
                                   (filter #(prev-cols (lc %)) (:cols s)))
                                 :else nil)
-                    s (if using (update s :hidden into (map lc using)) s)
+                    s (if using (assoc (update s :hidden into (map lc using)) :using-cols (vec using)) s)
                     srcs (assoc srcs i s)]
                 (recur (inc i) srcs (conj conds using)))))
           any-rj-join (boolean (some #{:right :full :natural-right :natural-full} (map :join from)))
@@ -2570,7 +2685,7 @@
           left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
           right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
           any-rj (some true? right-join)
-          rcols (expand-star ctx2 sources (:cols core))
+          rcols (expand-star ctx2 sources (:cols core) (:nested-from core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
@@ -2596,6 +2711,7 @@
                       rcols)
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
+          ctx2 (if (seq alias-map) (assoc ctx2 :outer-aliases (cons {:map alias-map :ctx ctx2} (:outer-aliases ctx2))) ctx2)
           subst (fn subst [e]
                   (cond
                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
@@ -2620,7 +2736,7 @@
                                            (let [ce (:e t) ln (lc (:name ce))
                                                  i (.indexOf ^java.util.List (:lcols s0) ln)]
                                              (and (or (nil? (:table ce)) (= (lc (:table ce)) (:alias s0)))
-                                                  (if (>= i 0) (= i (:ipk (:table s0))) (#{"rowid" "oid" "_rowid_"} ln)))))
+                                                  (if (>= i 0) (= i (:ipk (:table s0))) (and (not (:without-rowid (:table s0))) (#{"rowid" "oid" "_rowid_"} ln))))))
                                 :let [sub (compile-select (assoc ctx2 :aggs nil) (:select t))]
                                 :when (not (:correlated sub))]
                             sub))))
@@ -2661,18 +2777,18 @@
                               (fn [env] (if (every? (fn [pf] (let [r (pf env)] (and (not (nil? r)) (v/bool-value r)))) preds) 1 0)))
                             :else nil)))))
           nagg-before (count @aggs)
-          group-c (binding [*coll-phase* :group] (mapv (fn [g]
+          group-c (binding [*coll-phase* :group] (vec (map-indexed (fn [gi g]
                           (let [g (subst g)]
                             (when (neg-int-lit? g)
-                              (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
+                              (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
                               (let [k (long (lit-value g))]
                                 (if (or (< k 1) (> k (count rcols)))
-                                  (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols)))
+                                  (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols)))
                                   (nth rcomp (dec k))))
                               (let [c (cx (assoc ctx2 :aggs aggs :agg-slot agg-slot :no-agg-msg true) g)]
                                 c))))
-                        (:group core)))
+                        (:group core))))
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
@@ -2760,13 +2876,22 @@
                      (let [tname (lc (:tname (first sources)))]
                        [(fn [_] (map val (rseq (:rows (get-in (:db ctx2) [:tables tname])))))])
                      :else
-                     (mapv #(make-scanner ctx2
-                                          (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
-                                            (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2)))
-                                                     :order-plan order-plan)
-                                            %)
-                                          (when (:where core) (split-and (:where core))))
-                           sources))
+                     (vec (map-indexed
+                           (fn [i %]
+                             ;; a join's inner source reads only the rows its equalities can match (see join-probe-scanner)
+                             (or (when (and (pos? i) (not (nth right-join i)))
+                                   (join-probe-scanner ctx2 sources
+                                                       (when-let [on (:on (nth from i))] (split-and on))
+                                                       (when (and (not any-rj) (not (nth left-join i)) (:where core))
+                                                         (split-and (:where core)))
+                                                       i))
+                                 (make-scanner ctx2
+                                               (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
+                                                 (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2)))
+                                                          :order-plan order-plan)
+                                                 %)
+                                               (when (:where core) (split-and (:where core))))))
+                           sources)))
           ;; SQLITE_ECEL_OMITREF: a result column the ORDER BY refers to is read back from the sort key
           rfs (reduce (fn [v o] (if (and (:wcopy o) (not (:distinct core))) (assoc v (:ri o) (:f o)) v))
                       (mapv :f rcomp) order-c)
@@ -2956,6 +3081,8 @@
        :presorted (boolean rowid-order)
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
        :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
+       :using-terms (mapv (comp boolean :using-term) rcols)
+       :nx-terms (mapv (comp boolean :nx) rcols)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
                                     (cons [(:alias s) (nth (:lcols s) i) true]
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
@@ -3133,13 +3260,15 @@
             cols (cte-check-cols cte (:names setup))
             cell (volatile! nil)
             rctx (assoc ctx
-                        :cte-err (assoc (:cte-err ctx) lname "recursive reference in a subquery: ")
+                        :cte-err (assoc (:cte-err ctx) lname "multiple recursive references: ")
                         :rec-cells (assoc (:rec-cells ctx) lname {:cell cell :cols cols :affs (:affs setup) :colls (:colls setup)}))
             recs (vec (for [[_ t] (subvec terms rec-idx)]
                         (let [t (update t :from (fn [items] (mapv #(if (and (:table %) (nil? (:schema %)) (= lname (lc (:table %))))
                                                                       (assoc % :rec-ref true) %) items)))]
                           (when (or (seq (:group t)) (core-has-agg? t))
                             (err "recursive aggregate queries not supported"))
+                          (when (has-window? (mapv :e (:cols t)))
+                            (err "cannot use window functions in recursive queries"))
                           (let [r (compile-select rctx {:body t})]
                             (when (not= (count (:names r)) (count cols))
                               (err (str "SELECTs to the left and right of "
@@ -3261,7 +3390,7 @@
                       (apply-limit rows limit offset)))})
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
-        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c)
+        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c) :using-terms (:using-terms c) :nx-terms (:nx-terms c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp
@@ -3292,17 +3421,140 @@
 (defn index-key [tbl idx row]
   (mapv (fn [ic] (if (:col ic) (nth row (:col ic)) ((:kf ic) row))) (:cols idx)))
 
+(defonce ^:private index-cache (atom []))
+
+(defn index-keyed
+  "The index's entries [key row] (key: the index columns then the rowid) in index order, as an array. Built once
+  per value of the table and the index: the database is persistent, so an identical table value has the same rows."
+  [db idx]
+  (let [tbl (get-in db [:tables (:table idx)])
+        hit (some (fn [[t i k]] (when (and (identical? t tbl) (identical? i idx)) k)) @index-cache)]
+    (or hit
+        (let [rows (table-rows tbl)
+              rows (if (:wf idx) (filter (:wf idx) rows) rows)
+              cmps (mapv (fn [ic] [(:coll ic) (:desc ic) nil]) (:cols idx))
+              cmp (compare-keys-fn (conj cmps ["BINARY" false nil]))
+              keyed (to-array (map (fn [r] [(conj (index-key tbl idx r) (peek r)) r]) rows))]
+          (java.util.Arrays/sort keyed (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
+          (swap! index-cache (fn [c] (conj (if (>= (count c) 8) (subvec c 1) c) [tbl idx keyed])))
+          keyed))))
+
 (defn index-order-rows
   "Rows of the index's table that are in the index, in index order."
   [db idx]
-  (let [tbl (get-in db [:tables (:table idx)])
-        rows (table-rows tbl)
-        rows (if (:wf idx) (filter (:wf idx) rows) rows)
-        cmps (mapv (fn [ic] [(:coll ic) (:desc ic) nil]) (:cols idx))
-        cmp (compare-keys-fn (conj cmps ["BINARY" false nil]))
-        keyed (to-array (map (fn [r] [(conj (index-key tbl idx r) (peek r)) r]) rows))]
-    (java.util.Arrays/sort keyed (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
-    (map second keyed)))
+  (map second (index-keyed db idx)))
+
+(defn- index-probe-rows
+  "The rows whose first index column equals v under the index's collation, in rowid order (the index's
+  entries with that key are contiguous, so a binary search finds them)."
+  [db idx v]
+  (let [^objects keyed (index-keyed db idx)
+        ic (first (:cols idx))
+        cmp (compare-keys-fn [[(or (:coll ic) "BINARY") (boolean (:desc ic)) nil]])
+        probe [v]
+        n (alength keyed)
+        lb (loop [lo 0 hi n]
+             (if (< lo hi)
+               (let [mid (quot (+ lo hi) 2)]
+                 (if (neg? (.compare ^Comparator cmp (first (aget keyed mid)) probe))
+                   (recur (inc mid) hi)
+                   (recur lo mid)))
+               lo))]
+    (sort-by peek (loop [i lb acc []]
+                    (if (and (< i n) (zero? (.compare ^Comparator cmp (first (aget keyed i)) probe)))
+                      (recur (inc i) (conj acc (second (aget keyed i))))
+                      acc)))))
+
+(defn- outer-only-expr?
+  "True if every column of expression e is a constant of the enclosing scopes or a column of the sources before
+  slot-set, and e has no subquery."
+  [ctx slot-set e]
+  (let [ok (volatile! true)]
+    (letfn [(walk [x]
+              (cond (not @ok) nil
+                    (map? x)
+                    (cond (or (contains? x :select) (#{:subq :exists} (:op x))) (vreset! ok false)
+                          (= :col (:op x))
+                          (let [r (try (resolve-column (assoc ctx :refs nil) (:table x) (:name x) (:dq x))
+                                       (catch Exception _ nil))]
+                            (cond (nil? r) (vreset! ok false)
+                                  (contains? r :const) nil
+                                  (or (pos? (long (:depth r))) (contains? slot-set (:slot r))) nil
+                                  :else (vreset! ok false)))
+                          :else (doseq [v (vals x)] (walk v)))
+                    (sequential? x) (doseq [v x] (walk v))
+                    :else nil))]
+      (walk e))
+    @ok))
+
+(defn join-probe-scanner
+  "For join source i (its rows are read once per row of the sources before it): when an ON or WHERE equality
+  between a column of this table and an expression of the earlier sources can use an index or the rowid, a
+  scanner that reads only the rows that can match (in rowid order, as a scan would give them). The ON condition is
+  still evaluated on them, so the result is the same as a full scan; any value whose comparison could depend on
+  type affinity falls back to the full scan. nil when no equality can be used."
+  [ctx sources on-conds where-conds i]
+  (let [src (nth sources i)
+        tbl (:table src)
+        db (:db ctx)]
+    (when (and tbl (not (:virtual tbl)) (not (:without-rowid tbl)) (nil? (:indexed-by src))
+               (not (:tvf src)) (not (:sub src)) (:table src))
+      (let [ncols (long (:ncols src))
+            ipk (:ipk tbl)
+            tname (lc (:tname src))
+            earlier (set (map :slot (take i sources)))
+            own (fn [e]
+                  (when (= :col (:op e))
+                    (let [r (try (resolve-column (assoc ctx :refs nil) (:table e) (:name e) (:dq e))
+                                 (catch Exception _ nil))]
+                      (when (and r (not (contains? r :const)) (= (:slot r) (:slot src)) (zero? (long (:depth r))))
+                        (let [idx (long (:idx r))]
+                          [(if (or (= idx ncols) (= idx ipk)) ncols idx) r])))))
+            cands (for [t (concat on-conds where-conds)
+                        :when (and (= :bin (:op t)) (= :eq (:o t)))
+                        [a b] [[(:l t) (:r t)] [(:r t) (:l t)]]
+                        :let [oa (own a)]
+                        :when (and oa (not (own b)) (outer-only-expr? ctx earlier b))
+                        :let [[c r] oa
+                              cb (try (cx ctx b) (catch Exception _ nil))]
+                        :when (and cb (:f cb))
+                        :when (= (or (:coll r) "BINARY") (or (:coll cb) "BINARY"))
+                        :let [coll (or (:coll r) "BINARY")
+                              aff (when (< c ncols) (nth (:affs src) c))
+                              idx (if (= c ncols)
+                                    :rowid
+                                    (or (first (for [idx (plain-indexes db src)
+                                                     :when (and (= c (norm-col src (:col (first (:cols idx)))))
+                                                                (every? :col (:cols idx))
+                                                                (= coll (or (:coll (first (:cols idx))) "BINARY")))]
+                                                 idx))
+                                        ;; no index: an automatic one (built once per table value, as SQLite's own)
+                                        (when (not= c ipk)
+                                          {:table tname :wf nil :cols [{:col c :coll coll :desc false}]})))]
+                        :when idx]
+                    {:c c :idx idx :f (:f cb) :aff aff :oaff (:aff cb)})
+            cand (first cands)]
+        (when cand
+          (let [{:keys [idx f aff oaff]} cand
+                num? #{:integer :numeric :real}
+                none? #{nil :blob}
+                full (fn [_] (table-rows (get-in db [:tables tname])))]
+            (if (= idx :rowid)
+              (fn [env]
+                (let [v (f env)]
+                  (cond (nil? v) []
+                        (instance? Long v) (if-let [r (get (:rows (get-in db [:tables tname])) v)] [r] [])
+                        :else (full env))))
+              (fn [env]
+                (let [v (f env)]
+                  (cond (nil? v) []
+                        (and (num? aff) (number? v) (or (none? oaff) (num? oaff)))
+                        (index-probe-rows db idx v)
+                        (and (= :text aff) (string? v) (or (none? oaff) (= :text oaff)))
+                        (index-probe-rows db idx v)
+                        (and (none? aff) (none? oaff) (or (number? v) (string? v)))
+                        (index-probe-rows db idx v)
+                        :else (full env)))))))))))
 
 (defn- expr-equal? [a b]
   (let [strip (fn strip [e] (cond (map? e) (into {} (for [[k x] e :when (not (#{:ps :pe :paren} k))] [k (strip x)]))
@@ -3325,7 +3577,7 @@
                            (let [ln (lc (:name x))
                                  i (.indexOf ^java.util.List (:lcols src) ln)]
                              (or (and (>= i 0) (or (= i (:ipk tbl)) (:notnull (nth (:cols tbl) i))))
-                                 (and (neg? i) (#{"rowid" "oid" "_rowid_"} ln)))))))
+                                 (and (neg? i) (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} ln)))))))
         terms (remove always-true? (or where-terms []))
         strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table)
                                  (map? e) (into {} (for [[k x] e] [k (sq x)]))

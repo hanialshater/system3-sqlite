@@ -13,6 +13,18 @@
   (hashCode [this] (java.util.Arrays/hashCode b))
   (toString [this] (str "X'" (apply str (map #(format "%02X" (bit-and (int %) 0xff)) b)) "'")))
 
+(def subtypes
+  "identity registry of String instances carrying the JSON subtype (a subtype is lost when a value is stored)"
+  (java.util.IdentityHashMap.))
+(defn strip-subtype
+  "a fresh String instance if x carries a JSON subtype (so the subtype is dropped), else x"
+  [x]
+  (if (and (string? x) (pos? (.size subtypes)) (.containsKey subtypes x)) (String. ^String x) x))
+(defn strip-row [row]
+  (if (and (pos? (.size subtypes)) (some #(and (string? %) (.containsKey subtypes %)) row))
+    (mapv strip-subtype row)
+    row))
+
 (defn blob? [v] (instance? Blob v))
 (defn blob-bytes ^bytes [^Blob v] (.-b v))
 
@@ -414,8 +426,14 @@
             (= op :shl) (bit-shift-left x y)
             :else (bit-shift-right x y)))))))
 
+(defn- approx-len ^long [x]
+  (cond (string? x) (.length ^String x) (blob? x) (alength ^bytes (blob-bytes x)) :else 24))
+
 (defn concat-values [a b]
-  (if (or (nil? a) (nil? b)) nil (str (text-of a) (text-of b))))
+  (if (or (nil? a) (nil? b))
+    nil
+    (do (when (> (+ (approx-len a) (approx-len b)) 1000000000) (err "string or blob too big"))
+        (str (text-of a) (text-of b)))))
 
 (defn type-name [v]
   (cond (nil? v) "null" (instance? Long v) "integer" (instance? Double v) "real" (string? v) "text" :else "blob"))
@@ -575,10 +593,33 @@
                   (and (= c match-one) (not= pi escaped) (not= c2 0)) (recur pi (inc si) escaped)
                   :else 1)))))))))
 
+(defn- retarget-escape
+  "SQLite switches off the % or _ wildcard when it is the ESCAPE character: rewrite the pattern
+  with a private escape character so that the compare sees ordinary wildcards."
+  ^ints [^ints pat esc]
+  (let [E 0x10FFFF
+        out (java.util.ArrayList.)
+        n (alength pat)]
+    (loop [i 0]
+      (when (and (< i n) (not (zero? (aget pat i))))
+        (let [c (aget pat i)]
+          (cond (= c esc) (do (.add out E)
+                              (if (and (< (inc i) n) (not (zero? (aget pat (inc i)))))
+                                (do (.add out (aget pat (inc i))) (recur (+ i 2)))
+                                nil))
+                (= c E) (do (.add out E) (.add out E) (recur (inc i)))
+                :else (do (.add out c) (recur (inc i)))))))
+    (let [a (int-array (inc (.size out)))]
+      (dotimes [k (.size out)] (aset a k (int (.get out k))))
+      a)))
+
 (defn like-match
   ([pattern s esc] (like-match pattern s esc false))
   ([^String pattern ^String s esc cs]
-   (zero? (long (pattern-compare (cps pattern) 0 (cps s) 0 false (not cs) (if esc (long esc) 0))))))
+   (let [pat (cps pattern)]
+     (if (and esc (or (= (long esc) 37) (= (long esc) 95)))
+       (zero? (long (pattern-compare (retarget-escape pat (int esc)) 0 (cps s) 0 false (not cs) 0x10FFFF)))
+       (zero? (long (pattern-compare pat 0 (cps s) 0 false (not cs) (if esc (long esc) 0))))))))
 
 (defn glob-match [^String pattern ^String s]
   (zero? (long (pattern-compare (cps pattern) 0 (cps s) 0 true false 91))))
