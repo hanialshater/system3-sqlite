@@ -189,9 +189,9 @@
                   :else [db st])
         name (:name st) lname (lc name)]
     (cond
+      (and (str/starts-with? lname "sqlite_") (not (:internal st)) (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
-      (and (str/starts-with? lname "sqlite_") (not (:internal st)) (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
@@ -1352,8 +1352,11 @@
                                    idxs (table-indexes db tn)
                                    idxs (if only-idx (filter #(= (lc (:name %)) only-idx) idxs) idxs)
                                    n (count (:rows tbl))]
-                             r (if (and (empty? idxs) (nil? only-idx))
-                                 (when (pos? n) [[(:name tbl) nil (str n)]])
+                             r (if (and (nil? only-idx) (every? :where idxs))
+                                 ;; no whole-table index row: the table count gets its own (idx NULL) row after the indexes
+                                 (concat (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
+                                           [(:name tbl) (:name idx) stat])
+                                         (when (pos? n) [[(:name tbl) nil (str n)]]))
                                  (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
                                    [(:name tbl) (if (and (:without-rowid tbl) (:pk-auto idx)) (:name tbl) (:name idx)) stat]))]
                          r))
@@ -2133,6 +2136,13 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (or (contains? sch/master-names (lc (:table st))) (str/starts-with? (lc (:table st)) "sqlite_")))
     (err (str "table " (:table st) " may not be indexed")))
+  (when (and (= :drop (:kind st)) (= :table (:what st))
+             (let [ln (lc (:name st))]
+               (and (str/starts-with? ln "sqlite_") (not (str/starts-with? ln "sqlite_stat"))
+                    (get-in db [:tables ln]))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-view (:kind st)) (str/starts-with? (lc (:name st)) "sqlite_"))
+    (err (str "object name reserved for internal use: " (:name st))))
   ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
   ;; and its table must be there too
   (when (and (= :create-trigger (:kind st)) (not (:temp st)) (:table-schema st))
