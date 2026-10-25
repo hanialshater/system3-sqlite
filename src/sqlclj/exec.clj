@@ -578,16 +578,25 @@
   [db changes tkey tbl f]
   (try (f)
        (catch clojure.lang.ExceptionInfo ex
-         (if (or (= :fail (:conflict (ex-data ex))) (and (no-journal? db) (:sql-error (ex-data ex))))
+         (cond
+           (and (:trig-db (ex-data ex)) (not (:partial-db (ex-data ex))))
+           (let [d (:trig-db (ex-data ex))]
+             (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update d :tables dissoc tkey) d)
+                                                                                    :changes (if (:trig-after (ex-data ex)) (inc changes) changes))))))
+           (or (= :fail (:conflict (ex-data ex))) (and (no-journal? db) (:sql-error (ex-data ex))))
            (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update db :tables dissoc tkey) db)
                                                                      :changes (if (= :fail (:conflict (ex-data ex))) changes 0)))))
-           (throw ex)))))
+           :else (throw ex)))))
 
 (defn- try-fire
   "Runs triggers for a row event; ::ignore when a program raised IGNORE."
   [db trigs tbl old new]
   (try (trg/fire db trigs tbl old new)
-       (catch clojure.lang.ExceptionInfo ex (if (trg/ignore? ex) ::ignore (throw ex)))))
+       (catch clojure.lang.ExceptionInfo ex
+         (cond (trg/ignore? ex) ::ignore
+               (and (= :fail (:raise (ex-data ex))) (not (:trig-db (ex-data ex))))
+               (throw (ex-info (ex-message ex) (assoc (ex-data ex) :trig-db db :trig-after (= :after (:timing (first trigs))))))
+               :else (throw ex)))))
 
 (defn- dml-target
   "[tkey tbl] of the table a DML statement targets; a view becomes a temporary table of its rows
@@ -1047,6 +1056,20 @@
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
       (str/starts-with? ln "sqlite_") (err (str "object name reserved for internal use: " name))
       (some :returning (:body st)) (err "cannot use RETURNING in a trigger")
+      (and (not (:temp st)) (not= "temp" (some-> (:schema st) lc))
+           (let [own (or (some-> (:schema st) lc) (:db st) "main")
+                 refs (concat (when (:table-schema st) [(lc (:table-schema st))])
+                              (->> (tree-seq coll? seq [(:when st) (:body st)])
+                                   (filter #(and (map? %) (contains? % :indexed-by) (:table %) (:schema %)))
+                                   (map #(lc (:schema %)))))]
+             (first (remove #{own} refs))))
+      (err (str "trigger " name " cannot reference objects in database "
+                (let [own (or (some-> (:schema st) lc) (:db st) "main")
+                      refs (concat (when (:table-schema st) [(lc (:table-schema st))])
+                                   (->> (tree-seq coll? seq [(:when st) (:body st)])
+                                        (filter #(and (map? %) (contains? % :indexed-by) (:table %) (:schema %)))
+                                        (map #(lc (:schema %)))))]
+                  (first (remove #{own} refs)))))
       (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (:temp st) (nil? (:table-schema st))) "" (str (or (:table-schema st) "main") "."))
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
@@ -1073,6 +1096,7 @@
     (cond
       (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " name " already exists")))
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
+      (and (nil? tbl) (get-in db [:views (lc (:table st))])) (err "views may not be indexed")
       (nil? tbl) (err (str "no such table: main." (:table st)))
       (str/starts-with? lname "sqlite_") (err (str "object name reserved for internal use: " name))
       :else
@@ -1894,6 +1918,11 @@
         :else (emit-line out (str "changes: " (:changes db2))))
       (update db2 :total-changes (fnil + 0) (long (or (:changes db2) 0))))
     (let [db2 (case (:kind st)
+                :create-vtab (let [ln (lc (:name st))]
+                               (cond (or (get-in db [:tables ln]) (get-in db [:views ln]))
+                                     (if (:if-not-exists st) db (err (str "table " (:name st) " already exists")))
+                                     (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
+                                     :else (err (str "no such module: " (:module st)))))
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)

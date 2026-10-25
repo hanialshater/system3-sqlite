@@ -307,12 +307,14 @@
         (let [k (str "locking_mode." (or sc "main"))
               cur (pget db k (if (= sc "temp") "exclusive" "normal"))
               u (some-> v lc)
-              nv (cond (= u "exclusive") "exclusive" (= u "normal") (if (= cur "exclusive") "exclusive" "normal") :else cur)
-              db (if (and v (nil? sc))
-                   (reduce (fn [d nm] (if (and (= nv "exclusive") (not= nm "temp")) (pset d (str "locking_mode." nm) nv) d))
-                           db (cons "main" (map first (:attached db))))
-                   (pset db k nv))]
-          (one (if (and v (nil? sc)) (pset db "locking_mode.temp" "exclusive") db) "locking_mode" nv))
+              nv (if (#{"normal" "exclusive"} u) u cur)]
+          (cond
+            sc (one db "locking_mode" "exclusive")
+            (nil? v) (one db "locking_mode" cur)
+            (#{"normal" "exclusive"} u) (one (pset db "locking_mode" nv) "locking_mode" "exclusive")
+            :else (one db "locking_mode" cur)))
+        "module_list" {:db db :names ["name"] :rows []}
+        "temp_store_directory" {:db db :names ["temp_store_directory"] :rows []}
         "synchronous"
         (let [k (skey n sc)]
           (if (nil? v) (one db n (long (pget db k (if (= sc "temp") 0 2))))

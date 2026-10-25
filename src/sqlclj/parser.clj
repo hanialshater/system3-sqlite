@@ -1022,6 +1022,22 @@
                   unique (accept-kw p "UNIQUE")]
               (cond
                 (and (not unique) (accept-kw p "TABLE")) (parse-create-table p temp)
+                (and (not unique) (not temp) (at-kw? p "VIRTUAL"))
+                (do (advance! p) (expect-kw p "TABLE")
+                    (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+                          n1 (parse-nm p)
+                          [sch name] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+                          _ (expect-kw p "USING")
+                          mod (parse-nm p)
+                          _ (when (at-op? p "(")
+                              (advance! p)
+                              (loop [d 1]
+                                (let [t (advance! p)]
+                                  (cond (= :eof (:t t)) (syntax-error p t)
+                                        (and (= :op (:t t)) (= "(" (:v t))) (recur (inc d))
+                                        (and (= :op (:t t)) (= ")" (:v t))) (when (> d 1) (recur (dec d)))
+                                        :else (recur d)))))]
+                      {:kind :create-vtab :name name :schema sch :module mod :if-not-exists ine}))
                 (accept-kw p "INDEX")
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
