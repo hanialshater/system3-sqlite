@@ -1770,7 +1770,7 @@
             (vals (:rows tbl))))
     (vals (:rows tbl))))
 
-(declare index-order-rows check-indexed-by expr-dtype aff-mask)
+(declare index-order-rows index-keyed join-probe-scanner check-indexed-by expr-dtype aff-mask)
 
 (defonce ^{:doc "Table-valued function resolvers: each (fn [lc-name db]) -> nil or
   {:cols [visible column names] :hidden [hidden argument column names] :affs [optional]
@@ -2524,13 +2524,22 @@
           scanners (if (= rowid-order :desc)
                      (let [tname (lc (:tname (first sources)))]
                        [(fn [_] (map val (rseq (:rows (get-in (:db ctx2) [:tables tname])))))])
-                     (mapv #(make-scanner ctx2
-                                          (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
-                                            (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2)))
-                                                     :order-plan order-plan)
-                                            %)
-                                          (when (:where core) (split-and (:where core))))
-                           sources))
+                     (vec (map-indexed
+                           (fn [i %]
+                             ;; a join's inner source reads only the rows its equalities can match (see join-probe-scanner)
+                             (or (when (and (pos? i) (not (nth right-join i)))
+                                   (join-probe-scanner ctx2 sources
+                                                       (when-let [on (:on (nth from i))] (split-and on))
+                                                       (when (and (not any-rj) (not (nth left-join i)) (:where core))
+                                                         (split-and (:where core)))
+                                                       i))
+                                 (make-scanner ctx2
+                                               (if (and (= 1 nsrc) (not rowid-order) (:refs ctx2) (:table %))
+                                                 (assoc % :scan-refs (set (keep (fn [[sl i]] (when (= sl (:slot %)) i)) @(:refs ctx2)))
+                                                          :order-plan order-plan)
+                                                 %)
+                                               (when (:where core) (split-and (:where core))))))
+                           sources)))
           ;; SQLITE_ECEL_OMITREF: a result column the ORDER BY refers to is read back from the sort key
           rfs (reduce (fn [v o] (if (and (:wcopy o) (not (:distinct core))) (assoc v (:ri o) (:f o)) v))
                       (mapv :f rcomp) order-c)
@@ -3001,17 +3010,137 @@
 (defn index-key [tbl idx row]
   (mapv (fn [ic] (if (:col ic) (nth row (:col ic)) ((:kf ic) row))) (:cols idx)))
 
+(defonce ^:private index-cache (atom []))
+
+(defn index-keyed
+  "The index's entries [key row] (key: the index columns then the rowid) in index order, as an array. Built once
+  per value of the table and the index: the database is persistent, so an identical table value has the same rows."
+  [db idx]
+  (let [tbl (get-in db [:tables (:table idx)])
+        hit (some (fn [[t i k]] (when (and (identical? t tbl) (identical? i idx)) k)) @index-cache)]
+    (or hit
+        (let [rows (table-rows tbl)
+              rows (if (:wf idx) (filter (:wf idx) rows) rows)
+              cmps (mapv (fn [ic] [(:coll ic) (:desc ic) nil]) (:cols idx))
+              cmp (compare-keys-fn (conj cmps ["BINARY" false nil]))
+              keyed (to-array (map (fn [r] [(conj (index-key tbl idx r) (peek r)) r]) rows))]
+          (java.util.Arrays/sort keyed (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
+          (swap! index-cache (fn [c] (conj (if (>= (count c) 8) (subvec c 1) c) [tbl idx keyed])))
+          keyed))))
+
 (defn index-order-rows
   "Rows of the index's table that are in the index, in index order."
   [db idx]
-  (let [tbl (get-in db [:tables (:table idx)])
-        rows (table-rows tbl)
-        rows (if (:wf idx) (filter (:wf idx) rows) rows)
-        cmps (mapv (fn [ic] [(:coll ic) (:desc ic) nil]) (:cols idx))
-        cmp (compare-keys-fn (conj cmps ["BINARY" false nil]))
-        keyed (to-array (map (fn [r] [(conj (index-key tbl idx r) (peek r)) r]) rows))]
-    (java.util.Arrays/sort keyed (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
-    (map second keyed)))
+  (map second (index-keyed db idx)))
+
+(defn- index-probe-rows
+  "The rows whose first index column equals v under the index's collation, in rowid order (the index's
+  entries with that key are contiguous, so a binary search finds them)."
+  [db idx v]
+  (let [^objects keyed (index-keyed db idx)
+        ic (first (:cols idx))
+        cmp (compare-keys-fn [[(or (:coll ic) "BINARY") (boolean (:desc ic)) nil]])
+        probe [v]
+        n (alength keyed)
+        lb (loop [lo 0 hi n]
+             (if (< lo hi)
+               (let [mid (quot (+ lo hi) 2)]
+                 (if (neg? (.compare ^Comparator cmp (first (aget keyed mid)) probe))
+                   (recur (inc mid) hi)
+                   (recur lo mid)))
+               lo))]
+    (sort-by peek (loop [i lb acc []]
+                    (if (and (< i n) (zero? (.compare ^Comparator cmp (first (aget keyed i)) probe)))
+                      (recur (inc i) (conj acc (second (aget keyed i))))
+                      acc)))))
+
+(defn- outer-only-expr?
+  "True if every column of expression e is a constant of the enclosing scopes or a column of the sources before
+  slot-set, and e has no subquery."
+  [ctx slot-set e]
+  (let [ok (volatile! true)]
+    (letfn [(walk [x]
+              (cond (not @ok) nil
+                    (map? x)
+                    (cond (or (contains? x :select) (#{:subq :exists} (:op x))) (vreset! ok false)
+                          (= :col (:op x))
+                          (let [r (try (resolve-column (assoc ctx :refs nil) (:table x) (:name x) (:dq x))
+                                       (catch Exception _ nil))]
+                            (cond (nil? r) (vreset! ok false)
+                                  (contains? r :const) nil
+                                  (or (pos? (long (:depth r))) (contains? slot-set (:slot r))) nil
+                                  :else (vreset! ok false)))
+                          :else (doseq [v (vals x)] (walk v)))
+                    (sequential? x) (doseq [v x] (walk v))
+                    :else nil))]
+      (walk e))
+    @ok))
+
+(defn join-probe-scanner
+  "For join source i (its rows are read once per row of the sources before it): when an ON or WHERE equality
+  between a column of this table and an expression of the earlier sources can use an index or the rowid, a
+  scanner that reads only the rows that can match (in rowid order, as a scan would give them). The ON condition is
+  still evaluated on them, so the result is the same as a full scan; any value whose comparison could depend on
+  type affinity falls back to the full scan. nil when no equality can be used."
+  [ctx sources on-conds where-conds i]
+  (let [src (nth sources i)
+        tbl (:table src)
+        db (:db ctx)]
+    (when (and tbl (not (:virtual tbl)) (not (:without-rowid tbl)) (nil? (:indexed-by src))
+               (not (:tvf src)) (not (:sub src)) (:table src))
+      (let [ncols (long (:ncols src))
+            ipk (:ipk tbl)
+            tname (lc (:tname src))
+            earlier (set (map :slot (take i sources)))
+            own (fn [e]
+                  (when (= :col (:op e))
+                    (let [r (try (resolve-column (assoc ctx :refs nil) (:table e) (:name e) (:dq e))
+                                 (catch Exception _ nil))]
+                      (when (and r (not (contains? r :const)) (= (:slot r) (:slot src)) (zero? (long (:depth r))))
+                        (let [idx (long (:idx r))]
+                          [(if (or (= idx ncols) (= idx ipk)) ncols idx) r])))))
+            cands (for [t (concat on-conds where-conds)
+                        :when (and (= :bin (:op t)) (= :eq (:o t)))
+                        [a b] [[(:l t) (:r t)] [(:r t) (:l t)]]
+                        :let [oa (own a)]
+                        :when (and oa (not (own b)) (outer-only-expr? ctx earlier b))
+                        :let [[c r] oa
+                              cb (try (cx ctx b) (catch Exception _ nil))]
+                        :when (and cb (:f cb))
+                        :when (= (or (:coll r) "BINARY") (or (:coll cb) "BINARY"))
+                        :let [coll (or (:coll r) "BINARY")
+                              aff (when (< c ncols) (nth (:affs src) c))
+                              idx (if (= c ncols)
+                                    :rowid
+                                    (first (for [idx (plain-indexes db src)
+                                                 :when (and (= c (norm-col src (:col (first (:cols idx)))))
+                                                            (every? :col (:cols idx))
+                                                            (= coll (or (:coll (first (:cols idx))) "BINARY")))]
+                                             idx)))]
+                        :when idx]
+                    {:c c :idx idx :f (:f cb) :aff aff :oaff (:aff cb)})
+            cand (first cands)]
+        (when cand
+          (let [{:keys [idx f aff oaff]} cand
+                num? #{:integer :numeric :real}
+                none? #{nil :blob}
+                full (fn [_] (table-rows (get-in db [:tables tname])))]
+            (if (= idx :rowid)
+              (fn [env]
+                (let [v (f env)]
+                  (cond (nil? v) []
+                        (instance? Long v) (if-let [r (get (:rows (get-in db [:tables tname])) v)] [r] [])
+                        :else (full env))))
+              (fn [env]
+                (let [v (f env)]
+                  (cond (nil? v) []
+                        (and (num? aff) (number? v) (or (none? oaff) (num? oaff)))
+                        (index-probe-rows db idx v)
+                        (and (= :text aff) (string? v) (or (none? oaff) (= :text oaff)))
+                        (index-probe-rows db idx v)
+                        (and (none? aff) (none? oaff) (or (number? v) (string? v)))
+                        (index-probe-rows db idx v)
+                        :else (full env)))))))))))
 
 (defn- expr-equal? [a b]
   (let [strip (fn strip [e] (cond (map? e) (into {} (for [[k x] e :when (not (#{:ps :pe :paren} k))] [k (strip x)]))
