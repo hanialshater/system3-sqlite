@@ -490,8 +490,8 @@
                   sub (e/compile-select (assoc ctx :sql (or (:src view) sql)) (:select view))
                   rows (e/run-select-rows sub (object-array (+ 2 @(:slots ctx))))
                   cols (or (:cols view) (:names sub))]
-              [(str "\u0000v:" l)
-               {:name (:name view) :view true :vkey l
+              [(str "$v$" l)
+               {:name (str "$v$" l) :view true :vkey l
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
@@ -693,39 +693,75 @@
             (when-not (get-in db [:indexes (lc (:indexed-by st))])
               (err (str "no such index: " (:indexed-by st)))))
         sctx (assoc ctx :scope {:sources [src] :parent nil})
-        sets (vec (for [[cols ex] (:sets st)
-                        :let [f (:f (e/cx sctx ex))]
-                        c cols]
+        from (:from st)
+        _ (when from
+            (doseq [it from]
+              (when (and (:table it) (= (lc (or (:alias it) (:table it))) (lc (or (:alias st) tname))))
+                (err (str "target object/alias may not appear in FROM clause: " (or (:alias st) tname))))))
+        set-items (vec (mapcat (fn [[cols ex]]
+                                 (cond (= 1 (count cols)) [[(first cols) ex nil]]
+                                       (= :vector (:op ex))
+                                       (do (when (not= (count cols) (count (:items ex)))
+                                             (err (str (count cols) " columns assigned " (count (:items ex)) " values")))
+                                           (map (fn [c e] [c e nil]) cols (:items ex)))
+                                       (= :subq (:op ex)) (map-indexed (fn [k c] [c ex k]) cols)
+                                       :else (err (str (count cols) " columns assigned 1 values"))))
+                               (:sets st)))
+        sets (vec (for [[c ex k] set-items]
                     [(let [i (.indexOf ^java.util.List lnames (lc c))]
                        (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                          (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                        (cond (>= i 0) i
                              (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                              :else (err (str "no such column: " c))))
-                     f]))
-        where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
-        where-pre (when (:where st) (e/where-precheck sctx (:where st)))
+                     (when-not from
+                       (if (nil? k)
+                         (:f (e/cx sctx ex))
+                         (let [sub (e/compile-select sctx (:select ex))]
+                           (when (not= (count (:names sub)) (count (filter #(= ex (second %)) set-items)))
+                             (err (str (count (filter #(= ex (second %)) set-items)) " columns assigned " (count (:names sub)) " values")))
+                           (fn [env] (let [r (first (e/run-select-rows sub env))] (when r (nth r k)))))))]))
+        where-f (when (and (:where st) (not from)) (e/condf (e/cx sctx (:where st))))
+        where-pre (when (and (:where st) (not from)) (e/where-precheck sctx (:where st)))
         ret (compile-returning ctx src (:returning st))
         on-conflict (:or st)
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
         _ (prepared! (:names ret))
-        targets (vec (filter (fn [[rid row]]
-                               (aset env slot row)
-                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
-                             (if (and where-pre (not (where-pre env))) [] (:rows tbl))))
+        join-count (volatile! nil)
+        targets (if from
+                  (let [sctx2 (new-ctx db sql)
+                        cols (into [{:e {:op :col :table (or (:alias st) tname) :name "rowid"} :alias "rid"}]
+                                   (map-indexed (fn [i [_ ex k]] {:e (if k {:op :lit :v nil} ex) :alias (str "c" i)}) set-items))
+                        sel {:body {:type :core :cols cols
+                                    :from (into [{:table (if vw tkey tname) :schema (:schema st) :alias (or (:alias st) tname)}]
+                                                (map-indexed (fn [i it] (if (zero? i) (assoc it :join :cross-comma) it)) from))
+                                    :where (:where st)}}
+                        sub (e/compile-select sctx2 sel)
+                        rows (e/run-select-rows sub (object-array (+ 2 @(:slots sctx2))))]
+                    (let [rows (vec rows)
+                          ;; one update per target row (the last join row wins), changes count every join row
+                          last-by-rid (reduce (fn [m r] (assoc m (first r) (vec (rest r)))) (sorted-map) rows)]
+                      (vreset! join-count (count rows))
+                      (mapv (fn [[rid pre]] [rid pre]) last-by-rid)))
+                  (vec (filter (fn [[rid row]]
+                                 (aset env slot row)
+                                 (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
+                               (if (and where-pre (not (where-pre env))) [] (:rows tbl)))))
         ret-rows (java.util.ArrayList.)]
     (let [set-names (mapv (fn [[ci _]] (if (neg? ci) "rowid" (lc (:name (nth (:cols tbl) ci))))) sets)
           [db changes]
           (reduce
-           (fn [[db changes] [rid _]]
+           (fn [[db changes] [rid pre]]
              (fail-partial db changes tkey tbl (fn []
              (let [tbl (get-in db [:tables tkey])
                    old (get-in tbl [:rows rid])]
                (if (nil? old)
                  [db changes]
                  (let [_ (aset env slot old)
-                       newvals (mapv (fn [[ci f]] [ci (f env)]) sets)
+                       newvals (if from
+                                 (mapv (fn [[ci _] v] [ci v]) sets pre)
+                                 (mapv (fn [[ci f]] [ci (f env)]) sets))
                        row (reduce (fn [row [ci val]] (if (= ci -1) row (assoc row ci val))) old newvals)
                        rid-new (let [rv (some (fn [[ci val]] (when (= ci -1) val)) newvals)
                                      rv (if (:ipk tbl) (nth row (:ipk tbl)) (if (some #(= -1 (first %)) newvals) rv rid))]
