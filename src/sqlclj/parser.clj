@@ -8,12 +8,11 @@
 
 (def reserved
   #{"ADD" "ALL" "ALTER" "AND" "AS" "AUTOINCREMENT" "BETWEEN" "CASE" "CHECK" "COLLATE" "COMMIT"
-    "CONSTRAINT" "CREATE" "CROSS" "DEFAULT" "DEFERRABLE" "DELETE" "DISTINCT" "DROP" "ELSE" "ESCAPE"
-    "EXCEPT" "EXISTS" "FOREIGN" "FROM" "FULL" "GROUP" "HAVING" "IN" "INDEX" "INDEXED" "INNER"
-    "INSERT" "INTERSECT" "INTO" "IS" "ISNULL" "JOIN" "LEFT" "LIMIT" "NATURAL" "NOT" "NOTNULL" "NULL"
-    "ON" "OR" "ORDER" "OUTER" "PRIMARY" "REFERENCES" "RIGHT" "SELECT" "SET" "TABLE" "THEN" "TO"
-    "TRANSACTION" "UNION" "UNIQUE" "UPDATE" "USING" "VALUES" "WHEN" "WHERE" "RETURNING" "NOTHING"
-    "WINDOW" "FILTER" "OVER"})
+    "CONSTRAINT" "CREATE" "DEFAULT" "DEFERRABLE" "DELETE" "DISTINCT" "DROP" "ELSE" "ESCAPE"
+    "EXCEPT" "EXISTS" "FOREIGN" "FROM" "GROUP" "HAVING" "IN" "INDEX"
+    "INSERT" "INTERSECT" "INTO" "IS" "ISNULL" "JOIN" "LIMIT" "NOT" "NOTNULL" "NULL"
+    "ON" "OR" "ORDER" "PRIMARY" "REFERENCES" "SELECT" "SET" "TABLE" "THEN" "TO"
+    "TRANSACTION" "UNION" "UNIQUE" "UPDATE" "USING" "VALUES" "WHEN" "WHERE" "RETURNING" "NOTHING"})
 
 (def join-kw #{"CROSS" "FULL" "INNER" "LEFT" "NATURAL" "OUTER" "RIGHT"})
 
@@ -165,6 +164,7 @@
       (let [u (:u t)]
         (cond
           (= u "NULL") (do (advance! p) (node {:op :lit :v nil} s (:e t)))
+          (and (= u "RAISE") (let [t2 (tok-at p 1)] (not (and (= :op (:t t2)) (= "(" (:v t2)))))) (do (advance! p) (fail! p))
           (and (#{"CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} u))
           (do (advance! p) (node {:op :fn :name (str/lower-case u) :args []} s (:e t)))
           (= u "CASE")
@@ -368,6 +368,8 @@
           (do (advance! p)
               (let [c (parse-nm p)]
                 (recur (node {:op :collate :e left :coll c} s (prev-end p)))))
+          (and (<= minp 4) (= :id (:t t)) (= "NOT" (:u t)) (= :eof (:t (tok-at p 1))))
+          (do (advance! p) (fail! p))
           ;; level 4 specials
           (and (<= minp 4) (= :id (:t t))
                (or (#{"IS" "IN" "LIKE" "GLOB" "BETWEEN" "ISNULL" "NOTNULL" "MATCH" "REGEXP"} (:u t))
@@ -428,13 +430,15 @@
 
 ;; ------------------------------------------------------------------ SELECT
 
-(defn- parse-alias [^P p]
-  (if (accept-kw p "AS")
-    (parse-nm p)
-    (let [t (tok p)]
-      (when (or (and (ident-tok? t) (not (join-kw (:u t))))
-                (= :str (:t t)))
-        (advance! p) (:v t)))))
+(defn- parse-alias
+  ([^P p] (parse-alias p true))
+  ([^P p table?]
+   (if (accept-kw p "AS")
+     (parse-nm p)
+     (let [t (tok p)]
+       (when (or (and (ident-tok? t) (not (join-kw (:u t))) (not (and table? (#{"WINDOW" "INDEXED" "OVER" "FILTER"} (:u t)))))
+                 (= :str (:t t)))
+         (advance! p) (:v t))))))
 
 (defn- parse-result-col [^P p]
   (let [t (tok p) s (:s t)]
@@ -444,7 +448,7 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p)]
+            alias (parse-alias p false)]
         {:e e :alias alias}))))
 
 (declare parse-from)

@@ -2657,8 +2657,8 @@
   "Compiles a select body (core or compound) without ORDER BY. Returns {:names :affs :colls :rows (fn [env]) }."
   [ctx body]
   (if (= :compound (:type body))
-    (let [l (compile-body ctx (:left body))
-          r (compile-body ctx (:right body))
+    (let [r (compile-body ctx (:right body))
+          l (compile-body ctx (:left body))
           _ (when (not= (count (:names l)) (count (:names r)))
               (err (str "SELECTs to the left and right of "
                         (case (:op body) :union "UNION" :union-all "UNION ALL" :intersect "INTERSECT" :except "EXCEPT")
