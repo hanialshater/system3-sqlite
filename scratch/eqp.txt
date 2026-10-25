@@ -1,0 +1,2167 @@
+### analyze4-000.sql 2
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=5 AND b IS NULL
+# id|parent|notused|detail
+3|0|36|SEARCH t1 USING INDEX t1a (a=?)
+### analyze6-000.sql 2
+EXPLAIN QUERY PLAN SELECT count(*) FROM ev, cat WHERE x=y
+# id|parent|notused|detail
+4|0|50|SCAN cat USING COVERING INDEX catx
+6|0|67|SEARCH ev USING COVERING INDEX evy (y=?)
+### analyze6-000.sql 4
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE z=5
+# id|parent|notused|detail
+3|0|62|SEARCH t201 USING INDEX t201z (z=?)
+### analyze6-000.sql 5
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE y=5
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+### analyze6-000.sql 6
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE x=5
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+### analyze6-000.sql 8
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE z=5
+# id|parent|notused|detail
+3|0|28|SEARCH t201 USING INDEX t201z (z=?)
+### analyze6-000.sql 9
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE y=5
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+### analyze6-000.sql 10
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE x=5
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+### analyze6-000.sql 12
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE z=5
+# id|parent|notused|detail
+3|0|34|SEARCH t201 USING INDEX t201z (z=?)
+### analyze6-000.sql 13
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE y=5
+# id|parent|notused|detail
+3|0|39|SEARCH t201 USING INDEX sqlite_autoindex_t201_1 (y=?)
+### analyze6-000.sql 14
+EXPLAIN QUERY PLAN SELECT * FROM t201 WHERE x=5
+# id|parent|notused|detail
+2|0|33|SEARCH t201 USING INTEGER PRIMARY KEY (rowid=?)
+### analyze8-000.sql 3
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=100 AND b=55
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 4
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=99 AND b=55
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 5
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=101 AND b=55
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 6
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=100 AND b=56
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 7
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=99 AND b=56
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 8
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=101 AND b=56
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1b (b=?)
+### analyze8-000.sql 9
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=100 AND b BETWEEN 50 AND 54
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+### analyze8-000.sql 11
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b BETWEEN 30 AND 34 AND c BETWEEN 0 AND 100000
+# id|parent|notused|detail
+3|0|164|SEARCH t1 USING INDEX t1c (c>? AND c<?)
+### analyze8-000.sql 12
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE b BETWEEN 30 AND 34 AND c BETWEEN 800000 AND 900000
+# id|parent|notused|detail
+3|0|164|SEARCH t1 USING INDEX t1c (c>? AND c<?)
+### analyze8-000.sql 13
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=100 AND c BETWEEN 0 AND 100000
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+### analyze8-000.sql 14
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=100 AND c BETWEEN 800000 AND 900000
+# id|parent|notused|detail
+3|0|62|SEARCH t1 USING INDEX t1a (a=?)
+### analyzeE-000.sql 2
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 500 AND 2500;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 3
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 2900 AND 3000;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 4
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1700 AND 1750;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 5
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1 AND 500
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 6
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 3000 AND 3000000
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 7
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<500
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 8
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>2500
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 9
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1900
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 10
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1100
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 11
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1100
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 12
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1900
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 14
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 500 AND 2500;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 15
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 2900 AND 3000;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 16
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1700 AND 1750;
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 17
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1 AND 500
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 18
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 3000 AND 3000000
+# id|parent|notused|detail
+3|0|65|SEARCH t1 USING INDEX t1a (a>? AND a<?)
+### analyzeE-000.sql 19
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<500
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 20
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>2500
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 21
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1900
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 22
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1100
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a>?)
+### analyzeE-000.sql 23
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1100
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 24
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1900
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1a (a<?)
+### analyzeE-000.sql 26
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 500 AND 2500 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 27
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 2900 AND 3000 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 28
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1700 AND 1750 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 29
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1 AND 500 AND c=123
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 30
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 3000 AND 3000000 AND c=123
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 31
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<500 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### analyzeE-000.sql 32
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>2500 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 33
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1900 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 34
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1100 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 35
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1100 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### analyzeE-000.sql 36
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1900 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### analyzeE-000.sql 38
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 500 AND 2500 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 39
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 2900 AND 3000 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 40
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1700 AND 1750 AND c=123;
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 41
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 1 AND 500 AND c=123
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 42
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a BETWEEN 3000 AND 3000000 AND c=123
+# id|parent|notused|detail
+3|0|66|SEARCH t1 USING INDEX t1ca (c=? AND a>? AND a<?)
+### analyzeE-000.sql 43
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<500 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### analyzeE-000.sql 44
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>2500 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 45
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1900 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 46
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a>1100 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a>?)
+### analyzeE-000.sql 47
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1100 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### analyzeE-000.sql 48
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a<1900 AND c=123
+# id|parent|notused|detail
+3|0|104|SEARCH t1 USING INDEX t1ca (c=? AND a<?)
+### between-000.sql 104
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE w BETWEEN 5 AND 6 ORDER BY +w
+# id|parent|notused|detail
+4|0|164|SEARCH t1 USING INDEX i1w (w>? AND w<?)
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 106
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE +w BETWEEN 5 AND 6 ORDER BY +w
+# id|parent|notused|detail
+3|0|216|SCAN t1
+16|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 108
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE w BETWEEN 5 AND 65-y ORDER BY +w
+# id|parent|notused|detail
+4|0|204|SEARCH t1 USING INDEX i1w (w>?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 110
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE +w BETWEEN 5 AND 65-y ORDER BY +w
+# id|parent|notused|detail
+3|0|216|SCAN t1
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 112
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE w BETWEEN 41-y AND 6 ORDER BY +w
+# id|parent|notused|detail
+4|0|204|SEARCH t1 USING INDEX i1w (w<?)
+23|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 114
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE +w BETWEEN 41-y AND 6 ORDER BY +w
+# id|parent|notused|detail
+3|0|216|SCAN t1
+18|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 116
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE w BETWEEN 41-y AND 65-y ORDER BY +w
+# id|parent|notused|detail
+3|0|216|SCAN t1
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 118
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE 26 BETWEEN y AND z ORDER BY +w
+# id|parent|notused|detail
+4|0|205|SEARCH t1 USING INDEX i1zyx (z>?)
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 120
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE 26 BETWEEN +y AND z ORDER BY +w
+# id|parent|notused|detail
+4|0|205|SEARCH t1 USING INDEX i1zyx (z>?)
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+### between-000.sql 122
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE 26 BETWEEN y AND +z ORDER BY +w
+# id|parent|notused|detail
+3|0|216|SCAN t1
+17|0|0|USE TEMP B-TREE FOR ORDER BY
+### count-000.sql 16
+EXPLAIN SELECT count(*) FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|7|0|NULL|0|NULL
+1|OpenRead|1|334|0|1|0|NULL
+2|Count|1|1|0|NULL|0|NULL
+3|Close|1|0|0|NULL|0|NULL
+4|Copy|1|2|0|NULL|0|NULL
+5|ResultRow|2|1|0|NULL|0|NULL
+6|Halt|0|0|0|NULL|0|NULL
+7|Transaction|0|0|5|0|1|NULL
+8|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 18
+EXPLAIN SELECT count(DISTINCT a) FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|15|0|NULL|0|NULL
+1|Null|0|1|2|NULL|0|NULL
+2|OpenEphemeral|1|0|0|k(1,B)|0|NULL
+3|OpenRead|0|334|0|1|0|NULL
+4|Rewind|0|11|0|NULL|0|NULL
+5|Column|0|0|3|NULL|0|NULL
+6|Found|1|10|3|1|0|NULL
+7|MakeRecord|3|1|4|NULL|0|NULL
+8|IdxInsert|1|4|3|1|16|NULL
+9|AggStep|0|3|2|count(1)|1|NULL
+10|Next|0|5|0|NULL|1|NULL
+11|AggFinal|2|1|0|count(1)|0|NULL
+12|Copy|2|5|0|NULL|0|NULL
+13|ResultRow|5|1|0|NULL|0|NULL
+14|Halt|0|0|0|NULL|0|NULL
+15|Transaction|0|0|5|0|1|NULL
+16|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 19
+EXPLAIN SELECT count(a) FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|11|0|NULL|0|NULL
+1|Null|0|1|2|NULL|0|NULL
+2|OpenRead|0|334|0|1|0|NULL
+3|Rewind|0|7|0|NULL|0|NULL
+4|Column|0|0|3|NULL|0|NULL
+5|AggStep|0|3|2|count(1)|1|NULL
+6|Next|0|4|0|NULL|1|NULL
+7|AggFinal|2|1|0|count(1)|0|NULL
+8|Copy|2|4|0|NULL|0|NULL
+9|ResultRow|4|1|0|NULL|0|NULL
+10|Halt|0|0|0|NULL|0|NULL
+11|Transaction|0|0|5|0|1|NULL
+12|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 20
+EXPLAIN SELECT count() FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|7|0|NULL|0|NULL
+1|OpenRead|1|334|0|1|0|NULL
+2|Count|1|1|0|NULL|0|NULL
+3|Close|1|0|0|NULL|0|NULL
+4|Copy|1|2|0|NULL|0|NULL
+5|ResultRow|2|1|0|NULL|0|NULL
+6|Halt|0|0|0|NULL|0|NULL
+7|Transaction|0|0|5|0|1|NULL
+8|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 22
+EXPLAIN SELECT count(*)+1 FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|10|0|NULL|0|NULL
+1|Null|0|1|1|NULL|0|NULL
+2|OpenRead|0|334|0|0|0|NULL
+3|Rewind|0|6|0|NULL|0|NULL
+4|AggStep|0|0|1|count(0)|0|NULL
+5|Next|0|4|0|NULL|1|NULL
+6|AggFinal|1|0|0|count(0)|0|NULL
+7|Add|4|1|2|NULL|0|NULL
+8|ResultRow|2|1|0|NULL|0|NULL
+9|Halt|0|0|0|NULL|0|NULL
+10|Transaction|0|0|5|0|1|NULL
+11|Integer|1|4|0|NULL|0|NULL
+12|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 23
+EXPLAIN SELECT count(*) FROM t2 WHERE a IS NOT NULL
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|12|0|NULL|0|NULL
+1|Null|0|1|1|NULL|0|NULL
+2|OpenRead|0|334|0|1|0|NULL
+3|Rewind|0|8|0|NULL|0|NULL
+4|Column|0|0|2|NULL|128|NULL
+5|IsNull|2|7|0|NULL|0|NULL
+6|AggStep|0|0|1|count(0)|0|NULL
+7|Next|0|4|0|NULL|1|NULL
+8|AggFinal|1|0|0|count(0)|0|NULL
+9|Copy|1|3|0|NULL|0|NULL
+10|ResultRow|3|1|0|NULL|0|NULL
+11|Halt|0|0|0|NULL|0|NULL
+12|Transaction|0|0|5|0|1|NULL
+13|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 26
+EXPLAIN SELECT count(*) FROM (SELECT 1)
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|14|0|NULL|0|NULL
+1|InitCoroutine|1|5|2|NULL|0|NULL
+2|Null|0|2|0|NULL|0|NULL
+3|Yield|1|0|0|NULL|0|NULL
+4|EndCoroutine|1|0|0|NULL|0|NULL
+5|Null|0|3|3|NULL|0|NULL
+6|InitCoroutine|1|0|2|NULL|0|NULL
+7|Yield|1|10|0|NULL|0|NULL
+8|AggStep|0|0|3|count(0)|0|NULL
+9|Goto|0|7|0|NULL|0|NULL
+10|AggFinal|3|0|0|count(0)|0|NULL
+11|Copy|3|4|0|NULL|0|NULL
+12|ResultRow|4|1|0|NULL|0|NULL
+13|Halt|0|0|0|NULL|0|NULL
+14|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 28
+EXPLAIN SELECT count(*) FROM v1
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|14|0|NULL|0|NULL
+1|InitCoroutine|1|5|2|NULL|0|NULL
+2|Null|0|2|0|NULL|0|NULL
+3|Yield|1|0|0|NULL|0|NULL
+4|EndCoroutine|1|0|0|NULL|0|NULL
+5|Null|0|3|3|NULL|0|NULL
+6|InitCoroutine|1|0|2|NULL|0|NULL
+7|Yield|1|10|0|NULL|0|NULL
+8|AggStep|0|0|3|count(0)|0|NULL
+9|Goto|0|7|0|NULL|0|NULL
+10|AggFinal|3|0|0|count(0)|0|NULL
+11|Copy|3|4|0|NULL|0|NULL
+12|ResultRow|4|1|0|NULL|0|NULL
+13|Halt|0|0|0|NULL|0|NULL
+14|Transaction|0|0|6|0|1|NULL
+15|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 29
+EXPLAIN SELECT count(*), max(a) FROM t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|14|0|NULL|0|NULL
+1|Null|0|1|3|NULL|0|NULL
+2|OpenRead|0|334|0|1|0|NULL
+3|Rewind|0|9|0|NULL|0|NULL
+4|AggStep|0|0|2|count(0)|0|NULL
+5|Column|0|0|4|NULL|0|NULL
+6|CollSeq|0|0|0|BINARY-8|0|NULL
+7|AggStep|0|4|3|max(1)|1|NULL
+8|Next|0|4|0|NULL|1|NULL
+9|AggFinal|2|0|0|count(0)|0|NULL
+10|AggFinal|3|1|0|max(1)|0|NULL
+11|Copy|2|5|1|NULL|0|NULL
+12|ResultRow|5|2|0|NULL|0|NULL
+13|Halt|0|0|0|NULL|0|NULL
+14|Transaction|0|0|6|0|1|NULL
+15|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 30
+EXPLAIN SELECT count(*) FROM t1, t2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|13|0|NULL|0|NULL
+1|Null|0|1|1|NULL|0|NULL
+2|OpenRead|1|334|0|0|0|NULL
+3|OpenRead|2|4|0|k(2,,)|0|NULL
+4|Rewind|1|9|0|NULL|0|NULL
+5|Rewind|2|8|2|0|0|NULL
+6|AggStep|0|0|1|count(0)|0|NULL
+7|Next|2|6|0|NULL|1|NULL
+8|Next|1|5|0|NULL|1|NULL
+9|AggFinal|1|0|0|count(0)|0|NULL
+10|Copy|1|2|0|NULL|0|NULL
+11|ResultRow|2|1|0|NULL|0|NULL
+12|Halt|0|0|0|NULL|0|NULL
+13|Transaction|0|0|6|0|1|NULL
+14|Goto|0|1|0|NULL|0|NULL
+### count-000.sql 31
+EXPLAIN SELECT count(*) FROM techo
+error: no such table: techo
+### having-000.sql 5
+explain SELECT a, sum(b) FROM t1 GROUP BY a HAVING a=2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|37|0|NULL|0|NULL
+1|Noop|1|2|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|33|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|36|0|NULL|0|NULL
+15|Gosub|4|33|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|36|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 6
+explain SELECT a, sum(b) FROM t1 WHERE a=2 GROUP BY a
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|37|0|NULL|0|NULL
+1|Noop|1|2|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|33|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|36|0|NULL|0|NULL
+15|Gosub|4|33|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|36|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 7
+explain SELECT a, sum(b) FROM t1 GROUP BY a HAVING sum(b)>5 AND a=2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|38|0|NULL|0|NULL
+1|Noop|1|2|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|34|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|37|0|NULL|0|NULL
+15|Gosub|4|34|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|37|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 8
+explain SELECT a, sum(b) FROM t1 WHERE a=2 GROUP BY a HAVING sum(b)>5
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|38|0|NULL|0|NULL
+1|Noop|1|2|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|34|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|37|0|NULL|0|NULL
+15|Gosub|4|34|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|37|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 9
+explain SELECT a, sum(b) FROM t1 GROUP BY a COLLATE binary HAVING a=2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|37|0|NULL|0|NULL
+1|Noop|1|3|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|33|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|36|0|NULL|0|NULL
+15|Gosub|4|33|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|36|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 10
+explain SELECT a, sum(b) FROM t1 WHERE a=2 GROUP BY a COLLATE binary
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|37|0|NULL|0|NULL
+1|Noop|1|3|0|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|33|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|22|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|21|7|BINARY-8|81|NULL
+9|Column|0|0|6|NULL|0|NULL
+10|Compare|5|6|1|k(1,B)|0|NULL
+11|Jump|12|16|12|NULL|0|NULL
+12|Gosub|3|26|0|NULL|0|NULL
+13|Move|6|5|1|NULL|0|NULL
+14|IfPos|2|36|0|NULL|0|NULL
+15|Gosub|4|33|0|NULL|0|NULL
+16|Column|0|1|7|NULL|0|NULL
+17|AggStep|0|7|11|sum(1)|1|NULL
+18|If|1|20|0|NULL|0|NULL
+19|Column|0|0|9|NULL|0|NULL
+20|Integer|1|1|0|NULL|0|NULL
+21|Next|0|7|0|NULL|1|NULL
+22|Gosub|3|26|0|NULL|0|NULL
+23|Goto|0|36|0|NULL|0|NULL
+24|Integer|1|2|0|NULL|0|NULL
+25|Return|3|0|0|NULL|0|NULL
+26|IfPos|1|28|0|NULL|0|NULL
+27|Return|3|0|0|N
+### having-000.sql 11
+explain SELECT a, sum(b) FROM t1 GROUP BY a COLLATE binary HAVING 1
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|44|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|40|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|13|0|NULL|0|NULL
+7|Column|0|0|10|NULL|0|NULL
+8|Column|0|0|11|NULL|0|NULL
+9|Column|0|1|12|NULL|0|NULL
+10|MakeRecord|10|3|13|NULL|0|NULL
+11|SorterInsert|1|13|0|NULL|0|NULL
+12|Next|0|7|0|NULL|1|NULL
+13|OpenPseudo|2|13|3|NULL|0|NULL
+14|SorterSort|1|43|0|NULL|0|NULL
+15|SorterData|1|13|2|NULL|0|NULL
+16|Column|2|0|6|NULL|0|NULL
+17|Compare|5|6|1|k(1,B)|0|NULL
+18|Jump|19|23|19|NULL|0|NULL
+19|Gosub|3|33|0|NULL|0|NULL
+20|Move|6|5|1|NULL|0|NULL
+21|IfPos|2|43|0|NULL|0|NULL
+22|Gosub|4|40|0|NULL|0|NULL
+23|Column|2|2|14|NULL|0|NULL
+24|AggStep|0|14|9|sum(1)|1|NULL
+25|If|1|27|0|NULL|0|NULL
+26|Colum
+### having-000.sql 12
+explain SELECT a, sum(b) FROM t1 WHERE 1 GROUP BY a COLLATE binary
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|44|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|40|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|13|0|NULL|0|NULL
+7|Column|0|0|10|NULL|0|NULL
+8|Column|0|0|11|NULL|0|NULL
+9|Column|0|1|12|NULL|0|NULL
+10|MakeRecord|10|3|13|NULL|0|NULL
+11|SorterInsert|1|13|0|NULL|0|NULL
+12|Next|0|7|0|NULL|1|NULL
+13|OpenPseudo|2|13|3|NULL|0|NULL
+14|SorterSort|1|43|0|NULL|0|NULL
+15|SorterData|1|13|2|NULL|0|NULL
+16|Column|2|0|6|NULL|0|NULL
+17|Compare|5|6|1|k(1,B)|0|NULL
+18|Jump|19|23|19|NULL|0|NULL
+19|Gosub|3|33|0|NULL|0|NULL
+20|Move|6|5|1|NULL|0|NULL
+21|IfPos|2|43|0|NULL|0|NULL
+22|Gosub|4|40|0|NULL|0|NULL
+23|Column|2|2|14|NULL|0|NULL
+24|AggStep|0|14|9|sum(1)|1|NULL
+25|If|1|27|0|NULL|0|NULL
+26|Colum
+### having-000.sql 13
+explain SELECT count(*) FROM t1,t2 WHERE a=c GROUP BY b, d HAVING b=d
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|61|0|NULL|0|NULL
+1|SorterOpen|2|2|0|k(2,B,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|6|NULL|0|NULL
+4|Gosub|4|57|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|OpenRead|1|2|0|2|0|NULL
+7|Rewind|0|33|0|NULL|0|NULL
+8|Once|0|20|0|NULL|0|NULL
+9|OpenAutoindex|3|3|0|k(3,B,B,)|0|NULL
+10|Explain|10|0|0|BLOOM FILTER ON t2 (d=? AND c=?)|0|NULL
+11|Blob|10000|9|0|NULL|0|NULL
+12|Rewind|1|33|0|NULL|0|NULL
+13|Column|1|1|11|NULL|0|NULL
+14|Column|1|0|12|NULL|0|NULL
+15|Rowid|1|13|0|NULL|0|NULL
+16|MakeRecord|11|3|10|NULL|0|NULL
+17|FilterAdd|9|0|11|2|0|NULL
+18|IdxInsert|3|10|0|NULL|16|NULL
+19|Next|1|13|0|NULL|3|NULL
+20|Column|0|1|14|NULL|0|NULL
+21|IsNull|14|32|0|NULL|0|NULL
+22|Column|0|0|15|NULL|0|NULL
+23|IsNull|15|32|0|NULL|0|NULL
+24|Filter|9|32|14|2|0|NULL
+25|See
+### having-000.sql 14
+explain SELECT count(*) FROM t1,t2 WHERE a=c AND b=d GROUP BY b, d
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|61|0|NULL|0|NULL
+1|SorterOpen|2|2|0|k(2,B,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|6|NULL|0|NULL
+4|Gosub|4|57|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|OpenRead|1|2|0|2|0|NULL
+7|Rewind|0|33|0|NULL|0|NULL
+8|Once|0|20|0|NULL|0|NULL
+9|OpenAutoindex|3|3|0|k(3,B,B,)|0|NULL
+10|Explain|10|0|0|BLOOM FILTER ON t2 (d=? AND c=?)|0|NULL
+11|Blob|10000|9|0|NULL|0|NULL
+12|Rewind|1|33|0|NULL|0|NULL
+13|Column|1|1|11|NULL|0|NULL
+14|Column|1|0|12|NULL|0|NULL
+15|Rowid|1|13|0|NULL|0|NULL
+16|MakeRecord|11|3|10|NULL|0|NULL
+17|FilterAdd|9|0|11|2|0|NULL
+18|IdxInsert|3|10|0|NULL|16|NULL
+19|Next|1|13|0|NULL|3|NULL
+20|Column|0|1|14|NULL|0|NULL
+21|IsNull|14|32|0|NULL|0|NULL
+22|Column|0|0|15|NULL|0|NULL
+23|IsNull|15|32|0|NULL|0|NULL
+24|Filter|9|32|14|2|0|NULL
+25|See
+### having-000.sql 15
+explain SELECT count(*) FROM t1,t2 WHERE a=c GROUP BY b, d HAVING b=d COLLATE nocase
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|61|0|NULL|0|NULL
+1|SorterOpen|2|2|0|k(2,B,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|6|NULL|0|NULL
+4|Gosub|4|57|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|OpenRead|1|2|0|2|0|NULL
+7|Rewind|0|33|0|NULL|0|NULL
+8|Once|0|20|0|NULL|0|NULL
+9|OpenAutoindex|3|3|0|k(3,NOCASE,B,)|0|NULL
+10|Explain|10|0|0|BLOOM FILTER ON t2 (d=? AND c=?)|0|NULL
+11|Blob|10000|9|0|NULL|0|NULL
+12|Rewind|1|33|0|NULL|0|NULL
+13|Column|1|1|11|NULL|0|NULL
+14|Column|1|0|12|NULL|0|NULL
+15|Rowid|1|13|0|NULL|0|NULL
+16|MakeRecord|11|3|10|NULL|0|NULL
+17|FilterAdd|9|0|11|2|0|NULL
+18|IdxInsert|3|10|0|NULL|16|NULL
+19|Next|1|13|0|NULL|3|NULL
+20|Column|0|1|14|NULL|0|NULL
+21|IsNull|14|32|0|NULL|0|NULL
+22|Column|0|0|15|NULL|0|NULL
+23|IsNull|15|32|0|NULL|0|NULL
+24|Filter|9|32|14|2|0|NULL
+2
+### having-000.sql 16
+explain SELECT count(*) FROM t1,t2 WHERE a=c AND b=d COLLATE nocase GROUP BY b, d
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|61|0|NULL|0|NULL
+1|SorterOpen|2|2|0|k(2,B,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|6|NULL|0|NULL
+4|Gosub|4|57|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|OpenRead|1|2|0|2|0|NULL
+7|Rewind|0|33|0|NULL|0|NULL
+8|Once|0|20|0|NULL|0|NULL
+9|OpenAutoindex|3|3|0|k(3,NOCASE,B,)|0|NULL
+10|Explain|10|0|0|BLOOM FILTER ON t2 (d=? AND c=?)|0|NULL
+11|Blob|10000|9|0|NULL|0|NULL
+12|Rewind|1|33|0|NULL|0|NULL
+13|Column|1|1|11|NULL|0|NULL
+14|Column|1|0|12|NULL|0|NULL
+15|Rowid|1|13|0|NULL|0|NULL
+16|MakeRecord|11|3|10|NULL|0|NULL
+17|FilterAdd|9|0|11|2|0|NULL
+18|IdxInsert|3|10|0|NULL|16|NULL
+19|Next|1|13|0|NULL|3|NULL
+20|Column|0|1|14|NULL|0|NULL
+21|IsNull|14|32|0|NULL|0|NULL
+22|Column|0|0|15|NULL|0|NULL
+23|IsNull|15|32|0|NULL|0|NULL
+24|Filter|9|32|14|2|0|NULL
+2
+### having-000.sql 17
+explain SELECT a, sum(b) FROM t1 GROUP BY a||b HAVING substr(a||b, 1, 1)='a'
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|47|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|20|0|NULL|0|NULL
+7|Column|0|0|11|NULL|0|NULL
+8|Column|0|1|12|NULL|0|NULL
+9|Concat|12|11|8|NULL|0|NULL
+10|Function|6|8|7|substr(3)|0|NULL
+11|Ne|13|19|7|NULL|80|NULL
+12|Column|0|0|7|NULL|0|NULL
+13|Column|0|1|12|NULL|0|NULL
+14|Concat|12|7|17|NULL|0|NULL
+15|Column|0|0|18|NULL|0|NULL
+16|Column|0|1|19|NULL|0|NULL
+17|MakeRecord|17|3|12|NULL|0|NULL
+18|SorterInsert|1|12|0|NULL|0|NULL
+19|Next|0|7|0|NULL|1|NULL
+20|OpenPseudo|2|12|3|NULL|0|NULL
+21|SorterSort|1|50|0|NULL|0|NULL
+22|SorterData|1|12|2|NULL|0|NULL
+23|Column|2|0|6|NULL|0|NULL
+24|Compare|5|6|1|k(1,B)|0|NULL
+25|Jump|26|30|26|NULL|0|N
+### having-000.sql 18
+explain SELECT a, sum(b) FROM t1 WHERE substr(a||b, 1, 1)='a' GROUP BY a||b
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|47|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|20|0|NULL|0|NULL
+7|Column|0|0|11|NULL|0|NULL
+8|Column|0|1|12|NULL|0|NULL
+9|Concat|12|11|8|NULL|0|NULL
+10|Function|6|8|7|substr(3)|0|NULL
+11|Ne|13|19|7|NULL|80|NULL
+12|Column|0|0|7|NULL|0|NULL
+13|Column|0|1|12|NULL|0|NULL
+14|Concat|12|7|17|NULL|0|NULL
+15|Column|0|0|18|NULL|0|NULL
+16|Column|0|1|19|NULL|0|NULL
+17|MakeRecord|17|3|12|NULL|0|NULL
+18|SorterInsert|1|12|0|NULL|0|NULL
+19|Next|0|7|0|NULL|1|NULL
+20|OpenPseudo|2|12|3|NULL|0|NULL
+21|SorterSort|1|50|0|NULL|0|NULL
+22|SorterData|1|12|2|NULL|0|NULL
+23|Column|2|0|6|NULL|0|NULL
+24|Compare|5|6|1|k(1,B)|0|NULL
+25|Jump|26|30|26|NULL|0|N
+### having-000.sql 21
+explain SELECT a, sum(b) FROM t1 GROUP BY a COLLATE nocase HAVING a=2
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|45|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,NOCASE)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|41|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|13|0|NULL|0|NULL
+7|Column|0|0|10|NULL|0|NULL
+8|Column|0|0|11|NULL|0|NULL
+9|Column|0|1|12|NULL|0|NULL
+10|MakeRecord|10|3|13|NULL|0|NULL
+11|SorterInsert|1|13|0|NULL|0|NULL
+12|Next|0|7|0|NULL|1|NULL
+13|OpenPseudo|2|13|3|NULL|0|NULL
+14|SorterSort|1|44|0|NULL|0|NULL
+15|SorterData|1|13|2|NULL|0|NULL
+16|Column|2|0|6|NULL|0|NULL
+17|Compare|5|6|1|k(1,NOCASE)|0|NULL
+18|Jump|19|23|19|NULL|0|NULL
+19|Gosub|3|33|0|NULL|0|NULL
+20|Move|6|5|1|NULL|0|NULL
+21|IfPos|2|44|0|NULL|0|NULL
+22|Gosub|4|41|0|NULL|0|NULL
+23|Column|2|2|14|NULL|0|NULL
+24|AggStep|0|14|9|sum(1)|1|NULL
+25|If|1|27|0|NULL|0|NUL
+### having-000.sql 22
+explain SELECT a, sum(b) FROM t1 WHERE a=2 GROUP BY a COLLATE nocase
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|46|0|NULL|0|NULL
+1|SorterOpen|1|3|0|k(1,NOCASE)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|42|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|15|0|NULL|0|NULL
+7|Column|0|0|7|NULL|0|NULL
+8|Ne|8|14|7|BINARY-8|81|NULL
+9|Column|0|0|12|NULL|0|NULL
+10|Column|0|0|13|NULL|0|NULL
+11|Column|0|1|14|NULL|0|NULL
+12|MakeRecord|12|3|7|NULL|0|NULL
+13|SorterInsert|1|7|0|NULL|0|NULL
+14|Next|0|7|0|NULL|1|NULL
+15|OpenPseudo|2|7|3|NULL|0|NULL
+16|SorterSort|1|45|0|NULL|0|NULL
+17|SorterData|1|7|2|NULL|0|NULL
+18|Column|2|0|6|NULL|0|NULL
+19|Compare|5|6|1|k(1,NOCASE)|0|NULL
+20|Jump|21|25|21|NULL|0|NULL
+21|Gosub|3|35|0|NULL|0|NULL
+22|Move|6|5|1|NULL|0|NULL
+23|IfPos|2|45|0|NULL|0|NULL
+24|Gosub|4|42|0|NULL|0|NULL
+25|Column|2|2|15|NULL|0|NULL
+2
+### having-000.sql 23
+explain SELECT a, sum(b) FROM t1 GROUP BY a HAVING randomblob(a)<X'88'
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|46|0|NULL|0|NULL
+1|SorterOpen|1|2|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|42|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|12|0|NULL|0|NULL
+7|Column|0|0|10|NULL|0|NULL
+8|Column|0|1|11|NULL|0|NULL
+9|MakeRecord|10|2|12|NULL|0|NULL
+10|SorterInsert|1|12|0|NULL|0|NULL
+11|Next|0|7|0|NULL|1|NULL
+12|OpenPseudo|2|12|2|NULL|0|NULL
+13|SorterSort|1|45|0|NULL|0|NULL
+14|SorterData|1|12|2|NULL|0|NULL
+15|Column|2|0|6|NULL|0|NULL
+16|Compare|5|6|1|k(1,B)|0|NULL
+17|Jump|18|22|18|NULL|0|NULL
+18|Gosub|3|32|0|NULL|0|NULL
+19|Move|6|5|1|NULL|0|NULL
+20|IfPos|2|45|0|NULL|0|NULL
+21|Gosub|4|42|0|NULL|0|NULL
+22|Column|2|1|13|NULL|0|NULL
+23|AggStep|0|13|9|sum(1)|1|NULL
+24|If|1|26|0|NULL|0|NULL
+25|Column|2|0|7|NULL|0|NULL
+26|Intege
+### having-000.sql 24
+explain SELECT a, sum(b) FROM t1 WHERE randomblob(a)<X'88' GROUP BY a
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|46|0|NULL|0|NULL
+1|SorterOpen|1|2|0|k(1,B)|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|Null|0|5|5|NULL|0|NULL
+4|Gosub|4|42|0|NULL|0|NULL
+5|OpenRead|0|3|0|2|0|NULL
+6|Rewind|0|15|0|NULL|0|NULL
+7|Column|0|0|8|NULL|0|NULL
+8|Function|0|8|7|randomblob(1)|0|NULL
+9|Ge|9|14|7|NULL|80|NULL
+10|Column|0|0|13|NULL|0|NULL
+11|Column|0|1|14|NULL|0|NULL
+12|MakeRecord|13|2|7|NULL|0|NULL
+13|SorterInsert|1|7|0|NULL|0|NULL
+14|Next|0|7|0|NULL|1|NULL
+15|OpenPseudo|2|7|2|NULL|0|NULL
+16|SorterSort|1|45|0|NULL|0|NULL
+17|SorterData|1|7|2|NULL|0|NULL
+18|Column|2|0|6|NULL|0|NULL
+19|Compare|5|6|1|k(1,B)|0|NULL
+20|Jump|21|25|21|NULL|0|NULL
+21|Gosub|3|35|0|NULL|0|NULL
+22|Move|6|5|1|NULL|0|NULL
+23|IfPos|2|45|0|NULL|0|NULL
+24|Gosub|4|42|0|NULL|0|NULL
+25|Column|2|1|8|NULL|0|NULL
+26|Agg
+### index2-000.sql 109
+EXPLAIN SELECT c9 FROM t1 ORDER BY c1, c2, c3, c4, c5
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|8|0|NULL|0|NULL
+1|Noop|1|7|0|NULL|0|NULL
+2|OpenRead|2|105|0|k(1001,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+### index3-000.sql 6
+EXPLAIN QUERY PLAN SELECT a FROM t1 WHERE b='ab005xy' COLLATE nocase;
+# id|parent|notused|detail
+3|0|39|SEARCH t1 USING INDEX sqlite_autoindex_t1_2 (b=?)
+### index6-000.sql 16
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE a=5;
+# id|parent|notused|detail
+2|0|216|SCAN t2
+### index6-000.sql 18
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE a IS NOT NULL;
+# id|parent|notused|detail
+2|0|216|SCAN t2
+### index6-000.sql 19
+EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE a IS NULL;
+# id|parent|notused|detail
+2|0|216|SCAN t2
+### index6-000.sql 22
+EXPLAIN QUERY PLAN SELECT b FROM t2 WHERE a=15;
+# id|parent|notused|detail
+2|0|216|SCAN t2
+### index6-000.sql 24
+EXPLAIN QUERY PLAN SELECT b FROM t2 WHERE a=15 AND a<100;
+# id|parent|notused|detail
+5|0|62|SEARCH t2 USING INDEX t2a2 (a=?)
+### index6-000.sql 26
+EXPLAIN QUERY PLAN SELECT b FROM t2 WHERE a=515 AND a>200;
+# id|parent|notused|detail
+5|0|62|SEARCH t2 USING INDEX t2a2 (a=?)
+### index6-000.sql 40
+EXPLAIN QUERY PLAN SELECT * FROM t7a JOIN t7b ON (x=99) ORDER BY x;
+# id|parent|notused|detail
+4|0|56|SEARCH t7a USING COVERING INDEX t7ax (x=?)
+8|0|216|SCAN t7b
+### index6-000.sql 46
+EXPLAIN QUERY PLAN SELECT e FROM t10 WHERE a=1 AND b=2 AND c=3 ORDER BY d;
+# id|parent|notused|detail
+4|0|214|SCAN t10 USING INDEX t10x
+### index6-000.sql 48
+EXPLAIN QUERY PLAN SELECT e FROM t10 WHERE c=3 AND 2=b AND a=1 ORDER BY d DESC;
+# id|parent|notused|detail
+4|0|214|SCAN t10 USING INDEX t10x
+### index6-000.sql 50
+EXPLAIN QUERY PLAN SELECT e FROM t10 WHERE a=1 AND b=2 ORDER BY d DESC;
+# id|parent|notused|detail
+3|0|216|SCAN t10
+14|0|0|USE TEMP B-TREE FOR ORDER BY
+### index6-000.sql 51
+CREATE TABLE t11(a,b,c); CREATE INDEX t11x ON t11(a) WHERE b<>99; EXPLAIN QUERY PLAN SELECT a FROM t11 WHERE b<>99;
+changes: 4
+changes: 4
+# id|parent|notused|detail
+3|0|214|SCAN t11 USING INDEX t11x
+### index6-000.sql 52
+EXPLAIN QUERY PLAN SELECT a FROM t11 WHERE b<>99 AND c<>98;
+# id|parent|notused|detail
+3|0|214|SCAN t11 USING INDEX t11x
+### index8-000.sql 2
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=4 ORDER BY a, b LIMIT 2;
+# id|parent|notused|detail
+5|0|218|SCAN t1 USING INDEX t1abc
+### index8-000.sql 4
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE c=4 ORDER BY a, b LIMIT 2;
+# id|parent|notused|detail
+4|0|216|SCAN t1
+20|0|0|USE TEMP B-TREE FOR ORDER BY
+### indexexpr2-001.sql 13
+EXPLAIN QUERY PLAN SELECT * FROM t4 ORDER BY Substr(a,-2) COLLATE nocase;
+# id|parent|notused|detail
+4|0|225|SCAN t4 USING INDEX i4
+### indexexpr2-002.sql 5
+CREATE TABLE t2(a,b,c,d,e,f); INSERT INTO t2 VALUES(2,3,4,5,6,7); CREATE INDEX t2abc ON t2(a+b+c); CREATE INDEX t2cd ON t2(c*d); CREATE INDEX t2def ON t2(d,e+25*f); SELECT sqlite_master.name FROM sqlite_master, explain('UPDATE t2 SET b=b+1') WHERE explain.opcode LIKE 'Open%' AND sqlite_master.rootpage=explain.p2 ORDER BY 1;
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+error: no such table: explain
+### indexexpr2-002.sql 6
+SELECT sqlite_master.name FROM sqlite_master, explain('UPDATE t2 SET c=c+1') WHERE explain.opcode LIKE 'Open%' AND sqlite_master.rootpage=explain.p2 ORDER BY 1;
+error: no such table: explain
+### indexexpr2-002.sql 7
+SELECT sqlite_master.name FROM sqlite_master, explain('UPDATE t2 SET c=c+1, f=NULL') WHERE explain.opcode LIKE 'Open%' AND sqlite_master.rootpage=explain.p2 ORDER BY 1;
+error: no such table: explain
+### insert-000.sql 54
+EXPLAIN INSERT INTO t4 SELECT x+2 FROM t4;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|24|0|NULL|0|NULL
+1|InitCoroutine|3|9|2|NULL|0|NULL
+2|OpenRead|0|2|1|1|0|NULL
+3|Rewind|0|8|0|NULL|0|NULL
+4|Column|0|0|4|NULL|0|NULL
+5|Add|5|4|2|NULL|0|NULL
+6|Yield|3|0|0|NULL|0|NULL
+7|Next|0|4|0|NULL|1|NULL
+8|EndCoroutine|3|0|0|NULL|0|NULL
+9|OpenEphemeral|1|1|0|NULL|0|NULL
+10|Yield|3|15|0|NULL|0|NULL
+11|MakeRecord|2|1|6|NULL|0|NULL
+12|NewRowid|1|7|0|NULL|0|NULL
+13|Insert|1|6|7|NULL|0|NULL
+14|Goto|0|10|0|NULL|0|NULL
+15|OpenWrite|2|2|1|1|0|NULL
+16|Rewind|1|22|0|NULL|0|NULL
+17|Column|1|0|2|NULL|0|NULL
+18|NewRowid|2|1|0|NULL|0|NULL
+19|MakeRecord|2|1|8|NULL|0|NULL
+20|Insert|2|8|1|t4|57|NULL
+21|Next|1|17|0|NULL|0|NULL
+22|Close|1|0|0|NULL|0|NULL
+23|Halt|0|0|0|NULL|0|NULL
+24|Transaction|1|1|1|0|1|NULL
+25|Integer|2|5|0|NULL|0|NULL
+26|Goto|0|1|0|NULL|0|NU
+### like-000.sql 31
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-000.sql 34
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 36
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 38
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'a' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 40
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'ab' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 42
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abcd' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 44
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abcde' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 46
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'a_c' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 48
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'ab%d' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 50
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'a_c%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 52
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE '%bcd' ORDER BY 1;
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 55
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 58
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1;
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-000.sql 60
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1;
+# id|parent|notused|detail
+3|0|216|SCAN t1
+12|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-000.sql 63
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 66
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'abc*' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 69
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'a[bc]d' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 71
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'a' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 73
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'abcd' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 75
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x GLOB 'abcde' ORDER BY 1;
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 78
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+# id|parent|notused|detail
+3|0|156|SEARCH t1 USING COVERING INDEX i1 (x>? AND x<?)
+### like-000.sql 80
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE +x LIKE 'abc%' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 82
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE ('ab' || 'c%') ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 85
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'abc%' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 88
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+# id|parent|notused|detail
+3|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 91
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'abc%' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+### like-000.sql 94
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x GLOB 'abc*' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+### like-000.sql 97
+EXPLAIN QUERY PLAN SELECT x FROM t1 WHERE x LIKE 'ABC%' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t1 USING COVERING INDEX i1
+### like-000.sql 99
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+# id|parent|notused|detail
+3|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 102
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'ABC%' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+### like-000.sql 105
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x GLOB 'ABC*' ORDER BY 1
+# id|parent|notused|detail
+3|0|216|SCAN t2 USING COVERING INDEX i2
+### like-000.sql 108
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'zz%';
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 110
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'zZ%';
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 112
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'Zz%';
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 114
+EXPLAIN QUERY PLAN SELECT x FROM t2 WHERE x LIKE 'ZZ%';
+# id|parent|notused|detail
+2|0|156|SEARCH t2 USING COVERING INDEX i2 (x>? AND x<?)
+### like-000.sql 117
+EXPLAIN QUERY PLAN SELECT x FROM t3 WHERE x LIKE 'zz%';
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+### like-000.sql 119
+EXPLAIN QUERY PLAN SELECT x FROM t3 WHERE x LIKE 'zZ%';
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+### like-000.sql 121
+EXPLAIN QUERY PLAN SELECT x FROM t3 WHERE x LIKE 'Zz%';
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+### like-000.sql 123
+EXPLAIN QUERY PLAN SELECT x FROM t3 WHERE x LIKE 'ZZ%';
+# id|parent|notused|detail
+2|0|156|SEARCH t3 USING COVERING INDEX i3 (x>? AND x<?)
+### like-002.sql 18
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+# id|parent|notused|detail
+3|0|216|SCAN t11
+### like-002.sql 21
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+# id|parent|notused|detail
+3|0|216|SCAN t11
+### like-002.sql 24
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11b (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 27
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY a;
+# id|parent|notused|detail
+3|0|216|SCAN t11
+### like-002.sql 30
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bnc (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 33
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bnc (b>? AND b<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 36
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b LIKE 'abc%' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bb (b>? AND b<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 39
+EXPLAIN QUERY PLAN SELECT b FROM t11 WHERE b GLOB 'abc*' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11bb (b>? AND b<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 42
+EXPLAIN QUERY PLAN SELECT c FROM t11 WHERE c LIKE 'abc%' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11cnc (c>? AND c<?)
+19|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 44
+EXPLAIN QUERY PLAN SELECT c FROM t11 WHERE c GLOB 'abc*' ORDER BY +a;
+# id|parent|notused|detail
+3|0|153|SEARCH t11 USING COVERING INDEX t11cb (c>? AND c<?)
+15|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 51
+EXPLAIN QUERY PLAN SELECT id FROM t12nc WHERE x LIKE 'abc%' ORDER BY +id;
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 52
+EXPLAIN QUERY PLAN SELECT id FROM t12b WHERE x LIKE 'abc%' ORDER BY +id;
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 53
+EXPLAIN QUERY PLAN SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 54
+EXPLAIN QUERY PLAN SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE nocase ORDER BY +id;
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 55
+EXPLAIN QUERY PLAN SELECT id FROM t12nc WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+# id|parent|notused|detail
+4|0|166|SEARCH t12nc USING INDEX sqlite_autoindex_t12nc_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-002.sql 56
+EXPLAIN QUERY PLAN SELECT id FROM t12b WHERE x LIKE 'abc%' COLLATE binary ORDER BY +id;
+# id|parent|notused|detail
+3|0|216|SCAN t12b
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-003.sql 2
+EXPLAIN QUERY PLAN SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '/';
+# id|parent|notused|detail
+3|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+### like-003.sql 3
+EXPLAIN QUERY PLAN SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '//';
+# id|parent|notused|detail
+2|0|216|SCAN t15
+### like-003.sql 4
+EXPLAIN QUERY PLAN SELECT y FROM t15 WHERE x LIKE 'ab/%d%' ESCAPE '';
+# id|parent|notused|detail
+2|0|216|SCAN t15
+### like-003.sql 7
+EXPLAIN QUERY PLAN SELECT y FROM t15 WHERE x LIKE 'abx%%' ESCAPE 'x' ORDER BY +y
+# id|parent|notused|detail
+4|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+21|0|0|USE TEMP B-TREE FOR ORDER BY
+### like-003.sql 9
+EXPLAIN QUERY PLAN SELECT y FROM t15 WHERE x LIKE '/%bc%' ESCAPE '/';
+# id|parent|notused|detail
+3|0|166|SEARCH t15 USING INDEX sqlite_autoindex_t15_1 (x>? AND x<?)
+### misc3-000.sql 36
+EXPLAIN BEGIN
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|0|0|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+### misc3-000.sql 38
+EXPLAIN COMMIT
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|1|0|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+### misc3-000.sql 40
+BEGIN; EXPLAIN ROLLBACK
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|3|0|NULL|0|NULL
+1|AutoCommit|1|1|0|NULL|0|NULL
+2|Halt|0|0|0|NULL|0|NULL
+3|Goto|0|1|0|NULL|0|NULL
+### misc3-000.sql 42
+CREATE TABLE ex1( a INTEGER DEFAULT 54321, b TEXT DEFAULT "hello", c REAL DEFAULT 3.1415926 ); CREATE UNIQUE INDEX ex1i1 ON ex1(a); EXPLAIN REINDEX;
+changes: 1
+changes: 1
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|65|0|NULL|0|NULL
+1|SorterOpen|2|0|1|k(2,,)|0|NULL
+2|OpenRead|0|13|0|3|0|NULL
+3|Rewind|0|9|0|NULL|0|NULL
+4|Column|0|0|2|54321|0|NULL
+5|Rowid|0|3|0|NULL|0|NULL
+6|MakeRecord|2|2|1|NULL|0|NULL
+7|SorterInsert|2|1|0|NULL|0|NULL
+8|Next|0|4|0|NULL|0|NULL
+9|Clear|14|0|0|NULL|0|NULL
+10|OpenWrite|1|14|0|k(2,,)|1|NULL
+11|SorterSort|2|19|0|NULL|0|NULL
+12|Goto|0|15|0|NULL|0|NULL
+13|SorterCompare|2|12|1|1|0|NULL
+14|Halt|2067|2|0|ex1.a|2|NULL
+15|SorterData|2|1|1|NULL|0|NULL
+16|SeekEnd|1|0|0|NULL|0|NULL
+17|IdxInsert|1|1|0|NULL|16|NULL
+18|SorterNext|2|13|0|NULL|0|NULL
+19|Close|0|0|0|NULL|0|NULL
+20|Close|1|0|0|NULL|0|NULL
+21|Close|2|0|0|NULL|0|NULL
+22|SorterOpen|5|0|1|k(2,,)|0|NULL
+23|OpenRead|3|2|0|2|0|NULL
+24|Rewind|3|30|0|NULL|0|NULL
+25|C
+### misc3-000.sql 44
+EXPLAIN SELECT a+123456789012, b*4.5678, c FROM ex1 ORDER BY +a, b DESC
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|24|0|NULL|0|NULL
+1|SorterOpen|1|6|0|k(2,B,-B)|0|NULL
+2|OpenRead|0|13|0|3|0|NULL
+3|Rewind|0|15|0|NULL|0|NULL
+4|Column|0|0|6|54321|0|NULL
+5|Add|7|6|3|NULL|0|NULL
+6|Column|0|1|6|hello|0|NULL
+7|Multiply|8|6|4|NULL|0|NULL
+8|Column|0|2|5|3.1415926|0|NULL
+9|RealAffinity|5|0|0|NULL|0|NULL
+10|Column|0|0|1|54321|0|NULL
+11|Column|0|1|2|hello|0|NULL
+12|MakeRecord|1|5|9|NULL|0|NULL
+13|SorterInsert|1|9|1|5|0|NULL
+14|Next|0|4|0|NULL|1|NULL
+15|OpenPseudo|2|10|6|NULL|0|NULL
+16|SorterSort|1|23|0|NULL|0|NULL
+17|SorterData|1|10|2|NULL|0|NULL
+18|Column|2|4|5|NULL|0|NULL
+19|Column|2|3|4|NULL|0|NULL
+20|Column|2|2|3|NULL|0|NULL
+21|ResultRow|3|3|0|NULL|0|NULL
+22|SorterNext|1|17|0|NULL|0|NULL
+23|Halt|0|0|0|NULL|0|NULL
+24|Transaction|0|0|12|1|1|NULL
+25|Int64|0|7|0|123456
+### orderby2-000.sql 3
+EXPLAIN QUERY PLAN SELECT e FROM t1, t2 WHERE a=1 AND d=b ORDER BY d, e;
+# id|parent|notused|detail
+4|0|45|SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)
+7|0|56|SEARCH t2 USING COVERING INDEX sqlite_autoindex_t2_1 (d=?)
+### orderby2-000.sql 5
+EXPLAIN QUERY PLAN SELECT e FROM t1, t2 WHERE a=1 AND d=b ORDER BY e;
+# id|parent|notused|detail
+4|0|45|SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)
+7|0|56|SEARCH t2 USING COVERING INDEX sqlite_autoindex_t2_1 (d=?)
+### orderby2-000.sql 7
+EXPLAIN QUERY PLAN SELECT e, b FROM t1, t2 WHERE a=1 ORDER BY d, e;
+# id|parent|notused|detail
+4|0|45|SEARCH t1 USING INTEGER PRIMARY KEY (rowid=?)
+7|0|216|SCAN t2 USING COVERING INDEX sqlite_autoindex_t2_1
+### orderby5-000.sql 1
+CREATE TABLE t1(a,b,c); CREATE INDEX t1bc ON t1(b,c); EXPLAIN QUERY PLAN SELECT DISTINCT a, b, c FROM t1 WHERE a=0;
+changes: 0
+changes: 0
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 2
+EXPLAIN QUERY PLAN SELECT DISTINCT a, c, b FROM t1 WHERE a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 3
+EXPLAIN QUERY PLAN SELECT DISTINCT a, c, b FROM t1 WHERE a='xyz' COLLATE nocase;
+# id|parent|notused|detail
+3|0|216|SCAN t1
+15|0|0|USE TEMP B-TREE FOR DISTINCT
+### orderby5-000.sql 4
+EXPLAIN QUERY PLAN SELECT DISTINCT a COLLATE nocase, c, b FROM t1 WHERE a='xyz';
+# id|parent|notused|detail
+3|0|216|SCAN t1
+15|0|0|USE TEMP B-TREE FOR DISTINCT
+### orderby5-000.sql 5
+EXPLAIN QUERY PLAN SELECT DISTINCT a COLLATE nocase, c, b FROM t1 WHERE a='xyz' COLLATE nocase;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 6
+EXPLAIN QUERY PLAN SELECT DISTINCT b, a, c FROM t1 WHERE a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 7
+EXPLAIN QUERY PLAN SELECT DISTINCT b, c, a FROM t1 WHERE a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 8
+EXPLAIN QUERY PLAN SELECT DISTINCT c, a, b FROM t1 WHERE a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 9
+EXPLAIN QUERY PLAN SELECT DISTINCT c, b, a FROM t1 WHERE a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 10
+EXPLAIN QUERY PLAN SELECT DISTINCT c, b, a FROM t1 WHERE +a=0;
+# id|parent|notused|detail
+4|0|225|SCAN t1 USING INDEX t1bc
+17|0|0|USE TEMP B-TREE FOR DISTINCT
+### orderby5-000.sql 11
+CREATE TABLE t2(a,b,c); CREATE INDEX t2bc ON t2(b,c); ANALYZE; INSERT INTO sqlite_stat1 VALUES('t1','t1bc','1000000 10 9'); INSERT INTO sqlite_stat1 VALUES('t2','t2bc','100 10 5'); ANALYZE sqlite_master; EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE a=0 ORDER BY a, b, c;
+changes: 0
+changes: 0
+changes: 0
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+4|0|91|SCAN t2 USING INDEX t2bc
+### orderby5-000.sql 12
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE likelihood(a=0, 0.03) ORDER BY a, b, c;
+# id|parent|notused|detail
+3|0|215|SCAN t1
+20|0|0|USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY
+### orderby5-000.sql 13
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE +a=0 ORDER BY a, b, c;
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### orderby5-000.sql 14
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=0 ORDER BY b, a, c;
+# id|parent|notused|detail
+4|0|224|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 15
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=0 ORDER BY b, c, a;
+# id|parent|notused|detail
+4|0|224|SCAN t1 USING INDEX t1bc
+### orderby5-000.sql 16
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=0 ORDER BY a, c, b;
+# id|parent|notused|detail
+3|0|215|SCAN t1
+20|0|0|USE TEMP B-TREE FOR LAST 2 TERMS OF ORDER BY
+### orderby5-000.sql 17
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=0 ORDER BY c, a, b;
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### orderby5-000.sql 18
+EXPLAIN QUERY PLAN SELECT * FROM t1 WHERE a=0 ORDER BY c, b, a;
+# id|parent|notused|detail
+3|0|215|SCAN t1
+13|0|0|USE TEMP B-TREE FOR ORDER BY
+### orderby5-000.sql 19
+CREATE TABLE t3(a INTEGER PRIMARY KEY, b, c, d, e, f); CREATE INDEX t3bcde ON t3(b, c, d, e); EXPLAIN QUERY PLAN SELECT a FROM t3 WHERE b=2 AND c=3 ORDER BY d DESC, e DESC, b, c, a DESC;
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|55|SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)
+### orderby5-000.sql 20
+DROP TABLE t3; CREATE TABLE t3(a INTEGER PRIMARY KEY, b, c, d, e, f) WITHOUT rowid; CREATE INDEX t3bcde ON t3(b, c, d, e); EXPLAIN QUERY PLAN SELECT a FROM t3 WHERE b=2 AND c=3 ORDER BY d DESC, e DESC, b, c, a DESC;
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|55|SEARCH t3 USING COVERING INDEX t3bcde (b=? AND c=?)
+### orderby5-000.sql 25
+explain query plan SELECT typeID, key, value FROM Records WHERE typeID = 2 AND key = 'x' ORDER BY key, value;
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=? AND key=?)
+### orderby5-000.sql 26
+explain query plan SELECT typeID, key, value FROM Records WHERE typeID = 2 AND (key = 'x' COLLATE binary) ORDER BY key, value;
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)
+### orderby5-000.sql 27
+explain query plan SELECT typeID, key, value FROM Records WHERE typeID = 2 ORDER BY key, value;
+# id|parent|notused|detail
+3|0|56|SEARCH Records USING COVERING INDEX RecordsIndex (typeID=?)
+### pagesize-000.sql 2
+EXPLAIN PRAGMA page_size
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|5|0|NULL|0|NULL
+1|Expire|1|1|0|NULL|0|NULL
+2|Int64|0|1|0|4096|0|NULL
+3|ResultRow|1|1|0|NULL|0|NULL
+4|Halt|0|0|0|NULL|0|NULL
+5|Goto|0|1|0|NULL|0|NULL
+### pragma4-000.sql 2
+EXPLAIN PRAGMA integrity_check
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|103|100|NULL|0|NULL
+1|Expire|1|1|0|NULL|0|NULL
+2|Integer|99|1|0|NULL|0|NULL
+3|Null|0|8|10|NULL|0|NULL
+4|IntegrityCk|1|2|8|[10184,1]|0|NULL
+5|IsNull|2|11|0|NULL|0|NULL
+6|String8|0|3|0|*** in database main ***
+|0|NULL
+7|Concat|2|3|3|NULL|0|NULL
+8|ResultRow|3|1|0|NULL|0|NULL
+9|IfPos|1|11|1|NULL|0|NULL
+10|Halt|0|0|0|NULL|0|NULL
+11|String8|0|2|0|wrong # of entries in index |0|NULL
+12|OpenRead|1|10184|0|1|0|NULL
+13|Integer|0|7|0|NULL|0|NULL
+14|Rewind|1|18|0|NULL|0|NULL
+15|AddImm|7|1|0|NULL|0|NULL
+16|Column|1|0|3|NULL|128|NULL
+17|Next|1|15|0|NULL|0|NULL
+18|OpenRead|1|1|0|5|0|NULL
+19|Integer|0|7|0|NULL|0|NULL
+20|Rewind|1|52|0|NULL|0|NULL
+21|AddImm|7|1|0|NULL|0|NULL
+22|Column|1|4|3|NULL|128|NULL
+23|IsType|1|28|0|5|28|NULL
+24|String8|0|3|0|NUMERIC value 
+### select7-000.sql 25
+CREATE VIEW v0 as SELECT x, y FROM t01 UNION SELECT x FROM t02; EXPLAIN QUERY PLAN SELECT * FROM v0 WHERE x='0' OR y;
+changes: 1
+error: SELECTs to the left and right of UNION do not have the same number of result columns
+### selectA-000.sql 207
+EXPLAIN SELECT a, b FROM t8 INTERSECT SELECT c, d FROM t9 ORDER BY a;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|Integer|0|1|0|NULL|0|NULL
+2|InitCoroutine|4|19|3|NULL|0|NULL
+3|SorterOpen|2|5|0|k(2,B,B)|0|NULL
+4|OpenRead|1|19|0|2|0|NULL
+5|Rewind|1|11|0|NULL|0|NULL
+6|Column|1|0|8|NULL|0|NULL
+7|Column|1|1|9|NULL|0|NULL
+8|MakeRecord|8|2|12|NULL|0|NULL
+9|SorterInsert|2|12|8|2|0|NULL
+10|Next|1|6|0|NULL|1|NULL
+11|OpenPseudo|3|13|5|NULL|0|NULL
+12|SorterSort|2|18|0|NULL|0|NULL
+13|SorterData|2|13|3|NULL|0|NULL
+14|Column|3|1|11|NULL|0|NULL
+15|Column|3|0|10|NULL|0|NULL
+16|Yield|4|0|0|NULL|0|NULL
+17|SorterNext|2|13|0|NULL|0|NULL
+18|EndCoroutine|4|0|0|NULL|0|NULL
+19|InitCoroutine|5|46|20|NULL|0|NULL
+20|SorterOpen|4|5|0|k(2,B,B)|0|NULL
+21|OpenRead|0|20|0|2|0|NULL
+22|Rewind|0|28|0|NULL|0|NULL
+23|Column|0|0|14|NULL|0|NULL
+24|Column|0|1|15|NULL|0|NULL
+25
+### selectA-000.sql 208
+EXPLAIN SELECT a, b FROM t8 INTERSECT SELECT c, d FROM t9 ORDER BY t8.a;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|Integer|0|1|0|NULL|0|NULL
+2|InitCoroutine|4|19|3|NULL|0|NULL
+3|SorterOpen|2|5|0|k(2,B,B)|0|NULL
+4|OpenRead|1|19|0|2|0|NULL
+5|Rewind|1|11|0|NULL|0|NULL
+6|Column|1|0|8|NULL|0|NULL
+7|Column|1|1|9|NULL|0|NULL
+8|MakeRecord|8|2|12|NULL|0|NULL
+9|SorterInsert|2|12|8|2|0|NULL
+10|Next|1|6|0|NULL|1|NULL
+11|OpenPseudo|3|13|5|NULL|0|NULL
+12|SorterSort|2|18|0|NULL|0|NULL
+13|SorterData|2|13|3|NULL|0|NULL
+14|Column|3|1|11|NULL|0|NULL
+15|Column|3|0|10|NULL|0|NULL
+16|Yield|4|0|0|NULL|0|NULL
+17|SorterNext|2|13|0|NULL|0|NULL
+18|EndCoroutine|4|0|0|NULL|0|NULL
+19|InitCoroutine|5|46|20|NULL|0|NULL
+20|SorterOpen|4|5|0|k(2,B,B)|0|NULL
+21|OpenRead|0|20|0|2|0|NULL
+22|Rewind|0|28|0|NULL|0|NULL
+23|Column|0|0|14|NULL|0|NULL
+24|Column|0|1|15|NULL|0|NULL
+25
+### selectA-000.sql 209
+EXPLAIN SELECT a, b FROM t8 INTERSECT SELECT c, d FROM t9 ORDER BY 1;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|Integer|0|1|0|NULL|0|NULL
+2|InitCoroutine|4|19|3|NULL|0|NULL
+3|SorterOpen|2|5|0|k(2,B,B)|0|NULL
+4|OpenRead|1|19|0|2|0|NULL
+5|Rewind|1|11|0|NULL|0|NULL
+6|Column|1|0|8|NULL|0|NULL
+7|Column|1|1|9|NULL|0|NULL
+8|MakeRecord|8|2|12|NULL|0|NULL
+9|SorterInsert|2|12|8|2|0|NULL
+10|Next|1|6|0|NULL|1|NULL
+11|OpenPseudo|3|13|5|NULL|0|NULL
+12|SorterSort|2|18|0|NULL|0|NULL
+13|SorterData|2|13|3|NULL|0|NULL
+14|Column|3|1|11|NULL|0|NULL
+15|Column|3|0|10|NULL|0|NULL
+16|Yield|4|0|0|NULL|0|NULL
+17|SorterNext|2|13|0|NULL|0|NULL
+18|EndCoroutine|4|0|0|NULL|0|NULL
+19|InitCoroutine|5|46|20|NULL|0|NULL
+20|SorterOpen|4|5|0|k(2,B,B)|0|NULL
+21|OpenRead|0|20|0|2|0|NULL
+22|Rewind|0|28|0|NULL|0|NULL
+23|Column|0|0|14|NULL|0|NULL
+24|Column|0|1|15|NULL|0|NULL
+25
+### selectA-000.sql 210
+EXPLAIN SELECT a, b FROM t8 INTERSECT SELECT c, d FROM t9 ORDER BY c;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|Integer|0|1|0|NULL|0|NULL
+2|InitCoroutine|4|19|3|NULL|0|NULL
+3|SorterOpen|2|5|0|k(2,B,B)|0|NULL
+4|OpenRead|1|19|0|2|0|NULL
+5|Rewind|1|11|0|NULL|0|NULL
+6|Column|1|0|8|NULL|0|NULL
+7|Column|1|1|9|NULL|0|NULL
+8|MakeRecord|8|2|12|NULL|0|NULL
+9|SorterInsert|2|12|8|2|0|NULL
+10|Next|1|6|0|NULL|1|NULL
+11|OpenPseudo|3|13|5|NULL|0|NULL
+12|SorterSort|2|18|0|NULL|0|NULL
+13|SorterData|2|13|3|NULL|0|NULL
+14|Column|3|1|11|NULL|0|NULL
+15|Column|3|0|10|NULL|0|NULL
+16|Yield|4|0|0|NULL|0|NULL
+17|SorterNext|2|13|0|NULL|0|NULL
+18|EndCoroutine|4|0|0|NULL|0|NULL
+19|InitCoroutine|5|46|20|NULL|0|NULL
+20|SorterOpen|4|5|0|k(2,B,B)|0|NULL
+21|OpenRead|0|20|0|2|0|NULL
+22|Rewind|0|28|0|NULL|0|NULL
+23|Column|0|0|14|NULL|0|NULL
+24|Column|0|1|15|NULL|0|NULL
+25
+### selectA-000.sql 211
+EXPLAIN SELECT a, b FROM t8 INTERSECT SELECT c, d FROM t9 ORDER BY t9.c;
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|51|0|NULL|0|NULL
+1|Integer|0|1|0|NULL|0|NULL
+2|InitCoroutine|4|19|3|NULL|0|NULL
+3|SorterOpen|2|5|0|k(2,B,B)|0|NULL
+4|OpenRead|1|19|0|2|0|NULL
+5|Rewind|1|11|0|NULL|0|NULL
+6|Column|1|0|8|NULL|0|NULL
+7|Column|1|1|9|NULL|0|NULL
+8|MakeRecord|8|2|12|NULL|0|NULL
+9|SorterInsert|2|12|8|2|0|NULL
+10|Next|1|6|0|NULL|1|NULL
+11|OpenPseudo|3|13|5|NULL|0|NULL
+12|SorterSort|2|18|0|NULL|0|NULL
+13|SorterData|2|13|3|NULL|0|NULL
+14|Column|3|1|11|NULL|0|NULL
+15|Column|3|0|10|NULL|0|NULL
+16|Yield|4|0|0|NULL|0|NULL
+17|SorterNext|2|13|0|NULL|0|NULL
+18|EndCoroutine|4|0|0|NULL|0|NULL
+19|InitCoroutine|5|46|20|NULL|0|NULL
+20|SorterOpen|4|5|0|k(2,B,B)|0|NULL
+21|OpenRead|0|20|0|2|0|NULL
+22|Rewind|0|28|0|NULL|0|NULL
+23|Column|0|0|14|NULL|0|NULL
+24|Column|0|1|15|NULL|0|NULL
+25
+### selectA-000.sql 212
+EXPLAIN SELECT a, b FROM t8 UNION SELECT c, d FROM t9 ORDER BY a COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|86|0|NULL|0|NULL
+1|InitCoroutine|1|70|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|65|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 213
+EXPLAIN SELECT a, b FROM t8 UNION SELECT c, d FROM t9 ORDER BY t8.a COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|86|0|NULL|0|NULL
+1|InitCoroutine|1|70|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|65|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 214
+EXPLAIN SELECT a, b FROM t8 UNION SELECT c, d FROM t9 ORDER BY 1 COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|86|0|NULL|0|NULL
+1|InitCoroutine|1|70|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|65|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 215
+EXPLAIN SELECT a, b FROM t8 UNION SELECT c, d FROM t9 ORDER BY c COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|86|0|NULL|0|NULL
+1|InitCoroutine|1|70|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|65|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 216
+EXPLAIN SELECT a, b FROM t8 UNION SELECT c, d FROM t9 ORDER BY t9.c COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|86|0|NULL|0|NULL
+1|InitCoroutine|1|70|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|65|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 217
+EXPLAIN SELECT a, b FROM t8 EXCEPT SELECT c, d FROM t9 ORDER BY b, c COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|72|0|NULL|0|NULL
+1|InitCoroutine|1|56|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|51|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 218
+EXPLAIN SELECT a, b FROM t8 EXCEPT SELECT c, d FROM t9 ORDER BY 2, 1 COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|72|0|NULL|0|NULL
+1|InitCoroutine|1|56|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|51|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 219
+EXPLAIN SELECT a, b FROM t8 EXCEPT SELECT c, d FROM t9 ORDER BY d, a COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|72|0|NULL|0|NULL
+1|InitCoroutine|1|56|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|51|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 220
+EXPLAIN SELECT a, b FROM t8 EXCEPT SELECT * FROM t9 ORDER BY t9.d, c COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|72|0|NULL|0|NULL
+1|InitCoroutine|1|56|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|51|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectA-000.sql 221
+EXPLAIN SELECT * FROM t8 EXCEPT SELECT c, d FROM t9 ORDER BY d, t8.a COLLATE NOCASE
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|72|0|NULL|0|NULL
+1|InitCoroutine|1|56|2|NULL|0|NULL
+2|Integer|0|2|0|NULL|0|NULL
+3|InitCoroutine|5|20|4|NULL|0|NULL
+4|SorterOpen|3|5|0|k(2,B,B)|0|NULL
+5|OpenRead|2|19|0|2|0|NULL
+6|Rewind|2|12|0|NULL|0|NULL
+7|Column|2|0|9|NULL|0|NULL
+8|Column|2|1|10|NULL|0|NULL
+9|MakeRecord|9|2|13|NULL|0|NULL
+10|SorterInsert|3|13|9|2|0|NULL
+11|Next|2|7|0|NULL|1|NULL
+12|OpenPseudo|4|14|5|NULL|0|NULL
+13|SorterSort|3|19|0|NULL|0|NULL
+14|SorterData|3|14|4|NULL|0|NULL
+15|Column|4|1|12|NULL|0|NULL
+16|Column|4|0|11|NULL|0|NULL
+17|Yield|5|0|0|NULL|0|NULL
+18|SorterNext|3|14|0|NULL|0|NULL
+19|EndCoroutine|5|0|0|NULL|0|NULL
+20|InitCoroutine|6|51|21|NULL|0|NULL
+21|SorterOpen|5|5|0|k(2,B,B)|0|NULL
+22|OpenRead|1|20|0|2|0|NULL
+23|Rewind|1|29|0|NULL|0|NULL
+24|Column|1|0|15|NULL|0
+### selectD-001.sql 16
+CREATE TABLE t41(a INTEGER PRIMARY KEY, b INTEGER); CREATE TABLE t42(d INTEGER PRIMARY KEY, e INTEGER); CREATE TABLE t43(f INTEGER PRIMARY KEY, g INTEGER); EXPLAIN QUERY PLAN SELECT * FROM t41 LEFT JOIN (SELECT count(*) AS cnt, x1.d FROM (t42 INNER JOIN t43 ON d=g) AS x1 WHERE x1.d>5 GROUP BY x1.d) AS x2 ON t41.b=x2.d;
+changes: 1
+changes: 1
+changes: 1
+# id|parent|notused|detail
+3|0|0|MATERIALIZE x2
+11|3|216|SCAN t43
+13|3|45|SEARCH t42 USING INTEGER PRIMARY KEY (rowid=?)
+18|3|0|USE TEMP B-TREE FOR GROUP BY
+56|0|216|SCAN t41
+62|0|0|BLOOM FILTER ON x2 (d=?)
+72|0|47|SEARCH x2 USING AUTOMATIC COVERING INDEX (d=?) LEFT-JOIN
+### skipscan6-000.sql 2
+EXPLAIN QUERY PLAN SELECT COUNT(*) FROM t1 WHERE bb=21 AND aa=1 AND dd BETWEEN 1413833728 and 1413837331;
+# id|parent|notused|detail
+3|0|55|SEARCH t1 USING COVERING INDEX ix (aa=? AND bb=?)
+### skipscan6-000.sql 4
+EXPLAIN QUERY PLAN SELECT COUNT(*) FROM t1 WHERE bb=21 AND aa=1 AND dd BETWEEN 1413833728 and 1413837331;
+# id|parent|notused|detail
+3|0|46|SEARCH t1 USING COVERING INDEX good (bb=? AND aa=? AND dd>? AND dd<?)
+### tkt-78e04e52ea-000.sql 5
+EXPLAIN QUERY PLAN SELECT "" FROM "" WHERE "" LIKE '1e5%';
+# id|parent|notused|detail
+2|0|207|SCAN  USING COVERING INDEX i1
+### tkt-78e04e52ea-000.sql 7
+CREATE INDEX "" ON t2(x); EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE x=5;
+changes: 0
+# id|parent|notused|detail
+2|0|56|SEARCH t2 USING COVERING INDEX  (x=?)
+### tkt-78e04e52ea-000.sql 8
+DROP INDEX ""; EXPLAIN QUERY PLAN SELECT * FROM t2 WHERE x=2;
+changes: 0
+# id|parent|notused|detail
+2|0|216|SCAN t2
+### update2-000.sql 33
+EXPLAIN UPDATE x1 SET c=c+1 WHERE b='a'
+# addr|opcode|p1|p2|p3|p4|p5|comment
+0|Init|0|35|0|NULL|0|NULL
+1|Null|0|5|6|NULL|0|NULL
+2|OpenEphemeral|2|0|5|NULL|0|NULL
+3|OpenWrite|0|12|0|3|8|NULL
+4|OpenWrite|1|13|0|k(3,,,)|2|NULL
+5|String8|0|10|0|a|0|NULL
+6|SeekGE|1|12|10|1|0|NULL
+7|IdxGT|1|12|10|1|0|NULL
+8|DeferredSeek|1|0|0|NULL|0|NULL
+9|Rowid|0|6|0|NULL|0|NULL
+10|Insert|2|5|6|NULL|0|NULL
+11|Next|1|7|0|NULL|0|NULL
+12|OpenWrite|0|12|0|3|0|NULL
+13|OpenWrite|1|13|0|k(3,,,)|0|NULL
+14|Rewind|2|34|0|NULL|0|NULL
+15|Rowid|2|6|0|NULL|0|NULL
+16|NotExists|0|33|6|NULL|0|NULL
+17|Null|0|7|0|NULL|0|NULL
+18|Column|0|1|8|NULL|0|NULL
+19|Column|0|2|12|NULL|0|NULL
+20|Add|13|12|9|NULL|0|NULL
+21|Affinity|7|1|0|D|0|NULL
+22|SCopy|8|2|0|NULL|0|NULL
+23|SCopy|9|3|0|NULL|0|NULL
+24|IntCopy|6|4|0|NULL|0|NULL
+25|MakeRecord|2|3|1|NULL|0|NULL
+26|MakeRecord|7|3|11|N
+### view-002.sql 23
+EXPLAIN SELECT * FROM v5;
+error: no such table: main.t1
+### view-002.sql 25
+EXPLAIN SELECT * FROM v5 AS a, t2 AS b WHERE a.w=b.y;
+error: no such table: main.t1
+### view-002.sql 27
+EXPLAIN SELECT * FROM t2 AS b, v5 AS a WHERE a.w=b.y;
+error: no such table: main.t1
+### view-002.sql 29
+EXPLAIN SELECT * FROM t1 AS a, v5 AS b, t2 AS c WHERE a.x=b.v AND b.w=c.y;
+error: no such table: t1
+### where2-000.sql 2
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 CROSS JOIN t3, t4 WHERE t4.g=1 AND t1.a=t4.h AND t2.c=t1.b AND t3.e=t2.d;
+# id|parent|notused|detail
+7|0|216|SCAN t1
+9|0|45|SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)
+12|0|45|SEARCH t4 USING INTEGER PRIMARY KEY (rowid=?)
+18|0|45|SEARCH t3 USING INTEGER PRIMARY KEY (rowid=?)
+### where2-000.sql 3
+EXPLAIN QUERY PLAN SELECT * FROM t1, t2 CROSS JOIN t3, t4 WHERE t2.c=1 AND t3.e=t2.d AND t4.g=t3.f AND t1.a=t4.h;
+# id|parent|notused|detail
+7|0|45|SEARCH t2 USING INTEGER PRIMARY KEY (rowid=?)
+10|0|216|SCAN t1
+12|0|45|SEARCH t3 USING INTEGER PRIMARY KEY (rowid=?)
+15|0|45|SEARCH t4 USING INTEGER PRIMARY KEY (rowid=?)

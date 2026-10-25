@@ -2045,7 +2045,7 @@
 
 ;; ---------------------------------------------------------------------- covering-index full scans
 
-(defn- log-est
+(defn log-est
   "sqlite3LogEst."
   ^long [^long x]
   (let [a [0 2 3 5 6 7 8 9]]
@@ -2055,7 +2055,7 @@
       (let [i (- 60 (Long/numberOfLeadingZeros x))]
         (+ (nth a (bit-and (unsigned-bit-shift-right x i) 7)) 40 (* i 10) -10)))))
 
-(defn- col-size-est
+(defn col-size-est
   "Column width estimate from the declared type (sqlite3AffinityType's szEst)."
   ^long [col]
   (let [t (:type col)]
@@ -2252,6 +2252,15 @@
         (fn [env] (run-select-rows sub env))
         (let [cache (volatile! nil)]
           (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))))
+
+(def ^:dynamic *eqp* nil)
+(defonce plan-hook (atom nil))
+(defn split-and* [e] (when e (split-and e)))
+(defn strip-ast [a]
+  (cond (map? a) (into {} (for [[k x] a :when (not (#{:ps :pe :paren} k))] [k (strip-ast x)]))
+        (vector? a) (mapv strip-ast a)
+        (sequential? a) (mapv strip-ast a)
+        :else a))
 
 (defn compile-core
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
@@ -2455,6 +2464,26 @@
                               {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or ocoll (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
                           order))))
+          _ (when *eqp*
+              (when-let [h @plan-hook]
+                (let [rc-ast (fn [rc] (if-let [[s i] (:star-col rc)] {:op :colref :slot (:slot s) :idx i} (:e rc)))
+                      order-exprs (when order-c
+                                    (vec (map-indexed (fn [i term]
+                                                        (let [o (nth order-c i) ri (:ri o)]
+                                                          (if ri (rc-ast (nth rcols ri)) (subst (first (strip-collates (:e term)))))))
+                                                      order)))
+                      group-exprs (when (seq (:group core))
+                                    (vec (for [g (:group core)]
+                                           (let [g (subst g)]
+                                             (if (and (= :lit (:op g)) (= :int (:kind g)))
+                                               (rc-ast (nth rcols (dec (long (lit-value g)))))
+                                               g)))))]
+                  (h {:db (:db ctx2) :ctx ctx2 :sources sources :from from :where (some-> (:where core) subst)
+                      :refs (:refs ctx2) :order-exprs order-exprs
+                      :order-descs (mapv :desc order-c) :order-colls (mapv :coll order-c)
+                      :group-exprs group-exprs :group-colls (mapv #(or (:coll %) "BINARY") group-c)
+                      :distinct (:distinct core) :result-exprs (mapv rc-ast rcols)
+                      :ncols (count rcols) :is-agg is-agg :limit limit}))))
           nsrc (count sources)
           don @deferred-on
           win-specs @wins
