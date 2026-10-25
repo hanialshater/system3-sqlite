@@ -443,7 +443,8 @@
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
-                   alt (:alt r)]
+                   alt (:alt r)
+                   _ (when-let [dp (:depth-probe ctx)] (swap! dp conj (long (:depth r))))]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
                (mk (if alt
@@ -1087,14 +1088,42 @@
            (do (when (:pending ctx) (reset! (:pending ctx) m)) nil)
            (throw ex)))))
 
-(declare compile-window compile-function*)
+(declare compile-window compile-function* compile-function**)
 
 (defn compile-function [ctx e]
   (if (:over e)
     (compile-window ctx e)
     (compile-function* ctx e)))
 
+(defn- outer-agg-scope
+  "For an aggregate whose arguments only reference outer queries, the scope of the query it belongs to."
+  [ctx e]
+  (when (and (agg-call? e) (not (:in-agg ctx)) (seq (:args e)))
+    (let [dp (atom [])
+          pctx (assoc ctx :depth-probe dp :aggs nil :in-agg true :wins nil :pending nil :refs nil)]
+      (when (try (doseq [a (:args e)] (cx pctx a)) true (catch clojure.lang.ExceptionInfo _ false))
+        (let [ds @dp]
+          (when (and (seq ds) (every? pos? ds))
+            (let [d (long (apply min ds))
+                  sc (loop [sc (:scope ctx) k d] (if (and sc (pos? k)) (recur (:parent sc) (dec k)) sc))]
+              (when (:q-aggs sc) sc))))))))
+
 (defn- compile-function* [ctx e]
+  (if-let [sc (outer-agg-scope ctx e)]
+    (let [actx (assoc ctx :in-agg true :aggs nil :wins nil)
+          args (mapv #(cx actx %) (:args e))
+          aggs (:q-aggs sc)
+          idx (count @aggs)
+          slot (long (:q-agg-slot sc))]
+      (swap! aggs conj {:name (:name e) :args args :nargs (count args) :ord nil
+                        :star (:star e) :distinct (:distinct e)
+                        :filter (when (:filter e) (condf (cx actx (:filter e))))
+                        :coll (or (:coll (first args)) "BINARY")})
+      (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
+          :coll (when (#{"min" "max"} (:name e)) (:coll (first args)))))
+    (compile-function** ctx e)))
+
+(defn- compile-function** [ctx e]
   (let [name (:name e) n (count (:args e))
         _ (when (and (:filter e) (not (agg-call? e)))
             (err (str "FILTER may not be used with non-aggregate " name "()")))
@@ -1102,14 +1131,17 @@
         _ (when ferr (reset! (:pending ctx) ferr))
         agg (and (agg-call? e) (:aggs ctx) (not (:in-agg ctx)))
         actx (if agg (assoc ctx :in-agg true :aggs nil :wins nil) ctx)
-        args (compile-args actx (:args e))]
+        args (compile-args actx (:args e))
+        ordc (when (and agg (seq (:order e))) (mapv #(cx actx (:e %)) (:order e)))]
     (cond
       (or ferr (nil? args)) (const-c nil)
       agg
       (let [aggs (:aggs ctx)
             idx (count @aggs)
             slot (long (:agg-slot ctx))]
-        (swap! aggs conj {:name name :args args :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
+        (swap! aggs conj {:name name :args (into args ordc) :nargs (count args)
+                          :ord (mapv (fn [o c] {:coll (or (:coll c) "BINARY") :desc (:desc o)}) (:order e) ordc)
+                          :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
                           :filter (when (:filter e) (condf (cx actx (:filter e))))
                           :coll (or (:coll (first args)) "BINARY")})
         (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
@@ -1222,7 +1254,9 @@
                  (let [r (aget rs 0)] (if (overflow? (aget rs 1)) r (+ r (aget rs 1))))
                  (double isum))))))
 
-(defn make-acc
+(declare make-acc compare-keys-fn)
+
+(defn make-acc*
   "Returns {:step (fn [vals] -> updated?) :final (fn [])} for one aggregate spec."
   [spec]
   (let [name (:name spec) coll (:coll spec)
@@ -1276,6 +1310,22 @@
                    (.append sb (v/text-of x)))
                  false)
          :final (fn [] (when (aget has 0) (.toString sb)))}))))
+
+(defn make-acc
+  "make-acc*, plus aggregate ORDER BY: the order keys follow the arguments; rows are fed in key order at the end."
+  [spec]
+  (if-let [ord (seq (:ord spec))]
+    (let [n (long (:nargs spec))
+          rows (java.util.ArrayList.)
+          kc (compare-keys-fn (map (fn [o] [(:coll o) (:desc o) nil]) ord))]
+      {:step (fn [vals] (.add rows [(subvec (vec vals) 0 n) (subvec (vec vals) n)]) false)
+       :final (fn []
+                (let [inner (make-acc* (assoc spec :args (subvec (vec (:args spec)) 0 n) :ord nil))
+                      arr (.toArray rows)]
+                  (java.util.Arrays/sort arr (reify Comparator (compare [_ a b] (.compare ^Comparator kc (second a) (second b)))))
+                  (doseq [r arr] ((:step inner) (first r)))
+                  ((:final inner))))})
+    (make-acc* spec)))
 
 ;; ====================================================================== window functions
 
@@ -1357,7 +1407,7 @@
           idx (count @wins)
           slot (long (:win-slot ctx))]
       (swap! wins conj {:name name :agg aggf :args args :filter filt :part part :order order :frame frame
-                        :star (:star e) :coll (or (:coll (first args)) "BINARY")
+                        :star (or (:star e) (and (= name "count") (empty? args))) :coll (or (:coll (first args)) "BINARY")
                         :copy (boolean (:win-copy ctx))
                         :fkey (strip-pos e)
                         :wkey [pkey okey
@@ -1871,20 +1921,58 @@
 (defn- eval-limit [ctx e what]
   (when e
     (let [c (cx (assoc ctx :scope nil) e)
-          x ((:f c) nil)
+          x ((:f c) (object-array (+ 2 (long @(:slots ctx)))))
           x (if (string? x) (v/apply-numeric-text x true) x)
           x (if (instance? Double x) (v/integer-affinity (double x)) x)]
       (if (instance? Long x)
         x
         (err "datatype mismatch")))))
 
+(defn- outer-only-agg?
+  "An aggregate whose argument columns are all qualified by tables not in this FROM clause."
+  [e own]
+  (let [cols (atom [])]
+    (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
+                                      (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
+                         (sequential? x) (doseq [y x] (w y))))]
+      (w (:args e)))
+    (and (seq @cols) (every? #(and (:table %) (not (own (lc (:table %))))) @cols))))
+
+(defn- sub-outer-agg?
+  "Does a scalar subquery hold an aggregate that belongs to the enclosing query (own = its FROM names)?"
+  [sel own]
+  (let [b (:body sel)
+        found (atom false)]
+    (when (= :core (:type b))
+      (let [inner (set (map #(lc (or (:alias %) (:table %))) (:from b)))
+            no-from (empty? (:from b))]
+        (letfn [(outer-col? [c] (if (:table c)
+                                  (and (own (lc (:table c))) (not (inner (lc (:table c)))))
+                                  no-from))
+                (agg-ok? [e] (let [cols (atom [])]
+                               (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
+                                                                 (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
+                                                    (sequential? x) (doseq [y x] (w y))))]
+                                 (w (:args e)))
+                               (and (seq @cols) (every? outer-col? @cols))))
+                (walk [e] (cond (map? e) (cond (#{:subq :exists} (:op e)) nil
+                                               (and (agg-call? e) (agg-ok? e)) (reset! found true)
+                                               :else (doseq [[k x] e :when (not= k :select)] (walk x)))
+                                (sequential? e) (doseq [x e] (walk x))))]
+          (doseq [rc (:cols b)] (walk (:e rc)))
+          (walk (:where b)))))
+    @found))
+
 (defn- core-has-agg? [core]
-  (let [found (atom false)]
+  (let [found (atom false)
+        own (set (map #(lc (or (:alias %) (:table %))) (:from core)))]
     (letfn [(walk [e]
               (cond
                 (map? e) (cond
+                           (and (= :subq (:op e)) (seq own) (sub-outer-agg? (:select e) own)) (reset! found true)
                            (#{:subq :exists} (:op e)) nil
                            (and (= :in (:op e)) (:select e)) (walk (:e e))
+                           (and (agg-call? e) (outer-only-agg? e own)) nil
                            (agg-call? e) (reset! found true)
                            :else (doseq [[k x] e :when (not= k :select)] (walk x)))
                 (sequential? e) (doseq [x e] (walk x))))]
@@ -2109,7 +2197,10 @@
                                               (mapv (fn [k] [(:slot (nth srcs k)) (find-in-source (nth srcs k) n)]) match)))))
                             sources (distinct (map lc (apply concat (remove nil? join-conds)))))
                     sources)
-          scope {:sources sources :parent (:scope ctx)}
+          is-agg (or (seq (:group core)) (core-has-agg? core))
+          aggs (atom [])
+          agg-slot (new-slot! ctx)
+          scope {:sources sources :parent (:scope ctx) :q-aggs (when is-agg aggs) :q-agg-slot agg-slot}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
           left-join (vec (for [item (or from [])] (boolean (#{:left :natural-left :full :natural-full} (:join item)))))
@@ -2118,9 +2209,6 @@
           rcols (expand-star ctx2 sources (:cols core))
           names (mapv #(col-name ctx2 %) rcols)
           aliases (mapv #(lc (:alias %)) rcols)
-          is-agg (or (seq (:group core)) (core-has-agg? core))
-          aggs (atom [])
-          agg-slot (new-slot! ctx)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
           wins (atom [])
           win-slot (new-slot! ctx)
