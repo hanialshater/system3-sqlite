@@ -16,12 +16,20 @@
   (let [i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) (lc n))]
     (when (>= i 0) i)))
 
+(defn parent-key
+  "Storage key of the parent table of fk: it lives in the child's own database."
+  [db child fk]
+  (let [d (:db child) l (lc (:table fk))]
+    (if d
+      (let [k (str d "." l)] (if (or (get-in db [:tables k]) (not= d "main")) k l))
+      l)))
+
 (defn parent-cols
   "Column indexes of the parent key an fk refers to; errors with 'foreign key mismatch' when it is not a key."
   [db child fk]
-  (let [ptbl (get-in db [:tables (lc (:table fk))])
+  (let [ptbl (get-in db [:tables (parent-key db child fk)])
         mismatch #(err (str "foreign key mismatch - \"" (:name child) "\" referencing \"" (:table fk) "\""))]
-    (when-not ptbl (err (str "no such table: main." (:table fk))))
+    (when-not ptbl (err (str "no such table: " (if (and (:db child) (not= "main" (:db child))) (:db child) "main") "." (:table fk))))
     (if-let [to (:to fk)]
       (let [idxs (mapv #(or (col-index ptbl %) (mismatch)) to)
             ok (or (and (= 1 (count idxs)) (= (first idxs) (:ipk ptbl)))
@@ -45,7 +53,7 @@
                      cidxs pidxs)))
 
 (defn parent-exists? [db child fk row]
-  (let [ptbl (get-in db [:tables (lc (:table fk))])
+  (let [ptbl (get-in db [:tables (parent-key db child fk)])
         pidxs (parent-cols db child fk)
         cidxs (mapv #(col-index child %) (:from fk))]
     (some (fn [[_ prow]] (key-match? row cidxs prow pidxs ptbl)) (:rows ptbl))))
@@ -56,7 +64,7 @@
 (defn referencing
   "[child-tbl fk] pairs whose foreign key refers to table ptbl (by name)."
   [db ptbl]
-  (for [[_ c] (:tables db), fk (:fks c) :when (= (lc (:table fk)) (lc (:name ptbl)))] [c fk]))
+  (for [[_ c] (:tables db), fk (:fks c) :when (= (parent-key db c fk) (lc (:name ptbl)))] [c fk]))
 
 (defn has-fks? [tbl] (boolean (seq (:fks tbl))))
 
@@ -165,7 +173,7 @@
    (for [[_ tbl] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db))
          :when (and (seq (:fks tbl)) (or (nil? table-name) (= (lc table-name) (lc (:name tbl)))))
          [fkid fk] (map-indexed vector (reverse (:fks tbl)))
-         :let [ptbl (get-in db [:tables (lc (:table fk))])
+         :let [ptbl (get-in db [:tables (parent-key db tbl fk)])
                _ (when ptbl (parent-cols db tbl fk))
                cidxs (mapv #(col-index tbl %) (:from fk))]
          [rid row] (:rows tbl)
@@ -178,7 +186,7 @@
   [db]
   (when (enabled? db)
     (doseq [[_ tbl] (:tables db) fk (:fks tbl)
-            :when (get-in db [:tables (lc (:table fk))])]
+            :when (get-in db [:tables (parent-key db tbl fk)])]
       (doseq [[_ row] (:rows tbl)]
         (when (violation? db tbl fk row)
           (err "FOREIGN KEY constraint failed"))))))

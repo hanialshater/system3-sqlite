@@ -1961,7 +1961,8 @@
         (and (:star rc) (nil? (:table rc)))
         (if (empty? sources)
           (err "no tables specified")
-          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (and a (> (count ss) 1))
+          (if-let [[dup col] (first (for [[[a] ss] (group-by (fn [s] [(:alias s) (let [t (str (:tname s))] (when (str/includes? t ".") (lc (subs t 0 (str/index-of t ".")))))]) sources)
+                                          :when (and a (> (count ss) 1))
                                           :let [d (second ss)
                                                 c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
                                           :when c]

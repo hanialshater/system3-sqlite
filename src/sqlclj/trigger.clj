@@ -4,7 +4,8 @@
   the program runs, then the program's statements are executed as ordinary statements."
   (:require [clojure.string :as str]
             [clojure.walk :as walk]
-            [sqlclj.engine :as e :refer [err lc]]))
+            [sqlclj.engine :as e :refer [err lc]]
+            [sqlclj.schema]))
 
 (def exec-fn
   "Set by sqlclj.exec: (fn [db sql st out]) -> db, executes one statement."
@@ -17,7 +18,7 @@
 (defn make-trigger
   "Trigger record from a parsed CREATE TRIGGER statement and the text its spans refer to."
   [st src]
-  (select-keys (assoc st :src src :table-name (:table st)) [:name :timing :event :cols :when :body :src :temp :table-name :table-schema :schema]))
+  (select-keys (assoc st :src src :table-name (:table st)) [:name :timing :event :cols :when :body :src :temp :table-name :table-schema :schema :db]))
 
 (defn matching
   "Triggers of table tkey for the event, newest first. cols: lower-case names of the columns an UPDATE sets."
@@ -68,6 +69,7 @@
     (if-not ok
       db
       (binding [e/*in-trigger* true
+                sqlclj.schema/*home-db* (when-not (:temp trig) (:db trig))
                 *active* (conj *active* (lc (:name trig)))
                 *depth* (inc *depth*)]
         (when (> *depth* 1000) (err "too many levels of trigger recursion"))
