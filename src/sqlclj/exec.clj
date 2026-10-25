@@ -371,11 +371,16 @@
       (when (not= ci (:ipk tbl)) (strict-check tbl ci (nth row ci)))))
   row)
 
+(def ^:private ignore-checks
+  "PRAGMA ignore_check_constraints of the running statement (set in run-line)."
+  (volatile! false))
+
 (defn- check-checks
   "CHECK constraints. Returns row, or nil for IGNORE."
   [tbl row on-conflict]
-  (let [bad (some (fn [ck] (let [x ((:f ck) row)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
-                  (:checks tbl))]
+  (let [bad (when-not @ignore-checks
+            (some (fn [ck] (let [x ((:f ck) row)] (when (and (not (nil? x)) (not (v/bool-value x))) ck)))
+                  (:checks tbl)))]
     (if bad
       (if (= on-conflict :ignore)
         nil
@@ -1664,6 +1669,7 @@
           (let [prep (volatile! false)
                 r (try (binding [*prepared* prep]
                          (vreset! v/enc (case (get-in db [:pragmas "encoding"]) "UTF-16le" :utf16le "UTF-16be" :utf16be :utf8))
+                         (vreset! ignore-checks (= 1 (get-in db [:pragmas "ignore_check_constraints"])))
                          (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
