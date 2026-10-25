@@ -39,6 +39,11 @@
  },
  "links": [
   {
+   "label": "Demo site",
+   "url": "https://system3-sqlite.vercel.app",
+   "kind": "website"
+  },
+  {
    "label": "Repository",
    "url": "https://github.com/hanialshater/system3-sqlite",
    "kind": "repo"

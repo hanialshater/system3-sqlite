@@ -1,5 +1,7 @@
 # SQLite in Clojure
 
+**Demo site:** https://system3-sqlite.vercel.app (built from real runs; `site/README.md`).
+
 A SQLite-compatible database engine written in Clojure by a company of AI agents in the
 [System 3 city](https://github.com/hanialshater/system3-city). Its referee is SQLite's own test suite: the engine
 passes when every statement in SQLite's test files gives the output SQLite gives.
