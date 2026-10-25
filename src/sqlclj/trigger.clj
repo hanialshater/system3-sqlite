@@ -86,6 +86,27 @@
               db2 (reduce (fn [db st] (@exec-fn db src (substitute st tbl old new) sb)) db (:body trig))]
           (assoc db2 :changes changes :last-rowid last-rowid))))))
 
+(def ^:dynamic *validating* nil)
+
+(def ^:private compile-error-re
+  #"^(no such (table|column|function|index|view|collation sequence)|table .* has (no column|\d+ columns but)|\d+ values for \d+ columns|wrong number of arguments|misuse of aggregate|ambiguous column|too many levels|trigger cannot use)")
+
+(defn validate-for!
+  "SQLite compiles the programs of the triggers of a statement when it prepares it, so mistakes in them (a dropped
+  table, a wrong column count) fail the statement before it touches a row. Here the programs run once against
+  a row of NULLs on the immutable db and the result is dropped; only compile-time style errors count."
+  [db tkey tbl event setcols]
+  (when (and (seq (:triggers db)) (or (zero? *depth*) *validating*))
+    (let [trigs (concat (matching db tkey :before event setcols) (matching db tkey :after event setcols) (matching db tkey :instead event setcols))
+          blank (vec (repeat (inc (count (:cols tbl))) nil))]
+      (doseq [t trigs :when (not (contains? *validating* (lc (:name t))))]
+        (binding [*validating* (conj (or *validating* #{}) (lc (:name t)))
+                  *budget* (atom 0)]
+          (try (run-program db (dissoc t :when) tbl (when (#{:update :delete} event) blank) (when (#{:insert :update} event) blank))
+               (catch clojure.lang.ExceptionInfo ex
+                 (let [m (:sql-error (ex-data ex))]
+                   (when (and m (re-find compile-error-re m)) (throw ex))))))))))
+
 (defn fire
   "Runs the triggers trigs for one row event. old/new: row vectors (rowid last) or nil. Returns the new db.
   A RAISE(IGNORE) propagates as an exception with :raise-ignore in its ex-data."

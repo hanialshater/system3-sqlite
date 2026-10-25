@@ -551,7 +551,7 @@
              (mk (fn [env] (if (= k :ignore)
                              (throw (ex-info "raise-ignore" {:raise-ignore true}))
                              (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
-                               (throw (ex-info msg {:sql-error msg :raise k})))))))
+                               (throw (ex-info msg (cond-> {:sql-error msg :raise k} (= k :rollback) (assoc :conflict :rollback)))))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1188,7 +1188,7 @@
 (defn- outer-agg-scope
   "For an aggregate whose arguments only reference outer queries, the scope of the query it belongs to."
   [ctx e]
-  (when (and (agg-call? e) (not (:in-agg ctx)) (seq (:args e)))
+  (when (and (agg-call? e) (not (:in-agg ctx)) (not (:where-ctx ctx)) (seq (:args e)))
     (let [dp (atom [])
           pctx (assoc ctx :depth-probe dp :aggs nil :in-agg true :wins nil :pending nil :refs nil)]
       (when (try (doseq [a (:args e)] (cx pctx a)) true (catch clojure.lang.ExceptionInfo _ false))
@@ -1196,6 +1196,7 @@
           (when (and (seq ds) (every? pos? ds))
             (let [d (long (apply min ds))
                   sc (loop [sc (:scope ctx) k d] (if (and sc (pos? k)) (recur (:parent sc) (dec k)) sc))]
+              (when (and sc (:in-where sc)) (err (str "misuse of aggregate: " (:name e) "()")))
               (when (:q-aggs sc) sc))))))))
 
 (defn- compile-function* [ctx e]
@@ -1465,7 +1466,8 @@
       (window-only name)
       (when-not (contains? (win-arity name) n) (err (str "wrong number of arguments to function " name "()")))
       aggf nil
-      :else (if (or (agg-names name) (try (compile-scalar-fn name n "BINARY") (catch clojure.lang.ExceptionInfo _ true)))
+      :else (if (or (agg-names name) (#{"coalesce" "ifnull" "iif" "if" "nullif" "likely" "unlikely" "likelihood"} name)
+                    (try (compile-scalar-fn name n "BINARY") (catch clojure.lang.ExceptionInfo _ true)))
               (if (agg-names name)
                 (err (str "wrong number of arguments to function " name "()"))
                 (err (str name "() may not be used as a window function")))
@@ -1632,7 +1634,8 @@
       "percent_rank" (dotimes [k m] (put! k (if (> m 1) (/ (double (aget gs (aget grp k))) (double (dec m))) 0.0)))
       "cume_dist" (dotimes [k m] (put! k (/ (double (inc (aget ge (aget grp k)))) (double m))))
       "ntile" (dotimes [k m]
-                (let [nn (pos-int-arg (first (argv k)) "argument of ntile must be a positive integer")
+                (let [x (first (argv k))
+                      nn (if (or (nil? x) (<= (v/int-value x) 0)) (err "argument of ntile must be a positive integer") (v/int-value x))
                       size (quot m nn)]
                   (put! k (if (zero? size)
                             (long (inc k))
@@ -1643,6 +1646,8 @@
       (dotimes [k m]
         (let [a (argv k)
               off (if (> (count a) 1) (nth a 1) 1)
+              ;; SQLite seeks rowid +/- offset: the offset goes through arithmetic, a non-integral result finds nothing
+              off (when-not (nil? off) (v/numeric-value off))
               off (if (instance? Double off) (v/integer-affinity (double off)) off)
               dflt (when (> (count a) 2) (nth a 2))]
           (put! k (if (instance? Long off)
@@ -1867,7 +1872,8 @@
     (:table item)
     (let [name (:table item)
           tbl (table-of ctx name (:schema item))
-          view (when-not tbl (view-of ctx name))]
+          view (when-not tbl (let [v (view-of ctx name) sc (lc (:schema item))]
+                               (when (and v (or (nil? sc) (and (= sc "temp") (:temp v)) (and (= sc "main") (not (:temp v))) (not (#{"temp" "main"} sc)))) v)))]
       (cond
         tbl (let [slot (new-slot! ctx)
                   cols (mapv :name (:cols tbl))]
@@ -1880,7 +1886,7 @@
                :indexed-by (:indexed-by item)})
         view (let [_ (when (some #(identical? % view) (:view-chain ctx))
                        (err (str "view " (:name view) " is circularly defined")))
-                   sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                   sub (compile-select (assoc ctx :as-source true :decl-names true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
                                               :view-chain (conj (or (:view-chain ctx) []) view)
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
                                        (:select view))
@@ -1896,7 +1902,7 @@
         (make-source ctx (assoc item :tvf name :args []))
         :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
                                                  ;; a stored reference to a (since detached) database keeps its prefix
-                                                 (and (:in-view ctx) (str/includes? (str name) ".")) name
+                                                 (and (:in-view ctx) (or (= "temp" (:in-view ctx)) (str/includes? (str name) "."))) name
                                                  (:in-view ctx) (str (:in-view ctx) "." name)
                                                  *in-trigger* (str "main." name)
                                                  :else name)))))
@@ -2032,16 +2038,18 @@
                   s (:src r) t (:table s)]
               (when (and t (not (:virtual t)) (= (:idx r) (:ncols s)))
                 (if (:ipk t) (:name (nth (:cols t) (:ipk t))) "rowid"))))
+          ;; output names (statement level, views, CREATE TABLE AS) of a resolved column are the source's column name
+          (when (:decl-names ctx)
+            (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                  s (:src r)]
+              (when (and s (< (long (:idx r)) (count (:cols s))))
+                (nth (:cols s) (:idx r)))))
           (when (:table e)
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) lt (lc (:table e))]
               (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
-          (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
-                s (:src r)]
-            (when (and s (:idx r) (< (long (:idx r)) (count (:cols s))) (not (:sub s)))
-              (nth (:cols s) (:idx r))))
           (:name e))]
       (if full
         (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
@@ -2109,19 +2117,37 @@
         x
         (err "datatype mismatch")))))
 
+(defn- from-has-col?
+  "Could an unqualified column name resolve in these FROM items? (true when unsure)"
+  [ctx items lname]
+  (boolean
+   (some (fn [item]
+           (if (and (:table item) (nil? (get (:ctes ctx) (lc (:table item)))))
+             (if-let [t (table-of ctx (:table item) (:schema item))]
+               (or (rowid-name? lname) (some #(= lname (lc (:name %))) (:cols t)))
+               (if-let [v (and (nil? (:schema item)) (view-of ctx (:table item)))]
+                 (if (:cols v) (some #(= lname (lc %)) (:cols v)) true)
+                 true))
+             true))
+         items)))
+
 (defn- outer-only-agg?
-  "An aggregate whose argument columns are all qualified by tables not in this FROM clause."
-  [e own]
+  "An aggregate whose argument columns all resolve outside this FROM clause."
+  [ctx e own from]
   (let [cols (atom [])]
     (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
                                       (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
                          (sequential? x) (doseq [y x] (w y))))]
       (w (:args e)))
-    (and (seq @cols) (every? #(and (:table %) (not (own (lc (:table %))))) @cols))))
+    (and (seq @cols)
+         (every? #(if (:table %)
+                    (not (own (lc (:table %))))
+                    (or (empty? from) (not (from-has-col? ctx from (lc (:name %))))))
+                 @cols))))
 
 (defn- sub-outer-agg?
   "Does a scalar subquery hold an aggregate that belongs to the enclosing query (own = its FROM names)?"
-  [sel own]
+  [ctx sel own own-from]
   (let [b (:body sel)
         found (atom false)]
     (when (= :core (:type b))
@@ -2129,7 +2155,8 @@
             no-from (empty? (:from b))]
         (letfn [(outer-col? [c] (if (:table c)
                                   (and (own (lc (:table c))) (not (inner (lc (:table c)))))
-                                  no-from))
+                                  (and (or no-from (not (from-has-col? ctx (:from b) (lc (:name c)))))
+                                       (from-has-col? ctx own-from (lc (:name c))))))
                 (agg-ok? [e] (let [cols (atom [])]
                                (letfn [(w [x] (cond (map? x) (if (= :col (:op x)) (swap! cols conj x)
                                                                  (when-not (#{:subq :exists} (:op x)) (doseq [[k y] x :when (not= k :select)] (w y))))
@@ -2141,19 +2168,22 @@
                                                :else (doseq [[k x] e :when (not= k :select)] (walk x)))
                                 (sequential? e) (doseq [x e] (walk x))))]
           (doseq [rc (:cols b)] (walk (:e rc)))
-          (walk (:where b)))))
+          (walk (:where b))
+          (walk (:group b))
+          (walk (:having b))
+          (walk (mapv :e (:order sel))))))
     @found))
 
-(defn- core-has-agg? [core]
+(defn- core-has-agg? [ctx core]
   (let [found (atom false)
         own (set (map #(lc (or (:alias %) (:table %))) (:from core)))]
     (letfn [(walk [e]
               (cond
                 (map? e) (cond
-                           (and (= :subq (:op e)) (seq own) (sub-outer-agg? (:select e) own)) (reset! found true)
+                           (and (= :subq (:op e)) (seq own) (sub-outer-agg? ctx (:select e) own (:from core))) (reset! found true)
                            (#{:subq :exists} (:op e)) nil
                            (and (= :in (:op e)) (:select e)) (walk (:e e))
-                           (and (agg-call? e) (outer-only-agg? e own)) nil
+                           (and (agg-call? e) (outer-only-agg? ctx e own (:from core))) nil
                            (agg-call? e) (reset! found true)
                            :else (doseq [[k x] e :when (not= k :select)] (walk x)))
                 (sequential? e) (doseq [x e] (walk x))))]
@@ -2633,7 +2663,8 @@
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
   (let [as-source (:as-source ctx)
-        ctx (assoc ctx :pending nil :merge nil :where-ctx nil :as-source nil)]
+        decl-names (:decl-names ctx)
+        ctx (assoc ctx :pending nil :merge nil :where-ctx nil :in-agg nil :as-source nil :decl-names nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -2692,7 +2723,7 @@
                                               (mapv (fn [k] [(:slot (nth srcs k)) (find-in-source (nth srcs k) n)]) match)))))
                             sources (distinct (map lc (apply concat (remove nil? join-conds)))))
                     sources)
-          is-agg (or (seq (:group core)) (core-has-agg? core))
+          is-agg (or (seq (:group core)) (core-has-agg? ctx core))
           aggs (atom [])
           agg-slot (new-slot! ctx)
           scope {:sources sources :parent (:scope ctx) :q-aggs (when is-agg aggs) :q-agg-slot agg-slot}
@@ -2702,7 +2733,7 @@
           right-join (vec (for [item (or from [])] (boolean (#{:right :full :natural-right :natural-full} (:join item)))))
           any-rj (some true? right-join)
           rcols (expand-star ctx2 sources (:cols core) (:nested-from core))
-          names (mapv #(col-name (assoc ctx2 :as-source as-source) %) rcols)
+          names (let [nctx (assoc ctx2 :decl-names decl-names :as-source as-source)] (mapv #(col-name nctx %) rcols))
           aliases (mapv #(lc (:alias %)) rcols)
           actx (if is-agg (assoc ctx2 :aggs aggs :agg-slot agg-slot) (assoc ctx2 :aggs nil))
           wins (atom [])
@@ -2728,21 +2759,63 @@
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
           ctx2 (if (seq alias-map) (assoc ctx2 :outer-aliases (cons {:map alias-map :ctx ctx2} (:outer-aliases ctx2))) ctx2)
-          subst (fn subst [e]
-                  (cond
-                    (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
-                    (try (resolve-column ctx2 nil (:name e) nil) e
-                         (catch clojure.lang.ExceptionInfo ex
-                           (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "ambiguous"))
-                             e
-                             (get alias-map (lc (:name e))))))
-                    (map? e) (if (#{:subq :exists} (:op e)) e (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst x))]) e)))
-                    (vector? e) (mapv subst e)
-                    :else e))
+          expr-has-agg? (fn ha [e] (cond (map? e) (cond (#{:subq :exists} (:op e)) false
+                                                         (agg-call? e) true
+                                                         :else (some (fn [[k x]] (and (not= k :select) (ha x))) e))
+                                          (sequential? e) (some ha e)
+                                          :else false))
+          subst* (fn subst [no-agg no-win e]
+                   (cond
+                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
+                     (try (resolve-column ctx2 nil (:name e) nil) e
+                          (catch clojure.lang.ExceptionInfo ex
+                            (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "ambiguous"))
+                              e
+                              (let [x (get alias-map (lc (:name e)))]
+                                (when (and no-agg (expr-has-agg? x))
+                                  (err (str "misuse of aliased aggregate " (:name e))))
+                                (when (and (or no-win no-agg) (has-window? x))
+                                  (err (str "misuse of aliased window function " (:name e))))
+                                x))))
+                     (map? e) (if (#{:subq :exists} (:op e)) e
+                                  (let [na (or no-agg (agg-call? e))]
+                                    (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst na no-win x))]) e))))
+                     (vector? e) (mapv #(subst no-agg no-win %) e)
+                     :else e))
+          subst (fn [e] (subst* false false e))
+          subst-nw (fn [e] (subst* false true e))
+          subst-na (fn [e] (subst* true true e))
           where-c (when (:where core)
                     (binding [*coll-phase* :where]
-                      (let [c (cx (assoc ctx2 :aggs nil :where-ctx (not is-agg)) (subst (:where core)))] c)))
+                      (let [c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg)) (update :scope assoc :in-where true)) ((if is-agg subst-nw subst-na) (:where core)))] c)))
           where-f (when where-c (condf where-c))
+          ;; WHERE AND-terms evaluated at the first join level where their tables are bound (unplanned joins)
+          level-where
+          (when (and where-c (> (count sources) 1)
+                     (not (some #{:right :full :natural-right :natural-full} (map :join from))))
+            (let [terms (split-and ((if is-agg subst-nw subst-na) (:where core)))
+                  slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) sources))
+                  has-sub? (fn hs [e] (cond (map? e) (or (#{:subq :exists} (:op e)) (and (= :in (:op e)) (or (:select e) (:table e)))
+                                                         (some hs (vals e)))
+                                            (sequential? e) (some hs e)
+                                            :else false))]
+              (when (seq terms)
+                (try
+                  (binding [*coll-phase* :where]
+                    (let [placed (vec (for [t terms]
+                                        (let [ra (atom #{})
+                                              c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg) :refs ra) (update :scope assoc :in-where true)) t)
+                                              lv (when-not (has-sub? t)
+                                                   (let [is (keep (fn [[sl _]] (slot->i sl)) @ra)]
+                                                     (when (seq is) (apply max is))))]
+                                          [lv (condf c)])))]
+                      (when (some (fn [[lv _]] (and lv (< (long lv) (dec (count sources))))) placed)
+                        {:levels (reduce (fn [m [lv f]] (if (and lv (< (long lv) (dec (count sources)))) (update m lv (fnil conj []) f) m)) {} placed)
+                         :rest (let [fs (vec (keep (fn [[lv f]] (when-not (and lv (< (long lv) (dec (count sources)))) f)) placed))]
+                                 (fn [env] (if (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs) 1 0)))})))
+                  (catch clojure.lang.ExceptionInfo _ nil)))))
+          where-f (if level-where (:rest level-where) where-f)
+          lvl-filters (when level-where (:levels level-where))
           where-pre (when (:where core) (binding [*coll-phase* :where] (where-precheck (assoc ctx2 :aggs nil) (subst (:where core)))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
           in-pre (when (and (:where core) (= 1 (count sources)) (:table (first sources)))
@@ -2765,7 +2838,7 @@
                           (cond
                             (:on item)
                             (let [ra (atom #{})
-                                  c (cx (assoc ctx2 :aggs nil :refs ra :where-ctx (not is-agg)) (subst (:on item)))
+                                  c (cx (-> ctx2 (assoc :aggs nil :refs ra :where-ctx (not is-agg)) (update :scope assoc :in-where true)) ((if is-agg subst-nw subst-na) (:on item)))
                                   _ (when-let [r (:refs ctx2)] (swap! r into @ra))
                                   later (set (map :slot (drop (inc i) sources)))]
                               (if (some #(later (first %)) @ra)
@@ -2794,7 +2867,7 @@
                             :else nil)))))
           nagg-before (count @aggs)
           group-c (binding [*coll-phase* :group] (vec (map-indexed (fn [gi g]
-                          (let [g (subst g)]
+                          (let [g (subst-nw g)]
                             (when (neg-int-lit? g)
                               (err (str (ordinal (inc gi)) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
@@ -2809,7 +2882,7 @@
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
                      (when-not is-agg (err "HAVING clause on a non-aggregate query"))
-                     (binding [*coll-phase* :having] (cx actx (subst (:having core)))))
+                     (binding [*coll-phase* :having] (cx actx (subst-nw (:having core)))))
           ;; ORDER BY
           order-c (when order
                     (binding [*coll-phase* :order] (vec (map-indexed
@@ -3007,6 +3080,8 @@
                   (doseq [sub in-pre] (doall (run-select-rows sub env)))
                   (level 0)))))
           ;; nested loop over sources
+          lvl-pass? (fn [i env] (let [fs (when lvl-filters (get lvl-filters i))]
+                                  (or (nil? fs) (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs))))
           scan (if plan-spec scan-planned (fn scan [^objects env k]
                  (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
@@ -3026,11 +3101,11 @@
                                  (when (or (nil? onf) (let [r (onf env)] (and (not (nil? r)) (v/bool-value r))))
                                    (aset matched 0 true)
                                    (when rset (.add rset (aget cnt 0)))
-                                   (level (inc i)))
+                                   (when (lvl-pass? i env) (level (inc i))))
                                  (aset cnt 0 (inc (aget cnt 0))))
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
-                                 (level (inc i))))))]
+                                 (when (lvl-pass? i env) (level (inc i)))))))]
                    (when (or (nil? where-pre) (where-pre env))
                      (doseq [sub in-pre] (doall (run-select-rows sub env)))
                      (level 0)
@@ -3048,7 +3123,10 @@
           run
           (if is-agg
             (fn [^objects env emit]
-              (let [groups (if (seq gfs) (TreeMap. ^Comparator (row-comparator gcolls)) nil)
+              (let [groups (if (seq gfs) (TreeMap. ^Comparator (if (and (seq order) (= (count order) (count group-c)) (some :desc order))
+                                                                   ;; SQLite copies the ORDER BY's ASC/DESC onto a GROUP BY of the same length
+                                                                   (compare-keys-fn (mapv (fn [c o] [c (boolean (:desc o)) nil]) gcolls order))
+                                                                   (row-comparator gcolls))) nil)
                     gorder (when (and groups (or rowid-group (and order-plan (seq group-c))
                                                  (and plan-spec (= :groupby (:okind plan-spec)) (pos? (long (:nob plan-spec))) (>= (long (:ordered plan-spec)) (long (:nob plan-spec))))))
                                    (java.util.ArrayList.))
@@ -3219,7 +3297,8 @@
                         {} (:ctes w))
         all (merge (:ctes ctx) entries)]
     (reset! env all)
-    (assoc ctx :ctes all)))
+    ;; a nested WITH that redefines a name shadows the CTE being defined (no circular reference)
+    (assoc ctx :ctes all :cte-err (apply dissoc (:cte-err ctx) (keys entries)))))
 
 (defn- compile-select-w [ctx sel]
   (if-let [w (:with sel)]
@@ -3286,7 +3365,7 @@
             recs (vec (for [[_ t] (subvec terms rec-idx)]
                         (let [t (update t :from (fn [items] (mapv #(if (and (:table %) (nil? (:schema %)) (= lname (lc (:table %))))
                                                                       (assoc % :rec-ref true) %) items)))]
-                          (when (or (seq (:group t)) (core-has-agg? t))
+                          (when (or (seq (:group t)) (core-has-agg? ctx t))
                             (err "recursive aggregate queries not supported"))
                           (when (has-window? (mapv :e (:cols t)))
                             (err "cannot use window functions in recursive queries"))
@@ -3389,6 +3468,8 @@
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
                           order)))
+            ;; multiSelectOrderBy: only UNION/EXCEPT/INTERSECT extend the merge keys with the other columns
+            sort-specs specs
             specs (when specs
                     (let [used (set (map :ri specs))]
                       (into specs (for [i (range (count names)) :when (not (used i))]
@@ -3404,6 +3485,7 @@
                     (let [rows ((:rows b) env)
                           rows (if cmp
                                  (let [keyed (map (fn [r] [(mapv #(nth r (:ri %)) specs) r]) rows)
+                                       keyed (if (= :union-all (:op body)) (map (fn [[k r]] [(into (subvec k 0 (count sort-specs)) (repeat (- (count specs) (count sort-specs)) nil)) r]) keyed) keyed)
                                        arr (to-array keyed)]
                                    (java.util.Arrays/sort arr (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
                                    (map second arr))

@@ -43,6 +43,28 @@
         (when (or (empty? pk) (not= (count pk) (count (:from fk)))) (mismatch))
         (vec pk)))))
 
+(declare parent-touched? referencing)
+(defn locate-all!
+  "SQLite locates the parent key of every foreign key referring to ptbl as soon as one of them is affected
+  by a change (update old->new, or a delete when new is nil); an unusable key is 'foreign key mismatch'."
+  [db ptbl old new]
+  (let [refs (referencing db ptbl)]
+    (when (some (fn [[c fk]] (parent-touched? db c fk old new)) refs)
+      (doseq [[c fk] refs] (parent-cols db c fk)))))
+
+(defn parent-touched?
+  "Whether an UPDATE old->new changes a column of the parent key fk refers to (always true for a delete)."
+  [db child fk old new]
+  (or (nil? new)
+      (let [ptbl (get-in db [:tables (parent-key db child fk)])
+            raw (if-let [to (:to fk)] (map #(col-index ptbl %) to) (:pk-cols ptbl))]
+        (or (empty? raw)
+            (some (fn [pi] (or (nil? pi)
+                               (let [a (nth old pi) b (nth new pi)]
+                                 (not (or (and (nil? a) (nil? b))
+                                          (and (some? a) (some? b) (zero? (v/sql-cmp a b "BINARY"))))))))
+                  raw)))))
+
 (defn- values-eq? [a b coll] (and (not (nil? a)) (not (nil? b)) (zero? (v/sql-cmp a b coll))))
 
 (defn- coerce [val ptbl pi] (v/apply-affinity val (:aff (nth (:cols ptbl) pi))))
@@ -98,12 +120,13 @@
     db
     (reduce
      (fn [db [child fk]]
-       (let [pidxs (parent-cols db child fk)
+       (let [_ (locate-all! db ptbl old new)
+             pidxs (if (parent-touched? db child fk old new) (parent-cols db child fk) [])
              changed? (or (nil? new) (not (every? true? (map (fn [pi] (let [a (nth old pi) b (nth new pi)]
                                                                        (or (and (nil? a) (nil? b)) (and (not (nil? a)) (not (nil? b)) (zero? (v/sql-cmp a b "BINARY"))))))
                                                               pidxs))))
              child (get-in db [:tables (lc (:name child))])]
-         (if-not (and changed? (some (fn [pi] (not (nil? (nth old pi)))) pidxs))
+         (if-not (and (seq pidxs) changed? (some (fn [pi] (not (nil? (nth old pi)))) pidxs))
            db
            (let [kids (children-rows db child fk old ptbl pidxs)
                  act (if (nil? new) (or (:on-delete fk) :no-action) (or (:on-update fk) :no-action))
@@ -154,7 +177,10 @@
       (doseq [[ptname old new] parent-log]
         (let [ptbl (get-in db [:tables ptname])]
           (when ptbl
-            (doseq [[child fk] (referencing db ptbl)]
+            (when old (locate-all! db ptbl old new))
+            (doseq [[child fk] (referencing db ptbl)
+                    :when (if old (parent-touched? db child fk old new)
+                              (or (> (count (filter (fn [[_ o _]] (nil? o)) parent-log)) 1) (deferred? db fk)))]
               (let [pidxs (parent-cols db child fk)
                     child (get-in db [:tables (lc (:name child))])]
                 (when (some (fn [pi] (not (nil? (nth old pi)))) pidxs)
@@ -164,14 +190,12 @@
                     (fail! fk)))))))))))
 
 (defn check-all
-  "Violating rows of all (or one) child tables: [table rowid parent fkid]. Newest tables first."
-  [db table-name]
-  (when table-name
-    (when-not (some (fn [[_ t]] (= (lc (:name t)) (lc table-name))) (:tables db))
-      (err (str "no such table: " table-name))))
+  "Violating rows of all (or one, by storage key) child tables: [table rowid parent fkid]. Newest tables first.
+  in-scope?: optional table predicate (the PRAGMA's database)."
+  [db tkey & [in-scope?]]
   (vec
-   (for [[_ tbl] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db))
-         :when (and (seq (:fks tbl)) (or (nil? table-name) (= (lc table-name) (lc (:name tbl)))))
+   (for [[k tbl] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db))
+         :when (and (seq (:fks tbl)) (or (nil? tkey) (= tkey k)) (or (nil? in-scope?) (in-scope? tbl)))
          [fkid fk] (map-indexed vector (reverse (:fks tbl)))
          :let [ptbl (get-in db [:tables (parent-key db tbl fk)])
                _ (when ptbl (parent-cols db tbl fk))
@@ -179,7 +203,8 @@
          [rid row] (:rows tbl)
          :when (and (every? #(not (nil? (nth row %))) cidxs)
                     (or (nil? ptbl) (not (parent-exists? db tbl fk row))))]
-     [(:name tbl) (when-not (:without-rowid tbl) rid) (:table fk) (long fkid)])))
+     [(let [n (:name tbl) d (:db tbl)] (if (and d (str/starts-with? (lc n) (str d "."))) (subs n (inc (count d))) n))
+      (when-not (:without-rowid tbl) rid) (:table fk) (long fkid)])))
 
 (defn commit-check
   "At COMMIT: deferred constraints must hold."
