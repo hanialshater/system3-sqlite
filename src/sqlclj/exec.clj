@@ -1,6 +1,7 @@
 (ns sqlclj.exec
   "Statement execution: DDL, DML with constraints, and the per-line driver output."
-  (:require [clojure.string :as str]
+  (:require [sqlclj.jsontvf]
+            [clojure.string :as str]
             [sqlclj.values :as v]
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]

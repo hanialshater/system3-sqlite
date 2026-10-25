@@ -4,7 +4,8 @@
   (:require [clojure.string :as str]
             [sqlclj.values :as v]
             [sqlclj.printf :as pf]
-            [sqlclj.datetime :as dt])
+            [sqlclj.datetime :as dt]
+            [sqlclj.json :as js])
   (:import [sqlclj.values Blob]))
 
 (def compile-options
@@ -123,6 +124,53 @@
       "current_timestamp" (fn [_] (dt/datetime-fn ["now"]))
       "current_date" (fn [_] (dt/date-fn ["now"]))
       "current_time" (fn [_] (dt/time-fn ["now"]))
+      "json" (do (ar (= n 1)) (js/fn-json false))
+      "jsonb" (do (ar (= n 1)) (js/fn-json true))
+      "json_array" (js/fn-array false)
+      "jsonb_array" (js/fn-array true)
+      "json_object" (js/fn-object "json_object" false)
+      "jsonb_object" (js/fn-object "jsonb_object" true)
+      "json_extract" (js/fn-extract "json_extract" false false)
+      "jsonb_extract" (js/fn-extract "jsonb_extract" true false)
+      "json_set" (do (ar (>= n 1)) (js/fn-edit "json_set" :set false))
+      "jsonb_set" (do (ar (>= n 1)) (js/fn-edit "jsonb_set" :set true))
+      "json_insert" (do (ar (>= n 1)) (js/fn-edit "json_insert" :insert false))
+      "jsonb_insert" (do (ar (>= n 1)) (js/fn-edit "jsonb_insert" :insert true))
+      "json_replace" (do (ar (>= n 1)) (js/fn-edit "json_replace" :replace false))
+      "jsonb_replace" (do (ar (>= n 1)) (js/fn-edit "jsonb_replace" :replace true))
+      "json_array_insert" (do (ar (>= n 1)) (js/fn-edit "json_array_insert" :ainsert false))
+      "jsonb_array_insert" (do (ar (>= n 1)) (js/fn-edit "jsonb_array_insert" :ainsert true))
+      "json_remove" (do (ar (>= n 1)) (js/fn-remove "json_remove" false))
+      "jsonb_remove" (do (ar (>= n 1)) (js/fn-remove "jsonb_remove" true))
+      "json_patch" (do (ar (= n 2)) (js/fn-patch false))
+      "jsonb_patch" (do (ar (= n 2)) (js/fn-patch true))
+      "json_type" (do (ar (or (= n 1) (= n 2))) js/fn-type)
+      "json_array_length" (do (ar (or (= n 1) (= n 2))) js/fn-array-length)
+      "json_valid" (do (ar (or (= n 1) (= n 2))) js/fn-valid)
+      "json_error_position" (do (ar (= n 1)) js/fn-error-position)
+      "json_quote" (do (ar (= n 1)) js/fn-quote)
+      "json_pretty" (do (ar (or (= n 1) (= n 2))) js/fn-pretty)
+      "subtype" (do (ar (= n 1)) js/fn-subtype)
       "unistr" (do (ar (= n 1)) (fn [[x]] (when-not (nil? x) (unistr (v/text-of x)))))
       "unistr_quote" (do (ar (= n 1)) (fn [[x]] (unistr-quote x)))
       nil)))
+
+(defn arrow-fn
+  "the -> (as-sql? false) and ->> (true) operators"
+  [as-sql?]
+  (fn [l r]
+    (let [root (js/arg->node l)]
+      (when (and root (not (nil? r)))
+        (let [path (cond
+                     (instance? Long r) (let [i (long r)] (if (>= i 0) (str "$[" i "]") (str "$[#" i "]")))
+                     :else
+                     (let [t (v/text-of r)]
+                       (cond (= t "") (js/jerr "bad JSON path: ''")
+                             (= (.charAt ^String t 0) \$) t
+                             (= (.charAt ^String t 0) \[) (str "$" t)
+                             :else (str "$.\"" t "\""))))
+              node (js/lookup root path)]
+          (when node
+            (if as-sql?
+              (let [r (js/node->sql node)] (if (js/json-subtype? r) (String. ^String r) r))
+              (js/mark-json (js/node->text node)))))))))
