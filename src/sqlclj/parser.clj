@@ -597,7 +597,11 @@
                          (let [a (parse-expr p)]
                            (cond (accept-kw p "OFFSET") [a (parse-expr p)]
                                  (accept-op p ",") [(parse-expr p) a]
-                                 :else [a nil])))]
+                                 :else [a nil])))
+        _ (when (and (or order limit) (or (at-kw? p "UNION") (at-kw? p "INTERSECT") (at-kw? p "EXCEPT")))
+            (let [op (cond (at-kw? p "INTERSECT") "INTERSECT" (at-kw? p "EXCEPT") "EXCEPT"
+                           (kw? (tok-at p 1) "ALL") "UNION ALL" :else "UNION")]
+              (throw (lx/sql-error (str (if order "ORDER BY" "LIMIT") " clause should come after " op " not before")))))]
     (cond-> {:body body :order order :limit limit :offset offset}
       with (assoc :with with))))
 
