@@ -2002,7 +2002,10 @@
 (defn- col-name [ctx rc]
   (cond
     (:alias rc) (:alias rc)
-    (:star-col rc) (:name rc)
+    (:star-col rc) (let [pr (:pragmas (:db ctx)) src (first (:star-col rc))]
+                     (if (and (= 1 (get pr "full_column_names" 0)) (= 0 (get pr "short_column_names" 1)) (:tname src) (:table src))
+                       (str (:tname src) "." (:name rc))
+                       (:name rc)))
     (and (= :col (:op (:e rc)))
          (let [pr (:pragmas (:db ctx))]
            (and (not= 0 (get pr "short_column_names" 1)) (= 0 (get pr "full_column_names" 0)) true)
