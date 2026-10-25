@@ -1750,11 +1750,16 @@
     (= :col (:op (:e rc))) (:name (:e rc))
     :else (text-of-node ctx (:e rc))))
 
+(defn neg-int-lit? [e]
+  (and (= :unary (:op e)) (= :neg (:o e)) (= :lit (:op (:e e))) (= :int (:kind (:e e)))))
+
 (defn- order-term-index
   "If ORDER BY term refers to a result column (integer or alias), returns its 0-based index."
   [ctx term names aliases nth-word]
   (let [e (:e term)]
     (cond
+      (neg-int-lit? e)
+      (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
       (and (= :lit (:op e)) (= :int (:kind e)))
       (let [k (long (lit-value e))]
         (if (or (< k 1) (> k (count names)))
@@ -2102,6 +2107,8 @@
           nagg-before (count @aggs)
           group-c (mapv (fn [g]
                           (let [g (subst g)]
+                            (when (neg-int-lit? g)
+                              (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
                               (let [k (long (lit-value g))]
                                 (if (or (< k 1) (> k (count rcols)))
@@ -2160,6 +2167,12 @@
           has-minmax (some #(#{"min" "max"} (:name %)) agg-specs)
           control (last (keep-indexed (fn [i sp] (when (#{"min" "max"} (:name sp)) i)) agg-specs))
           gfs (mapv :f group-c)
+          ;; a GROUP BY that includes the rowid of the only table is satisfied by the scan order
+          rowid-group (and (= 1 (count sources)) (:table (first sources))
+                           (some (fn [g] (let [col (:col g)]
+                                           (and col (= (:slot col) (:slot (first sources))) (zero? (long (:depth col)))
+                                                (or (= (:idx col) (:ncols (first sources))) (= (:idx col) (:ipk (:table (first sources))))))))
+                                 group-c))
           gcolls (mapv #(or (:coll %) "BINARY") group-c)
           having-f (when having-c (condf having-c))
           distinct (:distinct core)
@@ -2219,6 +2232,7 @@
           (if is-agg
             (fn [^objects env emit]
               (let [groups (if (seq gfs) (TreeMap. ^Comparator (row-comparator gcolls)) nil)
+                    gorder (when (and groups rowid-group) (java.util.ArrayList.))
                     single (volatile! nil)
                     new-group (fn [] {:accs (mapv make-acc agg-specs) :snap (object-array nsrc) :init (boolean-array 1)})
                     snapshot! (fn [g] (let [^objects sn (:snap g)] (dotimes [i nsrc] (aset sn i (aget env (long (nth slots i)))))))]
@@ -2227,7 +2241,7 @@
                         (let [g (if groups
                                   (let [key (mapv #(% env) gfs)]
                                     (or (.get ^TreeMap groups key)
-                                        (let [g (new-group)] (.put ^TreeMap groups key g) g)))
+                                        (let [g (new-group)] (.put ^TreeMap groups key g) (when gorder (.add ^java.util.ArrayList gorder g)) g)))
                                   (or @single (vreset! single (new-group))))
                               results (mapv (fn [acc spec]
                                               (if (or (nil? (:filter spec))
@@ -2239,7 +2253,7 @@
                           (when (if control updated (not (aget ^booleans (:init g) 0)))
                             (aset ^booleans (:init g) 0 true)
                             (snapshot! g)))))
-                (let [gs (if groups (vals groups) [(or @single (new-group))])
+                (let [gs (if groups (or (seq gorder) (vals groups)) [(or @single (new-group))])
                       seen (when distinct (TreeSet. ^Comparator (row-comparator (map #(or (:coll %) "BINARY") rcomp))))]
                   (let [sfl (java.util.ArrayList.)]
                     (doseq [g gs]
@@ -2351,6 +2365,7 @@
   "resolveCompoundOrderBy: an integer, else an AS alias or an equal result expression of any SELECT,
   the left-most first."
   [ctx e n infos nth-word]
+  (when (neg-int-lit? e) (err (str nth-word " ORDER BY term out of range - should be between 1 and " n)))
   (if (and (= :lit (:op e)) (= :int (:kind e)))
     (let [k (long (lit-value e))]
       (if (or (< k 1) (> k n))
