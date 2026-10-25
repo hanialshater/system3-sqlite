@@ -235,8 +235,8 @@
                               (do (advance! p) (:v t))
                               (parse-expr p))))]
                 (expect-op p ")")
-                (when-not *in-trigger* (throw (lx/sql-error "RAISE() may only be used within a trigger-program")))
-                (node {:op :raise :kind k :msg (if (string? msg) msg nil) :msg-e (when-not (string? msg) msg)} s (prev-end p))))
+                (node (cond-> {:op :raise :kind k :msg (if (string? msg) msg nil) :msg-e (when-not (string? msg) msg)}
+                        (not *in-trigger*) (assoc :outside-trigger true)) s (prev-end p))))
           (reserved u) (fail! p)
           :else
           (do (advance! p)

@@ -490,7 +490,7 @@
       (err @pend)))
   (case (:op e)
     :lit (let [v (lit-value e)
-               c (const-c v)]
+               c (cond-> (const-c v) (:tmeta e) (assoc :aff (:taff e) :coll (:tcoll e)))]
            ;; integer literals stored as 32-bit values count as always true/false for AND/OR simplification
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
@@ -539,6 +539,8 @@
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
     :raise (let [k (:kind e) msg (:msg e)
+                 _ (when (and (:outside-trigger e) (not *in-trigger*))
+                     (err "RAISE() may only be used within a trigger-program"))
                  mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
              (mk (fn [env] (if (= k :ignore)
                              (throw (ex-info "raise-ignore" {:raise-ignore true}))

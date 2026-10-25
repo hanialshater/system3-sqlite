@@ -44,13 +44,21 @@
           (and (not (:view tbl)) (#{"rowid" "oid" "_rowid_"} l)) (peek row)
           :else (err (str "no such column: " side "." nm)))))
 
+(defn- col-meta [tbl nm]
+  (let [l (lc nm)
+        i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) l)]
+    (when-not (:view tbl)
+      (cond (>= i 0) (let [c (nth (:cols tbl) i)]
+                       {:tmeta true :taff (when (= i (:ipk tbl)) :integer) :tcoll (or (:coll c) "BINARY")})
+            (#{"rowid" "oid" "_rowid_"} l) {:tmeta true :taff :integer :tcoll nil}))))
+
 (defn- substitute [ast tbl old new]
   (walk/postwalk
    (fn [x]
      (if (and (map? x) (= :col (:op x)) (:table x))
        (let [t (lc (:table x))]
-         (cond (and (= t "new") new) (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl new (:name x) "new"))
-               (and (= t "old") old) (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl old (:name x) "old"))
+         (cond (and (= t "new") new) (merge (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl new (:name x) "new")) (col-meta tbl (:name x)))
+               (and (= t "old") old) (merge (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl old (:name x) "old")) (col-meta tbl (:name x)))
                :else x))
        x))
    ast))
@@ -62,7 +70,7 @@
         last-rowid (:last-rowid db)
         ctx (assoc (e/->Ctx db src nil (atom 0) nil nil nil) :refs (atom #{}))
         ok (if-let [w (:when trig)]
-             (let [c (e/cx ctx (substitute w tbl old new))
+             (let [c (binding [e/*in-trigger* true] (e/cx ctx (substitute w tbl old new)))
                    x ((e/condf c) (object-array (+ 2 @(:slots ctx))))]
                (and (not (nil? x)) (sqlclj.values/bool-value x)))
              true)]
