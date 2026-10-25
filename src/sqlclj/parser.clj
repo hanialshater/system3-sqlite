@@ -720,8 +720,8 @@
   (expect-op p "(")
   (let [cols (loop [acc []]
                (let [e (parse-expr p)
-                     e (if (and (= :lit (:op e)) (string? (:v e)) (nil? (:kind e))) (assoc e :op :col :name (:v e)) e)
                      [e coll] (if (= :collate (:op e)) [(:e e) (:coll e)] [e nil])
+                     e (if (and (= :lit (:op e)) (string? (:v e)) (nil? (:kind e))) (assoc e :op :col :name (:v e)) e)
                      desc (cond (accept-kw p "DESC") true (accept-kw p "ASC") false :else false)
                      acc (conj acc {:e e :coll coll :desc desc})]
                  (if (accept-op p ",") (recur acc) acc)))]
