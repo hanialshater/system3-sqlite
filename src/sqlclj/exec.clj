@@ -150,7 +150,16 @@
                   (assoc-in db [:tables "sqlite_sequence" :rows k] [(:name tbl) rid k])))))))
 
 (defn- create-table [db sql st]
-  (let [name (:name st) lname (lc name)]
+  (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
+        lname0 (lc (:name st))
+        ex (get-in db [:tables lname0])
+        [db st] (cond
+                  (and (:temp st) ex (not (:temp ex)) (nil? (:db ex)) (not (:db st)))
+                  [(sch/move-main-aside db lname0) st]
+                  (and (not (:temp st)) (nil? (:db st)) ex (:temp ex))
+                  [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
+                  :else [db st])
+        name (:name st) lname (lc name)]
     (cond
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") name " already exists")))
@@ -163,7 +172,7 @@
                                   :aff (or a :blob)})
                        (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
-                 :sql (sch/create-table-stmt name cols)
+                 :sql (sch/create-table-stmt (sch/display-name name {:db (:db st)}) cols)
                  :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
@@ -430,7 +439,7 @@
   (let [slot (e/new-slot! ctx)
         cols (mapv :name (:cols tbl))]
     {:alias (lc (or alias (:name tbl))) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
-     :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? true
+     :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? true :ipk (:ipk tbl)
      :ncols (count cols) :hidden #{}}))
 
 (defn- compile-returning [ctx src items]
@@ -441,7 +450,13 @@
                            (for [i (range (:ncols src))]
                              {:name (nth (:cols src) i)
                               :f (let [sl (long (:slot src)) i (long i)] (fn [^objects env] (nth (aget env sl) i)))})
-                           [{:name (or (:alias rc) (if (= :col (:op (:e rc))) (:name (:e rc)) (e/text-of-node ctx (:e rc))))
+                           [{:name (or (:alias rc)
+                                       (if (= :col (:op (:e rc)))
+                                         (let [n (:name (:e rc))]
+                                           (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
+                                             (nth (:cols src) (:ipk src))
+                                             n))
+                                         (e/text-of-node ctx (:e rc))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
       {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)})))
@@ -570,12 +585,24 @@
                                   (err "ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint"))
                                 (assoc u
                                        :sets-c (when (= :update (:do u))
-                                                 (vec (for [[cols ex] (:sets u), c cols]
-                                                        [(let [i (.indexOf ^java.util.List lnames (lc c))]
-                                                           (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
-                                                             (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
-                                                           (if (neg? i) (err (str "no such column: " c)) i))
-                                                         (:f (e/cx uctx ex))])))
+                                                 (let [items (vec (mapcat (fn [[cols ex]]
+                                                                            (cond (= 1 (count cols)) [[(first cols) ex nil]]
+                                                                                  (= :vector (:op ex))
+                                                                                  (do (when (not= (count cols) (count (:items ex)))
+                                                                                        (err (str (count cols) " columns assigned " (count (:items ex)) " values")))
+                                                                                      (map (fn [c e] [c e nil]) cols (:items ex)))
+                                                                                  (= :subq (:op ex)) (map-indexed (fn [k c] [c ex k]) cols)
+                                                                                  :else (err (str (count cols) " columns assigned 1 values"))))
+                                                                          (:sets u)))]
+                                                   (vec (for [[c ex k] items]
+                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                             (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                                                               (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
+                                                             (if (neg? i) (err (str "no such column: " c)) i))
+                                                           (if (nil? k)
+                                                             (:f (e/cx uctx ex))
+                                                             (let [sub (e/compile-select uctx (:select ex))]
+                                                               (fn [env] (let [r (first (e/run-select-rows sub env))] (when r (nth r k))))))]))))
                                        :where-c (when (:where u) (:f (e/cx uctx (:where u))))
                                        :match (upsert-matcher tbl u)))
                               upserts)))
