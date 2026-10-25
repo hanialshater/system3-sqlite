@@ -79,10 +79,12 @@
                     xinfo? (conj hidden)))))
             (:cols t))))
     (if-let [v (get-in db [:views (lc tname)])]
-      (let [ctx (assoc (e/->Ctx db "" nil (atom 0) nil nil nil) :refs (atom #{}))
+      (let [ctx (assoc (e/->Ctx db (or (:src v) "") nil (atom 0) nil nil nil) :refs (atom #{}) :in-view (or (:db v) (if (:temp v) "temp" "main")))
             sub (try (e/compile-select ctx (:select v)) (catch Exception _ nil))
-            names (or (:cols v) (:names sub))]
-        (vec (map-indexed (fn [i n] (cond-> [(long i) n "" 0 nil 0] xinfo? (conj 0))) names)))
+            names (e/dedup-names (or (:cols v) (:names sub)))
+            affs (or (:src-affs sub) (:affs sub))
+            tname (fn [i] (case (nth affs i nil) :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" :blob "BLOB" ""))]
+        (vec (map-indexed (fn [i n] (cond-> [(long i) n (tname i) 0 nil 0] xinfo? (conj 0))) names)))
       [])))
 
 (defn- table-indexes [db lname]

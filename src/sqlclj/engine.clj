@@ -500,10 +500,12 @@
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
-    :raise (let [k (:kind e) msg (:msg e)]
-             (mk (fn [_] (if (= k :ignore)
-                           (throw (ex-info "raise-ignore" {:raise-ignore true}))
-                           (throw (ex-info msg {:sql-error msg :raise k}))))))
+    :raise (let [k (:kind e) msg (:msg e)
+                 mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
+             (mk (fn [env] (if (= k :ignore)
+                             (throw (ex-info "raise-ignore" {:raise-ignore true}))
+                             (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
+                               (throw (ex-info msg {:sql-error msg :raise k})))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1768,6 +1770,7 @@
           names)))
 
 (declare compile-cte)
+(def ^:dynamic *view-stack* #{})
 
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
@@ -1816,9 +1819,12 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
-                                              :in-view (or (:db view) (if (:temp view) "temp" "main")))
-                                       (:select view))
+        view (let [vk [(or (:db view) (if (:temp view) "temp" "main")) (lc (:name view))]
+                   _ (when (contains? *view-stack* vk) (err (str "view " (:name view) " is circularly defined")))
+                   sub (binding [*view-stack* (conj *view-stack* vk)]
+                         (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                                :in-view (or (:db view) (if (:temp view) "temp" "main")))
+                                         (:select view)))
                    _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
                        (do (when *coll-errs* (when-let [m (pick-coll-error @*coll-errs*)] (err m))))
                        (err (str "expected " (count (:cols view)) " columns for '" (:name view) "' but got " (count (:names sub)))))

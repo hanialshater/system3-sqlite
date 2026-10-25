@@ -23,11 +23,15 @@
   "Triggers of table tkey for the event, newest first. cols: lower-case names of the columns an UPDATE sets."
   [db tkey timing event cols]
   (when (seq (:triggers db))
-    (->> (vals (:triggers db))
-         (filter (fn [t] (and (= (:table t) tkey) (= (:timing t) timing) (= (:event t) event)
-                              (or (not= event :update) (nil? (:cols t))
-                                  (some (fn [c] (some #(= (lc c) %) cols)) (:cols t))))))
-         (sort-by :mseq >))))
+    (let [ttemp (boolean (:temp (or (get-in db [:tables tkey]) (get-in db [:views tkey]))))
+          ts (->> (vals (:triggers db))
+                  (filter (fn [t] (and (= (:table t) tkey) (= (:timing t) timing) (= (:event t) event)
+                                       (or (not= event :update) (nil? (:cols t))
+                                           (some (fn [c] (some #(= (lc c) %) cols)) (:cols t)))))))
+          foreign? (fn [t] (and (:temp t) (not ttemp)))]
+      ;; SQLite lists the TEMP triggers of a non-temp table first, oldest first; then the table's own, newest first
+      (concat (sort-by :mseq (filter foreign? ts))
+              (sort-by :mseq > (remove foreign? ts))))))
 
 (defn any-for? [db tkey event]
   (boolean (some (fn [t] (and (= (:table t) tkey) (= (:event t) event))) (vals (:triggers db)))))
