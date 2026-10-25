@@ -1070,11 +1070,18 @@
                       n1 (parse-nm p)
                       [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
                       _ (when (and temp sch (not= "temp" (str/lower-case sch))) (throw (lx/sql-error "temporary view name must be unqualified")))
+                      bad-col (volatile! nil)
+                      ;; eidlist: nm [COLLATE id] [ASC|DESC]; sqlite3CreateView rejects the extras afterwards
+                      vcol (fn [] (let [n (parse-nm p)]
+                                    (when (accept-kw p "COLLATE") (parse-nm p) (when-not @bad-col (vreset! bad-col n)))
+                                    (when (or (accept-kw p "ASC") (accept-kw p "DESC")) (when-not @bad-col (vreset! bad-col n)))
+                                    n))
                       cols (when (at-op? p "(") (advance! p)
-                                 (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
+                                 (let [c (loop [acc [(vcol)]] (if (accept-op p ",") (recur (conj acc (vcol))) acc))]
                                    (expect-op p ")") c))
                       _ (expect-kw p "AS")
-                      sel (parse-select p)]
+                      sel (parse-select p)
+                      _ (when @bad-col (throw (lx/sql-error (str "syntax error after column name \"" @bad-col "\""))))]
                   {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :select sel})
                 (and (not unique) (accept-kw p "TRIGGER"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
