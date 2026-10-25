@@ -100,7 +100,7 @@
          :src src
          :indexes (mapv #(build-index info src nrow used % (fn [idx] (try (partial-usable? (:ctx info) idx partial-terms src) (catch Throwable _ false))))
                         (remove #(some (fn [ic] (nil? (:col ic))) (:cols %)) (table-indexes db tbl)))})
-      {:i i :nrow 200 :szrow 60 :rowid? true :jointype jointype :ephemeral true :auto-ok (:auto-ok info) :src src :indexes []})))
+      {:i i :nrow (or (some-> src :sub :nrow-est) 200) :szrow (pl/le (* 4 (inc (count (:cols src))))) :rowid? true :jointype jointype :ephemeral true :auto-ok (:auto-ok info) :src src :indexes []})))
 
 (defn- order-spec
   "ORDER BY / GROUP BY term specs for the planner from AST expressions."
@@ -251,7 +251,7 @@
         rev (long (:rev-mask plan))
         pos (zipmap (map :tab path) (range))
         from (:from info)]
-    {:order (mapv :tab path)
+    {:order (mapv :tab path) :nrow-out (:nrow-out plan)
      :wconj (vec (for [x (e/split-and* (:where info))] {:expr x :level (early-level G pos x)}))
      :on-levels (vec (for [[i it] (map-indexed vector from)]
                        (let [using (nth (:join-conds info) i nil)
@@ -270,7 +270,7 @@
                    idx (:idx lp)
                    neq (long (:neq lp)) nskip (long (:nskip lp))
                    lterms (:lterms lp)
-                   unfix (fn unfix [x] (cond (and (map? x) (= :fixed (:op x))) (unfix (:col x))
+                   unfix (fn unfix [x] (cond (and (map? x) (= :fixed (:op x))) (:value x)
                                               (and (map? x) (not (contains? x :select))) (into {} (map (fn [[k v]] [k (if (or (map? v) (sequential? v)) (unfix v) v)]) x))
                                               (vector? x) (mapv unfix x)
                                               :else x))

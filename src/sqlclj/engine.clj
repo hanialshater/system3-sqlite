@@ -2644,6 +2644,7 @@
        :exprs (first rows)
        :dtypes (mapv #(expr-dtype % nil) (first (:rows core)))
        :outer-refs (atom false)
+       :nrow-est (log-est (count rows))
        :order-info [[] []]
        :run (fn [env emit]
               (doseq [r rows] (emit (mapv #((:f %) env) r) nil)))})
@@ -3103,6 +3104,11 @@
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
                          rcols)
        :outer-refs outer-refs
+       :nrow-est (let [n (cond (and is-agg (empty? (:group core))) 0
+                               plan-spec (:nrow-out plan-spec)
+                               :else nil)
+                       lim (when (and n limit (>= (long limit) 0)) (log-est (long limit)))]
+                   (if (and n lim) (min (long n) (long lim)) n))
        :run run}))))
 
 (defn- aff-mask ^long [aff]
@@ -3406,6 +3412,7 @@
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
         {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c) :using-terms (:using-terms c) :nx-terms (:nx-terms c)
+         :nrow-est (:nrow-est c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp
