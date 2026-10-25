@@ -475,7 +475,7 @@
                            (throw (ex-info "raise-ignore" {:raise-ignore true}))
                            (throw (ex-info msg {:sql-error msg :raise k}))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
-                aff (v/type-affinity (:type e))]
+                aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
     :bin
     (if-let [rc (when (and (#{:eq :ne :lt :le :gt :ge} (:o e)) (or (row-like? (:l e)) (row-like? (:r e))))
@@ -1839,12 +1839,15 @@
                                                 c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
                                           :when c]
                                       [d c]))]
-            (err (str "ambiguous column name: main." (:tname dup) "." col))
+            (err (str "ambiguous column name: main." (if (= (lc (:tname dup)) (:alias dup)) (:tname dup) (:alias dup)) "." col))
           (for [s sources, i (range (:ncols s))
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
             {:star-col [s i] :name (nth (:cols s) i) :unq true})))
         (:star rc)
         (let [lt (lc (:table rc))
+              _ (when (> (count (filter #(= (:alias %) lt) sources)) 1)
+                  (let [d (first (filter #(= (:alias %) lt) sources))]
+                    (err (str "ambiguous column name: main." (:tname d) "." (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))))))
               s (first (filter #(= (:alias %) lt) sources))
               ns (when-not s (first (filter #(get-in % [:quals lt]) sources)))]
           (when-not (or s ns) (err (str "no such table: " (:table rc))))

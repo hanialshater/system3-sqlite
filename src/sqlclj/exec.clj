@@ -247,6 +247,7 @@
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             autoinc (boolean (some (fn [d] (some #(and (= :pk (:c %)) (:auto %)) (:cons d))) defs))
             _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
+            _ (when (and (:without-rowid st) (empty? pk-cols)) (err (str "PRIMARY KEY missing on table " name)))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
                  :pk-cols (mapv :i pk-cols) :fks fks :autoinc autoinc
                  :pk-conflict (or (when ipk (:conflict (:pk (nth cols ipk)))) (:conflict (first tpks)))
@@ -1589,7 +1590,8 @@
                 :analyze (exec-analyze db sql st)
                 (:begin :commit :rollback :savepoint :release) (exec-tx db st)
                 (:noop :pragma) db
-                :vacuum (do (when-let [sc (lc (:schema st))]
+                :vacuum (do (when (:tx db) (err "cannot VACUUM from within a transaction"))
+                            (when-let [sc (lc (:schema st))]
                               (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
                                 (err (str "unknown database " (:schema st)))))
                             db))]
