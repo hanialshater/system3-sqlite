@@ -2050,10 +2050,6 @@
                   s (:src r) lt (lc (:table e))]
               (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
-          (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
-                s (:src r)]
-            (when (and s (:idx r) (< (long (:idx r)) (count (:cols s))) (not (:sub s)))
-              (nth (:cols s) (:idx r))))
           (:name e))]
       (if full
         (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
@@ -2769,7 +2765,10 @@
           run
           (if is-agg
             (fn [^objects env emit]
-              (let [groups (if (seq gfs) (TreeMap. ^Comparator (row-comparator gcolls)) nil)
+              (let [groups (if (seq gfs) (TreeMap. ^Comparator (if (and (seq order) (= (count order) (count group-c)) (some :desc order))
+                                                                   ;; SQLite copies the ORDER BY's ASC/DESC onto a GROUP BY of the same length
+                                                                   (compare-keys-fn (mapv (fn [c o] [c (boolean (:desc o)) nil]) gcolls order))
+                                                                   (row-comparator gcolls))) nil)
                     gorder (when (and groups (or rowid-group (and order-plan (seq group-c)))) (java.util.ArrayList.))
                     single (volatile! nil)
                     new-group (fn [] {:accs (mapv make-acc agg-specs) :snap (object-array nsrc) :init (boolean-array 1)})
@@ -3103,6 +3102,8 @@
                                          (err (str (ordinal (inc i)) " ORDER BY term does not match any column in the result set")))]
                               {:ri ri :coll (or coll (nth (:colls b) ri) "BINARY") :desc (:desc term) :nulls (:nulls term)}))
                           order)))
+            ;; multiSelectOrderBy: only UNION/EXCEPT/INTERSECT extend the merge keys with the other columns
+            sort-specs specs
             specs (when specs
                     (let [used (set (map :ri specs))]
                       (into specs (for [i (range (count names)) :when (not (used i))]
@@ -3118,6 +3119,7 @@
                     (let [rows ((:rows b) env)
                           rows (if cmp
                                  (let [keyed (map (fn [r] [(mapv #(nth r (:ri %)) specs) r]) rows)
+                                       keyed (if (= :union-all (:op body)) (map (fn [[k r]] [(into (subvec k 0 (count sort-specs)) (repeat (- (count specs) (count sort-specs)) nil)) r]) keyed) keyed)
                                        arr (to-array keyed)]
                                    (java.util.Arrays/sort arr (reify Comparator (compare [_ a b] (.compare ^Comparator cmp (first a) (first b)))))
                                    (map second arr))
