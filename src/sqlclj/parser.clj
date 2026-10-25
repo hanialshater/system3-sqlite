@@ -530,17 +530,26 @@
           :else :inner)))
     :else nil))
 
+(defn- valid-after-from? [^P p]
+  (let [t (tok p)]
+    (or (= :eof (:t t))
+        (and (= :op (:t t)) (#{";" ")" ","} (:v t)))
+        (and (= :id (:t t))
+             (contains? #{"WHERE" "GROUP" "HAVING" "WINDOW" "ORDER" "LIMIT" "UNION" "INTERSECT" "EXCEPT" "JOIN"
+                          "LEFT" "RIGHT" "FULL" "INNER" "CROSS" "NATURAL" "RETURNING" "OUTER"} (:u t))))))
+
 (defn parse-from [^P p]
   (loop [items (let [first-ref (parse-table-ref p)]
                  (cond
                    (at-kw? p "ON")
                    (do (advance! p) (parse-expr p)
-                       (when (at-kw? p "USING") (fail! p))
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before ON")))
                    (at-kw? p "USING")
                    (do (advance! p) (expect-op p "(")
                        (loop [] (parse-nm p) (when (accept-op p ",") (recur)))
                        (expect-op p ")")
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before USING")))
                    ;; SQLite's parser flattens an unaliased parenthesized join in the first position
                    (and (:nested first-ref) (nil? (:alias first-ref))) (vec (:nested first-ref))
@@ -805,13 +814,15 @@
                       (cond (accept-op p ",") (recur cols tcons)
                             (accept-op p ")") [cols tcons]
                             :else (fail! p))))))
-              opts (loop [opts #{}]
+              opts (loop [opts #{} need false]
                      (cond
-                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o) o))
+                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o true) o))
                        (at-kw? p "WITHOUT") (do (advance! p)
                                                 (let [t (advance! p)]
                                                   (when-not (= "ROWID" (:u t)) (syntax-error p t)))
-                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
+                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o true) o)))
+                       need (fail! p)
+                       (and (empty? opts) (accept-op p ",")) (recur opts true)
                        :else opts))]
           {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
