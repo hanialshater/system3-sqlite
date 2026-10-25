@@ -492,9 +492,10 @@
     :lit (let [v (lit-value e)
                c (cond-> (const-c v) (:tmeta e) (assoc :aff (:taff e) :coll (:tcoll e)))]
            ;; integer literals stored as 32-bit values count as always true/false for AND/OR simplification
-           (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
+           (cond
+             (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
-             c))
+             :else c))
     :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
                       (catch clojure.lang.ExceptionInfo ex
                         (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
@@ -1963,7 +1964,8 @@
         (and (:star rc) (nil? (:table rc)))
         (if (empty? sources)
           (err "no tables specified")
-          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (and a (> (count ss) 1))
+          (if-let [[dup col] (first (for [[[a] ss] (group-by (fn [s] [(:alias s) (let [t (str (:tname s))] (when (str/includes? t ".") (lc (subs t 0 (str/index-of t ".")))))]) sources)
+                                          :when (and a (> (count ss) 1))
                                           :let [d (second ss)
                                                 c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
                                           :when c]
@@ -2362,9 +2364,9 @@
     (:sub src)
     (let [sub (:sub src)]
       (if (or (:correlated sub) (:lazy sub))
-        (fn [env] (run-select-rows sub env))
+        (fn [env] (map v/strip-row (run-select-rows sub env)))
         (let [cache (volatile! nil)]
-          (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))))
+          (fn [env] (or @cache (vreset! cache (mapv v/strip-row (run-select-rows sub env))))))))))
 
 (defn compile-core
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives

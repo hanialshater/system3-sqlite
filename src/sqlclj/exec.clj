@@ -177,7 +177,7 @@
                        (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt (sch/display-name name {:db (:db st)}) cols)
-                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
+                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
       :else
@@ -436,7 +436,7 @@
     (if r [r :ok] [nil :ignore])))
 
 (defn- put-row [tbl rid row]
-  (assoc-in tbl [:rows rid] (assoc row (count (:cols tbl)) rid)))
+  (assoc-in tbl [:rows rid] (assoc (v/strip-row row) (count (:cols tbl)) rid)))
 
 (defn- resolve-uniques
   "Checks rowid and unique-index conflicts for row (with rowid rid) excluding self.
@@ -617,7 +617,7 @@
                {:name (str "$v$" l) :view true :vkey l
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
-                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
+                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
         (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
@@ -707,7 +707,8 @@
                                                                                   :else (err (str (count cols) " columns assigned 1 values"))))
                                                                           (:sets u)))]
                                                    (vec (for [[c ex k] items]
-                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))
+                                                                 i (if (and (neg? i) (#{"rowid" "oid" "_rowid_"} (lc c)) (:ipk tbl)) (:ipk tbl) i)]
                                                              (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                                                                (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                                              (if (neg? i) (err (str "no such column: " c)) i))
@@ -1087,7 +1088,7 @@
 (defn- parse-trigger-text [old ns]
   (let [st (p/next-statement (p/parse-statements ns))]
     (-> (trg/make-trigger st ns)
-        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :mseq (:mseq old) :sql ns))))
+        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :db (:db old) :mseq (:mseq old) :sql ns))))
 
 (defn- create-index [db sql st]
   (let [name (:name st) lname (lc name)
@@ -1466,7 +1467,7 @@
 
 (defn- check-view [db v]
   (let [sql (obj-ref-sql v)]
-    (try (let [st (parse-one sql)]
+    (try (let [st (sch/qualify-stmt db (parse-one sql))]
            (e/compile-select (new-ctx db sql) (:select st))
            nil)
          (catch Throwable ex (sql-err-msg ex)))))

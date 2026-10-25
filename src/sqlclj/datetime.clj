@@ -535,16 +535,16 @@
               (compute-ymd-hms r)
               (fmt (str "+%04d-%02d-%02d %02d:%02d:%06.3f") Y M (dec (long (g r :D))) (long (g r :h)) (long (g r :m)) (double (g r :s))))
             (let [Y (- (long (g d2 :Y)) (long (g d1 :Y)))
-                  _ (when-not (zero? Y) (s! d1 :Y (g d2 :Y)) (recompute d1))
+                  _ (when-not (zero? Y) (s! d2 :Y (g d1 :Y)) (recompute d2))
                   M (- (long (g d2 :M)) (long (g d1 :M)))
                   [Y M] (if (neg? M) [(dec Y) (+ M 12)] [Y M])
-                  _ (when-not (zero? M) (s! d1 :M (g d2 :M)) (recompute d1))
+                  _ (when-not (zero? M) (s! d2 :M (g d1 :M)) (recompute d2))
                   [Y M] (loop [Y Y M M]
-                          (if (> (jd d1) (jd d2))
+                          (if (< (jd d2) (jd d1))
                             (let [M (dec M) [Y M] (if (neg? M) [(dec Y) 11] [Y M])]
-                              (s! d1 :M (dec (long (g d1 :M))))
-                              (when (< (long (g d1 :M)) 1) (s! d1 :M 12 :Y (dec (long (g d1 :Y)))))
-                              (recompute d1)
+                              (s! d2 :M (inc (long (g d2 :M))))
+                              (when (> (long (g d2 :M)) 12) (s! d2 :M 1 :Y (inc (long (g d2 :Y)))))
+                              (recompute d2)
                               (recur Y M))
                             [Y M]))
                   r (volatile! {:iJD (+ (- (jd d2) (jd d1)) 148699540800000) :validJD true :Y 0 :M 0 :D 0 :h 0 :m 0 :tz 0 :s 0.0})]
