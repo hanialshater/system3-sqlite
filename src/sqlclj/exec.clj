@@ -1169,10 +1169,22 @@
     db))
 
 (declare exec-drop*)
+(defn- drop-stat-rows [db pred]
+  (if-let [t (get-in db [:tables "sqlite_stat1"])]
+    (assoc-in db [:tables "sqlite_stat1" :rows] (into (sorted-map) (remove (fn [[_ r]] (pred r)) (:rows t))))
+    db))
+
 (defn- exec-drop [db st]
   (let [lname (lc (:name st))
         was-temp (boolean (or (:temp (get-in db [:tables lname])) (:temp (get-in db [:views lname]))))
-        r (exec-drop* db st)]
+        r0 (exec-drop* db st)
+        r (if (and (map? r0) (not (identical? r0 db)))
+            (case (:what st)
+              :table (let [tn (some-> (get-in db [:tables lname]) :name lc)] (if tn (drop-stat-rows r0 #(= (lc (str (nth % 0))) tn)) r0))
+              :index (let [i (get-in db [:indexes lname])]
+                       (if i (drop-stat-rows r0 #(= (lc (str (nth % 1))) (lc (sch/display-name (:name i) i)))) r0))
+              r0)
+            r0)]
     (if (and was-temp (map? r) (not (str/includes? lname ".")))
       (sch/move-main-back r lname)
       r)))
@@ -1220,7 +1232,9 @@
         n (count rows)
         k (count (:cols idx))
         colls (mapv :coll (:cols idx))]
-    (when (pos? n)
+    (if (and (zero? n) (:wf idx))
+      (str "0" (apply str (repeat k " 0")))
+      (when (pos? n)
       (let [keys (sort (e/row-comparator colls) (map #(e/index-key tbl idx %) rows))
             eqv (fn [a b c] (or (and (nil? a) (nil? b)) (and (some? a) (some? b) (zero? (v/sql-cmp a b c)))))
             dist (long-array k)]
@@ -1230,7 +1244,7 @@
                       (loop [j i] (when (< j k) (aset dist j (inc (aget dist j))) (recur (inc j))))))
                   cur)
                 nil keys)
-        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d)))))))))
+        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d))))))))))
 
 (defn- exec-analyze [db sql st]
   (let [lname (lc (:name st)) lsch (lc (:schema st))
@@ -1393,17 +1407,27 @@
          quals (cond-> (or quals #{}) (and trig-table tn (= (lc trig-table) (lc tn))) (conj "new" "old"))
          spans (fk-parent-spans toks)
          in-foreign-parent? (fn [i] (some (fn [[p a b]] (and (>= i a) (< i b) (not= p (lc tn)))) spans))]
-     (rewrite-tokens sql (fn [toks i]
-                           (let [t (nth toks i)]
-                             (when (and (>= i from) (tok-name? t old))
-                               (let [prev (when (pos? i) (nth toks (dec i)))
-                                     nxt (when (< (inc i) (count toks)) (nth toks (inc i)))]
-                                 (cond
-                                   (in-foreign-parent? i) nil
-                                   (and prev (tok-op? prev ".") (>= i 2))
-                                   (when (or (nil? tn) (contains? quals (lc (:v (nth toks (- i 2)))))) (quote-if-needed new))
-                                   (and nxt (tok-op? nxt "(") (not self?)) nil
-                                   :else (quote-if-needed new))))))))))
+     (let [depths (vec (reductions (fn [d t] (cond (tok-op? t "(") (inc d) (tok-op? t ")") (dec d) :else d)) 0 toks))
+           qstart? (fn [t] (contains? #{(char 39) (char 34) (char 96) (char 91)} (.charAt ^String sql (int (:s t)))))
+           mk (fn [t] (if (qstart? t) (quote-id new) (quote-if-needed new)))
+           ;; a string where a column definition starts is an identifier
+           str-col? (fn [toks i]
+                      (let [t (nth toks i)]
+                        (and self? (= :str (:t t)) (= (lc (:v t)) (lc old)) (= 1 (nth depths i))
+                             (pos? i) (let [pv (nth toks (dec i))] (or (tok-op? pv "(") (tok-op? pv ","))))))]
+       (rewrite-tokens sql (fn [toks i]
+                             (let [t (nth toks i)]
+                               (cond
+                                 (and (>= i from) (str-col? toks i)) (mk t)
+                                 (and (>= i from) (tok-name? t old))
+                                 (let [prev (when (pos? i) (nth toks (dec i)))
+                                       nxt (when (< (inc i) (count toks)) (nth toks (inc i)))]
+                                   (cond
+                                     (in-foreign-parent? i) nil
+                                     (and prev (tok-op? prev ".") (>= i 2))
+                                     (when (or (nil? tn) (contains? quals (lc (:v (nth toks (- i 2)))))) (mk t))
+                                     (and nxt (tok-op? nxt "(") (not self?)) nil
+                                     :else (mk t)))))))))))
 
 (defn- rename-fk-parent-col
   "In the CREATE text of another table: parent column old of REFERENCES parent(...) becomes new."
