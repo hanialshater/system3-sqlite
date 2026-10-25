@@ -56,14 +56,14 @@
 (defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_" "\u0000rowid"} lname))
 
 (defn resolve-column
-  "Returns {:slot :idx :aff :coll :depth :src} or throws."
-  [ctx tq name dq]
+  "Returns {:slot :idx :aff :coll :depth :src} or throws. quoted: the name was a quoted identifier (never TRUE/FALSE)."
+  [ctx tq name dq & [quoted]]
   (let [lname (lc name) ltq (lc tq)]
     (loop [scope (:scope ctx) depth 0]
       (if (nil? scope)
         (cond
-          (and (nil? tq) (= lname "true")) {:const 1}
-          (and (nil? tq) (= lname "false")) {:const 0}
+          (and (nil? tq) (not quoted) (= lname "true")) {:const 1}
+          (and (nil? tq) (not quoted) (= lname "false")) {:const 0}
           :else
           (err (str "no such column: "
                     (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
@@ -479,7 +479,7 @@
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
+    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))]
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -683,7 +683,11 @@
         (:list e)
         (let [items (mapv #(cx ctx %) (:list e))
               aff (:aff x)
-              coll (or (:coll x) "BINARY")
+              ;; the parser turns "x IN (c)" with one constant c (no columns, subqueries or function calls)
+              ;; into "x = +c", so a COLLATE on c counts
+              one-const? (and (= 1 (count items)) (const-term? (:list e))
+                              (not (str/includes? (pr-str (:list e)) ":op :fn")))
+              coll (or (if one-const? (binary-coll x (first items)) (:coll x)) "BINARY")
               fs0 (mapv :f items)
               ;; a constant list of 3+ items becomes an ephemeral table: every item is evaluated (once)
               fs (if (and (>= (count fs0) 3) (every? const-term? (:list e)))
