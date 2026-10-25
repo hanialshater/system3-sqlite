@@ -568,6 +568,8 @@
                  (if op
                    (recur {:type :compound :op op :left left :right (parse-select-core p)})
                    left)))
+        last-core (if (= :compound (:type body)) (:right body) body)
+        _ (when (and (= :values (:type last-core)) (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
         order (when (at-kw? p "ORDER") (advance! p) (expect-kw p "BY") (parse-order-by p))
         [limit offset] (when (accept-kw p "LIMIT")
                          (let [a (parse-expr p)]

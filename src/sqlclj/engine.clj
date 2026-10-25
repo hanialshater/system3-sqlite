@@ -1125,6 +1125,22 @@
           (if (instance? Long t)
             (kbn-step-int rs (long t))
             (do (set! ovrfl false) (kbn-step rs (v/real-value x))))))))
+  (invoke [this x _ _]
+    ;; sumInverse: a value leaves a sliding window frame
+    (let [t (v/numeric-type-value x)]
+      (when-not (nil? t)
+        (set! cnt (dec cnt))
+        (if (not approx)
+          (let [a isum b (v/int-value x) r (unchecked-subtract a b)]
+            (if (and (not= (neg? a) (neg? b)) (not= (neg? r) (neg? a)))
+              (do (set! ovrfl true) (set! approx true))
+              (set! isum r)))
+          (if (instance? Long t)
+            (let [iv (long t)]
+              (if (= iv Long/MIN_VALUE)
+                (do (kbn-step-int rs Long/MAX_VALUE) (kbn-step-int rs 1))
+                (kbn-step-int rs (- iv))))
+            (kbn-step rs (- (v/real-value x))))))))
   (invoke [this kind _]
     (let [overflow? (fn [^double d] (or (Double/isInfinite d) (Double/isNaN d)))]
       (case kind
@@ -1160,6 +1176,7 @@
       (let [s (SumCtx. (double-array 2) 0 0 false false)
             kind (keyword name)]
         {:step (fn [[x]] (when (and (not (nil? x)) (dist-ok x)) (s x)) false)
+         :inverse (fn [[x]] (when-not (nil? x) (.invoke ^clojure.lang.IFn s x nil nil)))
          :final (fn [] (.invoke ^clojure.lang.IFn s kind nil))})
       ("min" "max")
       (let [best (object-array 1) has (boolean-array 1) mx (= name "max") last-hit (boolean-array 1)]
@@ -1195,7 +1212,13 @@
 
 ;; ====================================================================== window functions
 
-(declare row-comparator compare-keys-fn)
+(declare row-comparator compare-keys-fn expr-equal?)
+
+(defn has-window? [e]
+  (cond (map? e) (or (and (= :fn (:op e)) (some? (:over e)))
+                     (some has-window? (vals (dissoc e :select))))
+        (sequential? e) (some has-window? e)
+        :else false))
 
 (def window-only #{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
                    "first_value" "last_value" "nth_value"})
@@ -1248,8 +1271,14 @@
           filt (when (:filter e) (condf (cx ictx (:filter e))))
           part (mapv #(cx ictx %) (:part wd))
           order (mapv (fn [t] (let [c (cx ictx (:e t))]
-                                {:f (:f c) :coll (or (:coll c) "BINARY") :desc (:desc t) :nulls (:nulls t)}))
+                                {:f (:f c) :coll (or (:coll c) "BINARY") :desc (:desc t) :nulls (:nulls t) :c c}))
                       (:order wd))
+          ;; window comparison keys: resolved columns compare equal however they are written
+          ekey (fn [ast c] (if-let [col (:col c)] [:col (:slot col) (:idx col) (:depth col)] (strip-pos ast)))
+          pkey (mapv ekey (:part wd) part)
+          okey (mapv (fn [t o] [(ekey (:e t) (:c o)) (boolean (:desc t))
+                                (let [n (:nulls t)] (when (and n (not= n (if (:desc t) :last :first))) n))])
+                     (:order wd) order)
           fr (:frame wd)
           _ (when (and fr (= :range (:type fr))
                        (or (#{:preceding :following} (:kind (:start fr))) (#{:preceding :following} (:kind (:end fr))))
@@ -1262,7 +1291,19 @@
           slot (long (:win-slot ctx))]
       (swap! wins conj {:name name :agg aggf :args args :filter filt :part part :order order :frame frame
                         :star (:star e) :coll (or (:coll (first args)) "BINARY")
-                        :gkey (strip-pos [(:part wd) (mapv (fn [t] [(:e t) (:desc t) (:nulls t)]) (:order wd))])})
+                        :copy (boolean (:win-copy ctx))
+                        :fkey (strip-pos e)
+                        :wkey [pkey okey
+                                         ;; sqlite3WindowUpdate: the ranking functions get fixed frames
+                                         (case name
+                                           "row_number" :rows-up-cur ("rank" "dense_rank") :range-up-cur
+                                           "percent_rank" :groups-cur-uf "cume_dist" :groups-f-uf "ntile" :rows-cur-uf
+                                           "lead" :rows-up-uf "lag" :rows-up-cur
+                                           (let [f (:frame wd)]
+                                             (if (or (nil? f) (= f {:type :range :start {:kind :unbounded-preceding} :end {:kind :current} :exclude nil}))
+                                               :range-up-cur
+                                               (strip-pos f))))]
+                        :gkey [pkey okey]})
       (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
           :coll (when (#{"min" "max" "first_value" "last_value" "nth_value" "lag" "lead"} name) (:coll (first args)))))))
 
@@ -1421,10 +1462,22 @@
                 (loop [j (inc (aget done 0))] (when (<= j hi) (step acc j) (recur (inc j))))
                 (aset done 0 (max (aget done 0) hi))
                 (put! k ((:final acc))))))
-          (dotimes [k m]
-            (let [acc (make-acc spec)]
-              (doseq [j (frame-pos k)] (step acc j))
-              (put! k ((:final acc))))))))))
+          (if (and (nil? excl) (#{"sum" "total" "avg"} name))
+            ;; one accumulator per partition: rows enter at the frame end (xStep) and leave at its start (xInverse)
+            (let [acc (make-acc spec) ahi (long-array [0]) alo (long-array [0])
+                  passes (fn [j] (or (nil? filt) (let [x (filt (snap j))] (and (not (nil? x)) (v/bool-value x)))))]
+              (dotimes [k m]
+                (let [lo (max 0 (long (lo-of k))) hi (min (dec m) (long (hi-of k)))]
+                  (loop [j (aget ahi 0)] (when (<= j hi) (when (passes j) ((:step acc) (argv j))) (recur (inc j))))
+                  (aset ahi 0 (max (aget ahi 0) (inc hi)))
+                  (loop [j (aget alo 0)] (when (and (< j lo) (< j (aget ahi 0)))
+                                           (when (passes j) ((:inverse acc) (argv j))) (recur (inc j))))
+                  (aset alo 0 (max (aget alo 0) lo))
+                  (put! k ((:final acc))))))
+            (dotimes [k m]
+              (let [acc (make-acc spec)]
+                (doseq [j (frame-pos k)] (step acc j))
+                (put! k ((:final acc)))))))))))
 
 (defn- partition-by-cmp [xs same?]
   (if (empty? xs) []
@@ -1447,25 +1500,46 @@
                              [g (mapv (fn [^objects sn] [(mapv #((:f %) sn) (:part s)) (mapv #((:f %) sn) (:order s))])
                                       snaps)])))]
     (dotimes [i n] (aset ^objects (aget snaps i) (long win-slot) (object-array nspec)))
-    (doseq [g gkeys]
-      (let [s (rep g)
-            ks (keys-of g)
-            cmp (win-key-cmp s)
-            pc (row-comparator (map #(or (:coll %) "BINARY") (:part s)))
-            idx (sort (fn [a b] (let [c (.compare ^Comparator cmp (nth ks a) (nth ks b))] (if (zero? c) (compare a b) c)))
-                      (range n))
-            parts (partition-by-cmp idx (fn [a b] (zero? (.compare ^Comparator pc (first (nth ks a)) (first (nth ks b))))))]
-        (doseq [prow parts]
-          (let [prow (vec prow) okeys (mapv #(second (nth ks %)) prow)]
-            (doseq [[wi sp] (map-indexed vector specs) :when (= g (:gkey sp))]
-              (eval-partition sp snaps prow okeys nil wi env0))))))
-    (let [cmps (mapv (fn [g] [(keys-of g) (win-key-cmp (rep g))]) gkeys)
-          order (sort (fn [a b]
-                        (loop [cs cmps]
-                          (if (empty? cs) (compare a b)
-                              (let [[ks c] (first cs) r (.compare ^Comparator c (nth ks a) (nth ks b))]
-                                (if (zero? r) (recur (rest cs)) r)))))
-                      (range n))]
+    ;; sqlite3WindowRewrite: the windows equal to the first one are computed by the outer query; every other
+    ;; window function (and ORDER BY copies of windowed result columns) moves into a sub-select, recursively.
+    ;; The innermost level is computed first; each level stable-sorts the rows of the level below it.
+    (let [idxs (range nspec)
+          wk (fn [i] (:wkey (nth specs i)))
+          fk (fn [i] (:fkey (nth specs i)))
+          noncopy (filterv #(not (:copy (nth specs %))) idxs)
+          copies (filterv #(:copy (nth specs %)) idxs)
+          head (first (or (seq noncopy) copies))
+          l0 (filterv #(= (wk %) (wk head)) (if (seq noncopy) noncopy copies))
+          l0s (set l0)
+          rest0 (remove l0s (concat noncopy copies))
+          [rest1 aliases] (reduce (fn [[acc al] i]
+                                    (if-let [j (first (filter #(= (fk %) (fk i)) acc))]
+                                      [acc (assoc al i j)]
+                                      [(conj acc i) al]))
+                                  [[] {}] rest0)
+          levels (loop [lst rest1 levels [l0]]
+                   (if (empty? lst) levels
+                       (let [h (first lst) in (filterv #(= (wk %) (wk h)) lst)]
+                         (recur (remove (set in) lst) (conj levels in)))))
+          order (reduce
+                 (fn [cur level]
+                   (let [s (nth specs (first level))
+                         g (:gkey s)
+                         ks (keys-of g)
+                         cmp (win-key-cmp s)
+                         pc (row-comparator (map #(or (:coll %) "BINARY") (:part s)))
+                         idx (sort (fn [a b] (.compare ^Comparator cmp (nth ks a) (nth ks b))) cur)
+                         parts (partition-by-cmp idx (fn [a b] (zero? (.compare ^Comparator pc (first (nth ks a)) (first (nth ks b))))))]
+                     (doseq [prow parts]
+                       (let [prow (vec prow) okeys (mapv #(second (nth ks %)) prow)]
+                         (doseq [wi level]
+                           (eval-partition (nth specs wi) snaps prow okeys nil wi env0))))
+                     idx))
+                 (range n) (reverse levels))]
+      (doseq [[i j] aliases]
+        (dotimes [r n]
+          (let [^objects res (aget ^objects (aget snaps r) (long win-slot))]
+            (aset res (long i) (aget res (long j))))))
       (map #(aget snaps (long %)) order))))
 
 
@@ -2025,8 +2099,16 @@
                     (vec (map-indexed
                           (fn [i term]
                             (let [ri (order-term-index ctx2 term names aliases (ordinal (inc i)))
-                                  c (if ri (nth rcomp ri) (cx wctx (:e term)))]
-                              {:f (:f c) :ri ri :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
+                                  ri (or ri (when (has-window? (:e term))
+                                              (first (keep-indexed (fn [k rc] (when (and (:e rc) (expr-equal? (:e rc) (:e term))) k)) rcols))))
+                                  c (if ri
+                                      (let [rc (nth rcols ri)]
+                                        ;; an ORDER BY copy of a windowed result column is computed again, one level deeper
+                                        (if (and (:e rc) (has-window? (:e rc)))
+                                          (assoc (cx (assoc wctx :win-copy true) (:e rc)) :wcopy true)
+                                          (nth rcomp ri)))
+                                      (cx wctx (:e term)))]
+                              {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
                           order)))
           nsrc (count sources)
@@ -2048,7 +2130,9 @@
                                             %)
                                           (when (:where core) (split-and (:where core))))
                            sources))
-          rfs (mapv :f rcomp)
+          ;; SQLITE_ECEL_OMITREF: a result column the ORDER BY refers to is read back from the sort key
+          rfs (reduce (fn [v o] (if (and (:wcopy o) (not (:distinct core))) (assoc v (:ri o) (:f o)) v))
+                      (mapv :f rcomp) order-c)
           ofs (mapv :f order-c)
           agg-specs @aggs
           minmax-only (and (seq agg-specs) (every? #(#{"min" "max"} (:name %)) agg-specs))
