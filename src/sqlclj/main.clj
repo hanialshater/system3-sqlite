@@ -15,7 +15,7 @@
     (loop [db x/empty-db [l & more :as ls] lines]
       (if (empty? ls)
         (str sb)
-        (if (str/blank? l)
+        (if (empty? l)
           (recur db more)
           (let [[db' out] (try (x/run-line db l)
                                (catch Throwable t
@@ -24,11 +24,25 @@
             (recur db' more)))))))
 
 (defn- script-lines
-  "Lines of the script, decoded as UTF-8 with invalid bytes kept as escapes; trailing CR/LF removed."
+  "Lines of the script as the driver reads them: fgets into a 64 KiB buffer (so a longer line arrives in
+  pieces of 65535 bytes), cut at a NUL byte, trailing CR/LF removed; decoded as UTF-8 with invalid bytes kept."
   [f]
-  (let [bytes (java.nio.file.Files/readAllBytes (.toPath (io/file f)))
-        text (v/utf8->str bytes)]
-    (map #(str/replace % #"\r+$" "") (str/split text #"\n" -1))))
+  (let [^bytes bs (java.nio.file.Files/readAllBytes (.toPath (io/file f)))
+        n (alength bs)
+        out (java.util.ArrayList.)]
+    (loop [start 0]
+      (when (< start n)
+        (let [end (loop [i start]
+                    (cond (>= i n) n
+                          (= (- i start) 65535) i
+                          (= 10 (aget bs i)) (inc i)
+                          :else (recur (inc i))))
+              nul (loop [i start] (cond (>= i end) end (zero? (aget bs i)) i :else (recur (inc i))))
+              e (loop [e nul] (if (and (> e start) (let [b (aget bs (dec e))] (or (= b 10) (= b 13)))) (recur (dec e)) e))]
+          (when (> e start)
+            (.add out (v/utf8->str (java.util.Arrays/copyOfRange bs (int start) (int e)))))
+          (recur end))))
+    (vec out)))
 
 (defn- write-output [^java.io.OutputStream os ^String s]
   (.write os (v/str->utf8 s))
