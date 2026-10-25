@@ -578,6 +578,7 @@
     (let [x (cx ctx (:e e)) pt (cx ctx (:pat e)) es (when (:esc e) (cx ctx (:esc e)))
           fx (:f x) fp (:f pt) fe (:f es)
           glob? (= :glob (:o e))
+          cs-like (let [x (get-in (:db ctx) [:pragmas "case_sensitive_like"])] (boolean (and x (not= x 0) (not= x false))))
           negate (:not e)]
       (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
       (mk (fn [env]
@@ -592,7 +593,7 @@
                                    (.codePointAt ^String es 0))))
                       m (if glob?
                           (v/glob-match (v/text-of pat) (v/text-of s))
-                          (v/like-match (v/text-of pat) (v/text-of s) esc-cp))]
+                          (v/like-match (v/text-of pat) (v/text-of s) esc-cp cs-like))]
                   (bool->int (if negate (not m) m))))))
           :ecoll (some has-collate? [x pt]) :coll (coll-walk [x pt])))
     :case
@@ -745,9 +746,9 @@
                                       [p1 p2])]
                         [p1 p2])
               p1 (long p1) p2 (long p2)
-              p2 (if (> (+ p1 p2) n) (max 0 (- n p1)) p2)]
+              p2 (if (> p2 (- n p1)) (max 0 (- n p1)) p2)]
           (if (or (>= p1 n) (<= p2 0)) (Blob. (byte-array 0))
-              (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (+ p1 p2)))))))
+              (Blob. (java.util.Arrays/copyOfRange b (int p1) (int (unchecked-add p1 p2)))))))
         (let [^bytes tb0 (v/str->utf8 (v/text-of x))
               ;; text is scanned up to its first NUL
               ^bytes tb (let [k (loop [i 0] (if (and (< i (alength tb0)) (not (zero? (aget tb0 i)))) (recur (inc i)) i))]
@@ -777,7 +778,7 @@
               p1 (long p1) p2 (long p2)]
           (if (or (>= p1 n) (<= p2 0))
             ""
-            (let [end (min n (+ p1 p2))]
+            (let [end (if (> p2 (- n p1)) n (+ p1 p2))]
               (v/utf8->str (java.util.Arrays/copyOfRange tb (int (nth starts p1)) (int (nth starts end)))))))))))
 
 (defn- sqlite-length [x]
@@ -1002,19 +1003,37 @@
                                                 (when esc (.codePointAt ^String (v/text-of esc) 0)))))))
       "glob" (do (ar (= n 2)) (fn [[pat s]] (if (or (nil? pat) (nil? s)) nil (bool->int (v/glob-match (v/text-of pat) (v/text-of s))))))
       "unhex" (do (ar (or (= n 1) (= n 2)))
-                  (fn [[x]] (when-not (nil? x)
-                              (let [s (v/text-of x)]
-                                (when (and (even? (count s)) (re-matches #"[0-9a-fA-F]*" s))
-                                  (let [b (byte-array (quot (count s) 2))]
-                                    (dotimes [i (alength b)] (aset b i (unchecked-byte (Integer/parseInt (subs s (* 2 i) (+ 2 (* 2 i))) 16))))
-                                    (Blob. b)))))))
+                  (fn [[x pass]]
+                    (when-not (or (nil? x) (and (= n 2) (nil? pass)))
+                      (let [s (v/text-of x) pz (if (= n 2) (v/text-of pass) "")
+                            len (count s)
+                            hx (fn [i] (when (< i len) (let [d (Character/digit (.charAt s i) 16)] (when (and (>= d 0) (< (int (.charAt s i)) 128)) d))))
+                            out (java.io.ByteArrayOutputStream.)]
+                        (loop [i 0]
+                          (let [i (loop [i i] (if (and (< i len) (>= (.indexOf ^String pz (int (.charAt s i))) 0)) (recur (inc i)) i))]
+                            (if (>= i len)
+                              (Blob. (.toByteArray out))
+                              (let [h (hx i) l (hx (inc i))]
+                                (when (and h l)
+                                  (.write out (int (+ (* h 16) l)))
+                                  (recur (+ i 2)))))))))))
       "sqlite_version" (do (ar (= n 0)) (fn [_] "3.53.4"))
       (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
   #{})
 
+(declare function-level-error*)
 (defn- function-level-error
+  [ctx e]
+  (let [r (function-level-error* ctx e) raw (:rawname e) nm (:name e)]
+    (if (and (string? r) raw nm (not= raw nm))
+      (if (= r (str "no such function: " nm))
+        (str "no such function: " raw)
+        (str/replace r (str nm "()") (str raw "()")))
+      r)))
+
+(defn- function-level-error*
   "Errors SQLite reports for the function node itself (before resolving its arguments)."
   [ctx e]
   (let [name (:name e) n (count (:args e))]

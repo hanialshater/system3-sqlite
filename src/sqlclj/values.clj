@@ -552,8 +552,10 @@
                   (and (= c match-one) (not= pi escaped) (not= c2 0)) (recur pi (inc si) escaped)
                   :else 1)))))))))
 
-(defn like-match [^String pattern ^String s esc]
-  (zero? (long (pattern-compare (cps pattern) 0 (cps s) 0 false true (if esc (long esc) 0)))))
+(defn like-match
+  ([pattern s esc] (like-match pattern s esc false))
+  ([^String pattern ^String s esc cs]
+   (zero? (long (pattern-compare (cps pattern) 0 (cps s) 0 false (not cs) (if esc (long esc) 0))))))
 
 (defn glob-match [^String pattern ^String s]
   (zero? (long (pattern-compare (cps pattern) 0 (cps s) 0 true false 91))))

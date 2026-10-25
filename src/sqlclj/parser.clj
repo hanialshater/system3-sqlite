@@ -218,7 +218,7 @@
                                  (if (accept-op p "(")
                                    (let [w (parse-window-def p)] (expect-op p ")") w)
                                    (parse-nm p)))]
-                      (node (cond-> (merge {:op :fn :name (str/lower-case (:v t))} fa)
+                      (node (cond-> (merge {:op :fn :name (str/lower-case (:v t)) :rawname (:v t)} fa)
                               filt (assoc :filter filt)
                               over (assoc :over over))
                             s (prev-end p))))

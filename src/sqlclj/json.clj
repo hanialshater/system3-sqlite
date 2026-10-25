@@ -118,7 +118,7 @@
         fin (fn [t j]
               ;; payload from i (a leading + is dropped)
               (let [s (subs z i j)
-                    s (if (= (.charAt s 0) \+) (subs s 1) s)]
+                    s (if (= (.charAt s 0) \+) (do (nonstd! st) (subs s 1)) s)]
                 [[t s] j]))
         scan-hex (fn [j0] (loop [j j0] (if (xdigit? (chat z j)) (recur (inc j)) j)))]
     (cond
@@ -469,7 +469,7 @@
             3 (let [s (pay)] (when (valid-int-text? s) [[t s] end]))
             4 (let [s (pay)] (when (re-matches #"[-+]?0[xX][0-9a-fA-F]+" s) [[t s] end]))
             5 (let [s (pay)] (when (valid-float-text? s) [[t s] end]))
-            6 (let [s (pay)] (when (and (pos? sz) (re-matches #"[-+]?([0-9]*\.?[0-9]*)([eE][+-]?[0-9]+)?" s)) [[t s] end]))
+            6 (let [s (pay)] (when (and (pos? sz) (re-find #"[0-9]" s) (re-matches #"[-+]?([0-9]*\.?[0-9]*)([eE][+-]?[0-9]+)?" s)) [[t s] end]))
             (7 8 9 10) [[t (pay)] end]
             11 (loop [off (+ i hl) items []]
                  (if (= off end)
@@ -656,9 +656,9 @@
   "returns [k next-pos] or [nil nil] (not found) for the array step at pos ('['); throws on syntax errors"
   [^String path pos cnt]
   (let [[i k] (loop [i (inc pos) k 0]
-                (if (digit? (chat path i)) (recur (inc i) (bit-and (+ (* k 10) (- (chat path i) 48)) 0xffffffff)) [i k]))]
+                (if (digit? (chat path i)) (recur (inc i) (let [k2 (+ (* k 10) (- (chat path i) 48))] (if (> k2 0xffffffff) 0x1ffffffff k2))) [i k]))]
     (if (and (>= (- i pos) 2) (= (chat path i) 93))
-      [k (inc i)]
+      (if (> k 0xffffffff) [nil nil] [k (inc i)])
       (if (= (chat path (inc pos)) 35)
         (let [[i nn] (if (and (= (chat path (+ pos 2)) 45) (digit? (chat path (+ pos 3))))
                        (loop [i (+ pos 3) nn 0]
