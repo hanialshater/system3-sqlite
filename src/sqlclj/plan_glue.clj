@@ -139,16 +139,22 @@
   "For x LIKE/GLOB pattern with a constant string prefix: {:coll :lower :upper} or nil."
   [G e]
   (let [l (:e e) p (:pat e) esc (:esc e)]
-    (when (and (not (:not e)) (nil? esc) (map? p) (= :lit (:op p)) (string? (:v p)))
+    (when (and (not (:not e)) (or (nil? esc) (and (map? esc) (= :lit (:op esc)) (string? (:v esc)) (= 1 (count (:v esc)))))
+               (map? p) (= :lit (:op p)) (string? (:v p)))
       (let [lr (col-ref G l)]
         (when (and lr (>= (long (second lr)) 0) (= :text (aff-class (col-aff G lr))))
           (let [glob? (= :glob (:o e))
                 z (:v p)
                 wcs (if glob? #{\* \? \[} #{\% \_})
-                cnt (count (take-while #(not (wcs %)) z))]
-            (when (pos? cnt)
+                ec (when (and esc (not glob?)) (first (:v esc)))
+                prefix (loop [cs (seq z) acc []]
+                         (cond (empty? cs) acc
+                               (and ec (= (first cs) ec)) (if (next cs) (recur (nnext cs) (conj acc (second cs))) acc)
+                               (wcs (first cs)) acc
+                               :else (recur (rest cs) (conj acc (first cs)))))]
+            (when (pos? (count prefix))
               {:coll (if glob? "BINARY" (if (:case-sensitive-like G) "BINARY" "NOCASE"))
-               :prefix (subs z 0 cnt)
+               :prefix (apply str prefix)
                :left lr})))))))
 
 (defn analyze-where

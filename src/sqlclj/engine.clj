@@ -1886,7 +1886,7 @@
               (when (and (:indexed-by item) (not= :none (:indexed-by item)))
                 (when-not (get-in (:db ctx) [:indexes (lc (:indexed-by item))])
                   (err (str "no such index: " (:indexed-by item)))))
-              {:alias (lc (or (:alias item) name)) :aname (or (:alias item) name) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
+              {:alias (lc (or (:alias item) name)) :aname (or (:alias item) name) :alias-display (or (:alias item) (:name tbl)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})

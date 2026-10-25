@@ -337,12 +337,28 @@
   (let [path (:path plan)
         nl (count path)
         pos (zipmap (map :tab path) (range))
+        lterm-ids (set (mapcat (fn [lp] (keep #(when % (:id %)) (:lterms lp))) path))
+        children-of (group-by :parent (filter :parent (:terms P)))
         used-ids (set (mapcat (fn [lp] (mapcat (fn [t] (when t (let [par (:parent t)
-                                                                         pt (when par (nth (:terms P) par))]
+                                                                         pt (when par (nth (:terms P) par))
+                                                                         all-used? (and par (every? #(contains? lterm-ids (:id %)) (get children-of par)))]
                                                                      (cond-> [(:id t)]
-                                                                       (and par (not= :like (:op (:expr pt)))) (conj par)))))
+                                                                       (and par all-used?
+                                                                            (or (not= :like (:op (:expr pt)))
+                                                                                (and (= :like (:o (:expr pt))) (= "BINARY" (:coll t))
+                                                                                     (let [pat (some-> (:expr pt) :pat :v)]
+                                                                                       (and (string? pat) (pos? (count pat)) (= (last pat) \%)
+                                                                                            (not (some #{\% \_} (butlast pat))))))))
+                                                                       (conj par)))))
                                                (:lterms lp)))
                               path))
+        ;; children of a partly used BETWEEN / OR-to-IN term are evaluated individually
+        unused-children (for [[par kids] children-of
+                              :let [pt (nth (:terms P) par)]
+                              :when (and (not (contains? used-ids par)) (not= :like (:op (:expr pt)))
+                                         (some #(contains? lterm-ids (:id %)) kids))
+                              k kids :when (not (contains? lterm-ids (:id k)))]
+                          k)
         ;; per-level filter ops: base terms evaluated at the level where their last table is bound
         f-by-level
         (reduce (fn [m t]
@@ -352,6 +368,13 @@
                                       0 (range (count (:tables P))))]
                       (update m lvl (fnil + 0) (ids/pred-ops G (:expr t))))))
                 {} (:terms P))
+        f-by-level (reduce (fn [m t]
+                             (let [lvl (reduce (fn [mx i] (if (zero? (bit-and (long (:prereq-all t)) (bit-shift-left 1 i))) mx (max mx (long (get pos i 0)))))
+                                               0 (range (count (:tables P))))]
+                               (update m lvl (fnil + 0) (ids/pred-ops G (:expr t)))))
+                           f-by-level unused-children)
+        const-extra (reduce + 0 (for [t (:terms P) :when (and (not (:virtual t)) (zero? (long (:prereq-all t))))]
+                                  (ids/const-ops (:expr t))))
         lspec (:loops spec)
         start-ops
         (fn [k lp]
@@ -363,6 +386,18 @@
                 keys (+ (reduce + 0 (map keyops (:eq ls)))
                         (if (:btm ls) (keyops (:btm ls)) 0)
                         (if (:top ls) (keyops (:top ls)) 0))]
+            (+ (let [lt (first (filter :likeopt (:lterms lp)))]
+                 (if lt
+                   (let [pt (nth (:terms P) (:parent lt))
+                         pat (some-> (:expr pt) :pat :v)
+                         glob? (= :glob (:o (:expr pt)))
+                         wc (if glob? #{\* \? \[} #{\% \_})
+                         complete? (and (string? pat) (pos? (count pat)) (= (last pat) (if glob? \* \%))
+                                        (not (some wc (butlast pat))))]
+                     (cond glob? (if complete? 0 3)
+                           (and complete? (= "BINARY" (:coll lt))) 2
+                           :else (if complete? 3 2)))
+                   0))
             (case kind
               :scan 1
               :ipk (if (or (seq (:eq ls)) (:btm ls) (:top ls))
@@ -371,7 +406,7 @@
               :index (+ keys 1
                         (if (or (seq (:eq ls)) (:top ls)) 1 0)
                         (if (contains? flags :idx-only) 0 1))
-              :auto 20)))
+              :auto 20))))
         opens (reduce + 0 (for [lp path]
                             (cond (= :auto (:idx lp)) 1
                                   (contains? (:flags lp) :ipk) 1
@@ -387,7 +422,7 @@
                                                         (and cr (some (fn [t] (and (= (:left t) cr) (= :eq (:op t)) (zero? (long (:prereq-right t))))) (:terms P)))))
                                               (:group-exprs info))
                                       1 0))
-                          agg? 1 :else 0) (if ordered-extra? 1 0) partial-extra simple-count)
+                          agg? 1 :else 0) (if ordered-extra? 1 0) partial-extra simple-count const-extra)
         loop-ids (loop [k 0 id first-id out []]
                    (if (>= k nl) out
                        (let [lp (nth path k)
