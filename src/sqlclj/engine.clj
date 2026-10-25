@@ -551,7 +551,7 @@
              (mk (fn [env] (if (= k :ignore)
                              (throw (ex-info "raise-ignore" {:raise-ignore true}))
                              (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
-                               (throw (ex-info msg {:sql-error msg :raise k})))))))
+                               (throw (ex-info msg (cond-> {:sql-error msg :raise k} (= k :rollback) (assoc :conflict :rollback)))))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1465,10 +1465,15 @@
     (cond
       (window-only name)
       (when-not (contains? (win-arity name) n) (err (str "wrong number of arguments to function " name "()")))
-      aggf nil
-      :else (if (or (agg-names name) (#{"coalesce" "ifnull" "iif" "if" "nullif" "likely" "unlikely" "likelihood"} name)
+      aggf (when (or (and (#{"sum" "total" "avg"} name) (not= n 1))
+                     (and (= name "group_concat") (not (#{1 2} n)))
+                     (and (= name "string_agg") (not= n 2))
+                     (and (#{"json_group_array" "jsonb_group_array"} name) (not= n 1))
+                     (and (#{"json_group_object" "jsonb_group_object"} name) (not= n 2)))
+             (err (str "wrong number of arguments to function " name "()")))
+      :else (if (or (agg-names name) (#{"iif" "if" "coalesce" "ifnull" "min" "max" "nullif" "likely" "unlikely" "likelihood"} name)
                     (try (compile-scalar-fn name n "BINARY") (catch clojure.lang.ExceptionInfo _ true)))
-              (if (agg-names name)
+              (if (and (agg-names name) (not (and (#{"min" "max"} name) (>= n 2))))
                 (err (str "wrong number of arguments to function " name "()"))
                 (err (str name "() may not be used as a window function")))
               (err (str "no such function: " name))))
@@ -1872,7 +1877,8 @@
     (:table item)
     (let [name (:table item)
           tbl (table-of ctx name (:schema item))
-          view (when-not tbl (view-of ctx name))]
+          view (when-not tbl (let [v (view-of ctx name) sc (lc (:schema item))]
+                               (when (and v (or (nil? sc) (and (= sc "temp") (:temp v)) (and (= sc "main") (not (:temp v))) (not (#{"temp" "main"} sc)))) v)))]
       (cond
         tbl (let [slot (new-slot! ctx)
                   cols (mapv :name (:cols tbl))]
@@ -2606,7 +2612,8 @@
             idx (:index lp)
             ;; index columns' specs and affinities
             cols (if auto?
-                   (mapv (fn [t] [(:col t) (or (some-> (:coll t) str/upper-case) "BINARY")]) eqs)
+                   (into (mapv (fn [t] [(:col t) (or (some-> (:coll t) str/upper-case) "BINARY")]) eqs)
+                         (map (fn [c] [c "BINARY"]) (:auto-extra lp)))
                    (mapv (fn [ic] [(:col ic) (:coll ic)]) (:cols idx)))
             affs (mapv (fn [[c _]] (when (and (some? c) tbl (< (long c) (long (count (:cols tbl))))) (:aff (nth (:cols tbl) c)))) cols)
             specs (if auto?
@@ -2673,6 +2680,7 @@
        :exprs (first rows)
        :dtypes (mapv #(expr-dtype % nil) (first (:rows core)))
        :outer-refs (atom false)
+       :nrow-est (log-est (count rows))
        :order-info [[] []]
        :run (fn [env emit]
               (doseq [r rows] (emit (mapv #((:f %) env) r) nil)))})
@@ -2786,6 +2794,33 @@
                     (binding [*coll-phase* :where]
                       (let [c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg)) (update :scope assoc :in-where true)) ((if is-agg subst-nw subst-na) (:where core)))] c)))
           where-f (when where-c (condf where-c))
+          ;; WHERE AND-terms evaluated at the first join level where their tables are bound (unplanned joins)
+          level-where
+          (when (and where-c (> (count sources) 1)
+                     (not (some #{:right :full :natural-right :natural-full} (map :join from))))
+            (let [terms (split-and ((if is-agg subst-nw subst-na) (:where core)))
+                  slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) sources))
+                  has-sub? (fn hs [e] (cond (map? e) (or (#{:subq :exists} (:op e)) (and (= :in (:op e)) (or (:select e) (:table e)))
+                                                         (some hs (vals e)))
+                                            (sequential? e) (some hs e)
+                                            :else false))]
+              (when (seq terms)
+                (try
+                  (binding [*coll-phase* :where]
+                    (let [placed (vec (for [t terms]
+                                        (let [ra (atom #{})
+                                              c (cx (-> ctx2 (assoc :aggs nil :where-ctx (not is-agg) :refs ra) (update :scope assoc :in-where true)) t)
+                                              lv (when-not (has-sub? t)
+                                                   (let [is (keep (fn [[sl _]] (slot->i sl)) @ra)]
+                                                     (when (seq is) (apply max is))))]
+                                          [lv (condf c)])))]
+                      (when (some (fn [[lv _]] (and lv (< (long lv) (dec (count sources))))) placed)
+                        {:levels (reduce (fn [m [lv f]] (if (and lv (< (long lv) (dec (count sources)))) (update m lv (fnil conj []) f) m)) {} placed)
+                         :rest (let [fs (vec (keep (fn [[lv f]] (when-not (and lv (< (long lv) (dec (count sources)))) f)) placed))]
+                                 (fn [env] (if (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs) 1 0)))})))
+                  (catch clojure.lang.ExceptionInfo _ nil)))))
+          where-f (if level-where (:rest level-where) where-f)
+          lvl-filters (when level-where (:levels level-where))
           where-pre (when (:where core) (binding [*coll-phase* :where] (where-precheck (assoc ctx2 :aggs nil) (subst (:where core)))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
           in-pre (when (and (:where core) (= 1 (count sources)) (:table (first sources)))
@@ -3050,6 +3085,8 @@
                   (doseq [sub in-pre] (doall (run-select-rows sub env)))
                   (level 0)))))
           ;; nested loop over sources
+          lvl-pass? (fn [i env] (let [fs (when lvl-filters (get lvl-filters i))]
+                                  (or (nil? fs) (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) fs))))
           scan (if plan-spec scan-planned (fn scan [^objects env k]
                  (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
@@ -3069,11 +3106,11 @@
                                  (when (or (nil? onf) (let [r (onf env)] (and (not (nil? r)) (v/bool-value r))))
                                    (aset matched 0 true)
                                    (when rset (.add rset (aget cnt 0)))
-                                   (level (inc i)))
+                                   (when (lvl-pass? i env) (level (inc i))))
                                  (aset cnt 0 (inc (aget cnt 0))))
                                (when (and lj (not (aget matched 0)))
                                  (aset env slot (nth null-rows i))
-                                 (level (inc i))))))]
+                                 (when (lvl-pass? i env) (level (inc i)))))))]
                    (when (or (nil? where-pre) (where-pre env))
                      (doseq [sub in-pre] (doall (run-select-rows sub env)))
                      (level 0)
@@ -3150,6 +3187,11 @@
                                           (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
                          rcols)
        :outer-refs outer-refs
+       :nrow-est (let [n (cond (and is-agg (empty? (:group core))) 0
+                               plan-spec (:nrow-out plan-spec)
+                               :else nil)
+                       lim (when (and n limit (>= (long limit) 0)) (log-est (long limit)))]
+                   (if (and n lim) (min (long n) (long lim)) n))
        :run run}))))
 
 (defn- aff-mask ^long [aff]
@@ -3457,6 +3499,7 @@
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
         {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c) :using-terms (:using-terms c) :nx-terms (:nx-terms c)
+         :nrow-est (:nrow-est c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp

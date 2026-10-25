@@ -43,6 +43,28 @@
         (when (or (empty? pk) (not= (count pk) (count (:from fk)))) (mismatch))
         (vec pk)))))
 
+(declare parent-touched? referencing)
+(defn locate-all!
+  "SQLite locates the parent key of every foreign key referring to ptbl as soon as one of them is affected
+  by a change (update old->new, or a delete when new is nil); an unusable key is 'foreign key mismatch'."
+  [db ptbl old new]
+  (let [refs (referencing db ptbl)]
+    (when (some (fn [[c fk]] (parent-touched? db c fk old new)) refs)
+      (doseq [[c fk] refs] (parent-cols db c fk)))))
+
+(defn parent-touched?
+  "Whether an UPDATE old->new changes a column of the parent key fk refers to (always true for a delete)."
+  [db child fk old new]
+  (or (nil? new)
+      (let [ptbl (get-in db [:tables (parent-key db child fk)])
+            raw (if-let [to (:to fk)] (map #(col-index ptbl %) to) (:pk-cols ptbl))]
+        (or (empty? raw)
+            (some (fn [pi] (or (nil? pi)
+                               (let [a (nth old pi) b (nth new pi)]
+                                 (not (or (and (nil? a) (nil? b))
+                                          (and (some? a) (some? b) (zero? (v/sql-cmp a b "BINARY"))))))))
+                  raw)))))
+
 (defn- values-eq? [a b coll] (and (not (nil? a)) (not (nil? b)) (zero? (v/sql-cmp a b coll))))
 
 (defn- coerce [val ptbl pi] (v/apply-affinity val (:aff (nth (:cols ptbl) pi))))
@@ -98,12 +120,13 @@
     db
     (reduce
      (fn [db [child fk]]
-       (let [pidxs (parent-cols db child fk)
+       (let [_ (locate-all! db ptbl old new)
+             pidxs (if (parent-touched? db child fk old new) (parent-cols db child fk) [])
              changed? (or (nil? new) (not (every? true? (map (fn [pi] (let [a (nth old pi) b (nth new pi)]
                                                                        (or (and (nil? a) (nil? b)) (and (not (nil? a)) (not (nil? b)) (zero? (v/sql-cmp a b "BINARY"))))))
                                                               pidxs))))
              child (get-in db [:tables (lc (:name child))])]
-         (if-not (and changed? (some (fn [pi] (not (nil? (nth old pi)))) pidxs))
+         (if-not (and (seq pidxs) changed? (some (fn [pi] (not (nil? (nth old pi)))) pidxs))
            db
            (let [kids (children-rows db child fk old ptbl pidxs)
                  act (if (nil? new) (or (:on-delete fk) :no-action) (or (:on-update fk) :no-action))
@@ -161,7 +184,8 @@
   [db child-log parent-log]
   (when (enabled? db)
     (let [explicit-tx (boolean (:tx db))
-          fail! (fn [fk] (when-not (and (deferred? db fk) explicit-tx) (err "FOREIGN KEY constraint failed")))]
+          fail! (fn [fk] (when-not (and (deferred? db fk) explicit-tx)
+                           (throw (ex-info "FOREIGN KEY constraint failed" {:sql-error "FOREIGN KEY constraint failed" :fk-deferred (boolean (deferred? db fk))}))))]
       ;; child side
       (doseq [[tkey old new] child-log]
         (let [tbl (get-in db [:tables tkey])]
@@ -173,8 +197,11 @@
       ;; parent side (NO ACTION): children still pointing at a key that no longer exists
       (doseq [[ptname old new] parent-log]
         (let [ptbl (get-in db [:tables ptname])]
-          (when (and ptbl old)
-            (doseq [[child fk] (referencing db ptbl)]
+          (when ptbl
+            (when old (locate-all! db ptbl old new))
+            (doseq [[child fk] (referencing db ptbl)
+                    :when (if old (parent-touched? db child fk old new)
+                              (or (> (count (filter (fn [[_ o _]] (nil? o)) parent-log)) 1) (deferred? db fk)))]
               (let [pidxs (parent-cols db child fk)
                     child (get-in db [:tables (lc (:name child))])]
                 (when (some (fn [pi] (not (nil? (nth old pi)))) pidxs)

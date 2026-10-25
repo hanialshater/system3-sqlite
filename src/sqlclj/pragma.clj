@@ -238,7 +238,17 @@
                                      [(long i) (long cid) nm])))
                                (:cols idx))]
       (vec (if xinfo?
-             (if (and (:without-rowid t) (:pk-auto idx)) keyrows (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]]))
+             (if (:without-rowid t)
+               (let [used (set (keep :col (:cols idx)))
+                     extra-cols (if (:pk-auto idx)
+                                  (remove used (range ncols))
+                                  (remove used (:pk-cols t)))
+                     k0 (count (:cols idx))]
+                 (concat keyrows
+                         (map-indexed (fn [j ci] [(long (+ k0 j)) (long ci) (:name (nth (:cols t) ci)) 0
+                                                  (or (:coll (nth (:cols t) ci)) "BINARY") 0])
+                                      extra-cols)))
+               (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]]))
              keyrows)))
     []))
 
@@ -251,7 +261,7 @@
       (vec (for [[id fk] (map-indexed vector fks)
                  [seq from] (map-indexed vector (:from fk))]
              [(long id) (long seq) (:table fk) from (get (:to fk) seq)
-              (act-name (:on-update fk)) (act-name (:on-delete fk)) (or (some-> (:match fk) str/upper-case) "NONE")])))
+              (act-name (:on-update fk)) (act-name (:on-delete fk)) "NONE"])))
     []))
 
 (def ^:dynamic *fk-check* nil)
@@ -271,7 +281,7 @@
                     (and (#{"integrity_check" "quick_check"} n) (nil? (int-value v))))
                 (case sc
                   "main" (sch/resolve-key db v "main")
-                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  "temp" (if (or (:temp (get-in db [:tables (lc v)])) (:temp (get-in db [:views (lc v)])) (sch/master-table db (lc v) "temp")) v "\u0000none")
                   (sch/obj-key db v sc))
                 (#{"index_info" "index_xinfo"} n)
                 (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))

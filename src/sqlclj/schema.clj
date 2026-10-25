@@ -90,6 +90,15 @@
     (subs n (inc (count (:db obj))))
     n))
 
+(defn master-edit-schema
+  "The schema (\"main\"/\"temp\"/attached) a sqlite_master alias name refers to."
+  [lname schema]
+  (let [l (some-> schema str/lower-case)]
+    (cond (contains? #{"sqlite_temp_master" "sqlite_temp_schema"} lname) "temp"
+          (= l "temp") "temp"
+          (and l (not= l "main")) l
+          :else "main")))
+
 (defn master-rows
   "Rows of sqlite_master for schema sch (\"main\", \"temp\" or an attached name):
   [type name tbl_name rootpage sql] ordered by creation."
@@ -125,7 +134,9 @@
         {:name (if temp? (if (= lname "sqlite_temp_schema") "sqlite_temp_schema" "sqlite_temp_master")
                    (if (= lname "sqlite_schema") "sqlite_schema" "sqlite_master"))
          :cols cols :ipk nil :strict false :checks [] :virtual true
-         :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj r (long (inc i)))]) rows))}))))
+         :rows (if-let [ed (get-in db [:master-edit sch])]
+                 (into (sorted-map) (map (fn [[rid r]] [(long rid) (conj r (long rid))]) ed))
+                 (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj r (long (inc i)))]) rows)))}))))
 
 ;; ====================================================================== attached databases
 ;; Objects of an attached database live in the same maps as main's, keyed (and named internally)
@@ -258,3 +269,18 @@
         (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) l) (assoc i :table k) i)]) m))))
         (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) l) (assoc g :table k) g)]) m))))
         (assoc :shadow true))))
+
+(defn move-main-back
+  "A temp object called l was dropped: a main table or view parked under main.l takes its place again."
+  [db l]
+  (let [k (str "main." l)
+        t (get-in db [:tables k])
+        v (get-in db [:views k])
+        plain (fn [o] (-> o (update :name (fn [n] (if (str/starts-with? (str n) "main.") (subs n 5) n))) (dissoc :db)))]
+    (if (or t v)
+      (-> db
+          (cond-> t (-> (update :tables dissoc k) (assoc-in [:tables l] (plain t))))
+          (cond-> v (-> (update :views dissoc k) (assoc-in [:views l] (plain v))))
+          (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) k) (assoc i :table l) i)]) m))))
+          (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) k) (assoc g :table l) g)]) m)))))
+      db)))
