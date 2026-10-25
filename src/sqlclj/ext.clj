@@ -102,7 +102,7 @@
       ("printf" "format")
       (fn [args]
         (when (and (seq args) (not (nil? (first args))))
-          (pf/sql-printf (v/text-of (first args)) (rest args))))
+          (pf/sql-printf (let [t (v/text-of (first args)) k (.indexOf ^String t (int 0))] (if (neg? k) t (subs t 0 k))) (rest args))))
       ("changes" "total_changes" "last_insert_rowid") (do (ar (= n 0)) (fn [_] 0))
       "random" (do (ar (= n 0)) (fn [_] (.nextLong ^java.security.SecureRandom rng)))
       "randomblob" (do (ar (= n 1))

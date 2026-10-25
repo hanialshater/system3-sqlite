@@ -728,7 +728,7 @@
               n (alength b)
               [p1 p2] (let [p1 (long p1)
                             p2 (if has-len (long p2) (long 1000000000))
-                            [p1 p2] (if (< p2 0) [(- p1 (- p2)) (- p2)] [p1 p2])
+                            [p1 p2] [p1 p2]
                             neg2 (and has-len (< (long (v/int-value len)) 0))]
                         [p1 p2])
               p1 (long p1) p2 (long p2)
@@ -736,13 +736,13 @@
               [p1 p2] (let [orig-p2 (if has-len (long (v/int-value len)) 1000000000)
                             p1o (long (v/int-value start))
                             negp2 (< orig-p2 0)
-                            p2a (if negp2 (- orig-p2) orig-p2)
+                            p2a (if negp2 (unchecked-negate orig-p2) orig-p2)
                             [p1 p2] (cond
-                                      (< p1o 0) (let [p1 (+ p1o n)] (if (< p1 0) [0 (max 0 (+ p2a p1))] [p1 p2a]))
-                                      (> p1o 0) [(dec p1o) p2a]
-                                      :else [0 (if (> p2a 0) (dec p2a) p2a)])
+                                      (< p1o 0) (let [p1 (unchecked-add p1o n)] (if (< p1 0) [0 (max 0 (unchecked-add p2a p1))] [p1 p2a]))
+                                      (> p1o 0) [(unchecked-dec p1o) p2a]
+                                      :else [0 (if (> p2a 0) (unchecked-dec p2a) p2a)])
                             [p1 p2] (if negp2
-                                      (let [p1b (- p1 p2)] (if (< p1b 0) [0 (+ p2 p1b)] [p1b p2]))
+                                      (let [p1b (unchecked-subtract p1 p2)] (if (< p1b 0) [0 (unchecked-add p2 p1b)] [p1b p2]))
                                       [p1 p2])]
                         [p1 p2])
               p1 (long p1) p2 (long p2)
@@ -767,13 +767,13 @@
               orig-p2 (if has-len (long p2) 1000000000)
               p1o (long p1)
               negp2 (< orig-p2 0)
-              p2a (if negp2 (- orig-p2) orig-p2)
+              p2a (if negp2 (unchecked-negate orig-p2) orig-p2)
               [p1 p2] (cond
-                        (< p1o 0) (let [p1 (+ p1o n)] (if (< p1 0) [0 (max 0 (+ p2a p1))] [p1 p2a]))
-                        (> p1o 0) [(dec p1o) p2a]
-                        :else [0 (if (> p2a 0) (dec p2a) p2a)])
+                        (< p1o 0) (let [p1 (unchecked-add p1o n)] (if (< p1 0) [0 (max 0 (unchecked-add p2a p1))] [p1 p2a]))
+                        (> p1o 0) [(unchecked-dec p1o) p2a]
+                        :else [0 (if (> p2a 0) (unchecked-dec p2a) p2a)])
               [p1 p2] (if negp2
-                        (let [p1b (- (long p1) (long p2))] (if (< p1b 0) [0 (+ (long p2) p1b)] [p1b p2]))
+                        (let [p1b (unchecked-subtract (long p1) (long p2))] (if (< p1b 0) [0 (unchecked-add (long p2) p1b)] [p1b p2]))
                         [p1 p2])
               p1 (long p1) p2 (long p2)]
           (if (or (>= p1 n) (<= p2 0))
@@ -989,7 +989,7 @@
                                            (if (or (instance? Long y) (instance? Double y))
                                              (let [r (v/real-value y)] (cond (pos? r) 1 (neg? r) -1 :else 0))
                                              nil)))))
-      "zeroblob" (do (ar (= n 1)) (fn [[x]] (Blob. (byte-array (max 0 (v/int-value x))))))
+      "zeroblob" (do (ar (= n 1)) (fn [[x]] (let [k (v/int-value x)] (when (> k 1000000000) (err "string or blob too big")) (Blob. (byte-array (max 0 k))))))
       ("likely" "unlikely") (do (ar (= n 1)) (fn [[x]] x))
       "likelihood" (do (ar (= n 2)) (fn [[x _]] x))
       "concat" (do (when (< n 1) (arity-err name)) (fn [args] (apply str (map #(or (v/text-of %) "") args))))
@@ -998,19 +998,25 @@
                                            (str/join (v/text-of sep) (keep v/text-of args)))))
       "like" (do (ar (or (= n 2) (= n 3)))
                  (fn [[pat s esc]]
-                   (if (or (nil? pat) (nil? s)) nil
-                       (bool->int (v/like-match (v/text-of pat) (v/text-of s)
-                                                (when esc (.codePointAt ^String (v/text-of esc) 0)))))))
+                   (if (and (= n 3) (nil? esc))
+                     nil
+                     (let [et (when (= n 3) (let [t (v/text-of esc) k (.indexOf ^String t (int 0))] (if (neg? k) t (subs t 0 k))))
+                           _ (when (and et (not= 1 (.codePointCount ^String et 0 (.length ^String et))))
+                               (err "ESCAPE expression must be a single character"))]
+                       (if (or (nil? pat) (nil? s)) nil
+                           (bool->int (v/like-match (v/text-of pat) (v/text-of s)
+                                                    (when et (.codePointAt ^String et 0)))))))))
       "glob" (do (ar (= n 2)) (fn [[pat s]] (if (or (nil? pat) (nil? s)) nil (bool->int (v/glob-match (v/text-of pat) (v/text-of s))))))
       "unhex" (do (ar (or (= n 1) (= n 2)))
                   (fn [[x pass]]
                     (when-not (or (nil? x) (and (= n 2) (nil? pass)))
-                      (let [s (v/text-of x) pz (if (= n 2) (v/text-of pass) "")
+                      (let [cs (fn [t] (let [k (.indexOf ^String t (int 0))] (if (neg? k) t (subs t 0 k))))
+                            s (cs (v/text-of x)) pz (if (= n 2) (cs (v/text-of pass)) "")
                             len (count s)
                             hx (fn [i] (when (< i len) (let [d (Character/digit (.charAt s i) 16)] (when (and (>= d 0) (< (int (.charAt s i)) 128)) d))))
                             out (java.io.ByteArrayOutputStream.)]
                         (loop [i 0]
-                          (let [i (loop [i i] (if (and (< i len) (>= (.indexOf ^String pz (int (.charAt s i))) 0)) (recur (inc i)) i))]
+                          (let [i (loop [i i] (if (and (< i len) (nil? (hx i)) (>= (.indexOf ^String pz (int (.charAt s i))) 0)) (recur (inc i)) i))]
                             (if (>= i len)
                               (Blob. (.toByteArray out))
                               (let [h (hx i) l (hx (inc i))]
@@ -1121,7 +1127,13 @@
                             (let [[fc fv] (first ps) c (fc env)]
                               (if (and (not (nil? c)) (v/bool-value c)) (fv env) (recur (rest ps)))))))
               :coll (coll-walk args) :ecoll (some has-collate? args)))
-        (let [coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
+        (let [_ (when (= name "likelihood")
+                  (let [a2 (second (:args e))
+                        d (when (and a2 (= :lit (:op a2)) (= :float (:kind a2)))
+                            (double (first (num/atof (:text a2)))))]
+                    (when-not (and d (>= d 0.0) (<= d 1.0))
+                      (err "second argument to likelihood() must be a constant between 0.0 and 1.0"))))
+              coll (or (some #(when (or (:ecoll %) (:col %) (:coll %)) (:coll %)) args) "BINARY")
               coll (or (coll-walk args) coll)
               impl (compile-scalar-fn name n coll)
               fs (mapv :f args)]
