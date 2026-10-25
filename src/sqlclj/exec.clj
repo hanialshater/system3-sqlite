@@ -512,14 +512,14 @@
               tcols (:cols target) icols (:cols what)]
           (and (= (count tcols) (count icols))
                (if tw (or (nil? iw) (= (sp tw) (sp iw))) (nil? iw))
-               (every? (fn [tc]
-                         (some (fn [ic]
+               (every? (fn [ic]
+                         (some (fn [tc]
                                  (and (if (:name ic)
                                         (and (= :col (:op (:e tc))) (= (lc (:name ic)) (lc (:name (:e tc)))))
                                         (and (:ast ic) (= (sp (:e tc)) (sp (:ast ic)))))
                                       (or (nil? (:coll tc)) (= (lc (str (:coll ic))) (lc (str (:coll tc)))))))
-                               icols))
-                       tcols)))
+                               tcols))
+                       icols)))
         :else false))))
 
 (defn- no-journal? [db] (= "off" (get-in db [:pragmas "journal_mode.main"])))
@@ -607,6 +607,7 @@
                (:rows st) (let [rs (:rows st)]
                             (when (apply not= (map count rs))
                               (err "all VALUES must have the same number of terms"))
+                            (doseq [r rs, x r] (e/cx ctx x))
                             (doseq [r rs]
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
@@ -973,7 +974,7 @@
         tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
     (cond
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " name " already exists")))
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (:temp st) (nil? (:table-schema st))) "" (str (or (:table-schema st) "main") "."))
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
@@ -1613,6 +1614,9 @@
                                                  (let [att (set (sch/attached-names db))
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
+                                                                                             (some-> (:schema x) lc (= "temp")))
+                                                                                    (reset! refs "temp"))
+                                                                            (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
                                                                                     (let [k (lc (:table x))
                                                                                           dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]

@@ -85,7 +85,8 @@
         names (loop [acc []]
                 (let [t (tok p)]
                   (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (or (reserved (:u t)) (= "GENERATED" (:u t))))))
+                           (or (= :qid (:t t)) (not (or (reserved (:u t))
+                                                    (and (= "GENERATED" (:u t)) (kw? (tok-at p 1) "ALWAYS") (kw? (tok-at p 2) "AS"))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]
     (when (seq names)
@@ -1103,7 +1104,9 @@
                                   (let [sign (cond (accept-op p "-") "-" (accept-op p "+") "" :else "")
                                         t (advance! p)]
                                     (when (or (= :eof (:t t)) (= :op (:t t)) (= :blob (:t t))
-                                              (and (= :id (:t t)) (#{"NULL"} (:u t))))
+                                              (and (= :id (:t t)) (#{"NULL"} (:u t)))
+                                              (and (= :id (:t t)) (reserved (:u t)) (not (join-kw (:u t)))
+                                                   (not (#{"ON" "DELETE" "DEFAULT"} (:u t)))))
                                       (syntax-error p t))
                                     (str sign (:v t))))
                            v (cond (accept-op p "=") (pval)
