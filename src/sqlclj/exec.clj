@@ -504,8 +504,11 @@
       (cond
         (nil? clause) false
         (nil? target) true
-        (= what :rowid) (and (:ipk tbl) (= 1 (count (:cols target)))
-                             (= (lc (:name (:e (first (:cols target))))) (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+        (= what :rowid) (and (= 1 (count (:cols target)))
+                             (nil? (:where target))
+                             (let [n (lc (:name (:e (first (:cols target)))))]
+                               (or (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+                                   (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} n)))))
         (map? what)
         (let [sp (var-get #'e/strip-pos)
               tw (:where target) iw (:where-ast what)
@@ -628,6 +631,13 @@
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
+                                (when (:target u)
+                                  (doseq [tc (:cols (:target u))]
+                                    (let [e (:e tc)]
+                                      (when (and (= :col (:op e)) (nil? (:table e))
+                                                 (not (some #(= (lc (:name %)) (lc (:name e))) (:cols tbl)))
+                                                 (not (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e))))))
+                                        (err (str "no such column: " (:name e)))))))
                                 (when (and (:target u) (not (some (fn [idx] ((upsert-matcher tbl u) idx))
                                                                   (cons :rowid (filter :unique (table-indexes db tname))))))
                                   (err "ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint"))
