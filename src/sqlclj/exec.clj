@@ -67,22 +67,25 @@
     {:name name :table (lc (:name tbl)) :unique unique :cols icols :where where :where-ast where :wf wf :auto auto}))
 
 (defn- table-indexes
-  "Indexes of a table in constraint-check order (most recently created first)."
+  "Indexes of a table in constraint-check order: SQLite's list, newest first, with REPLACE indexes behind the others;
+  for a WITHOUT ROWID table the PRIMARY KEY moves to the front when CREATE TABLE ends (indexes created later go before it)."
   [db tname]
   (let [wr (:without-rowid (get-in db [:tables (lc tname)]))
         all (->> (vals (:indexes db))
                  (filter #(= (:table %) (lc tname)))
                  (sort-by #(long (:seq %))))
-        pk ()
-        rest-idx all
-        ;; SQLite keeps REPLACE indexes after the others: a new REPLACE index goes behind the leading non-REPLACE run
-        lst (reduce (fn [lst i]
-                      (if (or (not= :replace (:conflict i)) (empty? lst) (= :replace (:conflict (first lst))))
-                        (cons i lst)
-                        (let [[lead tail] (split-with #(not= :replace (:conflict %)) lst)]
-                          (concat lead [i] tail))))
-                    () rest-idx)]
-    (concat pk lst)))
+        push (fn [lst i]
+               (if (or (not= :replace (:conflict i)) (empty? lst) (= :replace (:conflict (first lst))))
+                 (cons i lst)
+                 (let [[lead tail] (split-with #(not= :replace (:conflict %)) lst)]
+                   (concat lead [i] tail))))
+        autos (filter :auto all)
+        explicit (remove :auto all)
+        lst (reduce push () autos)
+        lst (if wr
+              (let [pk (filter :pk-auto lst)] (concat pk (remove :pk-auto lst)))
+              lst)]
+    (reduce push (vec lst) explicit)))
 
 (defn- add-index [db idx]
   (let [s (inc (long (:index-seq db)))
@@ -256,7 +259,7 @@
                            (not (and (seq col-pks) (:desc (first pk-cols)))))
                   (:i (first pk-cols)))
             cols (if ipk (assoc-in cols [ipk :aff] :integer) cols)
-            cols (if (:without-rowid st) (reduce (fn [cs pc] (assoc-in cs [(:i pc) :notnull] true)) cols pk-cols) cols)
+            cols (if (or (:without-rowid st) strict) (reduce (fn [cs pc] (assoc-in cs [(:i pc) :notnull] true)) cols pk-cols) cols)
             checks (vec (concat
                          (for [[c d] (map vector cols defs), k (:cons d) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
@@ -428,6 +431,14 @@
       (when (not= ci (:ipk tbl)) (strict-check tbl ci (nth row ci)))))
   row)
 
+(defn- check-strict-plain
+  "STRICT type check of the non-generated columns only (SQLite checks those before NOT NULL when generated columns exist)."
+  [tbl row]
+  (when (:strict tbl)
+    (doseq [ci (range (count (:cols tbl)))]
+      (when (and (not= ci (:ipk tbl)) (not (:gen (nth (:cols tbl) ci)))) (strict-check tbl ci (nth row ci)))))
+  row)
+
 (def ^:private ignore-checks
   "PRAGMA ignore_check_constraints of the running statement (set in run-line)."
   (volatile! false))
@@ -464,7 +475,11 @@
   ([db tbl rid row self on-conflict upsert-target?]
    (resolve-uniques db tbl rid row self on-conflict upsert-target? nil false))
   ([db tbl rid row self on-conflict upsert-target? mid-check delay-ipk]
-   (let [idxs (filter :unique (table-indexes db (:name tbl)))]
+   (let [idxs (filter :unique (table-indexes db (:name tbl)))
+         ;; an UPDATE of a WITHOUT ROWID row checks its PRIMARY KEY after the other indexes
+         idxs (if (and self (:without-rowid tbl))
+                (concat (remove :pk-auto idxs) (filter :pk-auto idxs))
+                idxs)]
      (letfn [(handle [tbl conf msg what cact]
                (let [act (or on-conflict cact :abort)]
                  (cond
@@ -639,7 +654,7 @@
               (when-let [m (check-view db view)] (err m))
               (err (str "cannot modify " tname " because it is a view")))
             (let [ctx (new-ctx db sql)
-                  sub (e/compile-select (assoc ctx :sql (or (:src view) sql)) (:select view))
+                  sub (e/compile-select (assoc ctx :sql (or (:src view) sql) :in-view (or (:db view) (if (:temp view) "temp" "main"))) (:select view))
                   rows (e/run-select-rows sub (object-array (+ 2 @(:slots ctx))))
                   cols (or (:cols view) (:names sub))]
               [(str "$v$" l)
@@ -806,7 +821,9 @@
               ignored (= bres ::ignore)
               db (if ignored db bres)
               tbl (get-in db [:tables tkey])
-              row (when-not ignored (check-notnull db sql tbl row on-conflict))
+              row (when-not ignored (let [r (check-notnull db sql tbl (if (and (:strict tbl) (:has-gen tbl)) (check-strict-plain tbl row) row) on-conflict)]
+                                     ;; a NOT NULL ... REPLACE default changes what generated columns see
+                                     (if (and r (:has-gen tbl) (not (identical? r row))) (fill-generated tbl r) r)))
               has-checks (seq (:checks tbl))
               row (when row (if has-checks (check-checks tbl (check-strict tbl row) on-conflict) row))
               m-up (fn [what] (boolean (some #((:match %) what) up-compiled)))
@@ -910,8 +927,6 @@
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
         _ (when-not (:view tbl) (fk/prepare-check! db tbl :update (mapv lc (mapcat first (:sets st)))))
-        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
-                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ctx (new-ctx db sql)
@@ -959,17 +974,21 @@
                   old (vec (repeat n 0))
                   new (reduce (fn [r [i]] (if (and (>= i 0) (< i n)) (assoc r i 1) r)) old sets)]
               (fk/locate-all! db tbl old new)))
-        _ (prepared! (:names ret))
         join-count (volatile! nil)
-        targets (if from
-                  (let [sctx2 (new-ctx db sql)
-                        cols (into [{:e {:op :col :table (or (:alias st) tname) :name "\u0000rowid"} :alias "rid"}]
+        from-sub (when from
+                   (let [sctx2 (new-ctx db sql)
+                         cols (into [{:e {:op :col :table (or (:alias st) tname) :name "\u0000rowid"} :alias "rid"}]
                                    (map-indexed (fn [i [_ ex k]] {:e (if k {:op :lit :v nil} ex) :alias (str "c" i)}) set-items))
-                        sel {:body {:type :core :cols cols
-                                    :from (into [{:table (if vw tkey tname) :schema (:schema st) :alias (or (:alias st) tname)}]
-                                                (map-indexed (fn [i it] (if (zero? i) (assoc it :join :cross-comma) it)) from))
-                                    :where (:where st)}}
-                        sub (e/compile-select sctx2 sel)
+                         sel {:body {:type :core :cols cols
+                                     :from (into [{:table (if vw tkey tname) :schema (:schema st) :alias (or (:alias st) tname)}]
+                                                 (map-indexed (fn [i it] (if (zero? i) (assoc it :join :cross-comma) it)) from))
+                                     :where (:where st)}}]
+                     [sctx2 (e/compile-select sctx2 sel)]))
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
+                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
+        _ (prepared! (:names ret))
+        targets (if from
+                  (let [[sctx2 sub] from-sub
                         rows (e/run-select-rows sub (object-array (+ 2 @(:slots sctx2))))]
                     (let [rows (vec rows)
                           ;; one update per target row (the last join row wins), changes count every join row
