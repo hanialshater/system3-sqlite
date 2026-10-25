@@ -98,7 +98,7 @@
               (or (= c 34) (= c 92) (= c 47) (= c 98) (= c 102) (= c 110) (= c 114) (= c 116)
                   (and (= c 117) (is4hex? z (inc j))))
               (recur (inc j) (if (= opcode T-TEXT) T-TEXTJ opcode))
-              (or (= c 39) (= c 48) (= c 118) (= c 10)
+              (or (= c 39) (and (= c 48) (not (digit? (chat z (inc j))))) (= c 118) (= c 10)
                   (and (= c 0x2028)) (and (= c 0x2029))
                   (and (= c 120) (is2hex? z (inc j))))
               (do (nonstd! st) (recur (inc j) T-TEXT5))
@@ -230,12 +230,15 @@
                 [[T-ARRAY items] (inc (long (:iErr @st)))])
             (do (when (not= x -1) (seterr! st (skip-ws z j))) -1))
           (let [[node j2] x
-                x2 (parse-val z j2 st)]
+                old (:iErr @st)
+                x2 (parse-val z j2 st)
+                pos2 (:iErr @st)
+                _ (when (and (number? x2) (<= -4 x2 -2)) (vswap! st assoc :iErr old))]
             (cond
-              (and (number? x2) (= x2 -4)) (recur (inc (long (:iErr @st))) (conj items node))
+              (and (number? x2) (= x2 -4)) (recur (inc (long pos2)) (conj items node))
               (and (number? x2) (= x2 -3))
               (do (vswap! st update :depth dec)
-                  [[T-ARRAY (conj items node)] (inc (long (:iErr @st)))])
+                  [[T-ARRAY (conj items node)] (inc (long pos2))])
               :else (do (when (not= x2 -1) (seterr! st (skip-ws z j2))) -1))))))))
 
 (defn- parse-object [^String z i st]
@@ -269,21 +272,26 @@
           (let [[knode jk] lab]
             (if-not (text-type? (ntype knode))
               (do (seterr! st j) -1)
-              (let [x1 (parse-val z jk st)]
+              (let [old1 (:iErr @st)
+                    x1 (parse-val z jk st)]
                 (if-not (and (number? x1) (= x1 -5))
                   (do (when (not= x1 -1) (seterr! st (skip-ws z jk))) -1)
                   (let [jv (inc (long (:iErr @st)))
+                        _ (vswap! st assoc :iErr old1)
                         xv (parse-val z jv st)]
                     (if (number? xv)
                       (do (when (not= xv -1) (seterr! st (skip-ws z jv))) -1)
                       (let [[vnode je] xv
+                            old (:iErr @st)
                             x2 (parse-val z je st)
+                            pos2 (:iErr @st)
+                            _ (when (and (number? x2) (<= -4 x2 -2)) (vswap! st assoc :iErr old))
                             items (conj items knode vnode)]
                         (cond
-                          (and (number? x2) (= x2 -4)) (recur (inc (long (:iErr @st))) items)
+                          (and (number? x2) (= x2 -4)) (recur (inc (long pos2)) items)
                           (and (number? x2) (= x2 -2))
                           (do (vswap! st update :depth dec)
-                              [[T-OBJECT items] (inc (long (:iErr @st)))])
+                              [[T-OBJECT items] (inc (long pos2))])
                           :else (do (when (not= x2 -1) (seterr! st (skip-ws z je))) -1))))))))))))))
 
 (defn parse-text
@@ -303,7 +311,7 @@
                          (let [w (ws5-len z e)] [(+ e w) (or nonstd (pos? w))])
                          [e nonstd])]
         (if (< e n)
-          {:err 0 :trailing true}
+          {:err (:iErr @st) :trailing true}
           {:node node :nonstd nonstd})))))
 
 ;; ---------------------------------------------------------------- rendering to JSON text
