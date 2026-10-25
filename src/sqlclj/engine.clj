@@ -1055,8 +1055,8 @@
   (let [name (:name e) n (count (:args e))]
     (cond
       (agg-call? e)
-      (cond (nil? (:aggs ctx)) (str "misuse of aggregate: " name "()")
-            (:in-agg ctx) (str "misuse of aggregate function " name "()")
+      (cond (:in-agg ctx) (str "misuse of aggregate function " name "()")
+            (nil? (:aggs ctx)) (if (:where-ctx ctx) (str "misuse of aggregate function " name "()") (str "misuse of aggregate: " name "()"))
             (and (#{"sum" "total" "avg"} name) (not= n 1)) (str "wrong number of arguments to function " name "()")
             (and (= name "group_concat") (not (#{1 2} n))) (str "wrong number of arguments to function " name "()")
             (and (= name "string_agg") (not= n 2)) (str "wrong number of arguments to function " name "()")
@@ -1065,6 +1065,7 @@
             (and (:distinct e) (not= 1 n)) "DISTINCT aggregates must have exactly one argument"
             :else nil)
       (#{"min" "max"} name) (when (< n 1) (str "wrong number of arguments to function " name "()"))
+      (= name "count") (str "wrong number of arguments to function count()")
       (#{"coalesce"} name) (when (< n 2) (str "wrong number of arguments to function " name "()"))
       (#{"ifnull"} name) (when (not= n 2) (str "wrong number of arguments to function " name "()"))
       (#{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
@@ -2144,7 +2145,7 @@
   "Compiles a simple SELECT core. Returns {:names :affs :colls :run (fn [env emit])} where emit receives
   [row sort-keys]. order-terms are resolved here when provided (for simple selects)."
   [ctx core order limit offset]
-  (let [ctx (assoc ctx :pending nil :merge nil)]
+  (let [ctx (assoc ctx :pending nil :merge nil :where-ctx nil)]
   (if (= :values (:type core))
     (let [rows (mapv (fn [r] (mapv #(cx (assoc ctx :scope (:scope ctx)) %) r)) (:rows core))
           n (count (first rows))]
@@ -2169,6 +2170,11 @@
               (let [item (nth from i)
                     s (nth srcs i)
                     jt (:join item)
+                    _ (when (and (#{:natural :natural-left :natural-right :natural-full} jt) (or (:on item) (:using item)))
+                        (err "a NATURAL join may not have an ON or USING clause"))
+                    _ (doseq [u (:using item)]
+                        (when (or (not (some #(find-in-source % (lc u)) (take i srcs))) (not (find-in-source s (lc u))))
+                          (err (str "cannot join using column " u " - column not present in both tables"))))
                     using (cond (:using item) (:using item)
                                 (#{:natural :natural-left :natural-right :natural-full} jt)
                                 (let [prev-cols (set (mapcat :lcols (take i srcs)))]
@@ -2243,7 +2249,7 @@
                     (vector? e) (mapv subst e)
                     :else e))
           where-c (when (:where core)
-                    (let [c (cx (assoc ctx2 :aggs nil) (subst (:where core)))] c))
+                    (let [c (cx (assoc ctx2 :aggs nil :where-ctx (not is-agg)) (subst (:where core)))] c))
           where-f (when where-c (condf where-c))
           where-pre (when (:where core) (where-precheck (assoc ctx2 :aggs nil) (subst (:where core))))
           ;; rowid IN (uncorrelated subquery): SQLite drives the scan from the subquery, which therefore runs first
@@ -2267,7 +2273,7 @@
                           (cond
                             (:on item)
                             (let [ra (atom #{})
-                                  c (cx (assoc ctx2 :aggs nil :refs ra) (subst (:on item)))
+                                  c (cx (assoc ctx2 :aggs nil :refs ra :where-ctx (not is-agg)) (subst (:on item)))
                                   _ (when-let [r (:refs ctx2)] (swap! r into @ra))
                                   later (set (map :slot (drop (inc i) sources)))]
                               (if (some #(later (first %)) @ra)
@@ -2310,7 +2316,7 @@
           _ (when (and (seq (:group core)) (> (count @aggs) nagg-before))
               (err "aggregate functions are not allowed in the GROUP BY clause"))
           having-c (when (:having core)
-                     (when-not is-agg (err "a GROUP BY clause is required before HAVING"))
+                     (when-not is-agg (err "HAVING clause on a non-aggregate query"))
                      (cx actx (subst (:having core))))
           ;; ORDER BY
           order-c (when order
@@ -2712,12 +2718,27 @@
                               (cons row (lazy-seq (run-rec row) (step skip (inc (long emitted))))))))))]
                (step offset 0))))}))))
 
+(declare compile-select**)
+
 (defn- compile-select*
   [ctx sel]
+  (let [lerr (atom nil)
+        ev (fn [e what] (try (eval-limit ctx e what)
+                             (catch clojure.lang.ExceptionInfo ex
+                               (if (= "datatype mismatch" (:sql-error (ex-data ex)))
+                                 (do (when-not @lerr (reset! lerr "datatype mismatch")) nil)
+                                 (throw ex)))))
+        limit (ev (:limit sel) "LIMIT")
+        offset (ev (:offset sel) "OFFSET")
+        r (compile-select** ctx sel limit offset)]
+    (if-let [m @lerr]
+      (assoc r :rows-fn (fn [_] (err m)) :streaming nil)
+      r)))
+
+(defn- compile-select**
+  [ctx sel limit offset]
   (let [body (:body sel)
-        order (:order sel)
-        limit (eval-limit ctx (:limit sel) "LIMIT")
-        offset (eval-limit ctx (:offset sel) "OFFSET")]
+        order (:order sel)]
     (if (= :compound (:type body))
       (let [b (compile-body (if order (assoc ctx :merge true) ctx) body)
             names (:names b)
