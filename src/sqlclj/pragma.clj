@@ -198,7 +198,15 @@
             (let [u (lc v)
                   x (case u "none" 0 "full" 1 "incremental" 2 (or (int-value v) 0))]
               {:db (pset db n x) :names nil :rows [] :writes true}))
-        "encoding" (if (nil? v) (one db n "UTF-8") (none db))
+        "encoding" (let [cur (pget db "encoding" "UTF-8")]
+                     (if (nil? v)
+                       (one db n cur)
+                       (let [nm (case (lc (str/replace (str v) #"-" ""))
+                                  "utf8" "UTF-8" ("utf16" "utf16le") "UTF-16le" "utf16be" "UTF-16be"
+                                  (err (str "unsupported encoding: " v)))]
+                         (if (and (empty? (:tables db)) (empty? (:views db)) (= cur "UTF-8"))
+                           (none (pset db "encoding" nm))
+                           (none db)))))
         "integrity_check" (if (and v (not (int-value v)) (not (find-table db v)))
                             (err (str "no such table: " v))
                             (one db n "ok"))
