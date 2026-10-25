@@ -82,8 +82,14 @@
         autos (filter :auto all)
         explicit (remove :auto all)
         lst (reduce push () autos)
+        ;; WITHOUT ROWID: a lone INTEGER PRIMARY KEY is checked first (like a rowid), any other PRIMARY KEY after the
+        ;; UNIQUE autoindexes
+        tbl (get-in db [:tables (lc tname)])
+        int-pk (and wr (= 1 (count (:pk-cols tbl)))
+                    (= "INTEGER" (some-> (nth (:cols tbl) (first (:pk-cols tbl))) :type str/upper-case)))
         lst (if wr
-              (let [pk (filter :pk-auto lst)] (concat pk (remove :pk-auto lst)))
+              (let [pk (filter :pk-auto lst) others (remove :pk-auto lst)]
+                (if int-pk (concat pk others) (concat others pk)))
               lst)]
     (reduce push (vec lst) explicit)))
 
@@ -183,9 +189,9 @@
                   :else [db st])
         name (:name st) lname (lc name)]
     (cond
+      (and (str/starts-with? lname "sqlite_") (not (:internal st)) (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
-      (and (str/starts-with? lname "sqlite_") (not (:internal st)) (not (writable-schema? db))) (err (str "object name reserved for internal use: " name))
       (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
@@ -480,9 +486,7 @@
   ([db tbl rid row self on-conflict upsert-target? mid-check delay-ipk]
    (let [idxs (filter :unique (table-indexes db (:name tbl)))
          ;; an UPDATE of a WITHOUT ROWID row checks its PRIMARY KEY after the other indexes
-         idxs (if (and self (:without-rowid tbl))
-                (concat (remove :pk-auto idxs) (filter :pk-auto idxs))
-                idxs)]
+         ]
      (letfn [(handle [tbl conf msg what cact]
                (let [act (or on-conflict cact :abort)]
                  (cond
@@ -2132,6 +2136,13 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (or (contains? sch/master-names (lc (:table st))) (str/starts-with? (lc (:table st)) "sqlite_")))
     (err (str "table " (:table st) " may not be indexed")))
+  (when (and (= :drop (:kind st)) (= :table (:what st))
+             (let [ln (lc (:name st))]
+               (and (str/starts-with? ln "sqlite_") (not (str/starts-with? ln "sqlite_stat"))
+                    (get-in db [:tables ln]))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-view (:kind st)) (str/starts-with? (lc (:name st)) "sqlite_"))
+    (err (str "object name reserved for internal use: " (:name st))))
   ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
   ;; and its table must be there too
   (when (and (= :create-trigger (:kind st)) (not (:temp st)) (:table-schema st))
