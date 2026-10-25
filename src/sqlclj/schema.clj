@@ -200,6 +200,15 @@
         (assoc st :name (cond (and sch (not (#{"main" "temp"} sch))) (obj-key db (:name st) sch)
                               (and (#{:table :view} (:what st)) (not= sch "temp")) (resolve-key db (:name st) sch)
                               :else (:name st)))
+        :create-trigger
+        (let [tsch (lc* (:table-schema st))
+              tk (cond tsch (resolve-key db (:table st) tsch)
+                       (att sch) (obj-key db (:table st) sch)
+                       :else (resolve-key db (:table st) nil))
+              tdb (when (string? tk) (some (fn [a] (when (str/starts-with? tk (str a ".")) a)) att))]
+          (cond-> (assoc st :table tk)
+            (att sch) (assoc :name (obj-key db (:name st) sch) :db sch :schema nil)
+            (and (not (att sch)) (not= sch "temp") (not (:temp st)) tdb) (assoc :db tdb)))
         (:insert :update :delete)
         (let [t (:table st) s (:schema st)
               st (walk st)]

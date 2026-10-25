@@ -53,6 +53,7 @@
                                          :else (err (str "no such column: " (:name ast))))))
                             c (when-not ci (compile-row-expr db sql tbl ast))]
                         {:col ci :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
+                         :coll-text (:coll ic)
                          :coll (if (:coll ic) (e/check-coll (:coll ic))
                                    (if ci (or (when (< ci ncols) (:coll (nth (:cols tbl) ci))) "BINARY")
                                        (or (:coll c) "BINARY")))
@@ -930,7 +931,8 @@
       (and tbl (or (:virtual tbl) (str/starts-with? tl "sqlite_"))) (err "cannot create trigger on system table")
       :else
       (let [trig (-> (trg/make-trigger st sql)
-                     (assoc :table tl :table-name (:name (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                            :db (when-not (or (:temp st) (= "temp" (lc (:schema st)))) (:db st))
                             :sql (sch/stmt-sql sql st "TRIGGER")))
             [db trig] (sch/register db trig false)]
         (assoc-in db [:triggers ln] trig)))))
@@ -1522,9 +1524,12 @@
                         (catch clojure.lang.ExceptionInfo ex
                           (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*)) 1 0)))))))
                  r))]
-      (if (seq (:returning st))
-        (doseq [r rows] (write-row out r))
-        (emit-line out (str "changes: " (:changes db2))))
+      (cond
+        (seq (:returning st)) (doseq [r rows] (write-row out r))
+        (and (= 1 (get-in db2 [:pragmas "count_changes"])) (zero? (long trg/*depth*)))
+        (do (emit-line out (str "# rows " (case (:kind st) :insert "inserted" :update "updated" "deleted")))
+            (emit-line out (str (:changes db2))))
+        :else (emit-line out (str "changes: " (:changes db2))))
       (update db2 :total-changes (fnil + 0) (long (or (:changes db2) 0))))
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
@@ -1589,7 +1594,9 @@
           (nil? st) [db (.toString out)]
           :else
           (let [prep (volatile! false)
-                r (try (binding [*prepared* prep] (exec-statement db line st out))
+                r (try (binding [*prepared* prep]
+                         (vreset! v/enc (case (get-in db [:pragmas "encoding"]) "UTF-16le" :utf16le "UTF-16be" :utf16be :utf8))
+                         (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
                            (let [d (ex-data ex)]

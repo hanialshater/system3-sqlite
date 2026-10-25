@@ -72,6 +72,29 @@
 
 ;; ------------------------------------------------------------------ conversions to text / numbers
 
+;; database text encoding: :utf8 :utf16le :utf16be (set by the driver from PRAGMA encoding)
+(def enc (volatile! :utf8))
+
+(defn- utf16-bytes ^bytes [^String s be?]
+  (let [n (.length s) out (java.io.ByteArrayOutputStream. (* 2 n))]
+    (dotimes [i n]
+      (let [c (int (.charAt s i))
+            ;; escaped raw bytes (lone surrogates 0xDC80..0xDCFF) are written as plain bytes' code units
+            c (if (and (>= c 0xDC80) (<= c 0xDCFF)) (- c 0xDC00) c)]
+        (if be?
+          (do (.write out (bit-shift-right c 8)) (.write out (bit-and c 0xff)))
+          (do (.write out (bit-and c 0xff)) (.write out (bit-shift-right c 8))))))
+    (.toByteArray out)))
+
+(defn- utf16-str ^String [^bytes b be?]
+  (let [n (bit-and (alength b) (bit-not 1)) sb (StringBuilder. (quot n 2))]
+    (loop [i 0]
+      (when (< i n)
+        (let [x (bit-and (aget b i) 0xff) y (bit-and (aget b (inc i)) 0xff)]
+          (.append sb (char (if be? (bit-or (bit-shift-left x 8) y) (bit-or (bit-shift-left y 8) x))))
+          (recur (+ i 2)))))
+    (.toString sb)))
+
 (defn text-of
   "sqlite3_value_text: nil for NULL."
   ^String [v]
@@ -79,7 +102,7 @@
         (string? v) v
         (instance? Long v) (Long/toString (long v))
         (instance? Double v) (num/real->text (double v))
-        (blob? v) (utf8->str (blob-bytes v))
+        (blob? v) (case @enc :utf8 (utf8->str (blob-bytes v)) :utf16le (utf16-str (blob-bytes v) false) (utf16-str (blob-bytes v) true))
         :else (str v)))
 
 (defn bytes-of
@@ -87,7 +110,7 @@
   ^bytes [v]
   (cond (nil? v) nil
         (blob? v) (blob-bytes v)
-        :else (str->utf8 (text-of v))))
+        :else (let [t (text-of v)] (case @enc :utf8 (str->utf8 t) :utf16le (utf16-bytes t false) (utf16-bytes t true)))))
 
 (defn real-same-as-int [^double r ^long i]
   (let [r2 (double i)]
