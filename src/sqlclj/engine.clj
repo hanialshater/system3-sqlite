@@ -1684,7 +1684,8 @@
               ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
               quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
                             {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
-          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals))))
+          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals :orig-cols (vec (:names sub))
+                 :direct-quals (set (for [qs (:star-quals sub) [a _ d] qs :when d] a))))))
     (:subq item)
     (let [sub (compile-select ctx (:subq item))
           slot (new-slot! ctx)
@@ -1737,9 +1738,14 @@
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
             {:star-col [s i] :name (nth (:cols s) i) :unq true})))
         (:star rc)
-        (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
-          (when-not s (err (str "no such table: " (:table rc))))
-          (for [i (range (:ncols s))] {:star-col [s i] :name (nth (:cols s) i)}))
+        (let [lt (lc (:table rc))
+              s (first (filter #(= (:alias %) lt) sources))
+              ns (when-not s (first (filter #(get-in % [:quals lt]) sources)))]
+          (when-not (or s ns) (err (str "no such table: " (:table rc))))
+          (if s
+            (for [i (range (:ncols s))] {:star-col [s i] :name (nth (:cols s) i)})
+            ;; t.* of a table inside a parenthesized join
+            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (if ((:direct-quals ns) lt) (:orig-cols ns) (:cols ns)) i)})))
         :else [rc]))
     cols)))
 
@@ -1747,7 +1753,15 @@
   (cond
     (:alias rc) (:alias rc)
     (:star-col rc) (:name rc)
-    (= :col (:op (:e rc))) (:name (:e rc))
+    (= :col (:op (:e rc)))
+    (let [e (:e rc)]
+      (or (when (:table e)
+            ;; a qualified column of a table nested two joins deep shows the sub-select's column name
+            (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                  s (:src r) lt (lc (:table e))]
+              (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
+                (nth (:cols s) (:idx r)))))
+          (:name e)))
     :else (text-of-node ctx (:e rc))))
 
 (defn neg-int-lit? [e]
@@ -2087,12 +2101,23 @@
                                 :when (not (:correlated sub))]
                             sub))))
           ;; join conditions
+          deferred-on (atom [])
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
                               using (nth join-conds i)
                               s (nth sources i)]
                           (cond
-                            (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (condf c))
+                            (:on item)
+                            (let [ra (atom #{})
+                                  c (cx (assoc ctx2 :aggs nil :refs ra) (subst (:on item)))
+                                  _ (when-let [r (:refs ctx2)] (swap! r into @ra))
+                                  later (set (map :slot (drop (inc i) sources)))]
+                              (if (some #(later (first %)) @ra)
+                                (if (or (nth left-join i) (nth right-join i))
+                                  (err "ON clause references tables to its right")
+                                  ;; an inner join's ON term on a later table is evaluated with the WHERE clause
+                                  (do (swap! deferred-on conj (condf c)) nil))
+                                (condf c)))
                             (seq using)
                             (let [preds (doall (for [u using]
                                           (let [lu (lc u)
@@ -2145,6 +2170,7 @@
                                :col (:col c)}))
                           order)))
           nsrc (count sources)
+          don @deferred-on
           win-specs @wins
           win? (boolean (seq win-specs))
           rowid-order (when (and order-c (= 1 nsrc) (:table (first sources)) (not is-agg) (not (:distinct core)) (not win?)
@@ -2200,8 +2226,9 @@
                  (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
                            (if (= i nsrc)
-                             (when (or (nil? where-f)
-                                       (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w))))
+                             (when (and (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) don)
+                                        (or (nil? where-f)
+                                            (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
                                (k))
                              (let [slot (long (nth slots i))
                                    onf (nth on-fns i)
@@ -2284,8 +2311,8 @@
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
        :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
-                                    (cons [(:alias s) (nth (:lcols s) i)]
-                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
+                                    (cons [(:alias s) (nth (:lcols s) i) true]
+                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
                          rcols)
        :outer-refs outer-refs
        :run run}))))
@@ -2565,7 +2592,7 @@
                       (apply-limit rows limit offset)))})
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
-        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c)
+        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp
