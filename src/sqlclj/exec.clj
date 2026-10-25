@@ -663,7 +663,8 @@
                 :else
                 (let [tbl3 (put-row tbl2 rid row)
                       db2 (assoc-in db [:tables tkey] tbl3)
-                      db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)]
+                      db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
+                      db2 (assoc db2 :last-rowid rid)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
@@ -1342,7 +1343,7 @@
       (if (seq (:returning st))
         (doseq [r rows] (write-row out r))
         (emit-line out (str "changes: " (:changes db2))))
-      db2)
+      (update db2 :total-changes (fnil + 0) (long (or (:changes db2) 0))))
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)

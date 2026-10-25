@@ -392,7 +392,7 @@
               ("LIKE" "GLOB" "MATCH" "REGEXP")
               (let [r (parse-expr-prec p 5)
                     esc (when (accept-kw p "ESCAPE") (parse-expr-prec p 5))]
-                (recur (node {:op :like :o (keyword (str/lower-case u)) :e left :pat r :esc esc :not negate}
+                (recur (node {:op :like :o (keyword (str/lower-case u)) :ostr (:v t) :e left :pat r :esc esc :not negate}
                              s (prev-end p))))
               "BETWEEN"
               (let [lo (loop [lo (parse-expr-prec p 3)]
@@ -579,6 +579,8 @@
                  (if op
                    (recur {:type :compound :op op :left left :right (parse-select-core p)})
                    left)))
+        last-core (if (= :compound (:type body)) (:right body) body)
+        _ (when (and (= :values (:type last-core)) (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
         order (when (at-kw? p "ORDER") (advance! p) (expect-kw p "BY") (parse-order-by p))
         [limit offset] (when (accept-kw p "LIMIT")
                          (let [a (parse-expr p)]
