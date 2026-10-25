@@ -2508,9 +2508,9 @@
                     (:sub src)
                     (let [sub (:sub src)]
                       (if (or (:correlated sub) (:lazy sub))
-                        (fn [env] (run-select-rows sub env))
+                        (fn [env] (map v/strip-row (run-select-rows sub env)))
                         (let [cache (volatile! nil)]
-                          (fn [env] (or @cache (vreset! cache (vec (run-select-rows sub env))))))))
+                          (fn [env] (or @cache (vreset! cache (mapv v/strip-row (run-select-rows sub env))))))))
                     :else
                     (fn [_] (table-rows (get-in db [:tables tname])))))
         scan-all (let [f (rows-of)] (if rev (fn [env] (reverse (f env))) f))
@@ -2817,7 +2817,7 @@
                                :col (:col c)}))
                           order))))
           plan-spec
-          (when-let [h @plan-hook]
+          (when-let [h (when-not (System/getenv "SQLCLJ_NOPLAN") @plan-hook)]
             (try
               (let [rc-ast (fn [rc] (if-let [[s i] (:star-col rc)] {:op :colref :slot (:slot s) :idx i} (:e rc)))
                     order-exprs (when order-c

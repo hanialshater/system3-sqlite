@@ -247,8 +247,12 @@
                       lr (:left li)
                       pre (:prefix li)
                       ;; the lower and upper bound terms
+                      up (let [lp (if (= "NOCASE" (:coll li)) (str/lower-case pre) pre)
+                               n (count lp)]
+                           (str (subs lp 0 (dec n)) (char (inc (long (.charAt ^String lp (dec n)))))))
                       mk (fn [o]
-                           (new-term G {:op :bin :o o :l (assoc {:op :collate :e l} :coll (:coll li)) :r {:op :lit :v pre}}
+                           (new-term G {:op :bin :o o :l (assoc {:op :collate :e l} :coll (:coll li))
+                                        :r {:op :lit :v (if (= o :lt) up (if (= "NOCASE" (:coll li)) (str/lower-case pre) pre))}}
                                      :virtual true :parent idx :on-of (:on-of t) :likeopt true))
                       i1 (insert! (mk :ge))
                       _ (analyze! i1)
@@ -262,7 +266,14 @@
     (let [nbase (count @terms)]
       (doseq [i (range (dec nbase) -1 -1)] (analyze! i))
       ;; term-level default
-      (vec (map-indexed (fn [i t] (assoc t :id i)) @terms)))))
+      (vec (map-indexed (fn [i t]
+                          (let [t (assoc t :id i)]
+                            (if-let [j (:on-of t)]
+                              (let [b (bit (long j))]
+                                (cond-> (assoc t :prereq-all (bit-or (long (:prereq-all t)) b))
+                                  (:op t) (assoc :prereq-right (bit-or (long (:prereq-right t)) (dec b)))))
+                              t)))
+                        @terms)))))
 
 (defn ucols
   "Map table-index -> set of its columns (>= 0) an expression refers to."
@@ -321,7 +332,7 @@
                            (if (not= :text (aff-class (expr-aff G (:l x)))) (rw-top (:r x) true) (:r x))
                            (rw (:r x)))]
                   (assoc x :l l' :r r'))
-                blob? (into {} (map (fn [[k v]] [k (if (or (map? v) (sequential? v)) (rw v) v)]) x))
+                blob? (into {} (map (fn [[k v]] [k (if (and (not= k :select) (or (map? v) (sequential? v))) (rw v) v)]) x))
                 :else (into {} (map (fn [[k v]] [k (if (and (not= k :select) (or (map? v) (sequential? v))) (rw v) v)]) x)))
               (vector? x) (mapv rw x)
               (sequential? x) (mapv rw x)

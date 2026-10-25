@@ -144,10 +144,11 @@
                (< (count srcs) 63)
                (every? (fn [s] (and (not (:tvf s)) (or (:sub s) (:table s)))) srcs)
                (every? (fn [s] (or (not (:table s)) (not (:without-rowid (:table s))))) srcs)
+               (every? (fn [s] (or (not (:table s)) (and (not (:virtual (:table s))) (some? (get-in (:db info) [:tables (lc (:tname s))]))))) srcs)
                (every? (fn [it] (not (#{:right :full :natural-right :natural-full} (:join it)))) from))
       (let [G {:ctx (assoc (:ctx info) :refs nil) :sources srcs
                :slot->i (into {} (map-indexed (fn [i s] [(:slot s) i]) srcs))
-               :case-sensitive-like (:case-sensitive-like info)}
+               :case-sensitive-like (let [x (get-in (:db info) [:pragmas "case_sensitive_like"])] (boolean (and x (not= x 0) (not= x false))))}
             using-conj (fn [i it]
                          (let [using (nth (:join-conds info) i nil)
                                left? (#{:left :natural-left} (:join it))
