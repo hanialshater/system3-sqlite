@@ -1478,7 +1478,7 @@
           nm (if (and (= :col (:op e)) (nil? (:table e))) (:name e) ((:f (e/cx (new-ctx db sql) e)) (object-array 4)))
           lnm (lc (str nm))]
       (when-not (some #{lnm} (sch/attached-names db))
-        (err (if (#{"main" "temp"} lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
+        (err (if (= "main" lnm) (str "cannot detach database " nm) (str "no such database: " nm))))
       (let [keep? (fn [[_ o]] (not= lnm (:db o)))]
         (-> db
             (update :attached (fn [a] (vec (remove #(= lnm (first %)) a))))
