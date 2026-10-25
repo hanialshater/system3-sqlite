@@ -98,7 +98,7 @@
 (defn index-list-rows [db tname]
   (if-let [t (find-table db tname)]
     (vec (map-indexed (fn [i idx]
-                        [(long i) (:name idx) (if (:unique idx) 1 0)
+                        [(long i) (sch/display-name (:name idx) idx) (if (:unique idx) 1 0)
                          (cond (not (:auto idx)) "c" (:pk-auto idx) "pk" :else "u")
                          (if (:where idx) 1 0)])
                       (table-indexes db (lc (:name t)))))
@@ -143,6 +143,17 @@
         db (if (= sc "temp") (assoc db :temp-used true) db)]
     (when (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (map first (:attached db)))))
       (err (str "unknown database " (:schema st))))
+    (let [v (if (and sc v (string? v))
+              (cond
+                (#{"table_info" "table_xinfo" "index_list" "foreign_key_list"} n)
+                (case sc
+                  "main" (sch/resolve-key db v "main")
+                  "temp" (if (:temp (get-in db [:tables (lc v)])) v "\u0000none")
+                  (sch/obj-key db v sc))
+                (#{"index_info" "index_xinfo"} n)
+                (if (#{"main" "temp"} sc) v (sch/obj-key db v sc))
+                :else v)
+              v)]
     (cond
       (contains? flag-pragmas n)
       (if (nil? v)
@@ -169,7 +180,7 @@
           (one db col (long (pget db n d)))
           (let [x (or (int-value v) (when (= n "secure_delete") (bool-value v 0)) (pget db n d))
                 x (if (#{"mmap_size" "threads"} n) 0 x)
-                x (if (= n "secure_delete") (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x))) x)
+                x (if (= n "secure_delete") (if (= "fast" (some-> v str str/lower-case)) 2 (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x)))) x)
                 db (pset db n x)]
             (one db col (long x)))))
 
@@ -190,7 +201,8 @@
       (contains? header-pragmas n)
       (if (nil? v)
         (one db n (long (if (= n "schema_version") (or (:schema-version db) 0) (pget db n 0))))
-        (let [x (or (int-value v) 0)]
+        (let [x (or (int-value v) 0)
+              x (if (<= -2147483648 (long x) 2147483647) x 0)]
           {:db (if (= n "schema_version") (assoc db :schema-version x) (pset db n x)) :names nil :rows [] :writes true}))
 
       :else
@@ -208,7 +220,13 @@
         (let [cur (pget db "locking_mode" "normal")
               u (some-> v lc)
               nv (if (#{"normal" "exclusive"} u) u cur)]
-          (one (pset db "locking_mode" nv) "locking_mode" nv))
+          (cond
+            sc (one db "locking_mode" "exclusive")
+            (nil? v) (one db "locking_mode" cur)
+            (#{"normal" "exclusive"} u) (one (pset db "locking_mode" nv) "locking_mode" "exclusive")
+            :else (one db "locking_mode" cur)))
+        "module_list" {:db db :names ["name"] :rows []}
+        "temp_store_directory" {:db db :names ["temp_store_directory"] :rows []}
         "synchronous"
         (if (nil? v) (one db n (long (pget db n 2)))
             (let [u (lc v)
@@ -257,7 +275,10 @@
                          :rows (vec (concat [[0 "main" ""]]
                                             (when (or (:temp-used db) (some :temp (concat (vals (:tables db)) (vals (:views db)) (vals (:triggers db)))))
                                               [[1 "temp" ""]])
-                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (or (:file a) "")]) (:attached db))))}
+                                            (map-indexed (fn [i [k a]] [(long (+ 2 i)) (or (:name a) k) (let [f (or (:file a) "")]
+                                                                                                                                                (if (or (= f "") (str/starts-with? f "/"))
+                                                                                                                                                  f
+                                                                                                                                                  (str "/home/user/system-3-company/company/sibling/system3-meta/prototype/bench12/" f)))]) (:attached db))))}
         "table_info" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk"] :rows (table-info-rows db v false)} (none db))
         "table_xinfo" (if v {:db db :names ["cid" "name" "type" "notnull" "dflt_value" "pk" "hidden"] :rows (table-info-rows db v true)} (none db))
         "index_list" (if v {:db db :names ["seq" "name" "unique" "origin" "partial"] :rows (index-list-rows db v)} (none db))
@@ -282,7 +303,7 @@
                      (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
                        ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
                      [["temp" "sqlite_temp_schema" "table" 5 0 0]])))}
-        (none db)))))
+        (none db))))))
 
 ;; pragma_xxx table-valued functions
 (def tvf-cols
@@ -314,6 +335,6 @@
          :rows (fn [db args]
                  (let [[a s] (if takes-arg args [nil (first args)])
                        a (when (some? a) (str a))]
-                   (:rows (run db {:name n :value a :schema nil :tvf true}))))}))))
+                   (:rows (run db {:name n :value a :schema (when (some? s) (str s)) :tvf true}))))}))))
 
 (swap! e/tvf-resolvers (fn [rs] (if (some #(= % #'tvf-resolver) rs) rs (conj rs #'tvf-resolver))))

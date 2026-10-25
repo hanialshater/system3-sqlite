@@ -21,7 +21,7 @@
 (defn jerr [msg] (throw (ex-info msg {:sql-error msg})))
 
 ;; ---------------------------------------------------------------- subtype registry (identity based)
-(def ^:private subtypes (java.util.IdentityHashMap.))
+(def ^:private subtypes v/subtypes)
 (defn mark-json
   "returns a fresh String instance carrying the JSON subtype"
   ^String [^String s]
@@ -612,6 +612,13 @@
     (json-subtype? x) (let [r (parse-text x)] (if (:node r) (:node r) (jerr "malformed JSON")))
     :else (sql-text-node x)))
 
+(defn value->node-edit
+  "value->node for json_set / json_insert / json_replace / json_array_insert: Infinity is written as 9e999"
+  [x]
+  (if (and (instance? Double x) (Double/isInfinite (double x)))
+    [T-FLOAT (if (pos? (double x)) "9e999" "-9e999")]
+    (value->node x)))
+
 ;; ---------------------------------------------------------------- argument parsing
 (defn arg->node
   "Parses a SQL argument as JSON. nil for SQL NULL; throws 'malformed JSON'."
@@ -799,7 +806,7 @@
           (if (empty? rs)
             (if blob? (jsonb-result root) (json-result root))
             (let [p (path-arg (first rs))
-                  val (value->node (second rs))]
+                  val (value->node-edit (second rs))]
               (if (nil? p)
                 (recur root (nnext rs))
                 (do
