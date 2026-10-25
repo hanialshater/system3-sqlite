@@ -1003,7 +1003,7 @@
       (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
-  #{    "date" "time" "datetime" "julianday" "strftime" "unixepoch" "json"})
+  #{"json"})
 
 (defn- function-level-error
   "Errors SQLite reports for the function node itself (before resolving its arguments)."

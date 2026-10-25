@@ -3,7 +3,8 @@
   (compile-fn name nargs coll) returns (fn [vals]) or nil when the function is unknown."
   (:require [clojure.string :as str]
             [sqlclj.values :as v]
-            [sqlclj.printf :as pf])
+            [sqlclj.printf :as pf]
+            [sqlclj.datetime :as dt])
   (:import [sqlclj.values Blob]))
 
 (def compile-options
@@ -112,6 +113,16 @@
       "sqlite_source_id" (do (ar (= n 0)) (fn [_] "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"))
       "sqlite_compileoption_used" (do (ar (= n 1)) (fn [[x]] (when-not (nil? x) (compile-option-used (v/text-of x)))))
       "sqlite_compileoption_get" (do (ar (= n 1)) (fn [[x]] (let [i (v/int-value x)] (when (and (>= i 0) (< i (count compile-options))) (nth compile-options i)))))
+      "date" (fn [args] (dt/date-fn args))
+      "time" (fn [args] (dt/time-fn args))
+      "datetime" (fn [args] (dt/datetime-fn args))
+      "julianday" (fn [args] (dt/julianday-fn args))
+      "unixepoch" (fn [args] (dt/unixepoch-fn args))
+      "strftime" (fn [args] (dt/strftime-fn args))
+      "timediff" (do (ar (= n 2)) (fn [args] (dt/timediff-fn args)))
+      "current_timestamp" (fn [_] (dt/datetime-fn ["now"]))
+      "current_date" (fn [_] (dt/date-fn ["now"]))
+      "current_time" (fn [_] (dt/time-fn ["now"]))
       "unistr" (do (ar (= n 1)) (fn [[x]] (when-not (nil? x) (unistr (v/text-of x)))))
       "unistr_quote" (do (ar (= n 1)) (fn [[x]] (unistr-quote x)))
       nil)))
