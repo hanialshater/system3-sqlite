@@ -150,7 +150,16 @@
                   (assoc-in db [:tables "sqlite_sequence" :rows k] [(:name tbl) rid k])))))))
 
 (defn- create-table [db sql st]
-  (let [name (:name st) lname (lc name)]
+  (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
+        lname0 (lc (:name st))
+        ex (get-in db [:tables lname0])
+        [db st] (cond
+                  (and (:temp st) ex (not (:temp ex)) (nil? (:db ex)) (not (:db st)))
+                  [(sch/move-main-aside db lname0) st]
+                  (and (not (:temp st)) (nil? (:db st)) ex (:temp ex))
+                  [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
+                  :else [db st])
+        name (:name st) lname (lc name)]
     (cond
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") name " already exists")))
@@ -163,7 +172,7 @@
                                   :aff (or a :blob)})
                        (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
-                 :sql (sch/create-table-stmt name cols)
+                 :sql (sch/create-table-stmt (sch/display-name name {:db (:db st)}) cols)
                  :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
