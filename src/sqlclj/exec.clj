@@ -930,7 +930,8 @@
       (and tbl (or (:virtual tbl) (str/starts-with? tl "sqlite_"))) (err "cannot create trigger on system table")
       :else
       (let [trig (-> (trg/make-trigger st sql)
-                     (assoc :table tl :table-name (:name (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                            :db (when-not (or (:temp st) (= "temp" (lc (:schema st)))) (:db st))
                             :sql (sch/stmt-sql sql st "TRIGGER")))
             [db trig] (sch/register db trig false)]
         (assoc-in db [:triggers ln] trig)))))
