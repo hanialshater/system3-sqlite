@@ -28,13 +28,25 @@
    "id": "S5",
    "title": "95% hidden mean",
    "state": "next",
-   "evidence": "needs the founder's budget approval"
+   "evidence": "needs the founder's budget approval",
+   "predictions": [
+    {
+     "text": "4 members reach 95% hidden mean for at most $60 a point",
+     "wrongIf": "over $60 a point, or 8 members' rate of $128 a point"
+    }
+   ]
   },
   {
    "id": "S6",
    "title": "Referee runnable outside the benchmark harness (hidden set held by its owner)",
    "state": "partly",
-   "evidence": "referee/README.md"
+   "evidence": "referee/README.md",
+   "predictions": [
+    {
+     "text": "the referee runs in a fresh clone with the hidden set fetched by its owner, same score as the harness",
+     "wrongIf": "scores differ by more than 0.1 point"
+    }
+   ]
   }
  ]
 }

@@ -16,6 +16,10 @@ its referee (`referee/`), SQLite's own test files. **The disk is the memory**: t
   members' own comparisons, never for the engine.
 - **Predictions before runs.** A new run's design and predictions go in `docs/` before it starts.
 - **Spending needs the owner's approval** (`company/company.json` budget lines).
+- **Deploys need the owner's approval, every time.** Vercel builds the demo site only from commits whose message carries
+  `[deploy]`; never add it without the owner's approval of that deploy.
+- **The org follows the city's principles** (`system3-meta PRINCIPLES.md`): at most 4 members, the single-agent baseline
+  kept as an arm, predictions before runs, a cost target per point with a stop rule. Breaking one needs a decision record.
 - **This repository is public.** No secrets, no personal data, no session transcripts.
 
 ## Before you finish

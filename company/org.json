@@ -1,5 +1,5 @@
 {
- "note": "The org contract (system3-meta docs/product/STARTER.md \u00a73): the crew of B13, the run that took the engine to 91.85% of SQLite's hidden test files. Models are tiers.",
+ "note": "The org contract (system3-meta docs/product/STARTER.md §3): the crew of B13, the run that took the engine to 91.85% of SQLite's hidden test files. Models are tiers.",
  "roles": [
   {
    "id": "founder",
@@ -11,7 +11,7 @@
    "roomName": "Owner's office",
    "roomKind": "office",
    "floor": 1,
-   "floorName": "Floor 1 \u00b7 Leadership"
+   "floorName": "Floor 1 · Leadership"
   },
   {
    "id": "referee",
@@ -24,7 +24,7 @@
    "roomName": "Referee",
    "roomKind": "meeting",
    "floor": 1,
-   "floorName": "Floor 1 \u00b7 Leadership"
+   "floorName": "Floor 1 · Leadership"
   },
   {
    "id": "m-architect",
@@ -38,7 +38,7 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering"
   },
   {
    "id": "m-engine",
@@ -52,7 +52,9 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering",
+   "parked": true,
+   "parkedReason": "PRINCIPLES.md P7 (2026-10-25)"
   },
   {
    "id": "m-language",
@@ -66,7 +68,9 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering",
+   "parked": true,
+   "parkedReason": "PRINCIPLES.md P7 (2026-10-25)"
   },
   {
    "id": "m-values",
@@ -80,7 +84,9 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering",
+   "parked": true,
+   "parkedReason": "PRINCIPLES.md P7 (2026-10-25)"
   },
   {
    "id": "m-schema",
@@ -94,7 +100,7 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering"
   },
   {
    "id": "m-planner",
@@ -108,7 +114,7 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering"
   },
   {
    "id": "m-sweeper",
@@ -122,7 +128,7 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering"
   },
   {
    "id": "m-hasty",
@@ -136,7 +142,9 @@
    "roomName": "Engineering floor",
    "roomKind": "floor",
    "floor": 2,
-   "floorName": "Floor 2 \u00b7 Engineering"
+   "floorName": "Floor 2 · Engineering",
+   "parked": true,
+   "parkedReason": "PRINCIPLES.md P7 (2026-10-25)"
   }
  ]
 }

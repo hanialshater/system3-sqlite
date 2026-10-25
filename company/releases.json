@@ -1,0 +1,12 @@
+{
+ "releases": [
+  {
+   "id": "r1",
+   "date": "2026-10-25",
+   "title": "Demo site live on Vercel (founder-approved, 2026-10-25)",
+   "notes": [],
+   "commit": "53e17c1",
+   "approvedBy": "founder-approved (2026-10-25)"
+  }
+ ]
+}

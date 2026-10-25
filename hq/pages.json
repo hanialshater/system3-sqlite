@@ -1,0 +1,20 @@
+[
+ {
+  "id": "principles",
+  "title": "Principles",
+  "file": "principles.js",
+  "copiedFrom": "system3-city pages/principles @ baee396"
+ },
+ {
+  "id": "features",
+  "title": "Features",
+  "file": "features.js",
+  "copiedFrom": "system3-city pages/features @ baee396"
+ },
+ {
+  "id": "releases",
+  "title": "Release log",
+  "file": "releases.js",
+  "copiedFrom": "system3-city pages/releases @ baee396"
+ }
+]

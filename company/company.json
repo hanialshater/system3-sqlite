@@ -48,5 +48,63 @@
    "url": "https://github.com/hanialshater/system3-sqlite",
    "kind": "repo"
   }
- ]
+ ],
+ "orgReasons": [
+  "too-big-for-one-context",
+  "independent-checking"
+ ],
+ "baseline": "B11-B12 ran one strong agent (V) against the org; V is the baseline each new run keeps as an arm",
+ "flows": [
+  {
+   "id": "land",
+   "steps": [
+    {
+     "role": "member",
+     "kind": "maker"
+    },
+    {
+     "role": "referee",
+     "kind": "check"
+    }
+   ]
+  }
+ ],
+ "owns": [
+  {
+   "role": "m-architect",
+   "paths": [
+    "src/sqlclj/engine.clj",
+    "docs/INTERFACES.md"
+   ]
+  },
+  {
+   "role": "referee",
+   "paths": [
+    "referee/"
+   ]
+  }
+ ],
+ "referee": {
+  "cmd": "node referee/judge.mjs fast --dir=.",
+  "heldOut": "480 hidden test files, held by Meta (referees/)"
+ },
+ "costTarget": {
+  "unit": "hidden point",
+  "usd": 60
+ },
+ "principles": "system3-meta PRINCIPLES.md",
+ "stopRule": "work over 2× its cost target pauses for the owner (PRINCIPLES.md P8)",
+ "members": [
+  "m-architect",
+  "m-planner",
+  "m-sweeper",
+  "m-schema"
+ ],
+ "parkedMembers": [
+  "m-engine",
+  "m-language",
+  "m-values",
+  "m-hasty"
+ ],
+ "parkedReason": "PRINCIPLES.md P7 (B13: 8 members cost $128 a point against 4 members' $55); kept members by kept credit and points per dollar; see docs/decisions/2026-10-25-principles.md"
 }

@@ -1,0 +1,35 @@
+{
+ "features": [
+  {
+   "id": "engine",
+   "title": "SQLite-compatible engine in Clojure",
+   "status": "live",
+   "since": "2026-10-24",
+   "owner": "m-architect",
+   "summary": "91.85% hidden mean over SQLite's own test files"
+  },
+  {
+   "id": "referee",
+   "title": "The referee",
+   "status": "live",
+   "since": "2026-10-25",
+   "owner": "referee",
+   "summary": "SQLite's own test files; visible fast check, hidden set held by its owner"
+  },
+  {
+   "id": "demo-site",
+   "title": "Demo site",
+   "status": "live",
+   "since": "2026-10-25",
+   "owner": "m-architect",
+   "summary": "Real queries run by the engine, and where it still differs"
+  },
+  {
+   "id": "ninety-five",
+   "title": "95% hidden mean",
+   "status": "planned",
+   "owner": "m-architect",
+   "summary": "S5"
+  }
+ ]
+}
