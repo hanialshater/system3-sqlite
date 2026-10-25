@@ -124,6 +124,10 @@
       "current_timestamp" (fn [_] (dt/datetime-fn ["now"]))
       "current_date" (fn [_] (dt/date-fn ["now"]))
       "current_time" (fn [_] (dt/time-fn ["now"]))
+      "\u0000truth" (fn [[x mode]]
+                      (let [m (long mode) false? (odd? m) not? (>= m 2)
+                            r (if (nil? x) false (let [t (v/bool-value x)] (if false? (not t) t)))]
+                        (if (if not? (not r) r) 1 0)))
       "json" (do (ar (= n 1)) (js/fn-json false))
       "jsonb" (do (ar (= n 1)) (js/fn-json true))
       "json_array" (js/fn-array false)

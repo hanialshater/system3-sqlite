@@ -140,7 +140,7 @@
       (contains? flag-pragmas n)
       (if (nil? v)
         (if (= n "case_sensitive_like") (none db) (one db n (long (pget db n (flag-pragmas n)))))
-        (let [b (bool-value v (pget db n (flag-pragmas n)))]
+        (let [b (bool-value v 0)]
           (if (and (= n "foreign_keys") (:tx db))
             (none db)
             (none (pset db n b)))))
@@ -149,7 +149,9 @@
       (let [[d col] (int-pragmas-echo n)]
         (if (nil? v)
           (one db col (long (pget db n d)))
-          (let [x (or (int-value v) (pget db n d))
+          (let [x (or (int-value v) (when (= n "secure_delete") (bool-value v 0)) (pget db n d))
+                x (if (#{"mmap_size" "threads"} n) 0 x)
+                x (if (= n "secure_delete") (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x))) x)
                 db (pset db n x)]
             (one db col (long x)))))
 
@@ -202,7 +204,7 @@
                     blocked (and (seq (get-in db [:pages "main"])) (not= (zero? cur) (zero? (long x))))]
                 (if blocked
                   (none db)
-                  {:db (pset db n x) :names nil :rows [] :writes (not= (long x) cur)}))))
+                  {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))))
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
                        (one db n cur)
@@ -225,6 +227,7 @@
         "incremental_vacuum" {:db db :names nil :rows [] :writes true}
         "optimize" {:db db :names ["optimize"] :rows []}
         "compile_options" {:db db :names ["compile_options"] :rows (mapv vector compile-options)}
+        "pragma_list" {:db db :names ["name"] :rows (mapv vector ["analysis_limit" "application_id" "auto_vacuum" "automatic_index" "busy_timeout" "cache_size" "cache_spill" "case_sensitive_like" "cell_size_check" "checkpoint_fullfsync" "collation_list" "compile_options" "count_changes" "data_version" "database_list" "defer_foreign_keys" "empty_result_callbacks" "encoding" "foreign_key_check" "foreign_key_list" "foreign_keys" "freelist_count" "full_column_names" "fullfsync" "function_list" "hard_heap_limit" "ignore_check_constraints" "incremental_vacuum" "index_info" "index_list" "index_xinfo" "integrity_check" "journal_mode" "journal_size_limit" "legacy_alter_table" "locking_mode" "max_page_count" "mmap_size" "module_list" "optimize" "page_count" "page_size" "pragma_list" "query_only" "quick_check" "read_uncommitted" "recursive_triggers" "reverse_unordered_selects" "schema_version" "secure_delete" "short_column_names" "shrink_memory" "soft_heap_limit" "synchronous" "table_info" "table_list" "table_xinfo" "temp_store" "temp_store_directory" "threads" "trusted_schema" "user_version" "writable_schema"])}
         "collation_list" {:db db :names ["seq" "name"] :rows [[0 "RTRIM"] [1 "NOCASE"] [2 "BINARY"]]}
         "database_list" {:db db :names ["seq" "name" "file"]
                          :rows (vec (concat [[0 "main" ""]]
@@ -243,10 +246,13 @@
         "table_list"
         {:db db :names ["schema" "name" "type" "ncol" "wr" "strict"]
          :rows (vec (concat
-                     (for [t (sort-by :mseq (vals (:tables db))) :when (not (:temp t))]
-                       ["main" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])
-                     (for [vw (sort-by :mseq (vals (:views db))) :when (not (:temp vw))]
-                       ["main" (:name vw) "view" (long (count (:cols vw))) 0 0])
+                     (for [[kind t] (sort-by (fn [[_ x]] (- (long (or (:mseq x) 0))))
+                                             (concat (map #(vector :table %) (vals (:tables db)))
+                                                     (map #(vector :view %) (vals (:views db)))))
+                           :when (not (:temp t))]
+                       (if (= kind :table)
+                         ["main" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)]
+                         ["main" (:name t) "view" (long (count (:cols t))) 0 0]))
                      [["main" "sqlite_schema" "table" 5 0 0]]
                      (for [t (sort-by :mseq (vals (:tables db))) :when (:temp t)]
                        ["temp" (:name t) "table" (long (count (:cols t))) (if (:without-rowid t) 1 0) (if (:strict t) 1 0)])

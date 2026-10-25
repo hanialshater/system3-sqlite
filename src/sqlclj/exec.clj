@@ -1601,7 +1601,8 @@
                 :analyze (exec-analyze db sql st)
                 (:begin :commit :rollback :savepoint :release) (exec-tx db st)
                 (:noop :pragma) db
-                :vacuum (do (when-let [sc (lc (:schema st))]
+                :vacuum (do (when (:tx db) (err "cannot VACUUM from within a transaction"))
+                            (when-let [sc (lc (:schema st))]
                               (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
                                 (err (str "unknown database " (:schema st)))))
                             db))]
