@@ -107,6 +107,16 @@
 
 (defn- bool->int [b] (if b 1 0))
 
+(defn coalesce-reader
+  "Reader of the first non-NULL of several [slot idx] columns."
+  [pairs]
+  (let [pairs (mapv (fn [[a b]] [(long a) (long b)]) pairs)]
+    (fn [^objects env]
+      (loop [k 0]
+        (when (< k (count pairs))
+          (let [[a b] (nth pairs k) x (nth (aget env (long a)) (long b))]
+            (if (nil? x) (recur (inc k)) x)))))))
+
 (defn lit-value [e]
   (case (:kind e)
     :int (let [t (:text e)
@@ -433,12 +443,11 @@
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
-                   [aslot aidx] (:alt r)]
+                   alt (:alt r)]
                (when (and (:outer-refs ctx) (pos? (long (:depth r))))
                  (reset! (:outer-refs ctx) true))
-               (mk (if aslot
-                     (let [aslot (long aslot) aidx (long aidx)]
-                       (fn [^objects env] (let [x (nth (aget env slot) idx)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+               (mk (if alt
+                     (coalesce-reader alt)
                      (fn [^objects env] (nth (aget env slot) idx)))
                    :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
     :unary
@@ -1774,7 +1783,7 @@
         (and (:star rc) (nil? (:table rc)))
         (if (empty? sources)
           (err "no tables specified")
-          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (> (count ss) 1)
+          (if-let [[dup col] (first (for [[a ss] (group-by :alias sources) :when (and a (> (count ss) 1))
                                           :let [d (second ss)
                                                 c (first (remove #(contains? (:hidden d) (lc %)) (:cols d)))]
                                           :when c]
@@ -2073,17 +2082,28 @@
                                   (filter #(prev-cols (lc %)) (:cols s)))
                                 :else nil)
                     s (if using (update s :hidden into (map lc using)) s)
-                    srcs (assoc srcs i s)
-                    ;; RIGHT/FULL JOIN ... USING: the unqualified column is coalesce(left, right)
-                    srcs (if (and using (#{:right :full :natural-right :natural-full} jt))
-                           (reduce (fn [srcs u]
-                                     (let [lu (lc u)
-                                           li (first (filter #(find-in-source (nth srcs %) lu) (range i)))
-                                           ri (find-in-source s lu)]
-                                       (if (and li ri) (assoc-in srcs [li :coalesce lu] [(:slot s) ri]) srcs)))
-                                   srcs using)
-                           srcs)]
+                    srcs (assoc srcs i s)]
                 (recur (inc i) srcs (conj conds using)))))
+          any-rj-join (boolean (some #{:right :full :natural-right :natural-full} (map :join from)))
+          ;; lookupName with USING and RIGHT/FULL joins: an unqualified USING column is the left-most table's for
+          ;; INNER/LEFT joins, the right-most for a RIGHT JOIN, and coalesce() of them for a FULL JOIN
+          sources (if any-rj-join
+                    (reduce (fn [srcs n]
+                              (let [idxs (filter #(find-in-source (nth srcs %) n) (range (count srcs)))
+                                    f (first idxs)
+                                    match (reduce (fn [m k]
+                                                    (if (some #(= n (lc %)) (nth join-conds k))
+                                                      (case (:join (nth from k))
+                                                        (:right :natural-right) [k]
+                                                        (:full :natural-full) (conj m k)
+                                                        m)
+                                                      (reduced m)))
+                                                  [f] (rest idxs))]
+                                (if (or (nil? f) (= match [f])) srcs
+                                    (assoc-in srcs [f :coalesce n]
+                                              (mapv (fn [k] [(:slot (nth srcs k)) (find-in-source (nth srcs k) n)]) match)))))
+                            sources (distinct (map lc (apply concat (remove nil? join-conds)))))
+                    sources)
           scope {:sources sources :parent (:scope ctx)}
           outer-refs (atom false)
           ctx2 (assoc ctx :scope scope :outer-refs outer-refs)
@@ -2106,11 +2126,10 @@
           rcomp (mapv (fn [rc]
                         (if-let [[s i] (:star-col rc)]
                           (let [sl (long (:slot s)) i (long i)
-                                [aslot aidx] (when (:unq rc) (get (:coalesce s) (nth (:lcols s) i)))]
+                                alt (when (:unq rc) (get (:coalesce s) (nth (:lcols s) i)))]
                             (when-let [refs (:refs ctx)] (swap! refs conj [sl i]))
-                            {:f (if aslot
-                                  (let [aslot (long aslot) aidx (long aidx)]
-                                    (fn [^objects env] (let [x (nth (aget env sl) i)] (if (nil? x) (nth (aget env aslot) aidx) x))))
+                            {:f (if alt
+                                  (coalesce-reader alt)
                                   (fn [^objects env] (nth (aget env sl) i)))
                              :aff (nth (:affs s) i)
                              :coll (if (and (:table s) (= i (:ipk (:table s)))) nil (or (nth (:colls s) i) "BINARY"))
@@ -2171,7 +2190,11 @@
                                                 _ (when (or (nil? left) (nil? (find-in-source s lu)))
                                                     (err (str "cannot join using column " u " - column not present in both tables")))
                                                 li (find-in-source left lu) ri (find-in-source s lu)
-                                                lcmp {:f (let [sl (long (:slot left)) li (long li)] (fn [^objects env] (nth (aget env sl) li)))
+                                                ;; with RIGHT/FULL joins the left side is coalesce() of every earlier table with the column
+                                                lefts (when any-rj-join (vec (for [q (take i sources) :let [qi (find-in-source q lu)] :when qi] [(:slot q) qi])))
+                                                lcmp {:f (if (> (count lefts) 1)
+                                                           (coalesce-reader lefts)
+                                                           (let [sl (long (:slot left)) li (long li)] (fn [^objects env] (nth (aget env sl) li))))
                                                       :aff (nth (:affs left) li) :coll (or (nth (:colls left) li) "BINARY")}
                                                 rcmp {:f (let [sl (long (:slot s)) ri (long ri)] (fn [^objects env] (nth (aget env sl) ri)))
                                                       :aff (nth (:affs s) ri) :coll (or (nth (:colls s) ri) "BINARY")}]
