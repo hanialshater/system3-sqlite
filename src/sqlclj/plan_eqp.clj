@@ -25,7 +25,18 @@
              :when (not= i (:ipk (:table src)))]
          i)))
 
-(defn- build-index [info src tab-nrow used idx]
+(defn- implies1? [ctx w t src]
+  (or (e/check-indexed-by ctx {:where-ast w} [t] src)
+      (and (map? w) (= :bin (:op w)) (= :or (:o w))
+           (or (implies1? ctx (:l w) t src) (implies1? ctx (:r w) t src)))))
+
+(defn- partial-usable?
+  "whereUsablePartialIndex: every conjunct of the index WHERE is implied by some WHERE term."
+  [ctx idx terms src]
+  (every? (fn [w] (some (fn [t] (implies1? ctx w t src)) terms))
+          (e/split-and* (:where-ast idx))))
+
+(defn- build-index [info src tab-nrow used idx partial-ok]
   (let [tbl (:table src)
         ncols (count (:cols tbl))
         ipk (:ipk tbl)
@@ -43,7 +54,10 @@
                               (:cols idx))))
         colset (set (keep :c cols))
         stat (:stat idx)
-        logest (if stat (:logest stat) (default-logest tab-nrow nkey (:unique idx) (:where idx)))]
+        dflt (default-logest tab-nrow nkey (:unique idx) (:where idx))
+        logest (if stat
+                 (let [g (:logest stat)] (vec (map-indexed (fn [i d] (if (< i (count g)) (nth g i) d)) dflt)))
+                 dflt)]
     {:name (:name idx) :cols cols :nkey nkey :ncol (inc nkey)
      :unique (boolean (:unique idx))
      :uniq-not-null (and (:unique idx) (every? :notnull cols))
@@ -53,6 +67,7 @@
      :unordered (boolean (:unordered stat))
      :noskip (boolean (:noskip stat))
      :partial (some? (:where idx))
+     :partial-ok (when (:where idx) (partial-ok idx))
      :colset colset
      :covering (and (every? #(contains? colset %) used) true)
      :idx idx}))
@@ -60,12 +75,15 @@
 (defn- table-indexes [db tbl]
   (->> (vals (:indexes db))
        (filter #(= (:table %) (lc (:name tbl))))
-       (sort-by (fn [i] (long (:seq i))))))
+       (sort-by (fn [i] (- (long (:seq i)))))))
 
 (defn- build-tab [info G i src item]
   (let [db (:db info)
         tbl (:table src)
         jt (:join item)
+        partial-terms (vec (for [c (:conjuncts info)
+                                 :when (if (#{:left :natural-left} jt) (= (:on-of c) i) (or (nil? (:on-of c)) (= (:on-of c) i)))]
+                             (:expr c)))
         jointype (cond-> #{}
                    (#{:left :natural-left} jt) (conj :left)
                    (= :cross jt) (conj :cross))]
@@ -80,9 +98,9 @@
          :not-indexed (= :none (:indexed-by src))
          :auto-ok (:auto-ok info)
          :src src
-         :indexes (mapv #(build-index info src nrow used %)
+         :indexes (mapv #(build-index info src nrow used % (fn [idx] (try (partial-usable? (:ctx info) idx partial-terms src) (catch Throwable _ false))))
                         (remove #(some (fn [ic] (nil? (:col ic))) (:cols %)) (table-indexes db tbl)))})
-      {:i i :nrow 200 :szrow 60 :rowid? true :jointype jointype :ephemeral true :auto-ok (:auto-ok info) :src src :indexes []})))
+      {:i i :nrow (or (some-> src :sub :nrow-est) 200) :szrow (pl/le (* 4 (inc (count (:cols src))))) :rowid? true :jointype jointype :ephemeral true :auto-ok (:auto-ok info) :src src :indexes []})))
 
 (defn- order-spec
   "ORDER BY / GROUP BY term specs for the planner from AST expressions."
@@ -169,9 +187,10 @@
                                      (concat (for [x (when (:on it) (e/split-and* (:on it)))]
                                                {:expr x :on-of (when left? i)})
                                              (using-conj i it))))))
+            orig-conjuncts conjuncts
             conjuncts (try (g/propagate-constants G conjuncts) (catch clojure.lang.ExceptionInfo _ conjuncts))
             terms (mapv #(assoc % :ucols (g/ucols G (:expr %))) (g/analyze-where G conjuncts))
-            tabs (vec (map-indexed (fn [i [s it]] (build-tab (assoc info :auto-ok true) G i s it)) (map vector srcs from)))
+            tabs (vec (map-indexed (fn [i [s it]] (build-tab (assoc info :auto-ok true :conjuncts orig-conjuncts) G i s it)) (map vector srcs from)))
             ;; the ORDER BY the planner sees: GROUP BY, else ORDER BY, else DISTINCT
             [okind oexprs odescs ocolls]
             (cond (seq (:group-exprs info)) [:groupby (:group-exprs info) (repeat false) (:group-colls info)]
@@ -180,6 +199,20 @@
                   (seq (:order-exprs info)) [:orderby (:order-exprs info) (:order-descs info) (:order-colls info)]
                   (:distinct info) [:distinctby (:result-exprs info) (repeat false) (:result-colls info)]
                   :else [nil nil nil nil])
+            ;; isDistinctRedundant: a unique key is among the DISTINCT columns
+            [okind oexprs odescs ocolls]
+            (if (and (= okind :distinctby) (= 1 (count srcs)) (:table (first srcs))
+                     (let [crs (set (keep #(g/col-ref G (if (= :collate (:op %)) (:e %) %)) oexprs))
+                           eqc (fn [c] (some (fn [t] (and (= (:left t) [0 c]) (= :eq (:op t)) (zero? (long (:prereq-right t)))))
+                                             terms))]
+                       (or (contains? crs [0 -1])
+                           (some (fn [ix] (and (:unique ix) (not (:partial ix))
+                                               (every? (fn [ic] (or (eqc (:c ic))
+                                                                    (and (contains? crs [0 (:c ic)]) (:notnull ic))))
+                                                       (:cols ix))))
+                                 (:indexes (first tabs))))))
+              [nil nil nil nil]
+              [okind oexprs odescs ocolls])
             order (when okind (order-spec G oexprs odescs ocolls))
             P {:tables tabs :terms terms :order (or order []) :order-kind okind :ncols (:ncols info)
                :limit (:limit-est info) :want-distinct (boolean (:distinct info)) :nquery-loop 0}
@@ -218,7 +251,7 @@
         rev (long (:rev-mask plan))
         pos (zipmap (map :tab path) (range))
         from (:from info)]
-    {:order (mapv :tab path)
+    {:order (mapv :tab path) :nrow-out (:nrow-out plan)
      :wconj (vec (for [x (e/split-and* (:where info))] {:expr x :level (early-level G pos x)}))
      :on-levels (vec (for [[i it] (map-indexed vector from)]
                        (let [using (nth (:join-conds info) i nil)
@@ -237,30 +270,90 @@
                    idx (:idx lp)
                    neq (long (:neq lp)) nskip (long (:nskip lp))
                    lterms (:lterms lp)
-                   tm (fn [t] (when t {:op (:op t) :rhs (:rhs t) :in-list (:in-list t) :in-select (:in-select t)
+                   unfix (fn unfix [x] (cond (and (map? x) (= :fixed (:op x))) (:value x)
+                                              (and (map? x) (not (contains? x :select))) (into {} (map (fn [[k v]] [k (if (or (map? v) (sequential? v)) (unfix v) v)]) x))
+                                              (vector? x) (mapv unfix x)
+                                              :else x))
+                   tm (fn [t] (when t {:op (:op t) :rhs (unfix (:rhs t)) :in-list (unfix (:in-list t)) :in-select (:in-select t)
                                        :col (second (:left t)) :likeopt (:likeopt t)}))
-                   eq (vec (for [j (range nskip neq)] (assoc (tm (nth lterms j)) :pos j)))
+                   auto? (= idx :auto)
+                   autoterms (when auto?
+                               (let [ready (reduce bit-or 0 (map #(bit-shift-left 1 (long (:tab %))) (take k path)))
+                                     i (:tab lp) tab (nth (:tables P) i)]
+                                 (loop [ts (:terms P) seen #{} out []]
+                                   (if-let [t (first ts)]
+                                     (let [c (second (:left t))]
+                                       (if (and (= (first (:left t)) i) (contains? #{:eq :is} (:op t)) (some? c) (>= (long c) 0)
+                                                (:auto-ok t) (not (contains? seen c))
+                                                (zero? (bit-and (long (:prereq-right t)) (bit-not ready)))
+                                                (or (not (contains? (:jointype tab) :left)) (= (:on-of t) i)))
+                                         (recur (rest ts) (conj seen c) (conj out t))
+                                         (recur (rest ts) seen out)))
+                                     out))))
+                   eq (if auto?
+                        (vec (map-indexed (fn [j t] (assoc (tm t) :pos j)) autoterms))
+                        (vec (for [j (range nskip neq)] (assoc (tm (nth lterms j)) :pos j))))
+                   auto-extra (when auto?
+                                (let [used (src-used-cols info (:src (nth (:tables P) (:tab lp))))
+                                      keyc (set (map :col eq))]
+                                  (vec (sort (remove keyc used)))))
                    btm (when (contains? flags :btm-limit) (tm (nth lterms neq nil)))
                    top (when (contains? flags :top-limit)
                          (tm (if (contains? flags :btm-limit) (nth lterms (inc neq) nil) (nth lterms neq nil))))]
                {:src (:tab lp)
                 :kind (cond (contains? flags :ipk) :ipk (= idx :auto) :auto (map? idx) :index :else :scan)
                 :index (when (map? idx) (:idx idx))
-                :nskip nskip :eq eq :btm btm :top top
+                :nskip nskip :eq eq :btm btm :top top :auto-extra auto-extra
                 :rev (not (zero? (bit-and rev (bit-shift-left 1 k))))
                 :onerow (contains? flags :onerow)}))
            path))}))
 
 (defn eqp-rows
   "Plan rows [id parent notused detail] for a planned core."
-  [{:keys [P plan]}]
-  (vec (for [lp (:path plan)]
-         [0 0 (:run lp) (loop-detail P lp)])))
+  [{:keys [P plan okind G] :as r} spec info]
+  (let [path (:path plan)
+        nob (count (:order P))
+        ordered (long (:ordered plan))
+        sat (if (neg? ordered) 0 ordered)
+        loop-rows
+        (vec (mapcat
+              (fn [k lp]
+                (let [tab (nth (:tables P) (:tab lp))
+                      src (:src tab)
+                      left? (contains? (:jointype tab) :left)
+                      detail (loop-detail P lp)]
+                  (if (= (:idx lp) :auto)
+                    (let [eq (:eq (nth (:loops spec) k))
+                          cols (str/join " AND " (for [t eq] (str (nth (:cols src) (:col t)) "=?")))
+                          partial? (some (fn [t] (and (not (:virtual t)) (= (long (:prereq-all t)) (bit-shift-left 1 (long (:tab lp))))
+                                                      (or (nil? (:on-of t)) (= (:on-of t) (:tab lp)))))
+                                         (:terms P))
+                          tname (or (:alias-display src) (:alias src))]
+                      [[0 0 0 (str "BLOOM FILTER ON " tname " (" cols ")")]
+                       [0 0 (:run lp)
+                        (str "SEARCH " tname " USING AUTOMATIC " (when partial? "PARTIAL ") "COVERING INDEX (" cols ")" (when left? " LEFT-JOIN"))]])
+                    [[0 0 (:run lp) (str detail (when left? " LEFT-JOIN"))]])))
+              (range) path))
+        order-line (fn [sat nob]
+                     (cond (zero? sat) "USE TEMP B-TREE FOR ORDER BY"
+                           (= 1 (- nob sat)) "USE TEMP B-TREE FOR LAST TERM OF ORDER BY"
+                           :else (str "USE TEMP B-TREE FOR LAST " (- nob sat) " TERMS OF ORDER BY")))
+        extra
+        (case okind
+          :orderby (concat (when (:distinct info) ["USE TEMP B-TREE FOR DISTINCT"])
+                           (when (< sat nob) [(order-line sat nob)]))
+          :groupby (concat (when (< sat nob) ["USE TEMP B-TREE FOR GROUP BY"])
+                           (when (and (seq (:order-exprs info)) (not= (mapv e/strip-ast (:order-exprs info)) (mapv e/strip-ast (:group-exprs info))))
+                             ["USE TEMP B-TREE FOR ORDER BY"]))
+          :distinctby (when (< sat nob) ["USE TEMP B-TREE FOR DISTINCT"])
+          nil)]
+    (into loop-rows (map (fn [t] [0 0 0 t]) extra))))
 
 (defn- plan-hook-fn [info]
   (let [r (plan-core info)]
     (when r
-      (when e/*eqp* (vswap! e/*eqp* into (eqp-rows r)))
-      (exec-spec r info))))
+      (let [spec (exec-spec r info)]
+        (when e/*eqp* (vswap! e/*eqp* into (eqp-rows r spec info)))
+        spec))))
 
 (reset! e/plan-hook plan-hook-fn)

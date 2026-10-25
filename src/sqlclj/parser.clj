@@ -829,6 +829,8 @@
                   (cond
                     (and cname (empty? cols) (not (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))))
                     (syntax-error p t0)
+                    (and cname (not (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))))
+                    (syntax-error p t)
                     (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))
                     (if (empty? cols) (syntax-error p t0)
                         (let [tc (case (:u t)
@@ -884,6 +886,8 @@
 
 (defn- parse-upsert [^P p]
   (loop [acc []]
+    (when (and (at-kw? p "ON") (not (kw? (tok-at p 1) "CONFLICT")))
+      (advance! p) (fail! p))
     (if (and (at-kw? p "ON") (kw? (tok-at p 1) "CONFLICT"))
       (do (advance! p) (advance! p)
           (let [target (when (at-op? p "(")
@@ -950,6 +954,18 @@
                  :else nil)]
     {:table tname :schema sch :alias alias :indexed-by ib}))
 
+(defn- order-limit-error!
+  "UPDATE/DELETE with ORDER BY / LIMIT (not compiled in): the clauses parse, then the statement is rejected."
+  [^P p]
+  (let [ord? (at-kw? p "ORDER")]
+    (when ord? (advance! p) (expect-kw p "BY") (parse-order-by p))
+    (let [lim? (at-kw? p "LIMIT")]
+      (when lim? (advance! p) (parse-expr p)
+        (when (or (accept-kw p "OFFSET") (accept-op p ",")) (parse-expr p)))
+      (let [t (tok p)]
+        (when-not (or (= :eof (:t t)) (and (= :op (:t t)) (= ";" (:v t)))) (syntax-error p t)))
+      (throw (lx/sql-error (if ord? "syntax error near \"ORDER BY\"" "syntax error near \"LIMIT\""))))))
+
 (defn- parse-update [^P p or-action]
   (let [qt (parse-qualified-table p)
         _ (expect-kw p "SET")
@@ -968,8 +984,7 @@
         _ (when (and *trigger-cmd* (at-kw? p "RETURNING")) (fail! p))
         ret (parse-returning p)
         _ (when (and *trigger-cmd* (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
-        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
-        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
+        _ (when (or (at-kw? p "ORDER") (at-kw? p "LIMIT")) (order-limit-error! p))]
     (merge {:kind :update :or or-action :sets sets :from from :where where :returning ret} qt)))
 
 (defn- parse-delete [^P p]
@@ -979,8 +994,7 @@
         _ (when (and *trigger-cmd* (at-kw? p "RETURNING")) (fail! p))
         ret (parse-returning p)
         _ (when (and *trigger-cmd* (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
-        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
-        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
+        _ (when (or (at-kw? p "ORDER") (at-kw? p "LIMIT")) (order-limit-error! p))]
     (merge {:kind :delete :where where :returning ret} qt)))
 
 ;; ------------------------------------------------------------------ statements

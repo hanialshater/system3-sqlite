@@ -120,12 +120,17 @@
           (and (contains? (:flags p) :auto-index) (contains? (:flags t) :indexed) (contains? (:flags t) :column-eq)
                (= (bit-and (:prereq p) (:prereq t)) (:prereq t)))
           i
+          ;; an exact tie keeps the loop found first (the newest index), except that a loop with more
+          ;; equality columns replaces one with fewer
+          (and (= (bit-and (:prereq t) (:prereq p)) (:prereq p))
+               (<= (:run p) (:run t)) (<= (:nout p) (:nout t)) (<= (:setup p) (:setup t))
+               (not (and (= (:run p) (:run t)) (= (:nout p) (:nout t)) (= (:setup p) (:setup t))
+                         (> (long (:neq t)) (long (:neq p)))
+                         (= (bit-and (:prereq p) (:prereq t)) (:prereq t)))))
+          ::discard
           (and (= (bit-and (:prereq p) (:prereq t)) (:prereq t))   ; template has no more dependencies
                (>= (:run p) (:run t)) (>= (:nout p) (:nout t)))
           i
-          (and (= (bit-and (:prereq t) (:prereq p)) (:prereq p))
-               (<= (:run p) (:run t)) (<= (:nout p) (:nout t)) (<= (:setup p) (:setup t)))
-          ::discard
           :else (recur (inc i)))))))
 
 (defn- loop-insert
@@ -359,6 +364,8 @@
     (when (and (:auto-ok tab) (not (:indexed-by tab)) (not (:not-indexed tab)) (:rowid? tab))
       (doseq [t (:terms P)]
         (when (and (= (first (:left t)) i) (eq-ops (:op t)) (>= (long (second (:left t))) 0) (:auto-ok t)
+                   ;; an existing index led by this column (even one the term cannot use) suppresses the automatic index
+                   (not (some (fn [ix] (and (not (:partial ix)) (= (:c (first (:cols ix))) (second (:left t))))) (:indexes tab)))
                    (or (empty? (filter #{:left :right} (:jointype tab))) (= (:on-of t) i)))
           (let [setup (+ rlogsize0 rsize0)
                 setup (if (:ephemeral tab) (- setup 25) (+ setup 28))
