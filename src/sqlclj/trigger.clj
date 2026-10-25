@@ -39,13 +39,22 @@
           (#{"rowid" "oid" "_rowid_"} l) (peek row)
           :else (err (str "no such column: " side "." nm)))))
 
+(defn- col-def [tbl nm]
+  (let [l (lc nm)] (first (filter #(= l (lc (:name %))) (:cols tbl)))))
+
+(defn- lit-of [x tbl row nm side]
+  ;; NEW.x / OLD.x keep the column's affinity and collating sequence
+  (let [cd (col-def tbl nm)]
+    (cond-> (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl row nm side))
+      cd (assoc :aff (:aff cd) :coll (or (:coll cd) "BINARY")))))
+
 (defn- substitute [ast tbl old new]
   (walk/postwalk
    (fn [x]
      (if (and (map? x) (= :col (:op x)) (:table x))
        (let [t (lc (:table x))]
-         (cond (and (= t "new") new) (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl new (:name x) "new"))
-               (and (= t "old") old) (assoc (select-keys x [:ps :pe]) :op :lit :v (col-value tbl old (:name x) "old"))
+         (cond (and (= t "new") new) (lit-of x tbl new (:name x) "new")
+               (and (= t "old") old) (lit-of x tbl old (:name x) "old")
                :else x))
        x))
    ast))

@@ -175,7 +175,7 @@
                        (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt (sch/display-name name {:db (:db st)}) cols)
-                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
+                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
       :else
@@ -391,7 +391,7 @@
     (if r [r :ok] [nil :ignore])))
 
 (defn- put-row [tbl rid row]
-  (assoc-in tbl [:rows rid] (assoc row (count (:cols tbl)) rid)))
+  (assoc-in tbl [:rows rid] (assoc (v/strip-row row) (count (:cols tbl)) rid)))
 
 (defn- resolve-uniques
   "Checks rowid and unique-index conflicts for row (with rowid rid) excluding self.
@@ -538,7 +538,7 @@
                {:name (str "$v$" l) :view true :vkey l
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
-                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
+                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
         (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))

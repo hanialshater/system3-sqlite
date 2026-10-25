@@ -21,7 +21,7 @@
 (defn jerr [msg] (throw (ex-info msg {:sql-error msg})))
 
 ;; ---------------------------------------------------------------- subtype registry (identity based)
-(def ^:private subtypes (java.util.IdentityHashMap.))
+(def ^:private subtypes v/subtypes)
 (defn mark-json
   "returns a fresh String instance carrying the JSON subtype"
   ^String [^String s]

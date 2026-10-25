@@ -13,6 +13,18 @@
   (hashCode [this] (java.util.Arrays/hashCode b))
   (toString [this] (str "X'" (apply str (map #(format "%02X" (bit-and (int %) 0xff)) b)) "'")))
 
+(def subtypes
+  "identity registry of String instances carrying the JSON subtype (a subtype is lost when a value is stored)"
+  (java.util.IdentityHashMap.))
+(defn strip-subtype
+  "a fresh String instance if x carries a JSON subtype (so the subtype is dropped), else x"
+  [x]
+  (if (and (string? x) (pos? (.size subtypes)) (.containsKey subtypes x)) (String. ^String x) x))
+(defn strip-row [row]
+  (if (and (pos? (.size subtypes)) (some #(and (string? %) (.containsKey subtypes %)) row))
+    (mapv strip-subtype row)
+    row))
+
 (defn blob? [v] (instance? Blob v))
 (defn blob-bytes ^bytes [^Blob v] (.-b v))
 
