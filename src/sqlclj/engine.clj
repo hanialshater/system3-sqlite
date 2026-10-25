@@ -1465,10 +1465,15 @@
     (cond
       (window-only name)
       (when-not (contains? (win-arity name) n) (err (str "wrong number of arguments to function " name "()")))
-      aggf nil
-      :else (if (or (agg-names name) (#{"coalesce" "ifnull" "iif" "if" "nullif" "likely" "unlikely" "likelihood"} name)
+      aggf (when (or (and (#{"sum" "total" "avg"} name) (not= n 1))
+                     (and (= name "group_concat") (not (#{1 2} n)))
+                     (and (= name "string_agg") (not= n 2))
+                     (and (#{"json_group_array" "jsonb_group_array"} name) (not= n 1))
+                     (and (#{"json_group_object" "jsonb_group_object"} name) (not= n 2)))
+             (err (str "wrong number of arguments to function " name "()")))
+      :else (if (or (agg-names name) (#{"iif" "if" "coalesce" "ifnull" "min" "max" "nullif" "likely" "unlikely" "likelihood"} name)
                     (try (compile-scalar-fn name n "BINARY") (catch clojure.lang.ExceptionInfo _ true)))
-              (if (agg-names name)
+              (if (and (agg-names name) (not (and (#{"min" "max"} name) (>= n 2))))
                 (err (str "wrong number of arguments to function " name "()"))
                 (err (str name "() may not be used as a window function")))
               (err (str "no such function: " name))))
