@@ -197,7 +197,7 @@
                     hidden (long (or (:hidden-kind c) 0))
                     cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long cid) (:name c) (std-type (:type c)) (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
+                  (cond-> [(long cid) (:name c) (std-type (:type c)) (if (or (and (:notnull c) (not (:implicit-nn c))) (and (:without-rowid t) (pos? pkpos))) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))

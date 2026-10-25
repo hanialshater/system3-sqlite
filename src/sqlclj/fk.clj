@@ -35,6 +35,7 @@
             ok (or (and (= 1 (count idxs)) (= (first idxs) (:ipk ptbl)))
                    (and (= (set idxs) (set (:pk-cols ptbl))) (seq (:pk-cols ptbl)))
                    (some (fn [ix] (and (:unique ix) (nil? (:where ix)) (every? :col (:cols ix))
+                                       (= (count (:cols ix)) (count idxs))
                                        (= (set (map :col (:cols ix))) (set idxs))))
                          (filter #(= (:table %) (lc (:name ptbl))) (vals (:indexes db)))))]
         (when-not ok (mismatch))
@@ -86,7 +87,8 @@
 (defn referencing
   "[child-tbl fk] pairs whose foreign key refers to table ptbl (by name)."
   [db ptbl]
-  (for [[_ c] (:tables db), fk (:fks c) :when (= (parent-key db c fk) (lc (:name ptbl)))] [c fk]))
+  (for [[_ c] (sort-by (fn [[_ t]] (- (long (or (:mseq t) 0)))) (:tables db)), fk (reverse (:fks c))
+        :when (= (parent-key db c fk) (lc (:name ptbl)))] [c fk]))
 
 (defn has-fks? [tbl] (boolean (seq (:fks tbl))))
 
@@ -236,3 +238,12 @@
       (doseq [[_ row] (:rows tbl)]
         (when (violation? db tbl fk row)
           (err "FOREIGN KEY constraint failed"))))))
+
+(defn locate-child!
+  "A statement writing to a child table locates the parent key of its foreign keys at prepare time
+  (mismatch / missing parent errors). For an UPDATE only keys whose child columns are set count."
+  [db tbl set-cols]
+  (when (enabled? db)
+    (doseq [fk (reverse (:fks tbl))]
+      (when (or (nil? set-cols) (some #(contains? set-cols (lc %)) (:from fk)))
+        (parent-cols db tbl fk)))))
