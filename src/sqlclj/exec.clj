@@ -177,7 +177,7 @@
                        (e/dedup-names (:names sub)) (or (:src-affs sub) (:affs sub)))
             tbl {:name name :cols cols :ipk nil :strict false :checks [] :temp (:temp st) :db (:db st)
                  :sql (sch/create-table-stmt (sch/display-name name {:db (:db st)}) cols)
-                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}
+                 :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}
             [db tbl] (sch/register db tbl true)]
         (assoc-in db [:tables lname] tbl))
       :else
@@ -317,20 +317,51 @@
 
 (defn- key-has-null? [k] (some nil? k))
 
+;; The keys of a unique index as a sorted map key -> rowid, built once per table value and index and carried
+;; over the plain inserts that follow (carry-unique!), so that a run of inserts does not scan the table each time.
+(defonce ^:private unique-cache (atom []))
+
+(defn- remember-unique! [tbl idx m]
+  (swap! unique-cache (fn [c] (conj (if (>= (count c) 8) (subvec c 1) c) [tbl idx m]))))
+
+(defn- unique-map [tbl idx]
+  (let [hit (some (fn [[t i m]] (when (and (identical? t tbl) (identical? i idx)) m)) @unique-cache)]
+    (or hit
+        (let [colls (mapv :coll (:cols idx))
+              cmp (reify java.util.Comparator
+                    (compare [_ a b]
+                      (loop [i 0]
+                        (if (>= i (count colls)) 0
+                            (let [c (v/sql-cmp (nth a i) (nth b i) (nth colls i))]
+                              (if (zero? c) (recur (inc i)) c))))))
+              m (reduce (fn [m [rid r]]
+                          (if (or (nil? (:wf idx)) ((:wf idx) r))
+                            (let [k (e/index-key tbl idx r)]
+                              (if (key-has-null? k) m (assoc m k rid)))
+                            m))
+                        (sorted-map-by cmp) (:rows tbl))]
+          (remember-unique! tbl idx m)
+          m))))
+
+(defn- carry-unique!
+  "After a plain insert of the stored row (rowid rid) into old, giving new: the unique maps of old move to new."
+  [old new rid row]
+  (doseq [[t idx m] (filter #(identical? (first %) old) @unique-cache)]
+    (if (or (nil? (:wf idx)) ((:wf idx) row))
+      (let [k (e/index-key new idx row)]
+        (cond (key-has-null? k) (remember-unique! new idx m)
+              (contains? m k) nil
+              :else (remember-unique! new idx (assoc m k rid))))
+      (remember-unique! new idx m))))
+
 (defn- find-conflict
   "Returns rowid of an existing row conflicting with row r under unique index idx, excluding rowid self."
   [tbl idx row self]
   (when (or (nil? (:wf idx)) ((:wf idx) row))
     (let [k (e/index-key tbl idx row)]
       (when-not (key-has-null? k)
-        (let [colls (mapv :coll (:cols idx))]
-          (some (fn [[rid r]]
-                  (when (and (not= rid self)
-                             (or (nil? (:wf idx)) ((:wf idx) r))
-                             (let [k2 (e/index-key tbl idx r)]
-                               (every? true? (map (fn [a b c] (and (not (nil? b)) (zero? (v/sql-cmp a b c)))) k k2 colls))))
-                    rid))
-                (:rows tbl)))))))
+        (let [rid (get (unique-map tbl idx) k)]
+          (when (and rid (not= rid self)) rid))))))
 
 (defn- unique-msg [tbl idx]
   (str "UNIQUE constraint failed: "
@@ -405,7 +436,7 @@
     (if r [r :ok] [nil :ignore])))
 
 (defn- put-row [tbl rid row]
-  (assoc-in tbl [:rows rid] (assoc row (count (:cols tbl)) rid)))
+  (assoc-in tbl [:rows rid] (assoc (v/strip-row row) (count (:cols tbl)) rid)))
 
 (defn- resolve-uniques
   "Checks rowid and unique-index conflicts for row (with rowid rid) excluding self.
@@ -518,22 +549,25 @@
       (cond
         (nil? clause) false
         (nil? target) true
-        (= what :rowid) (and (:ipk tbl) (= 1 (count (:cols target)))
-                             (= (lc (:name (:e (first (:cols target))))) (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+        (= what :rowid) (and (= 1 (count (:cols target)))
+                             (nil? (:where target))
+                             (let [n (lc (:name (:e (first (:cols target)))))]
+                               (or (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+                                   (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} n)))))
         (map? what)
         (let [sp (var-get #'e/strip-pos)
               tw (:where target) iw (:where-ast what)
               tcols (:cols target) icols (:cols what)]
           (and (= (count tcols) (count icols))
                (if tw (or (nil? iw) (= (sp tw) (sp iw))) (nil? iw))
-               (every? (fn [tc]
-                         (some (fn [ic]
+               (every? (fn [ic]
+                         (some (fn [tc]
                                  (and (if (:name ic)
                                         (and (= :col (:op (:e tc))) (= (lc (:name ic)) (lc (:name (:e tc)))))
                                         (and (:ast ic) (= (sp (:e tc)) (sp (:ast ic)))))
                                       (or (nil? (:coll tc)) (= (lc (str (:coll ic))) (lc (str (:coll tc)))))))
-                               icols))
-                       tcols)))
+                               tcols))
+                       icols)))
         :else false))))
 
 (defn- no-journal? [db] (= "off" (get-in db [:pragmas "journal_mode.main"])))
@@ -574,7 +608,7 @@
                {:name (str "$v$" l) :view true :vkey l
                 :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
                 :ipk nil :strict false :checks []
-                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
+                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec (v/strip-row r)) (long (inc i)))]) rows))}]))
         (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
 
 (defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
@@ -621,6 +655,7 @@
                (:rows st) (let [rs (:rows st)]
                             (when (apply not= (map count rs))
                               (err "all VALUES must have the same number of terms"))
+                            (doseq [r rs, x r] (e/cx ctx x))
                             (doseq [r rs]
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
@@ -641,6 +676,13 @@
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
+                                (when (:target u)
+                                  (doseq [tc (:cols (:target u))]
+                                    (let [e (:e tc)]
+                                      (when (and (= :col (:op e)) (nil? (:table e))
+                                                 (not (some #(= (lc (:name %)) (lc (:name e))) (:cols tbl)))
+                                                 (not (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e))))))
+                                        (err (str "no such column: " (:name e)))))))
                                 (when (and (:target u) (not (some (fn [idx] ((upsert-matcher tbl u) idx))
                                                                   (cons :rowid (filter :unique (table-indexes db tname))))))
                                   (err "ON CONFLICT clause does not match any PRIMARY KEY or UNIQUE constraint"))
@@ -781,6 +823,7 @@
                            db)
                       tbl2 (if replaced (get-in db [:tables tkey]) tbl2)
                       tbl3 (put-row tbl2 rid row)
+                      _ (carry-unique! tbl2 tbl3 rid (get-in tbl3 [:rows rid]))
                       db2 (assoc-in db [:tables tkey] tbl3)
                       db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
                       db2 (if (or (:without-rowid tbl) vw) db2 (assoc db2 :last-rowid rid))
@@ -1003,7 +1046,7 @@
       (contains? sch/master-names tl) (err "cannot create trigger on system table")
       (str/starts-with? ln "sqlite_") (err (str "object name reserved for internal use: " name))
       (some :returning (:body st)) (err "cannot use RETURNING in a trigger")
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (if (and (:temp st) (nil? (:table-schema st))) "" (str (or (:table-schema st) "main") "."))
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
@@ -1021,7 +1064,7 @@
 (defn- parse-trigger-text [old ns]
   (let [st (p/next-statement (p/parse-statements ns))]
     (-> (trg/make-trigger st ns)
-        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :mseq (:mseq old) :sql ns))))
+        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :db (:db old) :mseq (:mseq old) :sql ns))))
 
 (defn- create-index [db sql st]
   (let [name (:name st) lname (lc name)
@@ -1399,7 +1442,7 @@
 
 (defn- check-view [db v]
   (let [sql (obj-ref-sql v)]
-    (try (let [st (parse-one sql)]
+    (try (let [st (sch/qualify-stmt db (parse-one sql))]
            (e/compile-select (new-ctx db sql) (:select st))
            nil)
          (catch Throwable ex (sql-err-msg ex)))))
@@ -1872,6 +1915,9 @@
                                                  (let [att (set (sch/attached-names db))
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
+                                                                                             (some-> (:schema x) lc (= "temp")))
+                                                                                    (reset! refs "temp"))
+                                                                            (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
                                                                                     (let [k (lc (:table x))
                                                                                           dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
