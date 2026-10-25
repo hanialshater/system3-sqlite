@@ -58,7 +58,7 @@
   (or (nil? new)
       (let [ptbl (get-in db [:tables (parent-key db child fk)])
             raw (if-let [to (:to fk)] (map #(col-index ptbl %) to) (:pk-cols ptbl))]
-        (or (empty? raw)
+        (and (seq raw)
             (some (fn [pi] (or (nil? pi)
                                (let [a (nth old pi) b (nth new pi)]
                                  (not (or (and (nil? a) (nil? b))
