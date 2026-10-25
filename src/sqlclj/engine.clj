@@ -22,6 +22,7 @@
 (defn lc ^String [s] (when s (str/lower-case s)))
 
 (def ^:dynamic *in-trigger* false)
+(def ^:dynamic *trigger-schema* nil)
 
 ;; ====================================================================== compile context
 
@@ -1909,7 +1910,7 @@
                                                  ;; a stored reference to a (since detached) database keeps its prefix
                                                  (and (:in-view ctx) (or (= "temp" (:in-view ctx)) (str/includes? (str name) "."))) name
                                                  (:in-view ctx) (str (:in-view ctx) "." name)
-                                                 *in-trigger* (str "main." name)
+                                                 *in-trigger* (if (= *trigger-schema* "temp") name (str (or *trigger-schema* "main") "." name))
                                                  :else name)))))
     (:nested item)
     (let [items (:nested item)]
