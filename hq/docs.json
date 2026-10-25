@@ -1,0 +1,1 @@
+{ "roots": ["docs", "spec", "referee"], "exclude": ["corpus", "b11", "b12"] }

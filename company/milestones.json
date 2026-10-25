@@ -1,0 +1,40 @@
+{
+ "milestones": [
+  {
+   "id": "S1",
+   "title": "Core SQL families pass (B11)",
+   "state": "done",
+   "evidence": "docs/BENCH11.md"
+  },
+  {
+   "id": "S2",
+   "title": "SQLite's own test files as the referee; 88.50% hidden mean (B12 and its continuation)",
+   "state": "done",
+   "evidence": "docs/BENCH12.md"
+  },
+  {
+   "id": "S3",
+   "title": "Org at scale with a fallible member: 91.85% hidden mean (B13)",
+   "state": "done",
+   "evidence": "docs/BENCH13.md: 41 lands, 5 refused, a crash recovered"
+  },
+  {
+   "id": "S4",
+   "title": "Own repository, org, referee and dashboard in the city",
+   "state": "done",
+   "evidence": "this repository"
+  },
+  {
+   "id": "S5",
+   "title": "95% hidden mean",
+   "state": "next",
+   "evidence": "needs the founder's budget approval"
+  },
+  {
+   "id": "S6",
+   "title": "Referee runnable outside the benchmark harness (hidden set held by its owner)",
+   "state": "partly",
+   "evidence": "referee/README.md"
+  }
+ ]
+}

@@ -5,3 +5,8 @@ build/
 work/
 .w/
 scratch/
+*.db
+*.db2
+__pycache__/
+lib/
+referee/judge.json

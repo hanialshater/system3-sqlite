@@ -1,0 +1,40 @@
+{
+ "id": "sqlite",
+ "name": "SQLite in Clojure",
+ "owner": "founder",
+ "archetype": "dynamic workflow",
+ "mission": "A SQLite-compatible database engine in Clojure, judged by SQLite's own test files: every statement in them gives the result SQLite gives.",
+ "measure": "mean, over SQLite's hidden test files, of each file's statement pass rate (referee/README.md)",
+ "budget": {
+  "unit": "USD",
+  "lines": [
+   {
+    "id": "B11",
+    "title": "B11: SQLite-compatible database in Clojure (core families)",
+    "approved": null,
+    "spent": 263.6,
+    "source": "docs/BENCH11.md (V $145.69, O $117.91)",
+    "approvedBy": "founder, 2026-10-24: don't worry about budget",
+    "live": false
+   },
+   {
+    "id": "B12",
+    "title": "B12: SQLite's own test suite, with continuation",
+    "approved": 600,
+    "spent": 589.43,
+    "source": "docs/BENCH12.md (V $294.71, O $294.72)",
+    "approvedBy": "founder, 2026-10-24 and 2026-10-25 (+$150 each)",
+    "live": false
+   },
+   {
+    "id": "B13",
+    "title": "B13: the org at scale with fallible agents (8 members)",
+    "approved": 500,
+    "spent": 429.84,
+    "source": "docs/BENCH13.md ($408.21 the run, $21.63 off-boarding)",
+    "approvedBy": "founder, 2026-10-25",
+    "live": false
+   }
+  ]
+ }
+}

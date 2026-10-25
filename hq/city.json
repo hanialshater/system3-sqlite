@@ -1,0 +1,8 @@
+{ "note": "This company in the city HQ, through Meta's tools (a checkout of hanialshater/system3-meta at ../../system3-meta, or set META). Publish: node $META/hq/build.mjs --city=hq/city.json --snapshot=sqlite --out=<dir>",
+  "companies": [
+  { "id": "sqlite", "name": "SQLite in Clojure", "archetype": "dynamic workflow", "owner": "founder",
+    "events": "../company/events.jsonl", "knowledge": "../company/knowledge",
+    "orgCmd": "node ${META:-../../system3-meta}/src/orgfile.mjs ../company/org.json",
+    "dashboardCmd": "node ${META:-../../system3-meta}/src/dashboard.mjs ../company",
+    "docsCmd": "node ${META:-../../system3-meta}/src/docs.mjs .. --config=docs.json" }
+  ] }
