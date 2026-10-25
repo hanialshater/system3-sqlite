@@ -499,7 +499,13 @@
                       (catch clojure.lang.ExceptionInfo ex
                         (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
                           {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
-                          (throw ex))))]
+                          (throw ex))))
+               _ (when-let [sc (and (not (:alias-c r)) (:schema e))]
+                   (when-let [t (:table (:src r))]
+                     (when (map? t)
+                       (let [tdb (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main")]
+                         (when (not= tdb (lc sc))
+                           (err (str "no such column: " sc "." (:table e) "." (:name e))))))))]
            (if (:alias-c r)
              (do (when (:outer-refs ctx) (reset! (:outer-refs ctx) true)) (:alias-c r))
            (if (contains? r :const)
@@ -532,10 +538,12 @@
     :collate (let [c (cx ctx (:e e))
                    name (check-coll (:coll e))]
                (assoc c :coll name :ecoll true :col nil))
-    :raise (let [k (:kind e) msg (:msg e)]
-             (mk (fn [_] (if (= k :ignore)
-                           (throw (ex-info "raise-ignore" {:raise-ignore true}))
-                           (throw (ex-info msg {:sql-error msg :raise k}))))))
+    :raise (let [k (:kind e) msg (:msg e)
+                 mf (when (:msg-e e) (:f (cx ctx (:msg-e e))))]
+             (mk (fn [env] (if (= k :ignore)
+                             (throw (ex-info "raise-ignore" {:raise-ignore true}))
+                             (let [msg (if mf (or (v/text-of (mf env)) "") msg)]
+                               (throw (ex-info msg {:sql-error msg :raise k})))))))
     :cast (let [c (cx ctx (:e e)) f (:f c)
                 aff (if (or (nil? (:type e)) (= "" (:type e))) :numeric (v/type-affinity (:type e)))]
             (mk (fn [env] (v/cast-value (f env) aff)) :aff aff :coll (:coll c) :ecoll (:ecoll c)))
@@ -1813,6 +1821,7 @@
           names)))
 
 (declare compile-cte)
+(def ^:dynamic *view-stack* #{})
 
 (defn- sub-source [sub alias tname cols]
   (let [cols (vec cols)]
@@ -1996,8 +2005,14 @@
   (cond
     (:alias rc) (:alias rc)
     (:star-col rc) (:name rc)
-    (= :col (:op (:e rc)))
-    (let [e (:e rc)]
+    (and (= :col (:op (:e rc)))
+         (let [pr (:pragmas (:db ctx))]
+           (and (not= 0 (get pr "short_column_names" 1)) (= 0 (get pr "full_column_names" 0)) true)
+           ;; short names on (default) or full names on: the column's own name; short off and full off: the text
+           (or (not= 0 (get pr "short_column_names" 1)) (= 1 (get pr "full_column_names" 0)))))
+    (let [e (:e rc)
+          full (= 1 (get-in ctx [:db :pragmas "full_column_names"]))
+          base
       (or (when (rowid-name? (lc (:name e)))
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
                   s (:src r) t (:table s)]
@@ -2009,7 +2024,13 @@
                   s (:src r) lt (lc (:table e))]
               (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
-          (:name e)))
+          (:name e))]
+      (if full
+        (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+              s (:src r)
+              tn (or (:tname s) (:alias s))]
+          (if tn (str tn "." base) base))
+        base))
     :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
@@ -2062,7 +2083,7 @@
 
 (defn- eval-limit [ctx e what]
   (when e
-    (let [c (cx (assoc ctx :scope nil) e)
+    (let [c (cx (assoc ctx :scope nil :aggs nil :where-ctx true) e)
           x ((:f c) (object-array (+ 2 (long @(:slots ctx)))))
           x (if (string? x) (v/apply-numeric-text x true) x)
           x (if (instance? Double x) (v/integer-affinity (double x)) x)]
@@ -2332,7 +2353,10 @@
               (fn [_] (index-order-rows (:db ctx) plan)))
             (if (:virtual (:table src))
               (let [t (:table src)] (fn [_] (table-rows t)))
-              (fn [_] (table-rows (get-in (:db ctx) [:tables tname]))))))))
+              ;; a scan that a WHERE equality with an outer value (a correlated subquery) can narrow by an index
+              (or (when (and (nil? ib) (seq where-terms))
+                    (join-probe-scanner ctx [src] nil where-terms 0))
+                  (fn [_] (table-rows (get-in (:db ctx) [:tables tname])))))))))
     (:sub src)
     (let [sub (:sub src)]
       (if (or (:correlated sub) (:lazy sub))
@@ -3166,11 +3190,14 @@
                               aff (when (< c ncols) (nth (:affs src) c))
                               idx (if (= c ncols)
                                     :rowid
-                                    (first (for [idx (plain-indexes db src)
-                                                 :when (and (= c (norm-col src (:col (first (:cols idx)))))
-                                                            (every? :col (:cols idx))
-                                                            (= coll (or (:coll (first (:cols idx))) "BINARY")))]
-                                             idx)))]
+                                    (or (first (for [idx (plain-indexes db src)
+                                                     :when (and (= c (norm-col src (:col (first (:cols idx)))))
+                                                                (every? :col (:cols idx))
+                                                                (= coll (or (:coll (first (:cols idx))) "BINARY")))]
+                                                 idx))
+                                        ;; no index: an automatic one (built once per table value, as SQLite's own)
+                                        (when (not= c ipk)
+                                          {:table tname :wf nil :cols [{:col c :coll coll :desc false}]})))]
                         :when idx]
                     {:c c :idx idx :f (:f cb) :aff aff :oaff (:aff cb)})
             cand (first cands)]
