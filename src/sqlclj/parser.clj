@@ -134,7 +134,13 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
+      :var (do (advance! p)
+               (let [vv ^String (:v t)]
+                 (when (and (> (.length vv) 1) (= \? (.charAt vv 0)))
+                   (let [x (try (Long/parseLong (subs vv 1)) (catch Exception _ -1))]
+                     (when-not (and (> x 0) (<= x 32766))
+                       (throw (lx/sql-error "variable number must be between ?1 and ?32766"))))))
+               (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
@@ -159,7 +165,7 @@
                   (if (at-op? p ".")
                     (do (advance! p) (let [n3 (parse-nm p)] (node {:op :col :schema (:v t) :table n2 :name n3} s (prev-end p))))
                     (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
-            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t))))
+            (node {:op :col :name (:v t) :dq (:dq t) :quoted true} s (:e t))))
       :id
       (let [u (:u t)]
         (cond
@@ -394,7 +400,7 @@
                               (cond
                                 (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
                                 (fold-null-test n left (not isnot))
-                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
+                                (and (not dist) (= :col (:op r)) (nil? (:table r)) (not (:quoted r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
                                 ;; x IS [NOT] TRUE/FALSE tests truthiness: mode bit 1 = FALSE, bit 2 = NOT
                                 (node {:op :fn :name "\u0000truth"
                                        :args [left {:op :lit :kind :int :text (str (+ (if (= "false" (str/lower-case (:name r))) 1 0) (if isnot 2 0)))}]}
@@ -450,8 +456,17 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p false)]
-        {:e e :alias alias}))))
+            alias (parse-alias p false)
+            ;; SQLite's column name span runs to the start of the next token, so comments after the
+            ;; expression belong to it; trailing white space is trimmed
+            npe (when-not alias
+                  (let [^String sql (.-sql p) ns (:s (tok p))]
+                    (when (and ns (> (long ns) (long (:pe e))))
+                      (loop [k (long ns)]
+                        (if (and (> k (long (:pe e))) (#{\space \tab \newline \return \formfeed} (.charAt sql (dec k))))
+                          (recur (dec k))
+                          (when (> k (long (:pe e))) k))))))]
+        (cond-> {:e e :alias alias} npe (assoc :name-pe npe))))))
 
 (declare parse-from)
 

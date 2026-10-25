@@ -250,6 +250,7 @@
                     (\s \z)
                     (let [a (next-arg)
                           t (or (v/text-of a) "")
+                          t (let [k (.indexOf ^String t (int 0))] (if (neg? k) t (subs t 0 k)))
                           t (if (>= prec 0)
                               (if alt2
                                 (let [cps (.codePoints t) arr (.toArray cps)
@@ -262,7 +263,7 @@
                     (let [a (next-arg)
                           isq (= cv \Q)
                           t (cond (nil? a) (if isq nil "(NULL)")
-                                  :else (v/text-of a))]
+                                  :else (let [^String t (v/text-of a) k (.indexOf t (int 0))] (if (neg? k) t (subs t 0 k))))]
                       (if (nil? t)
                         (let [t (if (and (>= prec 0) (< prec 4)) (subs "NULL" 0 prec) "NULL")] (emit t (count t)))
                         (let [t (if (>= prec 0)

@@ -10,7 +10,8 @@
             [sqlclj.ext :as ext]
             [sqlclj.json :as js]
             [sqlclj.printf :as pf]
-            [sqlclj.schema :as schema])
+            [sqlclj.schema :as schema]
+            [sqlclj.guard :as g])
   (:import [sqlclj.values Blob]
            [java.util TreeMap TreeSet Comparator ArrayList]))
 
@@ -64,17 +65,17 @@
           (if u (conj acc i) (recur (inc i) (conj acc i)))
           (recur (inc i) acc))))))
 
-(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_"} lname))
+(defn- rowid-name? [lname] (#{"rowid" "oid" "_rowid_" "\u0000rowid"} lname))
 
 (defn resolve-column
-  "Returns {:slot :idx :aff :coll :depth :src} or throws."
-  [ctx tq name dq]
+  "Returns {:slot :idx :aff :coll :depth :src} or throws. quoted: the name was a quoted identifier (never TRUE/FALSE)."
+  [ctx tq name dq & [quoted]]
   (let [lname (lc name) ltq (lc tq)]
     (loop [scope (:scope ctx) depth 0]
       (if (nil? scope)
         (cond
-          (and (nil? tq) (= lname "true")) {:const 1}
-          (and (nil? tq) (= lname "false")) {:const 0}
+          (and (nil? tq) (not quoted) (= lname "true")) {:const 1}
+          (and (nil? tq) (not quoted) (= lname "false")) {:const 0}
           :else
           (err (str "no such column: "
                     (if tq (str tq "." name) (if dq (str "\"" name "\" - should this be a string literal in single-quotes?") name)))))
@@ -83,7 +84,7 @@
                      (concat
                       (for [s srcs :when (= (:alias s) ltq)
                             :let [i (find-in-source s lname)
-                                  i (or i (when (and (rowid-name? lname) (:rowid? s)) (:ncols s)))]
+                                  i (or i (when (and (rowid-name? lname) (or (:rowid? s) (and (= lname "\u0000rowid") (:table s)))) (:ncols s)))]
                             :when i]
                         [s i])
                       (for [s srcs :when (and (:quals s) (not= (:alias s) ltq))
@@ -103,6 +104,15 @@
                        (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
+            (and ltq (> (count hits) 1)
+                 (let [h2 (vec (cons (first hits) (remove (fn [[s _]] (contains? (:hidden s) lname)) (rest hits))))]
+                   (when (= 1 (count h2)) h2)))
+            (let [[s i] (first hits)]
+              (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
+              {:slot (:slot s) :idx i :depth depth :src s
+               :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
+               :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
+               :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
             (> (count hits) 1)
             (err (str "ambiguous column name: " (if tq (str tq "." name) name)))
             (= 1 (count hits))
@@ -485,7 +495,7 @@
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e))]
+    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))]
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -637,6 +647,7 @@
           cs-like (let [x (get-in (:db ctx) [:pragmas "case_sensitive_like"])] (boolean (and x (not= x 0) (not= x false))))
           negate (:not e)]
       (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
+      (when (and glob? es) (err "wrong number of arguments to function GLOB()"))
       (mk (fn [env]
             (when (= :match (:o e)) (err "unable to use function MATCH in the requested context"))
             (let [s (fx env) pat (fp env) esc (when fe (fe env))]
@@ -688,7 +699,11 @@
         (:list e)
         (let [items (mapv #(cx ctx %) (:list e))
               aff (:aff x)
-              coll (or (:coll x) "BINARY")
+              ;; the parser turns "x IN (c)" with one constant c (no columns, subqueries or function calls)
+              ;; into "x = +c", so a COLLATE on c counts
+              one-const? (and (= 1 (count items)) (const-term? (:list e))
+                              (not (str/includes? (pr-str (:list e)) ":op :fn")))
+              coll (or (if one-const? (binary-coll x (first items)) (:coll x)) "BINARY")
               fs0 (mapv :f items)
               ;; a constant list of 3+ items becomes an ephemeral table: every item is evaluated (once)
               fs (if (and (>= (count fs0) 3) (every? const-term? (:list e)))
@@ -908,9 +923,13 @@
       (v/utf8->str (java.util.Arrays/copyOfRange b (int st) (int en))))))
 
 (defn- quote-impl [x]
+  (when (and (v/blob? x) (> (* 2 (alength ^bytes (v/blob-bytes x))) 1000000000))
+    (err "string or blob too big"))
   (cond (nil? x) "NULL"
         (instance? Long x) (str x)
-        (instance? Double x) (num/real->text (double x))
+        (instance? Double x) (let [d (double x)]
+                               (cond (Double/isInfinite d) (if (pos? d) "9.0e+999" "-9.0e+999")
+                                     :else (num/real->text d)))
         (string? x) (let [k (.indexOf ^String x (int 0)) x (if (neg? k) x (subs x 0 k))]
                       (str "'" (str/replace x "'" "''") "'"))
         :else (str "X'" (v/hex-upper (v/blob-bytes x)) "'")))
@@ -976,6 +995,8 @@
                   (first (num/atof s))))))))
 
 (defn- hex-impl [x]
+  (when (and (or (string? x) (v/blob? x)) (> (* 2 (if (string? x) (.length ^String x) (alength ^bytes (v/blob-bytes x)))) 1000000000))
+    (err "string or blob too big"))
   (if (nil? x) "" (v/hex-upper (if (or (instance? Long x) (instance? Double x)) (v/str->utf8 (v/text-of x)) (v/bytes-of x)))))
 
 (defn- unicode-impl
@@ -1003,7 +1024,7 @@
     nil
     (reduce (fn [best a]
               (let [c (v/sql-cmp a best coll)]
-                (if (if max? (> c 0) (< c 0)) a best)))
+                (if (if max? (> c 0) (<= c 0)) a best)))
             (first args) (rest args))))
 
 (defn- abs-impl [x]
@@ -1830,7 +1851,7 @@
                   (err (str "no such index: " (:indexed-by item)))))
               {:alias (lc (or (:alias item) name)) :tname (:name tbl) :cols cols :lcols (mapv lc cols)
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
-               :slot slot :rowid? true :ncols (count cols) :hidden #{} :table tbl
+               :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
         view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
@@ -1978,7 +1999,7 @@
               (when (and s (:quals s) (not= (:alias s) lt) (< (long (:idx r)) (count (:cols s))))
                 (nth (:cols s) (:idx r)))))
           (:name e)))
-    :else (text-of-node ctx (:e rc))))
+    :else (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (text-of-node ctx (:e rc)))))
 
 (defn- int32-lit? [e]
   (and (= :lit (:op e)) (= :int (:kind e))
@@ -2131,7 +2152,7 @@
                                    (or (nil? (:table e)) (= (lc (:table e)) (:alias src))))
                           (let [i (.indexOf ^java.util.List (:lcols src) (lc (:name e)))]
                             (cond (>= i 0) (if (= i (:ipk tbl)) ncols i)
-                                  (#{"rowid" "oid" "_rowid_"} (lc (:name e))) ncols
+                                  (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} (lc (:name e)))) ncols
                                   :else nil))))
         refs-me? (fn refs [e] (cond (map? e) (or (some? (col-idx e)) (some refs (vals e)))
                                     (sequential? e) (some refs e)
@@ -2247,7 +2268,14 @@
                           (= want (set (map (fn [ic] [(:c ic) (if (= (:c ic) (:ncols src)) (or (some (fn [[c coll]] (when (= (norm-col src c) (:c ic)) (or coll "BINARY"))) terms) "BINARY") (:coll ic))]) pre))))]
            idx)))
 
+(declare make-scanner*)
 (defn- make-scanner
+  "make-scanner* with the cooperative time-budget check (sqlclj.guard) at each scan start."
+  [ctx src where-terms]
+  (let [f (make-scanner* ctx src where-terms)]
+    (fn [env] (g/check!) (f env))))
+
+(defn- make-scanner*
   "Returns fn [env] -> seq of rows for a source."
   [ctx src where-terms]
   (cond
@@ -2423,7 +2451,7 @@
                                            (let [ce (:e t) ln (lc (:name ce))
                                                  i (.indexOf ^java.util.List (:lcols s0) ln)]
                                              (and (or (nil? (:table ce)) (= (lc (:table ce)) (:alias s0)))
-                                                  (if (>= i 0) (= i (:ipk (:table s0))) (#{"rowid" "oid" "_rowid_"} ln)))))
+                                                  (if (>= i 0) (= i (:ipk (:table s0))) (and (not (:without-rowid (:table s0))) (#{"rowid" "oid" "_rowid_"} ln))))))
                                 :let [sub (compile-select (assoc ctx2 :aggs nil) (:select t))]
                                 :when (not (:correlated sub))]
                             sub))))
@@ -3048,7 +3076,7 @@
                            (let [ln (lc (:name x))
                                  i (.indexOf ^java.util.List (:lcols src) ln)]
                              (or (and (>= i 0) (or (= i (:ipk tbl)) (:notnull (nth (:cols tbl) i))))
-                                 (and (neg? i) (#{"rowid" "oid" "_rowid_"} ln)))))))
+                                 (and (neg? i) (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} ln)))))))
         terms (remove always-true? (or where-terms []))
         strip-q (fn sq [e] (cond (and (map? e) (= :col (:op e))) (dissoc e :table)
                                  (map? e) (into {} (for [[k x] e] [k (sq x)]))

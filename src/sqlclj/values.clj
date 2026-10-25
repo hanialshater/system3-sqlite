@@ -414,8 +414,14 @@
             (= op :shl) (bit-shift-left x y)
             :else (bit-shift-right x y)))))))
 
+(defn- approx-len ^long [x]
+  (cond (string? x) (.length ^String x) (blob? x) (alength ^bytes (blob-bytes x)) :else 24))
+
 (defn concat-values [a b]
-  (if (or (nil? a) (nil? b)) nil (str (text-of a) (text-of b))))
+  (if (or (nil? a) (nil? b))
+    nil
+    (do (when (> (+ (approx-len a) (approx-len b)) 1000000000) (err "string or blob too big"))
+        (str (text-of a) (text-of b)))))
 
 (defn type-name [v]
   (cond (nil? v) "null" (instance? Long v) "integer" (instance? Double v) "real" (string? v) "text" :else "blob"))

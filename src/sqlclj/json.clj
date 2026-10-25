@@ -688,8 +688,6 @@
       (case mode :get node (:set :replace) val :insert node :delete ::del :ainsert node)
       (= c 46)
       (let [[lab raw nx] (parse-label path (inc pos))]
-        (when (and (= mode :ainsert) (>= nx n))
-          (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
         (if (not= (ntype node) T-OBJECT)
           ::nf
           (let [kids (npay node)
@@ -697,6 +695,8 @@
                 idx (loop [i 0] (cond (>= i (count kids)) nil
                                       (= (key-str (nth kids i)) lab-s) i
                                       :else (recur (+ i 2))))]
+            (when (and idx (= mode :ainsert) (>= nx n))
+              (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
             (if idx
               (let [r (edit (nth kids (inc idx)) path nx mode val)]
                 (cond (= r ::nf) ::nf
@@ -952,9 +952,9 @@
             (if blob? (jsonb-result node) (json-result node))))
       ([x y]
        (if obj?
-         (do (when-not (string? x) (when-not (nil? x) nil))
-             (.add items (sql-text-node (v/text-of x)))
-             (.add items (value->node y)))
+         (when-not (nil? x)
+           (.add items (sql-text-node (v/text-of x)))
+           (.add items (value->node y)))
          (.add items (value->node x)))))))
 
 (defn- hlen [payload] (cond (<= payload 11) 1 (<= payload 0xff) 2 (<= payload 0xffff) 3 :else 5))
