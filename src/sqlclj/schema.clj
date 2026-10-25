@@ -187,7 +187,7 @@
           sch (lc* (:schema st))
           walk (fn walk [x]
                  (cond
-                   (map? x) (let [x (if (and (= :col (:op x)) (:schema x)) (dissoc x :schema) x)
+                   (map? x) (let [x x
                                   x (if (and (contains? x :indexed-by) (:table x)) (qualify-from-item db x) x)]
                               (into {} (map (fn [[k v]] [k (walk v)]) x)))
                    (vector? x) (mapv walk x)

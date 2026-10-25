@@ -69,8 +69,13 @@
 
 (defn resolve-column
   "Returns {:slot :idx :aff :coll :depth :src} or throws. quoted: the name was a quoted identifier (never TRUE/FALSE)."
-  [ctx tq name dq & [quoted]]
-  (let [lname (lc name) ltq (lc tq)]
+  [ctx tq name dq & [quoted sc]]
+  (let [lname (lc name) ltq (lc tq)
+        lsc (lc sc)
+        db-ok? (fn [s] (or (nil? lsc)
+                           (let [t (:table s)]
+                             (or (not (map? t))
+                                 (= lsc (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main"))))))]
     (loop [scope (:scope ctx) depth 0]
       (if (nil? scope)
         (cond
@@ -82,7 +87,7 @@
         (let [srcs (:sources scope)
               hits (if ltq
                      (concat
-                      (for [s srcs :when (= (:alias s) ltq)
+                      (for [s srcs :when (and (= (:alias s) ltq) (db-ok? s))
                             :let [i (find-in-source s lname)
                                   i (or i (when (and (rowid-name? lname) (or (:rowid? s) (and (= lname "\u0000rowid") (:table s)))) (:ncols s)))]
                             :when i]
@@ -496,7 +501,7 @@
              (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              :else c))
-    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
+    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e) (:schema e))
                       (catch clojure.lang.ExceptionInfo ex
                         (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
                           {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
@@ -1890,6 +1895,8 @@
         (and (nil? (:schema item)) (tvf-entry (:db ctx) (lc name)))
         (make-source ctx (assoc item :tvf name :args []))
         :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
+                                                 ;; a stored reference to a (since detached) database keeps its prefix
+                                                 (and (:in-view ctx) (str/includes? (str name) ".")) name
                                                  (:in-view ctx) (str (:in-view ctx) "." name)
                                                  *in-trigger* (str "main." name)
                                                  :else name)))))

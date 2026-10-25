@@ -167,7 +167,7 @@
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
       (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
-      (get-in db [:indexes lname]) (err (str "there is already an index named " name))
+      (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
             sub (e/compile-select ctx (:as st))
@@ -1070,7 +1070,7 @@
   (let [name (:name st) lname (lc name)
         tbl (get-in db [:tables (lc (:table st))])]
     (cond
-      (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " name " already exists")))
+      (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " (sch/display-name name st) " already exists")))
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
       (nil? tbl) (err (str "no such table: main." (:table st)))
       (str/starts-with? lname "sqlite_") (err (str "object name reserved for internal use: " name))
@@ -1809,6 +1809,12 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be indexed")))
+  ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
+  ;; and its table must be there too
+  (when (and (= :create-trigger (:kind st)) (not (:temp st)) (:table-schema st))
+    (let [ts (lc (:table-schema st)) home (or (some-> (:schema st) lc) "main")]
+      (when (and (not= ts home) (not= home "temp") (not (and (= ts "temp") (nil? (:schema st)))))
+        (err (str "trigger " (:name st) " cannot reference objects in database " (:table-schema st))))))
   (when (and (#{:create-table :create-view :create-trigger} (:kind st)) (:temp st) (:schema st)
              (not= "temp" (lc (:schema st))))
     (err (str "temporary " (case (:kind st) :create-table "table" :create-view "view" "trigger") " name must be unqualified")))
@@ -1906,25 +1912,26 @@
                                              [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
                                              :else [db st])
                                    ln (lc (:name st))]
-                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
+                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (sch/display-name (:name st) st)))
                                      (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (or (:name-raw st) (:name st)) " already exists")))
                                      :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
                                                  (err "parameters are not allowed in views"))
-                                               (when-not (or (:temp st) (:db st))
+                                               (when-not (:temp st)
                                                  (let [att (set (sch/attached-names db))
+                                                       home (or (some-> (:db st) lc) "main")
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
-                                                                                             (some-> (:schema x) lc (= "temp")))
-                                                                                    (reset! refs "temp"))
+                                                                                             (some-> (:schema x) lc (#{"temp" "main"})) (not= home (lc (:schema x))))
+                                                                                    (reset! refs (lc (:schema x))))
                                                                             (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
                                                                                     (let [k (lc (:table x))
                                                                                           dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
-                                                                                      (when dbn (reset! refs dbn))))
+                                                                                      (when (and dbn (not= dbn home)) (reset! refs dbn))))
                                                                             x)
                                                                           (:select st))
-                                                   (when @refs (err (str "view " (:name st) " cannot reference objects in database " @refs)))))
+                                                   (when @refs (err (str "view " (sch/display-name (:name st) st) " cannot reference objects in database " @refs)))))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
