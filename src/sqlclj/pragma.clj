@@ -38,7 +38,7 @@
   {"foreign_keys" 0 "recursive_triggers" 0 "reverse_unordered_selects" 0 "automatic_index" 1
    "legacy_alter_table" 0 "trusted_schema" 1 "writable_schema" 0 "count_changes" 0
    "defer_foreign_keys" 0 "query_only" 0 "ignore_check_constraints" 0 "cell_size_check" 0
-   "full_column_names" 0 "short_column_names" 1 "empty_result_callbacks" 0 "legacy_file_format" 0
+   "full_column_names" 0 "short_column_names" 1 "empty_result_callbacks" 0
    "read_uncommitted" 0 "checkpoint_fullfsync" 0 "fullfsync" 0 "case_sensitive_like" 0})
 
 ;; integer pragmas that return their (new) value when set; name -> [default column-name]
@@ -46,11 +46,11 @@
   {"busy_timeout" [0 "timeout"] "mmap_size" [0 "mmap_size"] "journal_size_limit" [-1 "journal_size_limit"]
    "soft_heap_limit" [0 "soft_heap_limit"]
    "hard_heap_limit" [0 "hard_heap_limit"] "threads" [0 "threads"] "analysis_limit" [0 "analysis_limit"]
-   "max_page_count" [4294967294 "max_page_count"]})
+   "max_page_count" [4294967294 "max_page_count"] "secure_delete" [0 "secure_delete"]})
 
 ;; integer pragmas silent when set
 (def int-pragmas-quiet
-  {"cache_size" -2000 "page_size" 4096 "secure_delete" 0 "cache_spill" 100})
+  {"cache_size" -2000 "page_size" 4096 "cache_spill" 100})
 
 (def header-pragmas #{"user_version" "application_id" "schema_version"})
 
@@ -74,7 +74,7 @@
                     hidden (long (or (:hidden-kind c) 0))
                     cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (:notnull c) 1 0)
+                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))
@@ -105,11 +105,11 @@
                                  (let [cid (cond (nil? (:col ic)) -2 (= (:col ic) ncols) -1 :else (:col ic))
                                        nm (when (and (:col ic) (< (:col ic) ncols)) (:name (nth (:cols t) (:col ic))))]
                                    (if xinfo?
-                                     [(long i) (long cid) nm (if (:desc ic) 1 0) (or (:coll ic) "BINARY") 1]
+                                     [(long i) (long cid) nm (if (:desc ic) 1 0) (or (:coll-text ic) (:coll ic) "BINARY") 1]
                                      [(long i) (long cid) nm])))
                                (:cols idx))]
       (vec (if xinfo?
-             (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]])
+             (if (and (:without-rowid t) (:pk-auto idx)) keyrows (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]]))
              keyrows)))
     []))
 
@@ -210,6 +210,7 @@
         "freelist_count" (one db n 0)
         "data_version" (one db n 1)
         "incremental_vacuum" {:db db :names nil :rows [] :writes true}
+        "optimize" {:db db :names ["optimize"] :rows []}
         "compile_options" {:db db :names ["compile_options"] :rows (mapv vector compile-options)}
         "collation_list" {:db db :names ["seq" "name"] :rows [[0 "RTRIM"] [1 "NOCASE"] [2 "BINARY"]]}
         "database_list" {:db db :names ["seq" "name" "file"]

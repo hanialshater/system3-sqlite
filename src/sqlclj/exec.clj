@@ -53,6 +53,7 @@
                                          :else (err (str "no such column: " (:name ast))))))
                             c (when-not ci (compile-row-expr db sql tbl ast))]
                         {:col ci :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
+                         :coll-text (:coll ic)
                          :coll (if (:coll ic) (e/check-coll (:coll ic))
                                    (if ci (or (when (< ci ncols) (:coll (nth (:cols tbl) ci))) "BINARY")
                                        (or (:coll c) "BINARY")))
@@ -1523,9 +1524,12 @@
                         (catch clojure.lang.ExceptionInfo ex
                           (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*)) 1 0)))))))
                  r))]
-      (if (seq (:returning st))
-        (doseq [r rows] (write-row out r))
-        (emit-line out (str "changes: " (:changes db2))))
+      (cond
+        (seq (:returning st)) (doseq [r rows] (write-row out r))
+        (and (= 1 (get-in db2 [:pragmas "count_changes"])) (zero? (long trg/*depth*)))
+        (do (emit-line out (str "# rows " (case (:kind st) :insert "inserted" :update "updated" "deleted")))
+            (emit-line out (str (:changes db2))))
+        :else (emit-line out (str "changes: " (:changes db2))))
       (update db2 :total-changes (fnil + 0) (long (or (:changes db2) 0))))
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
