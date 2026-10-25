@@ -63,6 +63,11 @@
 (defn- find-table [db tname]
   (get-in db [:tables (lc tname)]))
 
+(defn- std-type [t]
+  (let [t (or t "")
+        u (.toUpperCase ^String t)]
+    (if (contains? #{"ANY" "BLOB" "INT" "INTEGER" "REAL" "TEXT"} u) u t)))
+
 (defn table-info-rows
   "Rows of table_info (xinfo? adds the hidden column)."
   [db tname xinfo?]
@@ -74,7 +79,7 @@
                     hidden (long (or (:hidden-kind c) 0))
                     cid (if xinfo? i (count (filter #(zero? (long (or (:hidden-kind %) 0))) (take i (:cols t)))))]
                 (when (or xinfo? (zero? hidden))
-                  (cond-> [(long cid) (:name c) (or (:type c) "") (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
+                  (cond-> [(long cid) (:name c) (std-type (:type c)) (if (or (:notnull c) (and (:without-rowid t) (pos? pkpos))) 1 0)
                            (:default-text c) (long pkpos)]
                     xinfo? (conj hidden)))))
             (:cols t))))

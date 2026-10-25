@@ -87,6 +87,15 @@
                        (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
+            (and ltq (> (count hits) 1)
+                 (let [h2 (vec (cons (first hits) (remove (fn [[s _]] (contains? (:hidden s) lname)) (rest hits))))]
+                   (when (= 1 (count h2)) h2)))
+            (let [[s i] (first hits)]
+              (when-let [refs (:refs ctx)] (swap! refs conj [(:slot s) i]))
+              {:slot (:slot s) :idx i :depth depth :src s
+               :nocoll (and (:table s) (or (= i (:ncols s)) (= i (:ipk (:table s)))))
+               :aff (if (< i (:ncols s)) (nth (:affs s) i) :integer)
+               :coll (if (< i (:ncols s)) (nth (:colls s) i) nil)})
             (> (count hits) 1)
             (err (str "ambiguous column name: " (if tq (str tq "." name) name)))
             (= 1 (count hits))
