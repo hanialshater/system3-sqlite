@@ -164,7 +164,8 @@
   [db child-log parent-log]
   (when (enabled? db)
     (let [explicit-tx (boolean (:tx db))
-          fail! (fn [fk] (when-not (and (deferred? db fk) explicit-tx) (err "FOREIGN KEY constraint failed")))]
+          fail! (fn [fk] (when-not (and (deferred? db fk) explicit-tx)
+                           (throw (ex-info "FOREIGN KEY constraint failed" {:sql-error "FOREIGN KEY constraint failed" :fk-deferred (boolean (deferred? db fk))}))))]
       ;; child side
       (doseq [[tkey old new] child-log]
         (let [tbl (get-in db [:tables tkey])]

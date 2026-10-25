@@ -1935,6 +1935,33 @@
 
 (declare reload-schema exec-statement**)
 
+(defn- vacuum-renumber
+  "VACUUM rebuilds the main database: tables (each followed by its automatic indexes) in creation order, then
+  the explicit indexes, then views and triggers, with root pages numbered 2, 3, ... in that order."
+  [db]
+  (let [main? (fn [o] (and (nil? (:temp o)) (nil? (:db o))))
+        main? (fn [o] (and (not (:temp o)) (or (nil? (:db o)) (= "main" (:db o)))))
+        tables (sort-by :mseq (filter main? (vals (:tables db))))
+        idxs (filter main? (vals (:indexes db)))
+        step (fn [[m pg out] [kind k o]]
+               (let [needs (and (#{:tables :indexes} kind) (not (:no-master o)))
+                     o' (assoc o :mseq m)
+                     o' (if (#{:tables :indexes} kind) (assoc o' :rootpage (if needs pg (:rootpage o))) o')]
+                 [(inc m) (if needs (inc pg) pg) (conj out [kind k o'])]))
+        order (concat
+               (mapcat (fn [t]
+                         (cons [:tables (lc (:name t)) t]
+                               (for [i (sort-by :mseq (filter #(and (= (:table %) (lc (:name t))) (:auto %)) idxs))]
+                                 [:indexes (lc (:name i)) i])))
+                       tables)
+               (for [i (sort-by :mseq (remove :auto idxs))] [:indexes (lc (:name i)) i])
+               (for [v (sort-by :mseq (filter main? (vals (:views db))))] [:views (lc (:name v)) v])
+               (for [g (sort-by :mseq (filter main? (vals (:triggers db))))] [:triggers (lc (:name g)) g]))
+        [m pg out] (reduce step [1 2 []] order)]
+    (-> (reduce (fn [d [kind k o]] (assoc-in d [kind k] o)) db out)
+        (assoc :mseq (max (long (or (:mseq db) 0)) (dec m)))
+        (assoc-in [:pages "main"] (set (range 2 pg))))))
+
 (defn- exec-master-dml
   "INSERT / UPDATE / DELETE on sqlite_master under PRAGMA writable_schema: runs the statement on a real copy
   of the table and keeps the resulting rows as the database's master rows (the in-memory schema is untouched)."
@@ -2093,7 +2120,7 @@
                  (when (or (seq @fk/*child*) (seq @fk/*parent*))
                    (try (fk/verify r @fk/*child* @fk/*parent*)
                         (catch clojure.lang.ExceptionInfo ex
-                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st))) 1 0)))))))
+                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st)) (not (:fk-deferred (ex-data ex)))) 1 0)))))))
                  r))]
       (cond
         (seq (:returning st)) (doseq [r rows] (write-row out r))
@@ -2170,9 +2197,12 @@
                             (when-let [ie (:into st)]
                               (let [x ((:f (e/cx (new-ctx db sql) ie)) (object-array 4))]
                                 (when-not (string? x) (err "non-text filename"))))
-                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])]
-                              (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
-                                (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])
+                                  db (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
+                                       (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                                       db)]
+                              (if (and (not (:into st)) (or (nil? (:schema st)) (= "main" (lc (:schema st)))))
+                                (vacuum-renumber db)
                                 db))))]
       (cond
         (= db2 ::empty) db
