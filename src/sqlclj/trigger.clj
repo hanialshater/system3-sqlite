@@ -36,7 +36,7 @@
   (let [l (lc nm)
         i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) l)]
     (cond (>= i 0) (nth row i)
-          (#{"rowid" "oid" "_rowid_"} l) (peek row)
+          (and (not (:view tbl)) (#{"rowid" "oid" "_rowid_"} l)) (peek row)
           :else (err (str "no such column: " side "." nm)))))
 
 (defn- substitute [ast tbl old new]

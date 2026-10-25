@@ -455,9 +455,13 @@
      :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl)) :slot slot :rowid? (not (:without-rowid tbl)) :ipk (:ipk tbl)
      :ncols (count cols) :hidden #{}}))
 
+(declare new-ctx)
 (defn- compile-returning [ctx src items]
   (when (seq items)
-    (let [ctx (assoc ctx :scope {:sources [src] :parent nil})
+    (when (some #(and (:star %) (:table %)) items)
+      (err "RETURNING may not use \"TABLE.*\" wildcards"))
+    (let [src (assoc src :alias (lc (:tname src)))
+          ctx (assoc ctx :scope {:sources [src] :parent nil})
           cols (mapcat (fn [rc]
                          (if (:star rc)
                            (for [i (range (:ncols src))]
@@ -472,7 +476,21 @@
                                          (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
-      {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)})))
+      (cond-> {:names (mapv :name cols) :fs (mapv :f cols) :slot (:slot src)}
+        (some (fn [x] (and (map? x) (or (#{:subq :exists} (:op x)) (:select x)))) (tree-seq coll? seq items))
+        (assoc :redo (fn [db']
+                       (let [ctx2 (new-ctx db' (:sql ctx))
+                             src2 (assoc src :slot (e/new-slot! ctx2))
+                             r2 (compile-returning ctx2 src2 items)
+                             env2 (object-array (+ 2 @(:slots ctx2)))]
+                         (fn [row] (aset env2 (long (:slot src2)) row) (mapv #(% env2) (:fs r2))))))))))
+
+(defn- ret-row
+  "The RETURNING row for the row held in env; subqueries see database db' (the state right after the change)."
+  [ret ^objects env db']
+  (if-let [redo (:redo ret)]
+    ((redo db') (aget env (long (:slot ret))))
+    (mapv #(% env) (:fs ret))))
 
 (defn- next-rowid [tbl]
   (if (empty? (:rows tbl))
@@ -596,7 +614,8 @@
         rows (cond
                (:default st) [[]]
                (:rows st) (let [rs (:rows st)]
-                            (when (apply not= (map count rs)) (err "all VALUES must have the same number of terms"))
+                            (when (apply not= (map count rs))
+                              (err "all VALUES must have the same number of terms"))
                             (doseq [r rs]
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
@@ -735,7 +754,7 @@
                               tblu (put-row (update tblu :rows dissoc crid) nrid nrow)]
                           (when ret
                             (aset env (long (:slot ret)) (assoc nrow ncols nrid))
-                            (.add ret-rows (mapv #(% env) (:fs ret))))
+                            (.add ret-rows (ret-row ret env (assoc-in db [:tables tkey] tblu))))
                           (let [db3 (assoc-in db [:tables tkey] tblu)
                                 db3 (if fkt
                                       (do (fk-note! db3 tbl tkey existing (assoc nrow ncols nrid))
@@ -770,7 +789,7 @@
                             db2)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
-                    (.add ret-rows (mapv #(% env) (:fs ret))))
+                    (.add ret-rows (ret-row ret env db2)))
                   (let [r (if (seq (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil))
                             (try-fire db2 (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil) tbl3 nil (assoc row ncols rid))
                             db2)]
@@ -905,7 +924,7 @@
                                ats (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :update set-names)]
                            (when ret
                              (aset env slot (assoc row ncols rid-new))
-                             (.add ret-rows (mapv #(% env) (:fs ret))))
+                             (.add ret-rows (ret-row ret env db2)))
                            (let [r (if (seq ats) (try-fire db2 ats tbl3 old (assoc row ncols rid-new)) db2)]
                              (if (= r ::ignore) [db2 changes] [r (if vw changes (inc changes))]))))))))))))
            [db 0] targets)]
@@ -930,15 +949,16 @@
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
         _ (prepared! (:names ret))
+        dret-rows (java.util.ArrayList.)
         doomed (vec (filter (fn [[rid row]]
                               (aset env slot row)
                               (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
                             (if (and where-pre (not (where-pre env))) [] (:rows tbl))))]
-    (when ret
+    (when (and ret (not (:redo ret)))
       (doseq [[_ row] doomed]
         (aset env slot row)
         (emit (mapv #(% env) (:fs ret)))))
-    (if (and (not vw) (not fkt) (not (trg/any-for? db tkey :delete)))
+    (if (and (not vw) (not fkt) (not (:redo ret)) (not (trg/any-for? db tkey :delete)))
       (-> db
           (assoc-in [:tables tkey :rows] (apply dissoc (:rows tbl) (map first doomed)))
           (assoc :changes (count doomed)))
@@ -961,9 +981,11 @@
                                       (fk/on-parent-change db tbl old nil))
                                   db)
                              ats (trg/matching db (:vkey tbl tkey) (if vw :instead :after) :delete nil)
+                             _ (when (:redo ret) (aset env slot old) (.add dret-rows (ret-row ret env db)))
                              r (if (seq ats) (try-fire db ats (get-in db [:tables tkey]) old nil) db)]
                          (if (= r ::ignore) [db changes] [r (if vw changes (inc changes))])))))))
              [db 0] doomed)]
+        (doseq [r dret-rows] (emit r))
         (assoc (end-target db tkey tbl) :changes changes)))))
 
 ;; ====================================================================== other DDL
@@ -1025,7 +1047,8 @@
     db))
 
 (defn- exec-drop [db st]
-  (let [lname (lc (:name st))]
+  (let [lname (lc (:name st))
+        shown (if (and (:schema st) (#{"main" "temp"} (lc (:schema st)))) (str (:schema st) "." (:name st)) (:name st))]
     (case (:what st)
       :table (if-let [t (get-in db [:tables lname])]
                (let [idxs (filter (fn [i] (= (:table i) lname)) (vals (:indexes db)))
@@ -1037,21 +1060,21 @@
                      (drop-seq-row (:name t))))
                (cond (get-in db [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
                      (:if-exists st) db
-                     :else (err (str "no such table: " (:name st)))))
+                     :else (err (str "no such table: " shown))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
                  (err "index associated with UNIQUE or PRIMARY KEY constraint cannot be dropped")
                  (-> db (sch/free-page (sch/schema-of i) (:rootpage i)) (update :indexes dissoc lname)))
-               (if (:if-exists st) db (err (str "no such index: " (:name st)))))
+               (if (:if-exists st) db (err (str "no such index: " shown))))
       :view (if (get-in db [:views lname])
               (-> db (update :views dissoc lname)
                   (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m)))))
               (cond (get-in db [:tables lname]) (err (str "use DROP TABLE to delete table " (:name st)))
                     (:if-exists st) db
-                    :else (err (str "no such view: " (:name st)))))
+                    :else (err (str "no such view: " shown))))
       :trigger (if (get-in db [:triggers lname])
                  (update db :triggers dissoc lname)
-                 (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
+                 (if (:if-exists st) ::empty (err (str "no such trigger: " shown)))))))
 
 (defn- index-stat
   "sqlite_stat1 stat text for index idx of tbl, or nil when the index is empty."

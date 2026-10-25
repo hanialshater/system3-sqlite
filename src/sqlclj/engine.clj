@@ -495,13 +495,19 @@
            (if (and (#{:int :hex} (:kind e)) (instance? Long v) (<= 0 (long v) 2147483647))
              (assoc c :intlit v)
              c))
-    :col (let [r (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
-               _ (when-let [sc (:schema e)]
+    :col (let [r (try (resolve-column ctx (:table e) (:name e) (:dq e) (:quoted e))
+                      (catch clojure.lang.ExceptionInfo ex
+                        (if-let [oa (and (nil? (:table e)) (some-> (:sql-error (ex-data ex)) (str/starts-with? "no such column")) (some #(when (contains? (:map %) (lc (:name e))) %) (:outer-aliases ctx)))]
+                          {:alias-c (cx (:ctx oa) (get (:map oa) (lc (:name e))))}
+                          (throw ex))))
+               _ (when-let [sc (and (not (:alias-c r)) (:schema e))]
                    (when-let [t (:table (:src r))]
                      (when (map? t)
                        (let [tdb (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main")]
                          (when (not= tdb (lc sc))
                            (err (str "no such column: " sc "." (:table e) "." (:name e))))))))]
+           (if (:alias-c r)
+             (do (when (:outer-refs ctx) (reset! (:outer-refs ctx) true)) (:alias-c r))
            (if (contains? r :const)
              (assoc (const-c (:const r)) :intlit (:const r))
              (let [slot (long (:slot r)) idx (long (:idx r))
@@ -512,7 +518,7 @@
                (mk (if alt
                      (coalesce-reader alt)
                      (fn [^objects env] (nth (aget env slot) idx)))
-                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r))))
+                   :aff (:aff r) :coll (if (:nocoll r) nil (or (:coll r) "BINARY")) :col r)))))
     :unary
     (let [o (:o e) inner (:e e)]
       (case o
@@ -1859,7 +1865,10 @@
                :affs (mapv :aff (:cols tbl)) :colls (mapv :coll (:cols tbl))
                :slot slot :rowid? (not (:without-rowid tbl)) :ncols (count cols) :hidden #{} :table tbl
                :indexed-by (:indexed-by item)})
-        view (let [sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+        view (let [_ (when (some #(identical? % view) (:view-chain ctx))
+                       (err (str "view " (:name view) " is circularly defined")))
+                   sub (compile-select (assoc ctx :as-source true :scope nil :ctes nil :cte-err nil :rec-cells nil :sql (or (:src view) (:sql ctx))
+                                              :view-chain (conj (or (:view-chain ctx) []) view)
                                               :in-view (or (:db view) (if (:temp view) "temp" "main")))
                                        (:select view))
                    _ (when (and (:cols view) (not= (count (:cols view)) (count (:names sub))))
@@ -2445,6 +2454,7 @@
                       rcols)
           ;; alias substitution for WHERE/GROUP BY/HAVING is approximated by compiling the aliased expr
           alias-map (into {} (for [[a rc] (map vector aliases rcols) :when a] [a (:e rc)]))
+          ctx2 (if (seq alias-map) (assoc ctx2 :outer-aliases (cons {:map alias-map :ctx ctx2} (:outer-aliases ctx2))) ctx2)
           subst (fn subst [e]
                   (cond
                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
