@@ -1285,8 +1285,11 @@
                                    idxs (table-indexes db tn)
                                    idxs (if only-idx (filter #(= (lc (:name %)) only-idx) idxs) idxs)
                                    n (count (:rows tbl))]
-                             r (if (and (empty? idxs) (nil? only-idx))
-                                 (when (pos? n) [[(:name tbl) nil (str n)]])
+                             r (if (and (nil? only-idx) (every? :where idxs))
+                                 ;; no whole-table index row: the table count gets its own (idx NULL) row after the indexes
+                                 (concat (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
+                                           [(:name tbl) (:name idx) stat])
+                                         (when (pos? n) [[(:name tbl) nil (str n)]]))
                                  (for [idx idxs :let [stat (index-stat tbl idx)] :when stat]
                                    [(:name tbl) (if (and (:without-rowid tbl) (:pk-auto idx)) (:name tbl) (:name idx)) stat]))]
                          r))

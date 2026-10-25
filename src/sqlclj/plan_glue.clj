@@ -168,6 +168,29 @@
             (case (:op x)
               :bin
               (let [o (:o x)]
+                (when (= o :or)
+                  ;; x=a OR x=b OR ... on one column is converted to x IN (a,b,...)
+                  (let [disj (letfn [(fl [e] (if (and (map? e) (= :bin (:op e)) (= :or (:o e))) (concat (fl (:l e)) (fl (:r e))) [e]))]
+                               (fl x))
+                        parts (for [d disj]
+                                (when (and (map? d) (= :bin (:op d)) (= :eq (:o d)))
+                                  (let [l (:l d) r (:r d)
+                                        lc* (col-ref G (if (= :collate (:op l)) (:e l) l))
+                                        rc* (col-ref G (if (= :collate (:op r)) (:e r) r))]
+                                    (cond lc* {:col lc* :rhs r :lhs l :coll (cmp-coll G l r)}
+                                          rc* {:col rc* :rhs l :lhs r :coll (cmp-coll G l r)}))))]
+                    (when (and (every? some? parts) (> (count parts) 1)
+                               (apply = (map :col parts))
+                               (every? #(zero? (bit-and (long (expr-tables G (:rhs %))) (bit (long (first (:col (first parts))))))) parts))
+                      (let [lcol (:col (first parts))
+                            lhs (:lhs (first parts))
+                            idx2 (insert! (new-term G {:op :in :e lhs :list (mapv :rhs parts) :not false}
+                                                    :virtual true :parent idx :on-of (:on-of t)))
+                            pr (expr-tables G (mapv :rhs parts))]
+                        (vswap! terms assoc idx2
+                                (assoc (nth @terms idx2) :op :in :left lcol :prereq-right pr :coll (:coll (first parts))
+                                       :cmp-aff (cmp-affinity G lhs (:rhs (first parts)))
+                                       :in-list (mapv :rhs parts) :select-in false :nin (count parts) :expr-id idx2))))))
                 (when (#{:eq :lt :le :gt :ge} o)
                   (let [l (:l x) r (:r x)
                         l* (if (= :collate (:op l)) l l)

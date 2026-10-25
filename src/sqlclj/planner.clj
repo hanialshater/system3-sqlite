@@ -125,7 +125,7 @@
           (and (= (bit-and (:prereq t) (:prereq p)) (:prereq p))
                (<= (:run p) (:run t)) (<= (:nout p) (:nout t)) (<= (:setup p) (:setup t))
                (not (and (= (:run p) (:run t)) (= (:nout p) (:nout t)) (= (:setup p) (:setup t))
-                         (> (long (:neq t)) (long (:neq p)))
+                         (> (count (:lterms t)) (count (:lterms p)))
                          (= (bit-and (:prereq p) (:prereq t)) (:prereq t)))))
           ::discard
           (and (= (bit-and (:prereq p) (:prereq t)) (:prereq t))   ; template has no more dependencies
@@ -256,7 +256,7 @@
                              (let [m (idx-aiRowLogEst probe saved-neq)
                                    logk (est-log n-in)
                                    x (- (+ m logk 10) (+ n-in rlogsize))]
-                               (>= x 0)))
+                               (< x 0)))
                       (do (vreset! skip? true) lp1)
                       (assoc lp1 :flags (conj (:flags lp1) :column-in))))
                   (cond
@@ -291,7 +291,7 @@
                           (contains? #{:gt :ge} eop)
                           [term (when (:likeopt term) (peek lt))]
                           :else [(when (contains? flags :btm-limit) (nth lt (- (count lt) 2))) term])
-                    nin-v (long @nin)
+                    nin-v (if (pos? saved-neq) 0 (long @nin))
                     lp2
                     (if range?
                       (assoc lp1 :nout (range-scan-est pbtm ptop saved-nout))
