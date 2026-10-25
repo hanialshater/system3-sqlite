@@ -1176,6 +1176,35 @@
                 nil keys)
         (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d)))))))))
 
+(defn load-stats
+  "sqlite3AnalysisLoad: reads sqlite_stat1 into the index and table records the planner consults."
+  [db]
+  (let [st1 (get-in db [:tables "sqlite_stat1"])
+        db (-> db
+               (update :indexes (fn [m] (into {} (map (fn [[k i]] [k (dissoc i :stat)]) m))))
+               (update :tables (fn [m] (into {} (map (fn [[k t]] [k (dissoc t :stat-nrow)]) m)))))]
+    (reduce
+     (fn [db row]
+       (let [[tn iname stat] row
+             tkey (some-> tn str lc)
+             tbl (get-in db [:tables tkey])]
+         (if (or (nil? tbl) (not (string? stat)))
+           db
+           (let [toks (str/split (str/trim stat) #"\s+")
+                 ints (vec (map #(Long/parseLong %) (take-while #(re-matches #"\d+" %) toks)))
+                 flags (set (drop (count ints) toks))
+                 logest (mapv #(e/log-est (min % 2147483647)) ints)
+                 idx (when iname (get-in db [:indexes (lc iname)]))]
+             (cond
+               (and idx (= (:table idx) tkey) (seq ints))
+               (let [db (assoc-in db [:indexes (lc iname) :stat]
+                                  {:logest logest :unordered (contains? flags "unordered") :noskip (contains? flags "noskip")})]
+                 (if (:where idx) db (assoc-in db [:tables tkey :stat-nrow] (first logest))))
+               (and (nil? iname) (seq ints))
+               (assoc-in db [:tables tkey :stat-nrow] (first logest))
+               :else db)))))
+     db (vals (:rows st1)))))
+
 (defn- exec-analyze [db sql st]
   (let [lname (lc (:name st)) lsch (lc (:schema st))
         target (cond
@@ -1212,7 +1241,7 @@
         start (if (seq kept) (inc (long (last (nth kept (dec (count kept))))))  1)
         rows (into (sorted-map) (concat (map (fn [r] [(long (last r)) r]) kept)
                                         (map-indexed (fn [i r] (let [rid (+ start i)] [rid (conj r rid)])) stat-rows)))]
-    (assoc-in db [:tables "sqlite_stat1" :rows] rows)))
+    (load-stats (assoc-in db [:tables "sqlite_stat1" :rows] rows))))
 
 (defn- exec-reindex
   "Returns db, or ::empty when there is nothing to rebuild (SQLite then prepares no statement)."

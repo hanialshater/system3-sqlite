@@ -2577,7 +2577,8 @@
             idx (:index lp)
             ;; index columns' specs and affinities
             cols (if auto?
-                   (mapv (fn [t] [(:col t) (or (some-> (:coll t) str/upper-case) "BINARY")]) eqs)
+                   (into (mapv (fn [t] [(:col t) (or (some-> (:coll t) str/upper-case) "BINARY")]) eqs)
+                         (map (fn [c] [c "BINARY"]) (:auto-extra lp)))
                    (mapv (fn [ic] [(:col ic) (:coll ic)]) (:cols idx)))
             affs (mapv (fn [[c _]] (when (and (some? c) tbl (< (long c) (long (count (:cols tbl))))) (:aff (nth (:cols tbl) c)))) cols)
             specs (if auto?
