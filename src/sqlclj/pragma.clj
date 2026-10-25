@@ -180,7 +180,7 @@
           (one db col (long (pget db n d)))
           (let [x (or (int-value v) (when (= n "secure_delete") (bool-value v 0)) (pget db n d))
                 x (if (#{"mmap_size" "threads"} n) 0 x)
-                x (if (= n "secure_delete") (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x))) x)
+                x (if (= n "secure_delete") (if (= "fast" (some-> v str str/lower-case)) 2 (if (and (number? x) (not= 0 x)) 1 (if (true? x) 1 (if (false? x) 0 x)))) x)
                 db (pset db n x)]
             (one db col (long x)))))
 
@@ -201,7 +201,8 @@
       (contains? header-pragmas n)
       (if (nil? v)
         (one db n (long (if (= n "schema_version") (or (:schema-version db) 0) (pget db n 0))))
-        (let [x (or (int-value v) 0)]
+        (let [x (or (int-value v) 0)
+              x (if (<= -2147483648 (long x) 2147483647) x 0)]
           {:db (if (= n "schema_version") (assoc db :schema-version x) (pset db n x)) :names nil :rows [] :writes true}))
 
       :else
@@ -219,7 +220,13 @@
         (let [cur (pget db "locking_mode" "normal")
               u (some-> v lc)
               nv (if (#{"normal" "exclusive"} u) u cur)]
-          (one (pset db "locking_mode" nv) "locking_mode" nv))
+          (cond
+            sc (one db "locking_mode" "exclusive")
+            (nil? v) (one db "locking_mode" cur)
+            (#{"normal" "exclusive"} u) (one (pset db "locking_mode" nv) "locking_mode" "exclusive")
+            :else (one db "locking_mode" cur)))
+        "module_list" {:db db :names ["name"] :rows []}
+        "temp_store_directory" {:db db :names ["temp_store_directory"] :rows []}
         "synchronous"
         (if (nil? v) (one db n (long (pget db n 2)))
             (let [u (lc v)
