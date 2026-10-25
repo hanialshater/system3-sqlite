@@ -688,8 +688,6 @@
       (case mode :get node (:set :replace) val :insert node :delete ::del :ainsert node)
       (= c 46)
       (let [[lab raw nx] (parse-label path (inc pos))]
-        (when (and (= mode :ainsert) (>= nx n))
-          (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
         (if (not= (ntype node) T-OBJECT)
           ::nf
           (let [kids (npay node)
@@ -697,6 +695,8 @@
                 idx (loop [i 0] (cond (>= i (count kids)) nil
                                       (= (key-str (nth kids i)) lab-s) i
                                       :else (recur (+ i 2))))]
+            (when (and idx (= mode :ainsert) (>= nx n))
+              (jerr (str "not an array element: '" (.replace path "'" "''") "'")))
             (if idx
               (let [r (edit (nth kids (inc idx)) path nx mode val)]
                 (cond (= r ::nf) ::nf
