@@ -379,7 +379,7 @@
                                   :else 2)))
         agg? (and (:is-agg info) (empty? (:group-exprs info)))
         group? (seq (:group-exprs info))
-        partial-extra (reduce + 0 (for [lp path] (if (and (map? (:idx lp)) (:partial (:idx lp))) 2 0)))
+        partial-extra (reduce + 0 (for [lp path] 0))
         simple-count (if (:count-star plan) 1 0)
         first-id (+ 1 opens (if sorter? 1 0) (if distinct-bt? 1 0) (if (:limit info) 1 0)
                     (cond group? (+ (if (:has-agg info) 4 3)

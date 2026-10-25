@@ -15,7 +15,7 @@
       (:col :colref :fixed) 1
       :lit 0
       :collate (ops G (:e x))
-      :unary (case (:o x) :plus (ops G (:e x)) (inc (ops G (:e x))))
+      :unary (case (:o x) (:plus :pos) (ops G (:e x)) (inc (ops G (:e x))))
       :bin (+ (ops G (:l x)) (ops G (:r x)) 1)
       :fn (inc (reduce + 0 (map #(ops G %) (:args x))))
       :cast (inc (ops G (:e x)))
@@ -23,7 +23,7 @@
       :is (+ (ops G (:l x)) (ops G (:r x)) 1)
       :in (+ (ops G (:e x)) 2)
       :between (+ (ops G (:e x)) 2)
-      :like (+ (ops G (:e x)) 2)
+      :like (+ (ops G (:e x)) (if (= :glob (:o x)) 1 2))
       :case (inc (reduce + 0 (map #(ops G %) (tree-seq coll? seq (dissoc x :op)))))
       1)))
 
