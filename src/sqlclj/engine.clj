@@ -1896,7 +1896,7 @@
         (make-source ctx (assoc item :tvf name :args []))
         :else (err (str "no such table: " (cond (:schema item) (str (:schema item) "." name)
                                                  ;; a stored reference to a (since detached) database keeps its prefix
-                                                 (and (:in-view ctx) (str/includes? (str name) ".")) name
+                                                 (and (:in-view ctx) (or (= "temp" (:in-view ctx)) (str/includes? (str name) "."))) name
                                                  (:in-view ctx) (str (:in-view ctx) "." name)
                                                  *in-trigger* (str "main." name)
                                                  :else name)))))

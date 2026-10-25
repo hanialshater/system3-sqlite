@@ -135,6 +135,54 @@
         u (.toUpperCase ^String t)]
     (if (contains? #{"ANY" "BLOB" "INT" "INTEGER" "REAL" "TEXT"} u) u t)))
 
+(declare select-decl-types)
+
+(defn- source-decls
+  "[[alias-lc [[col-name-lc decl-type] ...]] ...] for the FROM items of a core select."
+  [db from]
+  (vec (for [it from]
+         (cond
+           (:subq it) [(lc (:alias it)) (let [sub (:subq it)
+                                               names (map-indexed (fn [i rc] (lc (or (:alias rc) (get-in rc [:e :name]) (str i))))
+                                                                  (get-in sub [:body :cols]))]
+                                           (mapv vector names (select-decl-types db sub)))]
+           (:table it)
+           (let [k (sch/resolve-key db (:table it) (:schema it))
+                 t (get-in db [:tables k])
+                 v (get-in db [:views k])
+                 al (lc (or (:alias it) (:table it)))]
+             (cond t [al (mapv (fn [c] [(lc (:name c)) (:type c)]) (:cols t))]
+                   v [al (let [d (select-decl-types db (:select v))
+                               ns (or (:cols v) (map-indexed (fn [i rc] (or (:alias rc) (get-in rc [:e :name]) (str i)))
+                                                             (get-in v [:select :body :cols])))]
+                           (mapv (fn [n i] [(lc n) (nth d i nil)]) ns (range)))]
+                   :else [al []]))
+           :else [nil []]))))
+
+(defn select-decl-types
+  "Declared type of each result column of a view's SELECT when it is a plain column reference (SQLite's
+  columnType); nil elsewhere. Compounds give nils."
+  [db sel]
+  (let [body (:body sel)]
+    (if (not= :core (:type body))
+      []
+      (let [srcs (source-decls db (:from body))
+            find-col (fn [tq nm]
+                       (some (fn [[al cols]] (when (or (nil? tq) (= al (lc tq)))
+                                               (some (fn [[cn d]] (when (= cn (lc nm)) [d])) cols)))
+                             srcs))
+            expr-decl (fn expr-decl [e]
+                        (case (:op e)
+                          :col (first (find-col (:table e) (:name e)))
+                          :subq (first (select-decl-types db (:select e)))
+                          nil))]
+        (vec (mapcat (fn [rc]
+                       (cond
+                         (and (:star rc) (nil? (:table rc))) (mapcat (fn [[_ cols]] (map second cols)) srcs)
+                         (:star rc) (map second (some (fn [[al cols]] (when (= al (lc (:table rc))) cols)) srcs))
+                         :else [(expr-decl (:e rc))]))
+                     (:cols body)))))))
+
 (defn table-info-rows
   "Rows of table_info (xinfo? adds the hidden column)."
   ([db tname xinfo?] (table-info-rows db tname xinfo? nil))
@@ -158,7 +206,11 @@
             sub (try (e/compile-select ctx (:select v)) (catch Exception _ nil))
             names (e/dedup-names (or (:cols v) (:names sub)))
             affs (or (:src-affs sub) (:affs sub))
-            tname (fn [i] (case (nth affs i nil) :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" :blob "BLOB" ""))]
+            decls (try (select-decl-types db (:select v)) (catch Exception _ []))
+            tname (fn [i] (let [aff (nth affs i nil) d (nth decls i nil)]
+                            (if (and d (= aff (sqlclj.values/type-affinity d)))
+                              d
+                              (case aff :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" :blob "BLOB" ""))))]
         (vec (map-indexed (fn [i n] (cond-> [(long i) n (tname i) 0 nil 0] xinfo? (conj 0))) names)))
       []))))
 
@@ -390,8 +442,16 @@
         "index_xinfo" {:db db :names ["seqno" "cid" "name" "desc" "coll" "key"] :rows (if v (index-info-rows db v true) [])}
         "foreign_key_list" {:db db :names ["id" "seq" "table" "from" "to" "on_update" "on_delete" "match"] :rows (if v (fk-list-rows db v) [])}
         "foreign_key_check"
-        (do (when (and v (not (find-table db v))) (err (str "no such table: " v)))
-            {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db v)) [])})
+        (let [ov (:value st)
+              obj-db (fn [t] (cond (:temp t) "temp" (:db t) (lc (:db t)) :else "main"))
+              in-scope? (fn [t] (or (nil? sc) (= sc (obj-db t))))
+              k (when ov
+                  (let [k (if sc
+                            (case sc "main" (sch/resolve-key db ov "main") "temp" (lc ov) (sch/obj-key db ov sc))
+                            (sch/resolve-key db ov nil))
+                        t (get-in db [:tables k])]
+                    (if (and t (in-scope? t)) k (err (str "no such table: " (if sc (str sc "." ov) ov))))))]
+          {:db db :names ["table" "rowid" "parent" "fkid"] :rows (if *fk-check* (vec (*fk-check* db k in-scope?)) [])})
         "table_list"
         (let [obj-db (fn [o] (cond (:temp o) "temp" (:db o) (lc (:db o)) :else "main"))
               row (fn [d kind t]
