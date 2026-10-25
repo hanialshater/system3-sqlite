@@ -366,7 +366,9 @@
           (do (advance! p)
               (let [c (parse-nm p)]
                 (recur (node {:op :collate :e left :coll c} s (prev-end p)))))
-          (and (<= minp 4) (= :id (:t t)) (= "NOT" (:u t)) (= :eof (:t (tok-at p 1))))
+          (and (<= minp 4) (= :id (:t t)) (= "NOT" (:u t))
+               (let [t2 (tok-at p 1)]
+                 (not (and (= :id (:t t2)) (#{"IN" "LIKE" "GLOB" "BETWEEN" "NULL" "MATCH" "REGEXP"} (:u t2))))))
           (do (advance! p) (fail! p))
           ;; level 4 specials
           (and (<= minp 4) (= :id (:t t))
@@ -1060,11 +1062,30 @@
         "EXPLAIN" (fail! p)
         (fail! p)))))
 
+;; SQLite's tokenizer (analyzeWindowKeyword etc.): WINDOW is a keyword only before "id AS", OVER only after ")"
+;; and before "(" or an id, FILTER only after ")" and before "("; elsewhere they are plain identifiers.
+(defn- fix-window-keywords [toks]
+  (let [toks (vec toks) n (count toks)
+        op? (fn [t v] (and t (= :op (:t t)) (= v (:v t))))]
+    (vec (map-indexed
+          (fn [i t]
+            (if (and (= :id (:t t)) (#{"OVER" "FILTER" "WINDOW"} (:u t)))
+              (let [prev (when (pos? i) (nth toks (dec i)))
+                    nx (when (< (inc i) n) (nth toks (inc i)))
+                    nx2 (when (< (+ i 2) n) (nth toks (+ i 2)))
+                    kw? (case (:u t)
+                          "OVER" (and (op? prev ")") (or (op? nx "(") (and nx (ident-tok? nx))))
+                          "FILTER" (and (op? prev ")") (op? nx "("))
+                          "WINDOW" (and nx (ident-tok? nx) nx2 (= :id (:t nx2)) (= "AS" (:u nx2))))]
+                (if kw? t (assoc t :u (str "\u0000" (:u t)))))
+              t))
+          toks))))
+
 (defn parse-statements
   "Parses statements one at a time from sql starting at token index; returns a lazy-ish iterator fn.
   Usage: (next-statement state) -> [stmt state'] | nil at end. Throws ex-info with :sql-error on syntax error."
   [^String sql]
-  (P. sql (lx/tokenize sql) (int-array 1)))
+  (P. sql (fix-window-keywords (lx/tokenize sql)) (int-array 1)))
 
 (defn next-statement
   "Returns the next statement AST (with :sql-text) or nil if no more. Skips empty statements."
