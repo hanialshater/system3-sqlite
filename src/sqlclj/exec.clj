@@ -287,7 +287,7 @@
             tbl (if (some :gen cols)
                   (do (check-gen-loops cols)
                       (assoc tbl :has-gen true
-                             :cols (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) cols)))
+                             :cols (vec (rseq (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) (vec (rseq (vec cols))))))))
                   tbl)
             db (assoc-in db [:tables lname] tbl)
             ;; autoindexes: PK (non-ipk) and UNIQUE in declaration order
@@ -1169,10 +1169,22 @@
     db))
 
 (declare exec-drop*)
+(defn- drop-stat-rows [db pred]
+  (if-let [t (get-in db [:tables "sqlite_stat1"])]
+    (assoc-in db [:tables "sqlite_stat1" :rows] (into (sorted-map) (remove (fn [[_ r]] (pred r)) (:rows t))))
+    db))
+
 (defn- exec-drop [db st]
   (let [lname (lc (:name st))
         was-temp (boolean (or (:temp (get-in db [:tables lname])) (:temp (get-in db [:views lname]))))
-        r (exec-drop* db st)]
+        r0 (exec-drop* db st)
+        r (if (and (map? r0) (not (identical? r0 db)))
+            (case (:what st)
+              :table (let [tn (some-> (get-in db [:tables lname]) :name lc)] (if tn (drop-stat-rows r0 #(= (lc (str (nth % 0))) tn)) r0))
+              :index (let [i (get-in db [:indexes lname])]
+                       (if i (drop-stat-rows r0 #(= (lc (str (nth % 1))) (lc (sch/display-name (:name i) i)))) r0))
+              r0)
+            r0)]
     (if (and was-temp (map? r) (not (str/includes? lname ".")))
       (sch/move-main-back r lname)
       r)))
@@ -1220,7 +1232,9 @@
         n (count rows)
         k (count (:cols idx))
         colls (mapv :coll (:cols idx))]
-    (when (pos? n)
+    (if (and (zero? n) (:wf idx))
+      (str "0" (apply str (repeat k " 0")))
+      (when (pos? n)
       (let [keys (sort (e/row-comparator colls) (map #(e/index-key tbl idx %) rows))
             eqv (fn [a b c] (or (and (nil? a) (nil? b)) (and (some? a) (some? b) (zero? (v/sql-cmp a b c)))))
             dist (long-array k)]
@@ -1230,7 +1244,7 @@
                       (loop [j i] (when (< j k) (aset dist j (inc (aget dist j))) (recur (inc j))))))
                   cur)
                 nil keys)
-        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d)))))))))
+        (str n " " (str/join " " (for [j (range k)] (let [d (inc (aget dist j))] (quot (+ n d -1) d))))))))))
 
 (defn load-stats
   "sqlite3AnalysisLoad: reads sqlite_stat1 into the index and table records the planner consults."
@@ -1425,17 +1439,27 @@
          quals (cond-> (or quals #{}) (and trig-table tn (= (lc trig-table) (lc tn))) (conj "new" "old"))
          spans (fk-parent-spans toks)
          in-foreign-parent? (fn [i] (some (fn [[p a b]] (and (>= i a) (< i b) (not= p (lc tn)))) spans))]
-     (rewrite-tokens sql (fn [toks i]
-                           (let [t (nth toks i)]
-                             (when (and (>= i from) (tok-name? t old))
-                               (let [prev (when (pos? i) (nth toks (dec i)))
-                                     nxt (when (< (inc i) (count toks)) (nth toks (inc i)))]
-                                 (cond
-                                   (in-foreign-parent? i) nil
-                                   (and prev (tok-op? prev ".") (>= i 2))
-                                   (when (or (nil? tn) (contains? quals (lc (:v (nth toks (- i 2)))))) (quote-if-needed new))
-                                   (and nxt (tok-op? nxt "(") (not self?)) nil
-                                   :else (quote-if-needed new))))))))))
+     (let [depths (vec (reductions (fn [d t] (cond (tok-op? t "(") (inc d) (tok-op? t ")") (dec d) :else d)) 0 toks))
+           qstart? (fn [t] (contains? #{(char 39) (char 34) (char 96) (char 91)} (.charAt ^String sql (int (:s t)))))
+           mk (fn [t] (if (qstart? t) (quote-id new) (quote-if-needed new)))
+           ;; a string where a column definition starts is an identifier
+           str-col? (fn [toks i]
+                      (let [t (nth toks i)]
+                        (and self? (= :str (:t t)) (= (lc (:v t)) (lc old)) (= 1 (nth depths i))
+                             (pos? i) (let [pv (nth toks (dec i))] (or (tok-op? pv "(") (tok-op? pv ","))))))]
+       (rewrite-tokens sql (fn [toks i]
+                             (let [t (nth toks i)]
+                               (cond
+                                 (and (>= i from) (str-col? toks i)) (mk t)
+                                 (and (>= i from) (tok-name? t old))
+                                 (let [prev (when (pos? i) (nth toks (dec i)))
+                                       nxt (when (< (inc i) (count toks)) (nth toks (inc i)))]
+                                   (cond
+                                     (in-foreign-parent? i) nil
+                                     (and prev (tok-op? prev ".") (>= i 2))
+                                     (when (or (nil? tn) (contains? quals (lc (:v (nth toks (- i 2)))))) (mk t))
+                                     (and nxt (tok-op? nxt "(") (not self?)) nil
+                                     :else (mk t)))))))))))
 
 (defn- rename-fk-parent-col
   "In the CREATE text of another table: parent column old of REFERENCES parent(...) becomes new."
@@ -1914,6 +1938,33 @@
 
 (declare reload-schema exec-statement**)
 
+(defn- vacuum-renumber
+  "VACUUM rebuilds the main database: tables (each followed by its automatic indexes) in creation order, then
+  the explicit indexes, then views and triggers, with root pages numbered 2, 3, ... in that order."
+  [db]
+  (let [main? (fn [o] (and (nil? (:temp o)) (nil? (:db o))))
+        main? (fn [o] (and (not (:temp o)) (or (nil? (:db o)) (= "main" (:db o)))))
+        tables (sort-by :mseq (filter main? (vals (:tables db))))
+        idxs (filter main? (vals (:indexes db)))
+        step (fn [[m pg out] [kind k o]]
+               (let [needs (and (#{:tables :indexes} kind) (not (:no-master o)))
+                     o' (assoc o :mseq m)
+                     o' (if (#{:tables :indexes} kind) (assoc o' :rootpage (if needs pg (:rootpage o))) o')]
+                 [(inc m) (if needs (inc pg) pg) (conj out [kind k o'])]))
+        order (concat
+               (mapcat (fn [t]
+                         (cons [:tables (lc (:name t)) t]
+                               (for [i (sort-by :mseq (filter #(and (= (:table %) (lc (:name t))) (:auto %)) idxs))]
+                                 [:indexes (lc (:name i)) i])))
+                       tables)
+               (for [i (sort-by :mseq (remove :auto idxs))] [:indexes (lc (:name i)) i])
+               (for [v (sort-by :mseq (filter main? (vals (:views db))))] [:views (lc (:name v)) v])
+               (for [g (sort-by :mseq (filter main? (vals (:triggers db))))] [:triggers (lc (:name g)) g]))
+        [m pg out] (reduce step [1 2 []] order)]
+    (-> (reduce (fn [d [kind k o]] (assoc-in d [kind k] o)) db out)
+        (assoc :mseq (max (long (or (:mseq db) 0)) (dec m)))
+        (assoc-in [:pages "main"] (set (range 2 pg))))))
+
 (defn- exec-master-dml
   "INSERT / UPDATE / DELETE on sqlite_master under PRAGMA writable_schema: runs the statement on a real copy
   of the table and keeps the resulting rows as the database's master rows (the in-memory schema is untouched)."
@@ -1971,6 +2022,13 @@
              (#{:insert :update :delete :create-table :create-index :create-view :create-trigger :drop :alter :vacuum :reindex :analyze} (:kind st)))
     (err "attempt to write a readonly database"))
   (when (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (sch/check-schema db (:schema st)))
+  ;; the stored text is parsed again: an object called IF reads as the start of IF NOT EXISTS
+  (when (and (#{:create-table :create-index :create-view :create-trigger} (:kind st)) (:name-s st) (not (:internal st))
+             (not (get-in db [:tables (lc (:name st))])) (not (get-in db [:views (lc (:name st))])))
+    (let [toks (lx/tokenize (subs sql (:name-s st)))
+          t0 (first toks) t1 (second toks)]
+      (when (and t0 (= :id (:t t0)) (= "IF" (:u t0)) t1 (not= :eof (:t t1)))
+        (err (str "malformed database schema (" (:v t0) ") - near \"" (subs sql (+ (:name-s st) (:s t1)) (+ (:name-s st) (:e t1))) "\": syntax error")))))
   (when (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (not (:master-dml st)))
     (err (str "table " (:table st) " may not be modified")))
   (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
@@ -2072,7 +2130,7 @@
                  (when (or (seq @fk/*child*) (seq @fk/*parent*))
                    (try (fk/verify r @fk/*child* @fk/*parent*)
                         (catch clojure.lang.ExceptionInfo ex
-                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st))) 1 0)))))))
+                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st)) (not (:fk-deferred (ex-data ex)))) 1 0)))))))
                  r))]
       (cond
         (seq (:returning st)) (doseq [r rows] (write-row out r))
@@ -2149,9 +2207,12 @@
                             (when-let [ie (:into st)]
                               (let [x ((:f (e/cx (new-ctx db sql) ie)) (object-array 4))]
                                 (when-not (string? x) (err "non-text filename"))))
-                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])]
-                              (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
-                                (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])
+                                  db (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
+                                       (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                                       db)]
+                              (if (and (not (:into st)) (or (nil? (:schema st)) (= "main" (lc (:schema st)))))
+                                (vacuum-renumber db)
                                 db))))]
       (cond
         (= db2 ::empty) db

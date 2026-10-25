@@ -238,7 +238,17 @@
                                      [(long i) (long cid) nm])))
                                (:cols idx))]
       (vec (if xinfo?
-             (if (and (:without-rowid t) (:pk-auto idx)) keyrows (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]]))
+             (if (:without-rowid t)
+               (let [used (set (keep :col (:cols idx)))
+                     extra-cols (if (:pk-auto idx)
+                                  (remove used (range ncols))
+                                  (remove used (:pk-cols t)))
+                     k0 (count (:cols idx))]
+                 (concat keyrows
+                         (map-indexed (fn [j ci] [(long (+ k0 j)) (long ci) (:name (nth (:cols t) ci)) 0
+                                                  (or (:coll (nth (:cols t) ci)) "BINARY") 0])
+                                      extra-cols)))
+               (concat keyrows [[(long (count (:cols idx))) -1 nil 0 "BINARY" 0]]))
              keyrows)))
     []))
 
