@@ -82,8 +82,14 @@
         autos (filter :auto all)
         explicit (remove :auto all)
         lst (reduce push () autos)
+        ;; WITHOUT ROWID: a lone INTEGER PRIMARY KEY is checked first (like a rowid), any other PRIMARY KEY after the
+        ;; UNIQUE autoindexes
+        tbl (get-in db [:tables (lc tname)])
+        int-pk (and wr (= 1 (count (:pk-cols tbl)))
+                    (= "INTEGER" (some-> (nth (:cols tbl) (first (:pk-cols tbl))) :type str/upper-case)))
         lst (if wr
-              (let [pk (filter :pk-auto lst)] (concat pk (remove :pk-auto lst)))
+              (let [pk (filter :pk-auto lst) others (remove :pk-auto lst)]
+                (if int-pk (concat pk others) (concat others pk)))
               lst)]
     (reduce push (vec lst) explicit)))
 
@@ -480,9 +486,7 @@
   ([db tbl rid row self on-conflict upsert-target? mid-check delay-ipk]
    (let [idxs (filter :unique (table-indexes db (:name tbl)))
          ;; an UPDATE of a WITHOUT ROWID row checks its PRIMARY KEY after the other indexes
-         idxs (if (and self (:without-rowid tbl))
-                (concat (remove :pk-auto idxs) (filter :pk-auto idxs))
-                idxs)]
+         ]
      (letfn [(handle [tbl conf msg what cact]
                (let [act (or on-conflict cact :abort)]
                  (cond
