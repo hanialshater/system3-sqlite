@@ -911,6 +911,11 @@
         on-conflict (:or st)
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (when (and fkt (not vw))
+            (let [n (inc (count (:cols tbl)))
+                  old (vec (repeat n 0))
+                  new (reduce (fn [r [i]] (if (and (>= i 0) (< i n)) (assoc r i 1) r)) old sets)]
+              (fk/locate-all! db tbl old new)))
         _ (prepared! (:names ret))
         join-count (volatile! nil)
         targets (if from
@@ -1009,6 +1014,7 @@
         ret (compile-returning ctx src (:returning st))
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
+        _ (when (and fkt (not vw)) (fk/locate-all! db tbl [] nil))
         _ (prepared! (:names ret))
         dret-rows (java.util.ArrayList.)
         doomed (vec (filter (fn [[rid row]]
@@ -1849,7 +1855,13 @@
       (err m)))
   (if (and (#{:insert :update :delete} (:kind st)) (contains? sch/master-names (lc (:table st))) (writable-schema? db))
     (exec-master-dml db sql st out n0)
-    (exec-statement** db sql st out n0)))
+    (let [db2 (exec-statement** db sql st out n0)]
+      ;; defer_foreign_keys switches itself off at every COMMIT / ROLLBACK (autocommit statements included)
+      (if (and (map? db2) (not= 0 (get-in db2 [:pragmas "defer_foreign_keys"] 0))
+               (or (#{:commit :rollback} (:kind st))
+                   (and (nil? (:tx db2)) (not (readonly? st)) (not= :pragma (:kind st)))))
+        (assoc-in db2 [:pragmas "defer_foreign_keys"] 0)
+        db2))))
 
 (defn- exec-statement** [db sql st ^StringBuilder out n0]
   (when (and (= 1 (get-in db [:pragmas "query_only"]))
@@ -1947,7 +1959,7 @@
                  (when (or (seq @fk/*child*) (seq @fk/*parent*))
                    (try (fk/verify r @fk/*child* @fk/*parent*)
                         (catch clojure.lang.ExceptionInfo ex
-                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*)) 1 0)))))))
+                          (throw (ex-info (ex-message ex) (assoc (ex-data ex) :changes-after (if (and (= 1 (long (:changes r))) (empty? @fk/*parent*) (or (= :insert (:kind st)) (:where st))) 1 0)))))))
                  r))]
       (cond
         (seq (:returning st)) (doseq [r rows] (write-row out r))
@@ -2006,8 +2018,10 @@
                                                                  (some #(= (lc (:table %)) (lc (sch/display-name (:name t) t))) (:fks ct))))
                                                (:tables db)))
                             db (if parent?
-                                 (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
-                                   (assoc d :changes (:changes db)))
+                                 (try (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
+                                        (assoc d :changes (:changes db)))
+                                      (catch clojure.lang.ExceptionInfo ex
+                                        (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "foreign key mismatch")) db (throw ex))))
                                  db)]
                         (exec-drop db st))
                 :reindex (exec-reindex db st)
