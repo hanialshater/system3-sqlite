@@ -698,7 +698,8 @@
                                                                                   :else (err (str (count cols) " columns assigned 1 values"))))
                                                                           (:sets u)))]
                                                    (vec (for [[c ex k] items]
-                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))
+                                                                 i (if (and (neg? i) (#{"rowid" "oid" "_rowid_"} (lc c)) (:ipk tbl)) (:ipk tbl) i)]
                                                              (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                                                                (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                                              (if (neg? i) (err (str "no such column: " c)) i))
