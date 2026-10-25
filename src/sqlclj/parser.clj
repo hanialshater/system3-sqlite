@@ -828,14 +828,18 @@
                  (if (accept-op p ",") (recur acc) acc)))
         from (when (accept-kw p "FROM") (parse-from p))
         where (when (accept-kw p "WHERE") (parse-expr p))
-        ret (parse-returning p)]
+        ret (parse-returning p)
+        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :update :or or-action :sets sets :from from :where where :returning ret} qt)))
 
 (defn- parse-delete [^P p]
   (expect-kw p "FROM")
   (let [qt (parse-qualified-table p)
         where (when (accept-kw p "WHERE") (parse-expr p))
-        ret (parse-returning p)]
+        ret (parse-returning p)
+        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :delete :where where :returning ret} qt)))
 
 ;; ------------------------------------------------------------------ statements
