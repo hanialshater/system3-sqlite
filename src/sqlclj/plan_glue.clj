@@ -183,7 +183,7 @@
                                           num? #(#{:integer :real :numeric} %)]
                                       (or (= a1 a2) (and (num? a1) (num? a2))))
                                     (let [c (cmp-coll G l r)]
-                                      (or (= c "BINARY") (= (some-> (col-coll G lcol) str/upper-case) (some-> (col-coll G rcol) str/upper-case)))))
+                                      (or (= c "BINARY") (= (str/upper-case (or (col-coll G lcol) "BINARY")) (str/upper-case (or (col-coll G rcol) "BINARY"))))))
                         base (fn [op left right-col pr]
                                (assoc t :op op :left left :right-col right-col :prereq-right pr :coll coll :cmp-aff aff
                                       :rhs (if (and lcol (= left lcol)) r l)
