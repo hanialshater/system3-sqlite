@@ -164,9 +164,9 @@
                   :else [db st])
         name (:name st) lname (lc name)]
     (cond
+      (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
-      (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
       (get-in db [:indexes lname]) (err (str "there is already an index named " name))
       (:as st)
       (let [ctx (new-ctx db sql)
@@ -1809,6 +1809,13 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be indexed")))
+  (when (and (= :drop (:kind st)) (= :table (:what st))
+             (let [ln (lc (:name st))]
+               (and (str/starts-with? ln "sqlite_") (not (str/starts-with? ln "sqlite_stat"))
+                    (get-in db [:tables ln]))))
+    (err (str "table " (:name st) " may not be dropped")))
+  (when (and (= :create-view (:kind st)) (str/starts-with? (lc (:name st)) "sqlite_"))
+    (err (str "object name reserved for internal use: " (:name st))))
   (when (and (#{:create-table :create-view :create-trigger} (:kind st)) (:temp st) (:schema st)
              (not= "temp" (lc (:schema st))))
     (err (str "temporary " (case (:kind st) :create-table "table" :create-view "view" "trigger") " name must be unqualified")))
@@ -1896,6 +1903,7 @@
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
+                :create-vtab (err (str "no such module: " (:module st)))
                 :create-view (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
                                    ln0 (lc (:name st))
                                    exv (get-in db [:views ln0])

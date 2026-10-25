@@ -1027,6 +1027,22 @@
                       cols (parse-indexed-cols p)
                       where (when (accept-kw p "WHERE") (parse-expr p))]
                   {:kind :create-index :unique (boolean unique) :if-not-exists ine :name name :schema sch :name-s @name-s :table tname :cols cols :where where})
+                (and (not unique) (not temp) (accept-kw p "VIRTUAL"))
+                (let [_ (expect-kw p "TABLE")
+                      ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
+                      n1 (parse-nm p)
+                      [sch name] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
+                      _ (expect-kw p "USING")
+                      module (parse-nm p)
+                      _ (when (at-op? p "(")
+                          (advance! p)
+                          (loop [depth 1]
+                            (let [t (tok p)]
+                              (cond (= :eof (:t t)) (fail! p)
+                                    (= "(" (:v t)) (do (advance! p) (recur (inc depth)))
+                                    (= ")" (:v t)) (do (advance! p) (when (> depth 1) (recur (dec depth))))
+                                    :else (do (advance! p) (recur depth))))))]
+                  {:kind :create-vtab :name name :schema sch :module module :if-not-exists ine})
                 (and (not unique) (accept-kw p "VIEW"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
