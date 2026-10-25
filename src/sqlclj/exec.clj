@@ -89,8 +89,9 @@
   ([ast what]
    (doseq [x (tree-seq coll? seq ast) :when (map? x)]
      (case (:op x)
-       :fn (when (nondeterministic-fns (lc (:name x)))
+       :fn (when (and (nondeterministic-fns (lc (:name x))) (not= what "CHECK constraints"))
              (err (str "non-deterministic functions prohibited in " what)))
+       :lit (when (:var x) (err (str "parameters prohibited in " what)))
        (:subq :exists) (err (str "subqueries prohibited in " what))
        nil))))
 
@@ -250,6 +251,7 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})
                          (for [k (:tcons st) :when (= :check (:c k))]
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
+            _ (doseq [ck checks] (check-gen-expr (:e ck) "CHECK constraints"))
             fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
             _ (doseq [k fks]
@@ -1133,7 +1135,16 @@
               (into (sorted-map) (remove (fn [[_ r]] (= (first r) tname)) (:rows t))))
     db))
 
+(declare exec-drop*)
 (defn- exec-drop [db st]
+  (let [lname (lc (:name st))
+        was-temp (boolean (or (:temp (get-in db [:tables lname])) (:temp (get-in db [:views lname]))))
+        r (exec-drop* db st)]
+    (if (and was-temp (map? r) (not (str/includes? lname ".")))
+      (sch/move-main-back r lname)
+      r)))
+
+(defn- exec-drop* [db st]
   (let [lname (lc (:name st))
         q (some-> (:qual-schema st) lc)
         q (when (#{"main" "temp"} q) q)
@@ -1142,13 +1153,15 @@
         shown (if q (str q "." (:name st)) (:name st))]
     (case (:what st)
       :table (if-let [t (look [:tables lname])]
+               (if (and (str/starts-with? lname "sqlite_") (not (str/starts-with? lname "sqlite_stat")) (not (str/starts-with? lname "sqlite_parameters")))
+                 (err (str "table " (:name st) " may not be dropped"))
                (let [idxs (filter (fn [i] (= (:table i) lname)) (vals (:indexes db)))
                      db (reduce (fn [db o] (sch/free-page db (sch/schema-of o) (:rootpage o))) db (cons t idxs))]
                  (-> db
                      (update :tables dissoc lname)
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
                      (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
-                     (drop-seq-row (:name t))))
+                     (drop-seq-row (:name t)))))
                (cond (look [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
                      (:if-exists st) db
                      :else (err (str "no such table: " shown))))
@@ -1874,7 +1887,7 @@
     (err (str "table " (:table st) " may not be modified")))
   (when (and (= :drop (:kind st)) (= :table (:what st)) (contains? sch/master-names (lc (:name st))))
     (err (str "table " (:name st) " may not be dropped")))
-  (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
+  (when (and (= :create-index (:kind st)) (or (contains? sch/master-names (lc (:table st))) (str/starts-with? (lc (:table st)) "sqlite_")))
     (err (str "table " (:table st) " may not be indexed")))
   ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
   ;; and its table must be there too

@@ -251,7 +251,7 @@
       (vec (for [[id fk] (map-indexed vector fks)
                  [seq from] (map-indexed vector (:from fk))]
              [(long id) (long seq) (:table fk) from (get (:to fk) seq)
-              (act-name (:on-update fk)) (act-name (:on-delete fk)) (or (some-> (:match fk) str/upper-case) "NONE")])))
+              (act-name (:on-update fk)) (act-name (:on-delete fk)) "NONE"])))
     []))
 
 (def ^:dynamic *fk-check* nil)

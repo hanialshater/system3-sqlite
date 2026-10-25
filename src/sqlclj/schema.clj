@@ -269,3 +269,18 @@
         (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) l) (assoc i :table k) i)]) m))))
         (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) l) (assoc g :table k) g)]) m))))
         (assoc :shadow true))))
+
+(defn move-main-back
+  "A temp object called l was dropped: a main table or view parked under main.l takes its place again."
+  [db l]
+  (let [k (str "main." l)
+        t (get-in db [:tables k])
+        v (get-in db [:views k])
+        plain (fn [o] (-> o (update :name (fn [n] (if (str/starts-with? (str n) "main.") (subs n 5) n))) (dissoc :db)))]
+    (if (or t v)
+      (-> db
+          (cond-> t (-> (update :tables dissoc k) (assoc-in [:tables l] (plain t))))
+          (cond-> v (-> (update :views dissoc k) (assoc-in [:views l] (plain v))))
+          (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) k) (assoc i :table l) i)]) m))))
+          (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) k) (assoc g :table l) g)]) m)))))
+      db)))
