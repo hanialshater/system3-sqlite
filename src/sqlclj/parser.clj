@@ -366,6 +366,8 @@
           (do (advance! p)
               (let [c (parse-nm p)]
                 (recur (node {:op :collate :e left :coll c} s (prev-end p)))))
+          (and (<= minp 4) (= :id (:t t)) (= "NOT" (:u t)) (= :eof (:t (tok-at p 1))))
+          (do (advance! p) (fail! p))
           ;; level 4 specials
           (and (<= minp 4) (= :id (:t t))
                (or (#{"IS" "IN" "LIKE" "GLOB" "BETWEEN" "ISNULL" "NOTNULL" "MATCH" "REGEXP"} (:u t))
@@ -426,13 +428,15 @@
 
 ;; ------------------------------------------------------------------ SELECT
 
-(defn- parse-alias [^P p]
-  (if (accept-kw p "AS")
-    (parse-nm p)
-    (let [t (tok p)]
-      (when (or (and (ident-tok? t) (not (join-kw (:u t))) (not (#{"WINDOW" "INDEXED" "OVER" "FILTER"} (:u t))))
-                (= :str (:t t)))
-        (advance! p) (:v t)))))
+(defn- parse-alias
+  ([^P p] (parse-alias p true))
+  ([^P p table?]
+   (if (accept-kw p "AS")
+     (parse-nm p)
+     (let [t (tok p)]
+       (when (or (and (ident-tok? t) (not (join-kw (:u t))) (not (and table? (#{"WINDOW" "INDEXED" "OVER" "FILTER"} (:u t)))))
+                 (= :str (:t t)))
+         (advance! p) (:v t))))))
 
 (defn- parse-result-col [^P p]
   (let [t (tok p) s (:s t)]
@@ -442,7 +446,7 @@
       (do (advance! p) (advance! p) (advance! p) {:star true :table (:v t)})
       :else
       (let [e (parse-expr p)
-            alias (parse-alias p)]
+            alias (parse-alias p false)]
         {:e e :alias alias}))))
 
 (declare parse-from)
