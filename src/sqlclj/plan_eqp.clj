@@ -60,7 +60,7 @@
 (defn- table-indexes [db tbl]
   (->> (vals (:indexes db))
        (filter #(= (:table %) (lc (:name tbl))))
-       (sort-by (fn [i] (- (long (:seq i)))))))
+       (sort-by (fn [i] (long (:seq i))))))
 
 (defn- build-tab [info G i src item]
   (let [db (:db info)
@@ -118,7 +118,7 @@
                               (if (> nterm 1) (str "(" (str/join "," (repeat nterm "?")) ")") "?")))
                   btm (when (contains? flags :btm-limit) (term (:nbtm lp) j (pos? neq) ">"))
                   top (when (contains? flags :top-limit) (term (:ntop lp) j (or (pos? neq) (contains? flags :btm-limit)) "<"))]
-              (str " (" (str/join " AND " eqs) (when (and (seq eqs) (or btm top)) " AND ") "" btm top ")"))))
+              (str " (" (str/join " AND " eqs) btm top ")"))))
         ]
     (str (if search? "SEARCH " "SCAN ") tname
          (cond
@@ -150,11 +150,10 @@
             ;; WHERE and ON terms
             conjuncts (concat
                        (for [x (e/split-and* (:where info))] {:expr x})
-                       (apply concat
-                              (for [[i it] (map-indexed vector from)
+                       (for [[i it] (map-indexed vector from)
                                     :let [left? (#{:left :natural-left} (:join it))]
                                     x (when (:on it) (e/split-and* (:on it)))]
-                                {:expr x :on-of (when left? i)})))
+                                {:expr x :on-of (when left? i)}))
             terms (mapv #(assoc % :ucols (g/ucols G (:expr %))) (g/analyze-where G conjuncts))
             ;; per-term used columns and prerequisites
             tabs (vec (map-indexed (fn [i [s it]] (build-tab (assoc info :auto-ok true) G i s it)) (map vector srcs from)))

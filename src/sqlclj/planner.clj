@@ -304,7 +304,9 @@
                                 nout (if (= eop :isnull) (+ nout 10) nout)]
                             (assoc lp1 :nout nout)))))
                     nout-after (long (:nout lp2))
-                    rcostidx (+ nout-after 1 (quot (* 15 (long (:szidx probe))) (long (:szrow tab))))
+                    rcostidx (if (:ipk probe)
+                               (+ nout-after 16)
+                               (+ nout-after 1 (quot (* 15 (long (:szidx probe))) (long (:szrow tab)))))
                     run (le-add rlogsize rcostidx)
                     run (if (zero? (count (filter #{:idx-only :ipk :expridx} flags)))
                           (le-add run (+ nout-after 16))
