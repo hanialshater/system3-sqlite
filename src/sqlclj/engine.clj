@@ -621,6 +621,7 @@
           cs-like (let [x (get-in (:db ctx) [:pragmas "case_sensitive_like"])] (boolean (and x (not= x 0) (not= x false))))
           negate (:not e)]
       (when (= :regexp (:o e)) (err (str "no such function: " (or (:ostr e) "REGEXP"))))
+      (when (and glob? es) (err "wrong number of arguments to function GLOB()"))
       (mk (fn [env]
             (when (= :match (:o e)) (err "unable to use function MATCH in the requested context"))
             (let [s (fx env) pat (fp env) esc (when fe (fe env))]
@@ -892,9 +893,13 @@
       (v/utf8->str (java.util.Arrays/copyOfRange b (int st) (int en))))))
 
 (defn- quote-impl [x]
+  (when (and (v/blob? x) (> (* 2 (alength ^bytes (v/blob-bytes x))) 1000000000))
+    (err "string or blob too big"))
   (cond (nil? x) "NULL"
         (instance? Long x) (str x)
-        (instance? Double x) (num/real->text (double x))
+        (instance? Double x) (let [d (double x)]
+                               (cond (Double/isInfinite d) (if (pos? d) "9.0e+999" "-9.0e+999")
+                                     :else (num/real->text d)))
         (string? x) (let [k (.indexOf ^String x (int 0)) x (if (neg? k) x (subs x 0 k))]
                       (str "'" (str/replace x "'" "''") "'"))
         :else (str "X'" (v/hex-upper (v/blob-bytes x)) "'")))
@@ -960,6 +965,8 @@
                   (first (num/atof s))))))))
 
 (defn- hex-impl [x]
+  (when (and (or (string? x) (v/blob? x)) (> (* 2 (if (string? x) (.length ^String x) (alength ^bytes (v/blob-bytes x)))) 1000000000))
+    (err "string or blob too big"))
   (if (nil? x) "" (v/hex-upper (if (or (instance? Long x) (instance? Double x)) (v/str->utf8 (v/text-of x)) (v/bytes-of x)))))
 
 (defn- unicode-impl

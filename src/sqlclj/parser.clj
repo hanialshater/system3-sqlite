@@ -134,7 +134,13 @@
       :hex (do (advance! p) (node {:op :lit :kind :hex :text (:v t)} s (:e t)))
       :str (do (advance! p) (node {:op :lit :v (:v t)} s (:e t)))
       :blob (do (advance! p) (node {:op :lit :kind :blob :text (:v t)} s (:e t)))
-      :var (do (advance! p) (node {:op :lit :v nil :var true} s (:e t)))
+      :var (do (advance! p)
+               (let [vv ^String (:v t)]
+                 (when (and (> (.length vv) 1) (= \? (.charAt vv 0)))
+                   (let [x (try (Long/parseLong (subs vv 1)) (catch Exception _ -1))]
+                     (when-not (and (> x 0) (<= x 32766))
+                       (throw (lx/sql-error "variable number must be between ?1 and ?32766"))))))
+               (node {:op :lit :v nil :var true} s (:e t)))
       :op
       (cond
         (= "(" (:v t))
