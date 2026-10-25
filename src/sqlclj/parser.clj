@@ -76,6 +76,9 @@
 
 (defn- node [m s e] (assoc m :ps s :pe e))
 
+(defn- name-raw [^P p start]
+  (some (fn [t] (when (= (:s t) start) (subs (.-sql p) (:s t) (:e t)))) (.-toks p)))
+
 (defn- prev-end [^P p] (:e (nth (.-toks p) (dec (pos p)))))
 
 (defn- parse-type-name
@@ -159,13 +162,29 @@
         :else (fail! p))
       :qid
       (do (advance! p)
+          (cond
+            (and (at-op? p "(") (not (:dq-only t)))
+            (do (advance! p)
+                (let [fa (parse-function-args p)
+                      filt (when (at-kw? p "FILTER")
+                             (advance! p) (expect-op p "(") (expect-kw p "WHERE")
+                             (let [e (parse-expr p)] (expect-op p ")") e))
+                      over (when (accept-kw p "OVER")
+                             (if (accept-op p "(")
+                               (let [w (parse-window-def p)] (expect-op p ")") w)
+                               (parse-nm p)))]
+                  (node (cond-> (merge {:op :fn :name (str/lower-case (:v t)) :rawname (:v t)} fa)
+                          filt (assoc :filter filt)
+                          over (assoc :over over))
+                        s (prev-end p))))
+            :else
           (if (at-op? p ".")
             (do (advance! p)
                 (let [n2 (parse-nm p)]
                   (if (at-op? p ".")
                     (do (advance! p) (let [n3 (parse-nm p)] (node {:op :col :schema (:v t) :table n2 :name n3} s (prev-end p))))
                     (node {:op :col :table (:v t) :name n2} s (prev-end p)))))
-            (node {:op :col :name (:v t) :dq (:dq t)} s (:e t))))
+            (node {:op :col :name (:v t) :dq (:dq t) :quoted true} s (:e t)))))
       :id
       (let [u (:u t)]
         (cond
@@ -400,7 +419,7 @@
                               (cond
                                 (and (= :lit (:op r)) (nil? (:kind r)) (nil? (:v r)) (not dist))
                                 (fold-null-test n left (not isnot))
-                                (and (= :col (:op r)) (nil? (:table r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
+                                (and (= :col (:op r)) (nil? (:table r)) (not (:quoted r)) (#{"true" "false"} (str/lower-case (str (:name r)))))
                                 ;; x IS [NOT] TRUE/FALSE tests truthiness: mode bit 1 = FALSE, bit 2 = NOT
                                 (node {:op :fn :name "\u0000truth"
                                        :args [left {:op :lit :kind :int :text (str (+ (if (= "false" (str/lower-case (:name r))) 1 0) (if isnot 2 0)))}]}
@@ -502,11 +521,24 @@
     (accept-op p ",") :cross-comma
     (at-kw? p "JOIN") (do (advance! p) :inner)
     (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-    (let [kws (loop [acc []]
-                (if (and (= :id (:t (tok p))) (join-kw (:u (tok p))))
-                  (recur (conj acc (:u (advance! p))))
-                  acc))]
-      (expect-kw p "JOIN")
+    (let [t0 (advance! p)
+          more (loop [acc []]
+                 (let [t (tok p)]
+                   (if (and (< (count acc) 2) (not (kw? t "JOIN"))
+                            (or (ident-tok? t) (= :str (:t t))))
+                     (do (advance! p) (recur (conj acc t)))
+                     acc)))
+          _ (expect-kw p "JOIN")
+          all (cons t0 more)
+          codes {"NATURAL" #{:nat} "LEFT" #{:left :outer} "OUTER" #{:outer} "RIGHT" #{:right :outer}
+                 "FULL" #{:left :right :outer} "INNER" #{:inner} "CROSS" #{:inner :cross}}
+          bits (reduce (fn [acc t] (let [c (and (= :id (:t t)) (codes (:u t)))]
+                                     (if c (into acc c) (reduced (conj acc :error)))))
+                       #{} all)
+          _ (when (or (and (bits :inner) (bits :outer)) (bits :error)
+                      (and (bits :outer) (not (bits :left)) (not (bits :right))))
+              (throw (lx/sql-error (str "unknown join type: " (str/join " " (map #(tok-text p %) all))))))
+          kws (map :u all)]
       (let [s (set kws)]
         (cond
           (s "NATURAL") (cond (s "LEFT") :natural-left (s "RIGHT") :natural-right (s "FULL") :natural-full :else :natural)
@@ -517,23 +549,38 @@
           :else :inner)))
     :else nil))
 
+(defn- valid-after-from? [^P p]
+  (let [t (tok p)]
+    (or (= :eof (:t t))
+        (and (= :op (:t t)) (#{";" ")" ","} (:v t)))
+        (and (= :id (:t t))
+             (contains? #{"WHERE" "GROUP" "HAVING" "WINDOW" "ORDER" "LIMIT" "UNION" "INTERSECT" "EXCEPT" "JOIN"
+                          "LEFT" "RIGHT" "FULL" "INNER" "CROSS" "NATURAL" "RETURNING" "OUTER"} (:u t))))))
+
 (defn parse-from [^P p]
   (loop [items (let [first-ref (parse-table-ref p)]
                  (cond
                    (at-kw? p "ON")
                    (do (advance! p) (parse-expr p)
-                       (when (at-kw? p "USING") (fail! p))
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before ON")))
                    (at-kw? p "USING")
                    (do (advance! p) (expect-op p "(")
                        (loop [] (parse-nm p) (when (accept-op p ",") (recur)))
                        (expect-op p ")")
+                       (when-not (valid-after-from? p) (fail! p))
                        (throw (lx/sql-error "a JOIN clause is required before USING")))
+                   ;; SQLite's parser flattens an unaliased parenthesized join in the first position
+                   (and (:nested first-ref) (nil? (:alias first-ref))) (vec (:nested first-ref))
                    :else [first-ref]))]
     (let [save (pos p)
           jt (parse-join-op p)]
       (if (nil? jt)
-        items
+        ;; a leading parenthesized join without alias is simply spliced into the FROM list (as SQLite's parser does)
+        (let [f (first items)]
+          (if (and (:nested f) (nil? (:alias f)) (nil? (:on f)) (nil? (:using f)) (nil? (:join f)))
+            (into (vec (:nested f)) (rest items))
+            items))
         (let [ref (parse-table-ref p)
               ref (cond
                     (accept-kw p "ON") (assoc ref :on (parse-expr p))
@@ -754,7 +801,7 @@
     (try
     (if (accept-kw p "AS")
       (do (vreset! entered true)
-          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :as (parse-select p)})
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :as (parse-select p)})
       (do
         (expect-op p "(")
         (vreset! entered true)
@@ -767,6 +814,8 @@
                                 (if (accept-kw p "CONSTRAINT") (recur (parse-nm p)) nm)))
                       t (tok p)]
                   (cond
+                    (and cname (empty? cols) (not (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))))
+                    (syntax-error p t0)
                     (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))
                     (if (empty? cols) (syntax-error p t0)
                         (let [tc (case (:u t)
@@ -790,19 +839,21 @@
                       (cond (accept-op p ",") (recur cols tcons)
                             (accept-op p ")") [cols tcons]
                             :else (fail! p))))))
-              opts (loop [opts #{}]
+              opts (loop [opts #{} need false]
                      (cond
-                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o) o))
+                       (accept-kw p "STRICT") (let [o (conj opts :strict)] (if (accept-op p ",") (recur o true) o))
                        (at-kw? p "WITHOUT") (do (advance! p)
                                                 (let [t (advance! p)]
                                                   (when-not (= "ROWID" (:u t)) (syntax-error p t)))
-                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
+                                                (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o true) o)))
+                       need (fail! p)
+                       (and (empty? opts) (accept-op p ",")) (recur opts true)
                        :else opts))]
-          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :tcons tcons
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
     (catch clojure.lang.ExceptionInfo ex
       (if (and (:sql-error (ex-data ex)) (not ine) @entered)
-        (throw (ex-info (ex-message ex) (assoc (ex-data ex) :pending-create {:name name :schema sch})))
+        (throw (ex-info (ex-message ex) (assoc (ex-data ex) :pending-create {:name name :schema sch :raw (name-raw p @name-s)})))
         (throw ex))))))
 
 ;; ------------------------------------------------------------------ DML
@@ -961,7 +1012,7 @@
                                    (expect-op p ")") c))
                       _ (expect-kw p "AS")
                       sel (parse-select p)]
-                  {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :select sel})
+                  {:kind :create-view :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :select sel})
                 (and (not unique) (accept-kw p "TRIGGER"))
                 (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
                       name-s (volatile! (:s (tok p)))
@@ -994,7 +1045,7 @@
                                                   (fail! p))]
                                          (expect-op p ";")
                                          (recur (conj acc st))))))]
-                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine
+                  {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine
                    :timing timing :event event :cols cols :table tname :table-schema tsch :when wh :body body})
                 :else (fail! p))))
         "DROP"

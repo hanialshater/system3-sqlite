@@ -36,7 +36,7 @@
   (let [l (lc nm)
         i (.indexOf ^java.util.List (mapv (comp lc :name) (:cols tbl)) l)]
     (cond (>= i 0) (nth row i)
-          (#{"rowid" "oid" "_rowid_"} l) (peek row)
+          (and (not (:view tbl)) (#{"rowid" "oid" "_rowid_"} l)) (peek row)
           :else (err (str "no such column: " side "." nm)))))
 
 (defn- col-def [tbl nm]
@@ -88,7 +88,7 @@
   (binding [*budget* (or *budget* (atom 0))]
     (reduce (fn [db trig]
               (if (and (contains? *active* (lc (:name trig)))
-                       (not (get-in db [:pragmas "recursive_triggers"])))
+                       (not= 1 (get-in db [:pragmas "recursive_triggers"])))
                 db
                 (run-program db trig tbl old new)))
             db trigs)))
