@@ -84,7 +84,7 @@
                        [s i]))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
-                       (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))]] [])))
+                       (if (= 1 (count rs)) [[(first rs) (:ncols (first rs))]] (if (seq rs) [[(first rs) (:ncols (first rs))] [(second rs) (:ncols (second rs))]] [])))
                      hits)]
           (cond
             (> (count hits) 1)
@@ -930,7 +930,7 @@
                   (first (num/atof s))))))))
 
 (defn- hex-impl [x]
-  (if (nil? x) "" (v/hex-upper (v/bytes-of x))))
+  (if (nil? x) "" (v/hex-upper (if (or (instance? Long x) (instance? Double x)) (v/str->utf8 (v/text-of x)) (v/bytes-of x)))))
 
 (defn- unicode-impl
   "sqlite3Utf8Read on the first character of the UTF-8 bytes."
@@ -1861,12 +1861,11 @@
     (:star-col rc) (:name rc)
     (= :col (:op (:e rc)))
     (let [e (:e rc)]
-      (or (when (#{"rowid" "oid" "_rowid_"} (lc (:name e)))
-            ;; rowid of a table with an INTEGER PRIMARY KEY is shown by that column's name
+      (or (when (rowid-name? (lc (:name e)))
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
-                  s (:src r) tbl (:table s)]
-              (when (and tbl (:ipk tbl) (= (:idx r) (:ncols s)) (not (find-in-source s (lc (:name e)))))
-                (:name (nth (:cols tbl) (:ipk tbl))))))
+                  s (:src r) t (:table s)]
+              (when (and t (not (:virtual t)) (= (:idx r) (:ncols s)))
+                (if (:ipk t) (:name (nth (:cols t) (:ipk t))) "rowid"))))
           (when (:table e)
             ;; a qualified column of a table nested two joins deep shows the sub-select's column name
             (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))

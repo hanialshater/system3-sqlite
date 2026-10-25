@@ -52,7 +52,7 @@
                                          (#{"rowid" "oid" "_rowid_"} (lc (:name ast))) ncols
                                          :else (err (str "no such column: " (:name ast))))))
                             c (when-not ci (compile-row-expr db sql tbl ast))]
-                        {:col ci :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
+                        {:col ci :ast ast :kf (:rowf c) :name (if ci (if (< ci ncols) (:name (nth (:cols tbl) ci)) "rowid") nil)
                          :coll-text (:coll ic)
                          :coll (if (:coll ic) (e/check-coll (:coll ic))
                                    (if ci (or (when (< ci ncols) (:coll (nth (:cols tbl) ci))) "BINARY")
@@ -165,6 +165,7 @@
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") name " already exists")))
       (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
+      (get-in db [:indexes lname]) (err (str "there is already an index named " name))
       (:as st)
       (let [ctx (new-ctx db sql)
             sub (e/compile-select ctx (:as st))
@@ -414,7 +415,7 @@
                          :rowid (when (:ipk tbl) (:pk-conflict tbl)))
                  tbl))
              (index-steps [tbl]
-               (loop [tbl tbl idxs idxs]
+               (loop [tbl tbl idxs (sort-by #(if (upsert-target? %) 0 1) idxs)]
                  (if (empty? idxs)
                    tbl
                    (let [idx (first idxs)
@@ -478,8 +479,20 @@
         (nil? target) true
         (= what :rowid) (and (:ipk tbl) (= 1 (count (:cols target)))
                              (= (lc (:name (:e (first (:cols target))))) (lc (:name (nth (:cols tbl) (:ipk tbl))))))
-        (map? what) (= (set (map (comp lc :name :e) (:cols target)))
-                       (set (map (comp lc :name) (:cols what))))
+        (map? what)
+        (let [sp (var-get #'e/strip-pos)
+              tw (:where target) iw (:where-ast what)
+              tcols (:cols target) icols (:cols what)]
+          (and (= (count tcols) (count icols))
+               (if tw (or (nil? iw) (= (sp tw) (sp iw))) (nil? iw))
+               (every? (fn [tc]
+                         (some (fn [ic]
+                                 (and (if (:name ic)
+                                        (and (= :col (:op (:e tc))) (= (lc (:name ic)) (lc (:name (:e tc)))))
+                                        (and (:ast ic) (= (sp (:e tc)) (sp (:ast ic)))))
+                                      (or (nil? (:coll tc)) (= (lc (str (:coll ic))) (lc (str (:coll tc)))))))
+                               icols))
+                       tcols)))
         :else false))))
 
 (defn- fail-partial
@@ -576,8 +589,8 @@
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
         up-ctx (when (seq upserts) ctx)
-        tsrc (when (seq upserts) (table-source ctx tbl nil))
-        xsrc (when (seq upserts) (assoc (table-source ctx tbl "excluded") :rowid? false :qualified-only true))
+        tsrc (when (seq upserts) (table-source ctx tbl (:alias st)))
+        xsrc (when (seq upserts) (assoc (table-source ctx tbl (if (and (nil? (:alias st)) (= "excluded" (lc (:name tbl)))) "\u0000x" "excluded")) :rowid? false :qualified-only true))
         up-compiled (when (seq upserts)
                       (let [uctx (assoc ctx :scope {:sources [tsrc xsrc] :parent nil})]
                         (mapv (fn [u]
@@ -982,7 +995,9 @@
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
                      (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
                      (drop-seq-row (:name t))))
-               (if (:if-exists st) db (err (str "no such table: " (:name st)))))
+               (cond (get-in db [:views lname]) (err (str "use DROP VIEW to delete view " (:name st)))
+                     (:if-exists st) db
+                     :else (err (str "no such table: " (:name st)))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
                  (err "index associated with UNIQUE or PRIMARY KEY constraint cannot be dropped")
@@ -991,7 +1006,9 @@
       :view (if (get-in db [:views lname])
               (-> db (update :views dissoc lname)
                   (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m)))))
-              (if (:if-exists st) db (err (str "no such view: " (:name st)))))
+              (cond (get-in db [:tables lname]) (err (str "use DROP TABLE to delete table " (:name st)))
+                    (:if-exists st) db
+                    :else (err (str "no such view: " (:name st)))))
       :trigger (if (get-in db [:triggers lname])
                  (update db :triggers dissoc lname)
                  (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
@@ -1536,7 +1553,8 @@
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
                 :create-view (let [ln (lc (:name st))]
-                               (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
+                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
+                                     (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
                                      :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
                                                  (err "parameters are not allowed in views"))
@@ -1554,7 +1572,18 @@
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
-                :drop (exec-drop db st)
+                :drop (let [ln (lc (:name st))
+                            t (get-in db [:tables ln])
+                            parent? (and t (= :table (:what st)) (= 1 (get-in db [:pragmas "foreign_keys"]))
+                                         (seq (:rows t))
+                                         (some (fn [[k ct]] (and (not= k ln)
+                                                                 (some #(= (lc (:table %)) (lc (sch/display-name (:name t) t))) (:fks ct))))
+                                               (:tables db)))
+                            db (if parent?
+                                 (let [d (exec-statement db sql {:kind :delete :table ln :where nil :returning nil} (StringBuilder.))]
+                                   (assoc d :changes (:changes db)))
+                                 db)]
+                        (exec-drop db st))
                 :reindex (exec-reindex db st)
                 :alter (exec-alter db sql st out)
                 :analyze (exec-analyze db sql st)
