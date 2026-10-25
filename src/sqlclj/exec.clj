@@ -580,13 +580,13 @@
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
                                   (err (str (count r) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count r) " values were supplied")))))
+                                  (err (str "table " (if-let [q (:qual-schema st)] (str q "." (sch/display-name (:name tbl) tbl)) (:name tbl)) " has " (- ncols ngen) " columns but " (count r) " values were supplied")))))
                             (mapv (fn [r] (mapv #(:f (e/cx ctx %)) r)) rs))
                (:select st) (let [sub (e/compile-select ctx (:select st))]
                               (when (not= (count (:names sub)) (count targets))
                                 (if (:cols st)
                                   (err (str (count (:names sub)) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
+                                  (err (str "table " (if-let [q (:qual-schema st)] (str q "." (sch/display-name (:name tbl) tbl)) (:name tbl)) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
                               sub))
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
@@ -939,7 +939,9 @@
         tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
     (cond
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " name " already exists")))
-      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "." (:table st)))
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
+                                                      (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
+                                                        (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
       (and view (not= :instead (:timing st)))
       (err (str "cannot create " (if (= :before (:timing st)) "BEFORE" "AFTER") " trigger on view: " (:table st)))
       (and tbl (= :instead (:timing st))) (err (str "cannot create INSTEAD OF trigger on table: " (:table st)))
@@ -1476,7 +1478,7 @@
             k (:cons d) :when (= :default (:c k))]
       (when-not (sch/constant-default? (:e k))
         (err (str "default value of column [" (:name d) "] is not constant")))))
-  (let [st (sch/qualify-stmt db st)]
+  (let [st (sch/qualify-stmt db (if (:schema st) (assoc st :qual-schema (:schema st)) st))]
   (case (:kind st)
     :attach
     (let [ctx (new-ctx db sql)
@@ -1555,7 +1557,16 @@
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
                 :create-trigger (create-trigger db sql st)
-                :create-view (let [ln (lc (:name st))]
+                :create-view (let [st (if (= "temp" (lc (:schema st))) (assoc st :temp true) st)
+                                   ln0 (lc (:name st))
+                                   exv (get-in db [:views ln0])
+                                   [db st] (cond
+                                             (and (:temp st) exv (not (:temp exv)) (nil? (:db exv)) (not (:db st)))
+                                             [(sch/move-main-aside db ln0) st]
+                                             (and (not (:temp st)) (nil? (:db st)) exv (:temp exv))
+                                             [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
+                                             :else [db st])
+                                   ln (lc (:name st))]
                                (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
                                      (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))

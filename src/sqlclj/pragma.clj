@@ -203,7 +203,11 @@
         (if (nil? v) (one db n (long (pget db n 0)))
             (let [u (lc v)
                   x (case u "none" 0 "full" 1 "incremental" 2 (or (int-value v) 0))]
-              {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))
+              (let [cur (long (pget db n 0))
+                    blocked (and (seq (get-in db [:pages "main"])) (not= (zero? cur) (zero? (long x))))]
+                (if blocked
+                  (none db)
+                  {:db (pset db n x) :names nil :rows [] :writes (not (zero? (long x)))}))))
         "encoding" (let [cur (pget db "encoding" "UTF-8")]
                      (if (nil? v)
                        (one db n cur)

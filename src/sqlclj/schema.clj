@@ -169,7 +169,7 @@
            :alias (or (:alias item) (:table item)))
     (if (and (:table item) (not (:op item)) (or (nil? (:schema item)) (= "main" (lc* (:schema item))))
              (or (seq (:attached db)) (:shadow db)))
-      (let [k (resolve-key db (:table item) nil)]
+      (let [k (resolve-key db (:table item) (:schema item))]
         (if (= k (lc* (:table item))) item (assoc item :table k :schema nil :alias (or (:alias item) (:table item)))))
       item)))
 
@@ -234,10 +234,11 @@
   "A temp table is being created with the name of main table l: the main table moves to key main.l."
   [db l]
   (let [k (str "main." l)
-        t (get-in db [:tables l])]
+        t (get-in db [:tables l])
+        v (get-in db [:views l])]
     (-> db
-        (update :tables dissoc l)
-        (assoc-in [:tables k] (assoc t :name (str "main." (:name t)) :db "main"))
+        (cond-> t (-> (update :tables dissoc l) (assoc-in [:tables k] (assoc t :name (str "main." (:name t)) :db "main"))))
+        (cond-> v (-> (update :views dissoc l) (assoc-in [:views k] (assoc v :name (str "main." (:name v)) :db "main"))))
         (update :indexes (fn [m] (into {} (map (fn [[ik i]] [ik (if (= (:table i) l) (assoc i :table k) i)]) m))))
         (update :triggers (fn [m] (into {} (map (fn [[gk g]] [gk (if (= (:table g) l) (assoc g :table k) g)]) m))))
         (assoc :shadow true))))

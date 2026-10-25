@@ -111,8 +111,10 @@
     :else
     (let [distinct (boolean (accept-kw p "DISTINCT"))
           _ (accept-kw p "ALL")
-          args (loop [acc [(parse-expr p)]]
-                 (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc))
+          args (if (at-op? p ")")
+                 []
+                 (loop [acc [(parse-expr p)]]
+                   (if (accept-op p ",") (recur (conj acc (parse-expr p))) acc)))
           order (when (at-kw? p "ORDER")
                   (advance! p) (expect-kw p "BY")
                   (loop [acc []]
