@@ -929,7 +929,7 @@
                   (first (num/atof s))))))))
 
 (defn- hex-impl [x]
-  (if (nil? x) "" (v/hex-upper (v/bytes-of x))))
+  (if (nil? x) "" (v/hex-upper (if (or (instance? Long x) (instance? Double x)) (v/str->utf8 (v/text-of x)) (v/bytes-of x)))))
 
 (defn- unicode-impl
   "sqlite3Utf8Read on the first character of the UTF-8 bytes."
