@@ -1,6 +1,7 @@
 (ns sqlclj.exec
   "Statement execution: DDL, DML with constraints, and the per-line driver output."
   (:require [sqlclj.jsontvf]
+            [sqlclj.plan-eqp]
             [clojure.string :as str]
             [sqlclj.values :as v]
             [sqlclj.lexer :as lx]
@@ -167,10 +168,10 @@
       (or (get-in db [:tables lname]) (get-in db [:views lname]))
       (if (:if-not-exists st) db (err (str (if (get-in db [:views lname]) "view " "table ") (or (:name-raw st) name) " already exists")))
       (and (str/starts-with? lname "sqlite_") (not (:internal st))) (err (str "object name reserved for internal use: " name))
-      (get-in db [:indexes lname]) (err (str "there is already an index named " name))
+      (get-in db [:indexes lname]) (err (str "there is already an index named " (sch/display-name name st)))
       (:as st)
       (let [ctx (new-ctx db sql)
-            sub (e/compile-select ctx (:as st))
+            sub (e/compile-select (assoc ctx :decl-names true) (:as st))
             rows (e/run-select-rows sub (object-array (inc @(:slots ctx))))
             cols (mapv (fn [n a] {:name n :type (case a :integer "INT" :real "REAL" :text "TEXT" :numeric "NUM" "")
                                   :aff (or a :blob)})
@@ -508,7 +509,8 @@
                                          (let [n (:name (:e rc))]
                                            (if (and (#{"rowid" "oid" "_rowid_"} (lc n)) (:ipk src) (nil? (:table (:e rc))))
                                              (nth (:cols src) (:ipk src))
-                                             n))
+                                             (let [i (.indexOf ^java.util.List (mapv lc (:cols src)) (lc n))]
+                                               (if (>= i 0) (nth (:cols src) i) n))))
                                          (if-let [npe (:name-pe rc)] (subs (:sql ctx) (:ps (:e rc)) npe) (e/text-of-node ctx (:e rc)))))
                              :f (:f (e/cx ctx (:e rc)))}]))
                        items)]
@@ -1094,7 +1096,7 @@
   (let [name (:name st) lname (lc name)
         tbl (get-in db [:tables (lc (:table st))])]
     (cond
-      (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " name " already exists")))
+      (get-in db [:indexes lname]) (if (:if-not-exists st) db (err (str "index " (sch/display-name name st) " already exists")))
       (get-in db [:tables lname]) (err (str "there is already a table named " name))
       (and (nil? tbl) (get-in db [:views (lc (:table st))])) (err "views may not be indexed")
       (nil? tbl) (err (str "no such table: main." (:table st)))
@@ -1834,6 +1836,12 @@
     (err (str "table " (:name st) " may not be dropped")))
   (when (and (= :create-index (:kind st)) (contains? sch/master-names (lc (:table st))))
     (err (str "table " (:table st) " may not be indexed")))
+  ;; sqlite3FixSrcList: a non-TEMP trigger lives in its own database (main unless its name is qualified)
+  ;; and its table must be there too
+  (when (and (= :create-trigger (:kind st)) (not (:temp st)) (:table-schema st))
+    (let [ts (lc (:table-schema st)) home (or (some-> (:schema st) lc) "main")]
+      (when (and (not= ts home) (not= home "temp") (not (and (= ts "temp") (nil? (:schema st)))))
+        (err (str "trigger " (:name st) " cannot reference objects in database " (:table-schema st))))))
   (when (and (#{:create-table :create-view :create-trigger} (:kind st)) (:temp st) (:schema st)
              (not= "temp" (lc (:schema st))))
     (err (str "temporary " (case (:kind st) :create-table "table" :create-view "view" "trigger") " name must be unqualified")))
@@ -1868,9 +1876,19 @@
             (update :views #(into {} (filter keep? %)))
             (update :triggers #(into {} (filter keep? %)))
             (update :pages dissoc lnm))))
+    :explain
+    (let [inner (:stmt st)
+          ctx (new-ctx db sql)
+          rows (volatile! [])]
+      (when-not (and (:qp st) (= :select (:kind inner)))
+        (err "EXPLAIN is not supported"))
+      (binding [e/*eqp* rows] (e/compile-select ctx (:select inner)))
+      (emit-line out "# id|parent|notused|detail")
+      (doseq [row @rows] (write-row out row))
+      db)
     :select
     (let [ctx (new-ctx db sql)
-          sub (e/compile-select ctx (:select st))]
+          sub (e/compile-select (assoc ctx :decl-names true) (:select st))]
       (emit-line out (str "# " (str/join "|" (:names sub))))
       (let [env (object-array (+ 2 @(:slots ctx)))]
         (if-let [run (:streaming sub)]
@@ -1936,25 +1954,26 @@
                                              [(assoc db :shadow true) (assoc st :name (str "main." (:name st)) :db "main")]
                                              :else [db st])
                                    ln (lc (:name st))]
-                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (:name st)))
+                               (cond (get-in db [:indexes ln]) (err (str "there is already an index named " (sch/display-name (:name st) st)))
                                      (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (or (:name-raw st) (:name st)) " already exists")))
                                      :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
                                                  (err "parameters are not allowed in views"))
-                                               (when-not (or (:temp st) (:db st))
+                                               (when-not (:temp st)
                                                  (let [att (set (sch/attached-names db))
+                                                       home (or (some-> (:db st) lc) "main")
                                                        refs (atom nil)]
                                                    (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
-                                                                                             (some-> (:schema x) lc (= "temp")))
-                                                                                    (reset! refs "temp"))
+                                                                                             (some-> (:schema x) lc (#{"temp" "main"})) (not= home (lc (:schema x))))
+                                                                                    (reset! refs (lc (:schema x))))
                                                                             (when (and (map? x) (contains? x :indexed-by) (:table x)
                                                                                              (string? (:table x)))
                                                                                     (let [k (lc (:table x))
                                                                                           dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
-                                                                                      (when dbn (reset! refs dbn))))
+                                                                                      (when (and dbn (not= dbn home)) (reset! refs dbn))))
                                                                             x)
                                                                           (:select st))
-                                                   (when @refs (err (str "view " (:name st) " cannot reference objects in database " @refs)))))
+                                                   (when @refs (err (str "view " (sch/display-name (:name st) st) " cannot reference objects in database " @refs)))))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
@@ -1979,14 +1998,21 @@
                             (when-let [sc (lc (:schema st))]
                               (when-not (or (#{"main" "temp"} sc) (some #{sc} (sch/attached-names db)))
                                 (err (str "unknown database " (:schema st)))))
-                            db))]
+                            (when-let [ie (:into st)]
+                              (let [x ((:f (e/cx (new-ctx db sql) ie)) (object-array 4))]
+                                (when-not (string? x) (err "non-text filename"))))
+                            (let [nxt (get-in db [:pragmas "auto_vacuum.next"])]
+                              (if (and nxt (not (:into st)) (not= "temp" (lc (:schema st))))
+                                (-> db (assoc-in [:pragmas "auto_vacuum"] nxt) (update :pragmas dissoc "auto_vacuum.next"))
+                                db))))]
       (cond
         (= db2 ::empty) db
         (and (#{:create-table :create-index :create-view :create-trigger :drop :alter} (:kind st)) (not (identical? db db2)))
         (do (when-not (and (= :alter (:kind st)) (> (.length out) n0))
               (emit-line out (str "changes: " (:changes db2))))
             (update db2 :schema-version (fnil inc 0)))
-        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0)))
+        :else (do (when-not (or (readonly? st) (and (= :alter (:kind st)) (> (.length out) n0))
+                                (and (= :vacuum (:kind st)) (= "temp" (lc (:schema st)))))
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 
