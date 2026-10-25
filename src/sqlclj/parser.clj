@@ -89,8 +89,8 @@
   (let [start (pos p)
         names (loop [acc []]
                 (let [t (tok p)]
-                  (if (and (or (= :id (:t t)) (= :qid (:t t)))
-                           (or (= :qid (:t t)) (not (or (reserved (:u t))
+                  (if (and (or (= :id (:t t)) (= :qid (:t t)) (= :str (:t t)))
+                           (or (= :qid (:t t)) (= :str (:t t)) (not (or (reserved (:u t))
                                                     (and (= "GENERATED" (:u t)) (kw? (tok-at p 1) "ALWAYS") (kw? (tok-at p 2) "AS"))))))
                     (do (advance! p) (recur (conj acc (:v t))))
                     acc)))]

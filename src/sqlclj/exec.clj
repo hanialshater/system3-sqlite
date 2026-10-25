@@ -69,9 +69,20 @@
 (defn- table-indexes
   "Indexes of a table in constraint-check order (most recently created first)."
   [db tname]
-  (->> (vals (:indexes db))
-       (filter #(= (:table %) (lc tname)))
-       (sort-by (fn [i] [(if (and (:pk-auto i) (:without-rowid (get-in db [:tables (lc tname)]))) 0 1) (- (long (:seq i)))]))))
+  (let [wr (:without-rowid (get-in db [:tables (lc tname)]))
+        all (->> (vals (:indexes db))
+                 (filter #(= (:table %) (lc tname)))
+                 (sort-by #(long (:seq %))))
+        pk ()
+        rest-idx all
+        ;; SQLite keeps REPLACE indexes after the others: a new REPLACE index goes behind the leading non-REPLACE run
+        lst (reduce (fn [lst i]
+                      (if (or (not= :replace (:conflict i)) (empty? lst) (= :replace (:conflict (first lst))))
+                        (cons i lst)
+                        (let [[lead tail] (split-with #(not= :replace (:conflict %)) lst)]
+                          (concat lead [i] tail))))
+                    () rest-idx)]
+    (concat pk lst)))
 
 (defn- add-index [db idx]
   (let [s (inc (long (:index-seq db)))
@@ -557,7 +568,6 @@
         (nil? clause) false
         (nil? target) true
         (= what :rowid) (and (= 1 (count (:cols target)))
-                             (nil? (:where target))
                              (let [n (lc (:name (:e (first (:cols target)))))]
                                (or (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl))))))
                                    (and (not (:without-rowid tbl)) (#{"rowid" "oid" "_rowid_"} n)))))
@@ -593,7 +603,10 @@
            (or (= :fail (:conflict (ex-data ex))) (and (no-journal? db) (:sql-error (ex-data ex))))
            (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update db :tables dissoc tkey) db)
                                                                      :changes (if (= :fail (:conflict (ex-data ex))) changes 0)))))
-           :else (throw ex)))))
+           :else
+           (if (and (:sql-error (ex-data ex)) (not (contains? (ex-data ex) :lr)))
+             (throw (ex-info (ex-message ex) (assoc (ex-data ex) :lr (:last-rowid db))))
+             (throw ex))))))
 
 (defn- try-fire
   "Runs triggers for a row event; ::ignore when a program raised IGNORE."
@@ -660,6 +673,7 @@
         db (with-target db tkey tbl)
         fkt (and (not (:view tbl)) (fk/tracks? db tbl))
         vw (:view tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :insert nil)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ngen (count (filter :gen (:cols tbl)))
@@ -752,7 +766,7 @@
               ;; defaults first
               provided (set targets)
               row (reduce (fn [row ci]
-                            (if (provided ci) row (assoc row ci (default-value db sql tbl ci))))
+                            (if (or (provided ci) (= ci (:ipk tbl))) row (assoc row ci (default-value db sql tbl ci))))
                           row (range ncols))
               rid-given (atom nil)
               row (reduce (fn [row [ci val]]
@@ -882,6 +896,8 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
+                             (mapv (fn [c] (if (#{"rowid" "oid" "_rowid_"} (lc c)) "rowid" (lc c))) (mapcat first (:sets st))))
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ctx (new-ctx db sql)
@@ -1016,6 +1032,7 @@
         vw (:view tbl)
         fkt (and (not vw) (fk/tracks? db tbl))
         db (with-target db tkey tbl)
+        _ (trg/validate-for! db (:vkey tbl tkey) tbl :delete nil)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
         _ (when (and (:indexed-by st) (not= :none (:indexed-by st)))
@@ -2220,11 +2237,13 @@
                          (if-let [m (:sql-error (ex-data ex))]
                            (let [d (ex-data ex)]
                              (emit-line out (str "error: " m))
-                             (cond (:partial-db d) [::stop (let [pd (:partial-db d)] (update pd :total-changes (fnil + 0) (long (or (:changes pd) 0))))]
-                                   (:changes-after d) [::stop (assoc db :changes (:changes-after d))]
-                                   (and (= :rollback (:conflict d)) (:tx db)) [::stop (assoc (dissoc (restore db (:snap (:tx db))) :tx) :changes 0)]
-                                   @prep [::stop (assoc db :changes 0)]
-                                   :else ::stop))
+                             (let [fix (fn [dbx] (if (contains? d :lr) (assoc dbx :last-rowid (:lr d)) dbx))]
+                               (cond (:partial-db d) [::stop (let [pd (:partial-db d)] (update pd :total-changes (fnil + 0) (long (or (:changes pd) 0))))]
+                                     (:changes-after d) [::stop (fix (assoc db :changes (:changes-after d)))]
+                                     (and (= :rollback (:conflict d)) (:tx db)) [::stop (fix (assoc (dissoc (restore db (:snap (:tx db))) :tx) :changes 0))]
+                                     @prep [::stop (fix (assoc db :changes 0))]
+                                     (contains? d :lr) [::stop (fix db)]
+                                     :else ::stop)))
                            (throw ex)))
                        (catch StackOverflowError _
                          (emit-line out "error: parser stack overflow") ::stop))]
