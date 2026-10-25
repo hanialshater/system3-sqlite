@@ -513,8 +513,11 @@
       (cond
         (nil? clause) false
         (nil? target) true
-        (= what :rowid) (and (:ipk tbl) (= 1 (count (:cols target)))
-                             (= (lc (:name (:e (first (:cols target))))) (lc (:name (nth (:cols tbl) (:ipk tbl))))))
+        (= what :rowid) (and (not (:without-rowid tbl)) (= 1 (count (:cols target)))
+                             (= :col (:op (:e (first (:cols target)))))
+                             (let [n (lc (:name (:e (first (:cols target)))))]
+                               (or (#{"rowid" "oid" "_rowid_"} n)
+                                   (and (:ipk tbl) (= n (lc (:name (nth (:cols tbl) (:ipk tbl)))))))))
         (map? what)
         (let [sp (var-get #'e/strip-pos)
               tw (:where target) iw (:where-ast what)
@@ -651,7 +654,8 @@
                                                                                   :else (err (str (count cols) " columns assigned 1 values"))))
                                                                           (:sets u)))]
                                                    (vec (for [[c ex k] items]
-                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                          [(let [i (.indexOf ^java.util.List lnames (lc c))
+                                                                 i (if (and (neg? i) (#{"rowid" "oid" "_rowid_"} (lc c)) (:ipk tbl)) (:ipk tbl) i)]
                                                              (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
                                                                (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                                              (if (neg? i) (err (str "no such column: " c)) i))
@@ -995,6 +999,7 @@
         tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
     (cond
       (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " (or (:name-raw st) name) " already exists")))
+      (and (nil? tbl) (nil? view) (contains? sch/master-names tl)) (err "cannot create trigger on system table")
       (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "."
                                                       (let [t (str (:table st)) q (some-> (:table-schema st) lc)]
                                                         (if (and q (str/starts-with? (lc t) (str q "."))) (subs t (inc (count q))) t))))
@@ -1004,7 +1009,7 @@
       (and tbl (or (:virtual tbl) (str/starts-with? tl "sqlite_"))) (err "cannot create trigger on system table")
       :else
       (let [trig (-> (trg/make-trigger st sql)
-                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                     (assoc :table tl :table-name (sch/display-name (:name (or tbl view)) (or tbl view)) :temp (boolean (or (:temp st) (= "temp" (some-> (:schema st) lc)) (:temp tbl) (:temp view)))
                             :db (when-not (or (:temp st) (= "temp" (lc (:schema st)))) (:db st))
                             :sql (sch/stmt-sql sql st "TRIGGER")))
             [db trig] (sch/register db trig false)]

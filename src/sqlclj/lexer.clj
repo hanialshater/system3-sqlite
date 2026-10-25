@@ -14,7 +14,7 @@
     (or (id-start? c) (and (>= c 48) (<= c 57)) (= c 36))))
 (defn- digit? [c] (let [c (int c)] (and (>= c 48) (<= c 57))))
 (defn- hex? [c] (let [c (int c)] (or (digit? c) (and (>= c 97) (<= c 102)) (and (>= c 65) (<= c 70)))))
-(defn- space? [c] (let [c (int c)] (or (= c 32) (= c 9) (= c 10) (= c 12) (= c 13))))
+(defn- space? [c] (let [c (int c)] (or (= c 32) (= c 9) (= c 10) (= c 12) (= c 13) (= c 0xFEFF))))
 
 (defn- dgu? [^String s j]
   (let [c (.charAt s (int j))]

@@ -227,10 +227,10 @@
                     msg (when (not= k :ignore)
                           (expect-op p ",")
                           (let [t (tok p)]
-                            (if (= :str (:t t)) (do (advance! p) (:v t)) (fail! p))))]
+                            (if (= :str (:t t)) (do (advance! p) (:v t)) (parse-expr p))))]
                 (expect-op p ")")
                 (when-not *in-trigger* (throw (lx/sql-error "RAISE() may only be used within a trigger-program")))
-                (node {:op :raise :kind k :msg msg} s (prev-end p))))
+                (node (if (map? msg) {:op :raise :kind k :msg-e msg} {:op :raise :kind k :msg msg}) s (prev-end p))))
           (reserved u) (fail! p)
           :else
           (do (advance! p)
@@ -762,7 +762,10 @@
                        (let [e (cond
                                  (at-op? p "(") (do (advance! p) (let [e (parse-expr p)] (expect-op p ")") e))
                                  (and (:u (tok p)) (#{"CURRENT_TIME" "CURRENT_DATE" "CURRENT_TIMESTAMP"} (:u (tok p)))) (parse-primary p)
-                                 (ident-tok? (tok p)) (let [t (advance! p)] (node {:op :lit :v (:v t)} (:s t) (:e t)))
+                                 (ident-tok? (tok p)) (let [t (advance! p)]
+                                                        (if (and (= :id (:t t)) (#{"TRUE" "FALSE"} (:u t)))
+                                                          (node {:op :lit :kind :int :text (if (= "TRUE" (:u t)) "1" "0")} (:s t) (:e t))
+                                                          (node {:op :lit :v (:v t)} (:s t) (:e t))))
                                  :else (parse-signed-literal p))]
                          (recur (conj acc {:c :default :e e}))))
                    (kw? t "COLLATE")
@@ -799,6 +802,7 @@
         n1 (parse-nm p)
         [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])]
     (try
+    (when (and temp sch (not= "temp" (str/lower-case sch))) (throw (lx/sql-error "temporary table name must be unqualified")))
     (if (accept-kw p "AS")
       (do (vreset! entered true)
           {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :as (parse-select p)})
@@ -848,6 +852,8 @@
                                                 (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o true) o)))
                        need (fail! p)
                        (and (empty? opts) (accept-op p ",")) (recur opts true)
+                       (and (= :id (:t (tok p))) (not= "AS" (:u (tok p))))
+                       (throw (lx/sql-error (str "unknown table option: " (:v (tok p)))))
                        :else opts))]
           {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine :cols cols :tcons tcons
            :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
@@ -858,7 +864,9 @@
 
 ;; ------------------------------------------------------------------ DML
 
-(defn- parse-returning [^P p]
+(defn- parse-returning [^P p & [kind]]
+  (when (and *in-trigger* (at-kw? p "RETURNING"))
+    (if (= kind :insert) (throw (lx/sql-error "cannot use RETURNING in a trigger")) (fail! p)))
   (when (accept-kw p "RETURNING")
     (loop [acc [(parse-result-col p)]] (if (accept-op p ",") (recur (conj acc (parse-result-col p))) acc))))
 
@@ -888,7 +896,9 @@
                                    w (when (accept-kw p "WHERE") (parse-expr p))]
                                {:do :update :sets sets :where w}))
                          :else (fail! p))]
-            (recur (conj acc (merge {:target target} action)))))
+            (if target
+              (recur (conj acc (merge {:target target} action)))
+              (conj acc (merge {:target target} action)))))
       acc)))
 
 (defn- parse-insert [^P p or-action]
@@ -912,7 +922,7 @@
               (or (at-kw? p "SELECT") (at-kw? p "WITH")) {:select (parse-select p)}
               :else (fail! p))
         upsert (parse-upsert p)
-        ret (parse-returning p)]
+        ret (parse-returning p :insert)]
     (merge {:kind :insert :or or-action :table tname :schema sch :alias alias :cols cols :upsert upsert :returning ret} src)))
 
 (defn- parse-qualified-table [^P p]
@@ -940,8 +950,8 @@
         from (when (accept-kw p "FROM") (parse-from p))
         where (when (accept-kw p "WHERE") (parse-expr p))
         ret (parse-returning p)
-        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
-        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
+        _ (when (and (not *in-trigger*) (at-kw? p "ORDER")) (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (and (not *in-trigger*) (at-kw? p "LIMIT")) (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :update :or or-action :sets sets :from from :where where :returning ret} qt)))
 
 (defn- parse-delete [^P p]
@@ -949,8 +959,8 @@
   (let [qt (parse-qualified-table p)
         where (when (accept-kw p "WHERE") (parse-expr p))
         ret (parse-returning p)
-        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
-        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
+        _ (when (and (not *in-trigger*) (at-kw? p "ORDER")) (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (and (not *in-trigger*) (at-kw? p "LIMIT")) (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :delete :where where :returning ret} qt)))
 
 ;; ------------------------------------------------------------------ statements
@@ -1007,6 +1017,7 @@
                       name-s (volatile! (:s (tok p)))
                       n1 (parse-nm p)
                       [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
+                      _ (when (and temp sch (not= "temp" (str/lower-case sch))) (throw (lx/sql-error "temporary view name must be unqualified")))
                       cols (when (at-op? p "(") (advance! p)
                                  (let [c (loop [acc [(parse-nm p)]] (if (accept-op p ",") (recur (conj acc (parse-nm p))) acc))]
                                    (expect-op p ")") c))
@@ -1018,6 +1029,7 @@
                       name-s (volatile! (:s (tok p)))
                       n1 (parse-nm p)
                       [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])
+                      _ (when (and temp sch (not= "temp" (str/lower-case sch))) (throw (lx/sql-error "temporary trigger may not have qualified name")))
                       timing (cond (accept-kw p "BEFORE") :before
                                    (accept-kw p "AFTER") :after
                                    (at-kw? p "INSTEAD") (do (advance! p) (expect-kw p "OF") :instead)
@@ -1038,11 +1050,19 @@
                       body (binding [*in-trigger* true]
                              (loop [acc []]
                                (cond
-                                 (accept-kw p "END") acc
+                                 (and (seq acc) (accept-kw p "END")) acc
                                  :else (let [t (tok p)
                                              st (case (:u t)
                                                   ("SELECT" "VALUES" "INSERT" "REPLACE" "UPDATE" "DELETE" "WITH") (parse-statement* p)
-                                                  (fail! p))]
+                                                  (fail! p))
+                                             _ (when (and (#{:insert :update :delete} (:kind st)) (:schema st))
+                                                 (throw (lx/sql-error "qualified table names are not allowed on INSERT, UPDATE, and DELETE statements within triggers")))
+                                             _ (when (and (#{:update :delete} (:kind st)) (:indexed-by st))
+                                                 (throw (lx/sql-error (if (= :none (:indexed-by st))
+                                                                        "the NOT INDEXED clause is not allowed on UPDATE or DELETE statements within triggers"
+                                                                        "the INDEXED BY clause is not allowed on UPDATE or DELETE statements within triggers"))))
+                                             _ (when (some #(and (map? %) (:var %)) (tree-seq coll? seq st))
+                                                 (throw (lx/sql-error "trigger cannot use variables")))]
                                          (expect-op p ";")
                                          (recur (conj acc st))))))]
                   {:kind :create-trigger :name name :schema sch :temp (boolean temp) :name-s @name-s :name-raw (name-raw p @name-s) :if-not-exists ine
