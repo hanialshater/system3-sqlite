@@ -180,7 +180,7 @@
               cur (pget db k "memory")
               u (some-> v lc)
               nv (cond (nil? u) cur (#{"off" "memory"} u) u :else cur)]
-          (one (if (and v (nil? sc))
+          (one (if (and v (nil? sc) (not= nv cur))
                  (reduce (fn [d nm] (pset d (str "journal_mode." nm) nv)) db (concat ["main" "temp"] (map first (:attached db))))
                  (pset db k nv))
                "journal_mode" nv))
