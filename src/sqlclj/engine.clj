@@ -8,6 +8,7 @@
             [sqlclj.lexer :as lx]
             [sqlclj.parser :as p]
             [sqlclj.ext :as ext]
+            [sqlclj.json :as js]
             [sqlclj.printf :as pf]
             [sqlclj.schema :as schema])
   (:import [sqlclj.values Blob]
@@ -31,7 +32,8 @@
 
 (defn text-of-node [ctx e] (subs (:sql ctx) (:ps e) (:pe e)))
 
-(def agg-names #{"count" "sum" "total" "avg" "min" "max" "group_concat" "string_agg"})
+(def agg-names #{"count" "sum" "total" "avg" "min" "max" "group_concat" "string_agg"
+                 "json_group_array" "jsonb_group_array" "json_group_object" "jsonb_group_object"})
 
 (defn agg-call? [e]
   (and (= :fn (:op e)) (not (:over e))
@@ -41,6 +43,7 @@
            "count" (or (:star e) (<= k 1))
            ("sum" "total" "avg") true
            ("group_concat" "string_agg") true
+           ("json_group_array" "jsonb_group_array" "json_group_object" "jsonb_group_object") true
            false))))
 
 ;; ====================================================================== name resolution
@@ -77,7 +80,7 @@
                         [s i]))
                      (for [s srcs
                            :let [i (find-in-source s lname)]
-                           :when (and i (not (:qualified-only s)) (not (contains? (:hidden s) lname)))]
+                           :when (and i (not (:qualified-only s)) (or (:tvf s) (not (contains? (:hidden s) lname))))]
                        [s i]))
               hits (if (and (empty? hits) (nil? ltq) (rowid-name? lname))
                      (let [rs (filter :rowid? srcs)]
@@ -495,7 +498,7 @@
         (:add :sub :mul :div :rem) (merge (mk (fn [env] (v/arith o (fl env) (fr env)))) extra)
         (:bitand :bitor :shl :shr) (merge (mk (fn [env] (v/bitop o (fl env) (fr env)))) extra)
         :concat (merge (mk (fn [env] (v/concat-values (fl env) (fr env)))) extra)
-        (:ptr :ptr2) (err "no such function: ->"))))
+        (:ptr :ptr2) (let [arrow (ext/arrow-fn (= o :ptr2))] (mk (fn [env] (arrow (fl env) (fr env))))))))
     :is (if (or (row-like? (:l e)) (row-like? (:r e)))
           (compile-row-is (:not e) (or (row-parts ctx (:l e)) (scalar-part ctx (:l e))) (or (row-parts ctx (:r e)) (scalar-part ctx (:r e))))
         (let [rcol (is-rfirst e)
@@ -1009,7 +1012,7 @@
       (ext/compile-fn name n coll))))
 
 (def ^:private known-unsupported
-  #{"json"})
+  #{})
 
 (defn- function-level-error
   "Errors SQLite reports for the function node itself (before resolving its arguments)."
@@ -1022,6 +1025,8 @@
             (and (#{"sum" "total" "avg"} name) (not= n 1)) (str "wrong number of arguments to function " name "()")
             (and (= name "group_concat") (not (#{1 2} n))) (str "wrong number of arguments to function " name "()")
             (and (= name "string_agg") (not= n 2)) (str "wrong number of arguments to function " name "()")
+            (and (#{"json_group_array" "jsonb_group_array"} name) (not= n 1)) (str "wrong number of arguments to function " name "()")
+            (and (#{"json_group_object" "jsonb_group_object"} name) (not= n 2)) (str "wrong number of arguments to function " name "()")
             (and (:distinct e) (not= 1 n)) "DISTINCT aggregates must have exactly one argument"
             :else nil)
       (#{"min" "max"} name) (when (< n 1) (str "wrong number of arguments to function " name "()"))
@@ -1191,6 +1196,10 @@
                    r))
          :final (fn [] (aget best 0))
          :minmax true})
+      ("json_group_array" "jsonb_group_array" "json_group_object" "jsonb_group_object")
+      (let [acc (js/make-group-acc name)]
+        {:step (fn [[x y]] (when (dist-ok x) (acc x y)) false)
+         :final (fn [] (acc))})
       ("group_concat" "string_agg")
       (let [sb (StringBuilder.) has (boolean-array 1)
             two (= 2 (count (:args spec)))]
@@ -1665,7 +1674,7 @@
         (:star rc)
         (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
           (when-not s (err (str "no such table: " (:table rc))))
-          (for [i (range (:ncols s))] {:star-col [s i] :name (nth (:cols s) i)}))
+          (for [i (range (:ncols s)) :when (not (and (:tvf s) (contains? (:hidden s) (nth (:lcols s) i))))] {:star-col [s i] :name (nth (:cols s) i)}))
         :else [rc]))
     cols)))
 
