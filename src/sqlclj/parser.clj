@@ -474,6 +474,7 @@
         (let [alias (parse-alias p)
               ib (cond (at-kw? p "INDEXED") (do (advance! p) (expect-kw p "BY") (parse-nm p))
                        (and (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (do (advance! p) (advance! p) :none)
+                       (at-kw? p "NOT") (do (advance! p) (fail! p))
                        :else nil)]
           {:table nm :schema sch :alias alias :indexed-by ib})))))
 
@@ -730,12 +731,16 @@
 (defn- parse-create-table [^P p temp]
   (let [ine (when (at-kw? p "IF") (advance! p) (expect-kw p "NOT") (expect-kw p "EXISTS") true)
         name-s (volatile! (:s (tok p)))
+        entered (volatile! false)
         n1 (parse-nm p)
         [sch name] (if (accept-op p ".") (do (vreset! name-s (:s (tok p))) [n1 (parse-nm p)]) [nil n1])]
+    (try
     (if (accept-kw p "AS")
-      {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :as (parse-select p)}
+      (do (vreset! entered true)
+          {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :as (parse-select p)})
       (do
         (expect-op p "(")
+        (vreset! entered true)
         (let [[cols tcons]
               (loop [cols [] tcons []]
                 (let [t0 (tok p)
@@ -777,7 +782,11 @@
                                                 (let [o (conj opts :without-rowid)] (if (accept-op p ",") (recur o) o)))
                        :else opts))]
           {:kind :create-table :name name :schema sch :temp (boolean temp) :name-s @name-s :if-not-exists ine :cols cols :tcons tcons
-           :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))))
+           :strict (contains? opts :strict) :without-rowid (contains? opts :without-rowid)})))
+    (catch clojure.lang.ExceptionInfo ex
+      (if (and (:sql-error (ex-data ex)) (not ine) @entered)
+        (throw (ex-info (ex-message ex) (assoc (ex-data ex) :pending-create {:name name :schema sch})))
+        (throw ex))))))
 
 ;; ------------------------------------------------------------------ DML
 
@@ -842,7 +851,6 @@
   (let [n1 (parse-nm p)
         [sch tname] (if (accept-op p ".") [n1 (parse-nm p)] [nil n1])
         alias (when (accept-kw p "AS") (parse-nm p))
-        alias (or alias (let [t (tok p)] (when (and (ident-tok? t) (not (#{"SET" "WHERE" "INDEXED" "NOT" "RETURNING" "ORDER" "LIMIT"} (:u t)))) (advance! p) (:v t))))
         ib (cond (at-kw? p "INDEXED") (do (advance! p) (expect-kw p "BY") (parse-nm p))
                  (and (at-kw? p "NOT") (kw? (tok-at p 1) "INDEXED")) (do (advance! p) (advance! p) :none)
                  :else nil)]

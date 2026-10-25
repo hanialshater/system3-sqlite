@@ -1620,7 +1620,18 @@
       (let [st (try (p/next-statement ps)
                     (catch clojure.lang.ExceptionInfo ex
                       (if-let [m (:sql-error (ex-data ex))]
-                        (do (emit-line out (str "error: " m)) ::stop)
+                        (do (emit-line out (str "error: "
+                                                (if-let [pc (:pending-create (ex-data ex))]
+                                                  (let [nm (:name pc) l (lc nm) sc (some-> (:schema pc) lc)]
+                                                    (cond
+                                                      (and sc (not (#{"main" "temp"} sc)) (not (some #{sc} (sch/attached-names db))))
+                                                      (str "unknown database " (:schema pc))
+                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:tables l])) (str "table " nm " already exists")
+                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:views l])) (str "view " nm " already exists")
+                                                      (and (or (nil? sc) (= sc "main")) (get-in db [:indexes l])) (str "there is already an index named " nm)
+                                                      :else m))
+                                                  m)))
+                            ::stop)
                         (throw ex))))]
         (cond
           (= st ::stop) [db (.toString out)]
