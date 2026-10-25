@@ -16,6 +16,15 @@
 (defn- hex? [c] (let [c (int c)] (or (digit? c) (and (>= c 97) (<= c 102)) (and (>= c 65) (<= c 70)))))
 (defn- space? [c] (let [c (int c)] (or (= c 32) (= c 9) (= c 10) (= c 12) (= c 13))))
 
+(defn- dgu? [^String s j]
+  (let [c (.charAt s (int j))]
+    (or (digit? c)
+        (and (= c \_) (> j 0) (< (inc j) (.length s)) (digit? (.charAt s (dec (int j)))) (digit? (.charAt s (inc (int j))))))))
+(defn- hxu? [^String s j]
+  (let [c (.charAt s (int j))]
+    (or (hex? c)
+        (and (= c \_) (> j 0) (< (inc j) (.length s)) (hex? (.charAt s (dec (int j)))) (hex? (.charAt s (inc (int j))))))))
+
 (defn tokenize
   "Returns a vector of tokens {:t type :v value :s start :e end}. Types: :id :qid :str :blob :int :float :op :illegal.
   Ends with an :eof token."
@@ -48,25 +57,25 @@
             (or (digit? c) (and (= c \.) (< (inc i) n) (digit? (.charAt s (inc i)))))
             (if (and (= c \0) (< (inc i) n) (or (= (.charAt s (inc i)) \x) (= (.charAt s (inc i)) \X))
                      (< (+ i 2) n) (hex? (.charAt s (+ i 2))))
-              (let [j (loop [j (+ i 2)] (if (and (< j n) (hex? (.charAt s j))) (recur (inc j)) j))]
+              (let [j (loop [j (+ i 2)] (if (and (< j n) (hxu? s j)) (recur (inc j)) j))]
                 (if (and (< j n) (id-char? (.charAt s j)))
                   (let [k (loop [k j] (if (and (< k n) (id-char? (.charAt s k))) (recur (inc k)) k))]
                     (conj! out {:t :illegal :s i :e k}) (recur k))
-                  (do (conj! out {:t :hex :v (subs s i j) :s i :e j}) (recur j))))
-              (let [j (loop [j i] (if (and (< j n) (digit? (.charAt s j))) (recur (inc j)) j))
+                  (do (conj! out {:t :hex :v (str/replace (subs s i j) "_" "") :s i :e j}) (recur j))))
+              (let [j (loop [j i] (if (and (< j n) (dgu? s j)) (recur (inc j)) j))
                     [j fl] (if (and (< j n) (= (.charAt s j) \.))
-                             [(loop [j (inc j)] (if (and (< j n) (digit? (.charAt s j))) (recur (inc j)) j)) true]
+                             [(loop [j (inc j)] (if (and (< j n) (dgu? s j)) (recur (inc j)) j)) true]
                              [j false])
                     [j fl] (if (and (< j n) (or (= (.charAt s j) \e) (= (.charAt s j) \E))
                                     (or (and (< (inc j) n) (digit? (.charAt s (inc j))))
                                         (and (< (+ j 2) n) (or (= (.charAt s (inc j)) \+) (= (.charAt s (inc j)) \-))
                                              (digit? (.charAt s (+ j 2))))))
-                             [(loop [j (+ j 2)] (if (and (< j n) (digit? (.charAt s j))) (recur (inc j)) j)) true]
+                             [(loop [j (+ j 2)] (if (and (< j n) (dgu? s j)) (recur (inc j)) j)) true]
                              [j fl])]
                 (if (and (< j n) (id-char? (.charAt s j)))
                   (let [k (loop [k j] (if (and (< k n) (id-char? (.charAt s k))) (recur (inc k)) k))]
                     (conj! out {:t :illegal :s i :e k}) (recur k))
-                  (do (conj! out {:t (if fl :float :int) :v (subs s i j) :s i :e j}) (recur j)))))
+                  (do (conj! out {:t (if fl :float :int) :v (str/replace (subs s i j) "_" "") :s i :e j}) (recur j)))))
             (= c \')
             (let [sb (StringBuilder.)
                   j (loop [j (inc i)]

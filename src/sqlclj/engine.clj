@@ -1075,7 +1075,7 @@
       (let [aggs (:aggs ctx)
             idx (count @aggs)
             slot (long (:agg-slot ctx))]
-        (swap! aggs conj {:name name :args args :star (:star e) :distinct (:distinct e)
+        (swap! aggs conj {:name name :args args :star (or (:star e) (and (= name "count") (empty? args))) :distinct (:distinct e)
                           :filter (when (:filter e) (condf (cx actx (:filter e))))
                           :coll (or (:coll (first args)) "BINARY")})
         (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
@@ -1142,6 +1142,22 @@
           (if (instance? Long t)
             (kbn-step-int rs (long t))
             (do (set! ovrfl false) (kbn-step rs (v/real-value x))))))))
+  (invoke [this x _ _]
+    ;; sumInverse: a value leaves a sliding window frame
+    (let [t (v/numeric-type-value x)]
+      (when-not (nil? t)
+        (set! cnt (dec cnt))
+        (if (not approx)
+          (let [a isum b (v/int-value x) r (unchecked-subtract a b)]
+            (if (and (not= (neg? a) (neg? b)) (not= (neg? r) (neg? a)))
+              (do (set! ovrfl true) (set! approx true))
+              (set! isum r)))
+          (if (instance? Long t)
+            (let [iv (long t)]
+              (if (= iv Long/MIN_VALUE)
+                (do (kbn-step-int rs Long/MAX_VALUE) (kbn-step-int rs 1))
+                (kbn-step-int rs (- iv))))
+            (kbn-step rs (- (v/real-value x))))))))
   (invoke [this kind _]
     (let [overflow? (fn [^double d] (or (Double/isInfinite d) (Double/isNaN d)))]
       (case kind
@@ -1177,6 +1193,7 @@
       (let [s (SumCtx. (double-array 2) 0 0 false false)
             kind (keyword name)]
         {:step (fn [[x]] (when (and (not (nil? x)) (dist-ok x)) (s x)) false)
+         :inverse (fn [[x]] (when-not (nil? x) (.invoke ^clojure.lang.IFn s x nil nil)))
          :final (fn [] (.invoke ^clojure.lang.IFn s kind nil))})
       ("min" "max")
       (let [best (object-array 1) has (boolean-array 1) mx (= name "max") last-hit (boolean-array 1)]
@@ -1216,7 +1233,13 @@
 
 ;; ====================================================================== window functions
 
-(declare row-comparator compare-keys-fn)
+(declare row-comparator compare-keys-fn expr-equal?)
+
+(defn has-window? [e]
+  (cond (map? e) (or (and (= :fn (:op e)) (some? (:over e)))
+                     (some has-window? (vals (dissoc e :select))))
+        (sequential? e) (some has-window? e)
+        :else false))
 
 (def window-only #{"row_number" "rank" "dense_rank" "percent_rank" "cume_dist" "ntile" "lag" "lead"
                    "first_value" "last_value" "nth_value"})
@@ -1269,8 +1292,14 @@
           filt (when (:filter e) (condf (cx ictx (:filter e))))
           part (mapv #(cx ictx %) (:part wd))
           order (mapv (fn [t] (let [c (cx ictx (:e t))]
-                                {:f (:f c) :coll (or (:coll c) "BINARY") :desc (:desc t) :nulls (:nulls t)}))
+                                {:f (:f c) :coll (or (:coll c) "BINARY") :desc (:desc t) :nulls (:nulls t) :c c}))
                       (:order wd))
+          ;; window comparison keys: resolved columns compare equal however they are written
+          ekey (fn [ast c] (if-let [col (:col c)] [:col (:slot col) (:idx col) (:depth col)] (strip-pos ast)))
+          pkey (mapv ekey (:part wd) part)
+          okey (mapv (fn [t o] [(ekey (:e t) (:c o)) (boolean (:desc t))
+                                (let [n (:nulls t)] (when (and n (not= n (if (:desc t) :last :first))) n))])
+                     (:order wd) order)
           fr (:frame wd)
           _ (when (and fr (= :range (:type fr))
                        (or (#{:preceding :following} (:kind (:start fr))) (#{:preceding :following} (:kind (:end fr))))
@@ -1283,7 +1312,19 @@
           slot (long (:win-slot ctx))]
       (swap! wins conj {:name name :agg aggf :args args :filter filt :part part :order order :frame frame
                         :star (:star e) :coll (or (:coll (first args)) "BINARY")
-                        :gkey (strip-pos [(:part wd) (mapv (fn [t] [(:e t) (:desc t) (:nulls t)]) (:order wd))])})
+                        :copy (boolean (:win-copy ctx))
+                        :fkey (strip-pos e)
+                        :wkey [pkey okey
+                                         ;; sqlite3WindowUpdate: the ranking functions get fixed frames
+                                         (case name
+                                           "row_number" :rows-up-cur ("rank" "dense_rank") :range-up-cur
+                                           "percent_rank" :groups-cur-uf "cume_dist" :groups-f-uf "ntile" :rows-cur-uf
+                                           "lead" :rows-up-uf "lag" :rows-up-cur
+                                           (let [f (:frame wd)]
+                                             (if (or (nil? f) (= f {:type :range :start {:kind :unbounded-preceding} :end {:kind :current} :exclude nil}))
+                                               :range-up-cur
+                                               (strip-pos f))))]
+                        :gkey [pkey okey]})
       (mk (fn [^objects env] (aget ^objects (aget env slot) idx))
           :coll (when (#{"min" "max" "first_value" "last_value" "nth_value" "lag" "lead"} name) (:coll (first args)))))))
 
@@ -1442,10 +1483,22 @@
                 (loop [j (inc (aget done 0))] (when (<= j hi) (step acc j) (recur (inc j))))
                 (aset done 0 (max (aget done 0) hi))
                 (put! k ((:final acc))))))
-          (dotimes [k m]
-            (let [acc (make-acc spec)]
-              (doseq [j (frame-pos k)] (step acc j))
-              (put! k ((:final acc))))))))))
+          (if (and (nil? excl) (#{"sum" "total" "avg"} name))
+            ;; one accumulator per partition: rows enter at the frame end (xStep) and leave at its start (xInverse)
+            (let [acc (make-acc spec) ahi (long-array [0]) alo (long-array [0])
+                  passes (fn [j] (or (nil? filt) (let [x (filt (snap j))] (and (not (nil? x)) (v/bool-value x)))))]
+              (dotimes [k m]
+                (let [lo (max 0 (long (lo-of k))) hi (min (dec m) (long (hi-of k)))]
+                  (loop [j (aget ahi 0)] (when (<= j hi) (when (passes j) ((:step acc) (argv j))) (recur (inc j))))
+                  (aset ahi 0 (max (aget ahi 0) (inc hi)))
+                  (loop [j (aget alo 0)] (when (and (< j lo) (< j (aget ahi 0)))
+                                           (when (passes j) ((:inverse acc) (argv j))) (recur (inc j))))
+                  (aset alo 0 (max (aget alo 0) lo))
+                  (put! k ((:final acc))))))
+            (dotimes [k m]
+              (let [acc (make-acc spec)]
+                (doseq [j (frame-pos k)] (step acc j))
+                (put! k ((:final acc)))))))))))
 
 (defn- partition-by-cmp [xs same?]
   (if (empty? xs) []
@@ -1468,25 +1521,46 @@
                              [g (mapv (fn [^objects sn] [(mapv #((:f %) sn) (:part s)) (mapv #((:f %) sn) (:order s))])
                                       snaps)])))]
     (dotimes [i n] (aset ^objects (aget snaps i) (long win-slot) (object-array nspec)))
-    (doseq [g gkeys]
-      (let [s (rep g)
-            ks (keys-of g)
-            cmp (win-key-cmp s)
-            pc (row-comparator (map #(or (:coll %) "BINARY") (:part s)))
-            idx (sort (fn [a b] (let [c (.compare ^Comparator cmp (nth ks a) (nth ks b))] (if (zero? c) (compare a b) c)))
-                      (range n))
-            parts (partition-by-cmp idx (fn [a b] (zero? (.compare ^Comparator pc (first (nth ks a)) (first (nth ks b))))))]
-        (doseq [prow parts]
-          (let [prow (vec prow) okeys (mapv #(second (nth ks %)) prow)]
-            (doseq [[wi sp] (map-indexed vector specs) :when (= g (:gkey sp))]
-              (eval-partition sp snaps prow okeys nil wi env0))))))
-    (let [cmps (mapv (fn [g] [(keys-of g) (win-key-cmp (rep g))]) gkeys)
-          order (sort (fn [a b]
-                        (loop [cs cmps]
-                          (if (empty? cs) (compare a b)
-                              (let [[ks c] (first cs) r (.compare ^Comparator c (nth ks a) (nth ks b))]
-                                (if (zero? r) (recur (rest cs)) r)))))
-                      (range n))]
+    ;; sqlite3WindowRewrite: the windows equal to the first one are computed by the outer query; every other
+    ;; window function (and ORDER BY copies of windowed result columns) moves into a sub-select, recursively.
+    ;; The innermost level is computed first; each level stable-sorts the rows of the level below it.
+    (let [idxs (range nspec)
+          wk (fn [i] (:wkey (nth specs i)))
+          fk (fn [i] (:fkey (nth specs i)))
+          noncopy (filterv #(not (:copy (nth specs %))) idxs)
+          copies (filterv #(:copy (nth specs %)) idxs)
+          head (first (or (seq noncopy) copies))
+          l0 (filterv #(= (wk %) (wk head)) (if (seq noncopy) noncopy copies))
+          l0s (set l0)
+          rest0 (remove l0s (concat noncopy copies))
+          [rest1 aliases] (reduce (fn [[acc al] i]
+                                    (if-let [j (first (filter #(= (fk %) (fk i)) acc))]
+                                      [acc (assoc al i j)]
+                                      [(conj acc i) al]))
+                                  [[] {}] rest0)
+          levels (loop [lst rest1 levels [l0]]
+                   (if (empty? lst) levels
+                       (let [h (first lst) in (filterv #(= (wk %) (wk h)) lst)]
+                         (recur (remove (set in) lst) (conj levels in)))))
+          order (reduce
+                 (fn [cur level]
+                   (let [s (nth specs (first level))
+                         g (:gkey s)
+                         ks (keys-of g)
+                         cmp (win-key-cmp s)
+                         pc (row-comparator (map #(or (:coll %) "BINARY") (:part s)))
+                         idx (sort (fn [a b] (.compare ^Comparator cmp (nth ks a) (nth ks b))) cur)
+                         parts (partition-by-cmp idx (fn [a b] (zero? (.compare ^Comparator pc (first (nth ks a)) (first (nth ks b))))))]
+                     (doseq [prow parts]
+                       (let [prow (vec prow) okeys (mapv #(second (nth ks %)) prow)]
+                         (doseq [wi level]
+                           (eval-partition (nth specs wi) snaps prow okeys nil wi env0))))
+                     idx))
+                 (range n) (reverse levels))]
+      (doseq [[i j] aliases]
+        (dotimes [r n]
+          (let [^objects res (aget ^objects (aget snaps r) (long win-slot))]
+            (aset res (long i) (aget res (long j))))))
       (map #(aget snaps (long %)) order))))
 
 
@@ -1619,7 +1693,8 @@
               ;; qualified names of the inner tables still resolve: alias -> {lcol idx}
               quals (reduce (fn [m [i [a c]]] (if (or (nil? a) (get-in m [a c])) m (assoc-in m [a c] i)))
                             {} (for [[i ps] (map-indexed vector (:star-quals sub)) pr ps] [i pr]))]
-          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals))))
+          (assoc (sub-source sub (:alias item) nil cols) :slot slot :quals quals :orig-cols (vec (:names sub))
+                 :direct-quals (set (for [qs (:star-quals sub) [a _ d] qs :when d] a))))))
     (:subq item)
     (let [sub (compile-select ctx (:subq item))
           slot (new-slot! ctx)
@@ -1672,9 +1747,14 @@
                 :when (not (contains? (:hidden s) (nth (:lcols s) i)))]
             {:star-col [s i] :name (nth (:cols s) i) :unq true})))
         (:star rc)
-        (let [s (first (filter #(= (:alias %) (lc (:table rc))) sources))]
-          (when-not s (err (str "no such table: " (:table rc))))
-          (for [i (range (:ncols s)) :when (not (and (:tvf s) (contains? (:hidden s) (nth (:lcols s) i))))] {:star-col [s i] :name (nth (:cols s) i)}))
+        (let [lt (lc (:table rc))
+              s (first (filter #(= (:alias %) lt) sources))
+              ns (when-not s (first (filter #(get-in % [:quals lt]) sources)))]
+          (when-not (or s ns) (err (str "no such table: " (:table rc))))
+          (if s
+            (for [i (range (:ncols s)) :when (not (and (:tvf s) (contains? (:hidden s) (nth (:lcols s) i))))] {:star-col [s i] :name (nth (:cols s) i)})
+            ;; t.* of a table inside a parenthesized join
+            (for [[c i] (sort-by second (get-in ns [:quals lt]))] {:star-col [ns i] :name (nth (if ((:direct-quals ns) lt) (:orig-cols ns) (:cols ns)) i)})))
         :else [rc]))
     cols)))
 
@@ -1682,14 +1762,27 @@
   (cond
     (:alias rc) (:alias rc)
     (:star-col rc) (:name rc)
-    (= :col (:op (:e rc))) (:name (:e rc))
+    (= :col (:op (:e rc)))
+    (let [e (:e rc)]
+      (or (when (:table e)
+            ;; a qualified column of a table nested two joins deep shows the sub-select's column name
+            (let [r (try (resolve-column ctx (:table e) (:name e) nil) (catch clojure.lang.ExceptionInfo _ nil))
+                  s (:src r) lt (lc (:table e))]
+              (when (and s (:quals s) (not= (:alias s) lt) (not ((or (:direct-quals s) #{}) lt)) (< (long (:idx r)) (count (:cols s))))
+                (nth (:cols s) (:idx r)))))
+          (:name e)))
     :else (text-of-node ctx (:e rc))))
+
+(defn neg-int-lit? [e]
+  (and (= :unary (:op e)) (= :neg (:o e)) (= :lit (:op (:e e))) (= :int (:kind (:e e)))))
 
 (defn- order-term-index
   "If ORDER BY term refers to a result column (integer or alias), returns its 0-based index."
   [ctx term names aliases nth-word]
   (let [e (:e term)]
     (cond
+      (neg-int-lit? e)
+      (err (str nth-word " ORDER BY term out of range - should be between 1 and " (count names)))
       (and (= :lit (:op e)) (= :int (:kind e)))
       (let [k (long (lit-value e))]
         (if (or (< k 1) (> k (count names)))
@@ -1993,7 +2086,10 @@
                   (cond
                     (and (map? e) (= :col (:op e)) (nil? (:table e)) (contains? alias-map (lc (:name e))))
                     (try (resolve-column ctx2 nil (:name e) nil) e
-                         (catch clojure.lang.ExceptionInfo _ (get alias-map (lc (:name e)))))
+                         (catch clojure.lang.ExceptionInfo ex
+                           (if (some-> (:sql-error (ex-data ex)) (str/starts-with? "ambiguous"))
+                             e
+                             (get alias-map (lc (:name e))))))
                     (map? e) (if (#{:subq :exists} (:op e)) e (into {} (map (fn [[k x]] [k (if (#{:select} k) x (subst x))]) e)))
                     (vector? e) (mapv subst e)
                     :else e))
@@ -2014,12 +2110,23 @@
                                 :when (not (:correlated sub))]
                             sub))))
           ;; join conditions
+          deferred-on (atom [])
           on-fns (vec (for [i (range (count sources))]
                         (let [item (nth from i)
                               using (nth join-conds i)
                               s (nth sources i)]
                           (cond
-                            (:on item) (let [c (cx (assoc ctx2 :aggs nil) (:on item))] (condf c))
+                            (:on item)
+                            (let [ra (atom #{})
+                                  c (cx (assoc ctx2 :aggs nil :refs ra) (subst (:on item)))
+                                  _ (when-let [r (:refs ctx2)] (swap! r into @ra))
+                                  later (set (map :slot (drop (inc i) sources)))]
+                              (if (some #(later (first %)) @ra)
+                                (if (or (nth left-join i) (nth right-join i))
+                                  (err "ON clause references tables to its right")
+                                  ;; an inner join's ON term on a later table is evaluated with the WHERE clause
+                                  (do (swap! deferred-on conj (condf c)) nil))
+                                (condf c)))
                             (seq using)
                             (let [preds (doall (for [u using]
                                           (let [lu (lc u)
@@ -2037,6 +2144,8 @@
           nagg-before (count @aggs)
           group-c (mapv (fn [g]
                           (let [g (subst g)]
+                            (when (neg-int-lit? g)
+                              (err (str (ordinal 1) " GROUP BY term out of range - should be between 1 and " (count rcols))))
                             (if (and (= :lit (:op g)) (= :int (:kind g)))
                               (let [k (long (lit-value g))]
                                 (if (or (< k 1) (> k (count rcols)))
@@ -2054,12 +2163,23 @@
           order-c (when order
                     (vec (map-indexed
                           (fn [i term]
-                            (let [ri (order-term-index ctx2 term names aliases (ordinal (inc i)))
-                                  c (if ri (nth rcomp ri) (cx wctx (:e term)))]
-                              {:f (:f c) :ri ri :coll (or (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
+                            (let [[e0 ocoll] (if (= :collate (:op (:e term))) [(:e (:e term)) (check-coll (:coll (:e term)))] [(:e term) nil])
+                                  ri (order-term-index ctx2 (assoc term :e e0) names aliases (ordinal (inc i)))
+                                  ocoll (when ri ocoll)
+                                  ri (or ri (when (has-window? (:e term))
+                                              (first (keep-indexed (fn [k rc] (when (and (:e rc) (expr-equal? (:e rc) (:e term))) k)) rcols))))
+                                  c (if ri
+                                      (let [rc (nth rcols ri)]
+                                        ;; an ORDER BY copy of a windowed result column is computed again, one level deeper
+                                        (if (and (:e rc) (has-window? (:e rc)))
+                                          (assoc (cx (assoc wctx :win-copy true) (:e rc)) :wcopy true)
+                                          (nth rcomp ri)))
+                                      (cx wctx (subst (:e term))))]
+                              {:f (:f c) :ri ri :wcopy (:wcopy c) :coll (or ocoll (:coll c) "BINARY") :desc (:desc term) :nulls (:nulls term)
                                :col (:col c)}))
                           order)))
           nsrc (count sources)
+          don @deferred-on
           win-specs @wins
           win? (boolean (seq win-specs))
           rowid-order (when (and order-c (= 1 nsrc) (:table (first sources)) (not is-agg) (not (:distinct core)) (not win?)
@@ -2078,13 +2198,21 @@
                                             %)
                                           (when (:where core) (split-and (:where core))))
                            sources))
-          rfs (mapv :f rcomp)
+          ;; SQLITE_ECEL_OMITREF: a result column the ORDER BY refers to is read back from the sort key
+          rfs (reduce (fn [v o] (if (and (:wcopy o) (not (:distinct core))) (assoc v (:ri o) (:f o)) v))
+                      (mapv :f rcomp) order-c)
           ofs (mapv :f order-c)
           agg-specs @aggs
           minmax-only (and (seq agg-specs) (every? #(#{"min" "max"} (:name %)) agg-specs))
           has-minmax (some #(#{"min" "max"} (:name %)) agg-specs)
           control (last (keep-indexed (fn [i sp] (when (#{"min" "max"} (:name sp)) i)) agg-specs))
           gfs (mapv :f group-c)
+          ;; a GROUP BY that includes the rowid of the only table is satisfied by the scan order
+          rowid-group (and (= 1 (count sources)) (:table (first sources))
+                           (some (fn [g] (let [col (:col g)]
+                                           (and col (= (:slot col) (:slot (first sources))) (zero? (long (:depth col)))
+                                                (or (= (:idx col) (:ncols (first sources))) (= (:idx col) (:ipk (:table (first sources))))))))
+                                 group-c))
           gcolls (mapv #(or (:coll %) "BINARY") group-c)
           having-f (when having-c (condf having-c))
           distinct (:distinct core)
@@ -2107,8 +2235,9 @@
                  (let [rsets (when any-rj (mapv (fn [r] (when r (java.util.HashSet.))) right-join))]
                  (letfn [(level [i]
                            (if (= i nsrc)
-                             (when (or (nil? where-f)
-                                       (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w))))
+                             (when (and (every? (fn [f] (let [w (f env)] (and (not (nil? w)) (v/bool-value w)))) don)
+                                        (or (nil? where-f)
+                                            (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
                                (k))
                              (let [slot (long (nth slots i))
                                    onf (nth on-fns i)
@@ -2144,6 +2273,7 @@
           (if is-agg
             (fn [^objects env emit]
               (let [groups (if (seq gfs) (TreeMap. ^Comparator (row-comparator gcolls)) nil)
+                    gorder (when (and groups rowid-group) (java.util.ArrayList.))
                     single (volatile! nil)
                     new-group (fn [] {:accs (mapv make-acc agg-specs) :snap (object-array nsrc) :init (boolean-array 1)})
                     snapshot! (fn [g] (let [^objects sn (:snap g)] (dotimes [i nsrc] (aset sn i (aget env (long (nth slots i)))))))]
@@ -2152,7 +2282,7 @@
                         (let [g (if groups
                                   (let [key (mapv #(% env) gfs)]
                                     (or (.get ^TreeMap groups key)
-                                        (let [g (new-group)] (.put ^TreeMap groups key g) g)))
+                                        (let [g (new-group)] (.put ^TreeMap groups key g) (when gorder (.add ^java.util.ArrayList gorder g)) g)))
                                   (or @single (vreset! single (new-group))))
                               results (mapv (fn [acc spec]
                                               (if (or (nil? (:filter spec))
@@ -2164,7 +2294,7 @@
                           (when (if control updated (not (aget ^booleans (:init g) 0)))
                             (aset ^booleans (:init g) 0 true)
                             (snapshot! g)))))
-                (let [gs (if groups (vals groups) [(or @single (new-group))])
+                (let [gs (if groups (or (seq gorder) (vals groups)) [(or @single (new-group))])
                       seen (when distinct (TreeSet. ^Comparator (row-comparator (map #(or (:coll %) "BINARY") rcomp))))]
                   (let [sfl (java.util.ArrayList.)]
                     (doseq [g gs]
@@ -2190,8 +2320,8 @@
        :order-info [aliases (mapv (fn [rc] (if (:star-col rc) {:op :col :name (:name rc)} (:e rc))) rcols)]
        :dtypes (mapv (fn [rc c] (if (:star-col rc) (aff-mask (:aff c)) (expr-dtype (:e rc) c))) rcols rcomp)
        :star-quals (mapv (fn [rc] (when-let [[s i] (:star-col rc)]
-                                    (cons [(:alias s) (nth (:lcols s) i)]
-                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c]))))
+                                    (cons [(:alias s) (nth (:lcols s) i) true]
+                                          (for [[a m] (:quals s) [c j] m :when (= j i)] [a c false]))))
                          rcols)
        :outer-refs outer-refs
        :run run}))))
@@ -2276,6 +2406,7 @@
   "resolveCompoundOrderBy: an integer, else an AS alias or an equal result expression of any SELECT,
   the left-most first."
   [ctx e n infos nth-word]
+  (when (neg-int-lit? e) (err (str nth-word " ORDER BY term out of range - should be between 1 and " n)))
   (if (and (= :lit (:op e)) (= :int (:kind e)))
     (let [k (long (lit-value e))]
       (if (or (< k 1) (> k n))
@@ -2470,7 +2601,7 @@
                       (apply-limit rows limit offset)))})
       (let [c (compile-core ctx body order limit offset)
             cmp (when (and order (not (:presorted c))) (compare-keys-fn (:order-specs c)))]
-        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c)
+        {:names (:names c) :affs (:affs c) :colls (:colls c) :ecolls (:ecolls c) :star-quals (:star-quals c)
          :correlated @(:outer-refs c)
          :rows-fn (fn [env]
                     (if cmp

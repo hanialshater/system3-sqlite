@@ -488,7 +488,18 @@
     :else nil))
 
 (defn parse-from [^P p]
-  (loop [items [(parse-table-ref p)]]
+  (loop [items (let [first-ref (parse-table-ref p)]
+                 (cond
+                   (at-kw? p "ON")
+                   (do (advance! p) (parse-expr p)
+                       (when (at-kw? p "USING") (fail! p))
+                       (throw (lx/sql-error "a JOIN clause is required before ON")))
+                   (at-kw? p "USING")
+                   (do (advance! p) (expect-op p "(")
+                       (loop [] (parse-nm p) (when (accept-op p ",") (recur)))
+                       (expect-op p ")")
+                       (throw (lx/sql-error "a JOIN clause is required before USING")))
+                   :else [first-ref]))]
     (let [save (pos p)
           jt (parse-join-op p)]
       (if (nil? jt)
@@ -579,6 +590,8 @@
                  (if op
                    (recur {:type :compound :op op :left left :right (parse-select-core p)})
                    left)))
+        last-core (if (= :compound (:type body)) (:right body) body)
+        _ (when (and (= :values (:type last-core)) (or (at-kw? p "ORDER") (at-kw? p "LIMIT"))) (fail! p))
         order (when (at-kw? p "ORDER") (advance! p) (expect-kw p "BY") (parse-order-by p))
         [limit offset] (when (accept-kw p "LIMIT")
                          (let [a (parse-expr p)]
@@ -643,7 +656,9 @@
         name (parse-nm p)
         type (parse-type-name p)
         cons (loop [acc []]
-               (let [cname (when (accept-kw p "CONSTRAINT") (parse-nm p))
+               (let [cname (when (accept-kw p "CONSTRAINT")
+                             (loop [nm (parse-nm p)]
+                               (if (accept-kw p "CONSTRAINT") (recur (parse-nm p)) nm)))
                      t (tok p)]
                  (cond
                    (kw? t "PRIMARY")
@@ -707,12 +722,15 @@
         (expect-op p "(")
         (let [[cols tcons]
               (loop [cols [] tcons []]
-                (let [t (tok p)
-                      cname (when (kw? t "CONSTRAINT") (advance! p) (parse-nm p))
+                (let [t0 (tok p)
+                      cname (when (kw? t0 "CONSTRAINT")
+                              (advance! p)
+                              (loop [nm (parse-nm p)]
+                                (if (accept-kw p "CONSTRAINT") (recur (parse-nm p)) nm)))
                       t (tok p)]
                   (cond
                     (or (kw? t "PRIMARY") (kw? t "UNIQUE") (kw? t "CHECK") (kw? t "FOREIGN"))
-                    (if (empty? cols) (fail! p)
+                    (if (empty? cols) (syntax-error p t0)
                         (let [tc (case (:u t)
                                    "PRIMARY" (do (advance! p) (expect-kw p "KEY")
                                                  {:c :pk :cols (parse-indexed-cols p) :conflict (parse-conflict-clause p)})
@@ -725,6 +743,7 @@
                               tcons (conj tcons tc)]
                           (cond (accept-op p ",") (recur cols tcons)
                                 (accept-op p ")") [cols tcons]
+                                (let [u (:u (tok p))] (#{"CONSTRAINT" "PRIMARY" "UNIQUE" "CHECK" "FOREIGN"} u)) (recur cols tcons)
                                 :else (fail! p))))
                     (seq tcons) (fail! p)
                     :else
@@ -828,14 +847,18 @@
                  (if (accept-op p ",") (recur acc) acc)))
         from (when (accept-kw p "FROM") (parse-from p))
         where (when (accept-kw p "WHERE") (parse-expr p))
-        ret (parse-returning p)]
+        ret (parse-returning p)
+        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :update :or or-action :sets sets :from from :where where :returning ret} qt)))
 
 (defn- parse-delete [^P p]
   (expect-kw p "FROM")
   (let [qt (parse-qualified-table p)
         where (when (accept-kw p "WHERE") (parse-expr p))
-        ret (parse-returning p)]
+        ret (parse-returning p)
+        _ (when (at-kw? p "ORDER") (throw (lx/sql-error "syntax error near \"ORDER BY\"")))
+        _ (when (at-kw? p "LIMIT") (throw (lx/sql-error "syntax error near \"LIMIT\"")))]
     (merge {:kind :delete :where where :returning ret} qt)))
 
 ;; ------------------------------------------------------------------ statements
@@ -958,8 +981,25 @@
                    (accept-kw p "TO") {:action :rename :to (parse-nm p)}
                    :else (do (accept-kw p "COLUMN")
                              (let [old (parse-nm p)] (expect-kw p "TO") {:action :rename-col :old old :to (parse-nm p)})))
-                 (accept-kw p "ADD") (do (accept-kw p "COLUMN") {:action :add :col (parse-column-def p)})
-                 (accept-kw p "DROP") (do (accept-kw p "COLUMN") {:action :drop-col :col (parse-nm p)})
+                 (accept-kw p "ADD")
+                 (if (or (at-kw? p "CONSTRAINT") (at-kw? p "CHECK"))
+                   (let [cs (:s (tok p))
+                         cname (when (accept-kw p "CONSTRAINT") (parse-nm p))
+                         _ (expect-kw p "CHECK") _ (expect-op p "(")
+                         e (parse-expr p)
+                         _ (expect-op p ")")]
+                     {:action :add-constraint :cname cname :text-s cs :text-e (prev-end p) :e e})
+                   (do (accept-kw p "COLUMN") {:action :add :col (parse-column-def p)}))
+                 (accept-kw p "DROP")
+                 (if (accept-kw p "CONSTRAINT")
+                   {:action :drop-constraint :cname (parse-nm p)}
+                   (do (accept-kw p "COLUMN") {:action :drop-col :col (parse-nm p)}))
+                 (accept-kw p "ALTER")
+                 (do (accept-kw p "COLUMN")
+                     (let [c (parse-nm p)]
+                       (cond (accept-kw p "SET") (do (expect-kw p "NOT") (expect-kw p "NULL") {:action :set-notnull :col c})
+                             (accept-kw p "DROP") (do (expect-kw p "NOT") (expect-kw p "NULL") {:action :drop-notnull :col c})
+                             :else (fail! p))))
                  :else (fail! p)))))
         ("BEGIN") (do (advance! p)
                       (let [mode (or (when (accept-kw p "DEFERRED") :deferred) (when (accept-kw p "IMMEDIATE") :immediate)
