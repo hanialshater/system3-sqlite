@@ -6,6 +6,7 @@
             [sqlclj.parser :as p]
             [sqlclj.engine :as e :refer [err lc]]
             [sqlclj.schema :as sch]
+            [sqlclj.trigger :as trg]
             [sqlclj.pragma :as pragma]))
 
 (set! *warn-on-reflection* true)
@@ -76,6 +77,72 @@
         [db idx] (sch/register db (assoc idx :temp (:temp t) :db (:db t) :no-master wr-pk) (not wr-pk))]
     (-> db (assoc :index-seq s) (assoc-in [:indexes (lc (:name idx))] (assoc idx :seq s)))))
 
+(def ^:private nondeterministic-fns #{"random" "randomblob" "changes" "last_insert_rowid" "total_changes"
+                                       "current_time" "current_date" "current_timestamp"})
+
+(defn- check-gen-expr [ast]
+  (doseq [x (tree-seq coll? seq ast) :when (map? x)]
+    (case (:op x)
+      :fn (when (nondeterministic-fns (lc (:name x)))
+            (err "non-deterministic functions prohibited in generated columns"))
+      (:subq :exists) (err "subqueries prohibited in generated columns")
+      nil)))
+
+(defn- check-gen-loops [cols]
+  (let [names (mapv (comp lc :name) cols)
+        refs (fn [c] (set (for [x (tree-seq coll? seq (:e (:gen c))) :when (and (map? x) (= :col (:op x)) (nil? (:table x)))] (lc (:name x)))))
+        state (volatile! {})]
+    (letfn [(visit [i]
+              (let [st (get @state i)]
+                (cond (= st :done) nil
+                      (= st :busy) true
+                      :else (do (vswap! state assoc i :busy)
+                                (let [c (nth cols i)
+                                      loop? (when (:gen c)
+                                              (some (fn [n] (let [j (.indexOf ^java.util.List names n)]
+                                                              (when (and (>= j 0) (visit j))
+                                                                (err (str "generated column loop on \"" (:name c) "\"")))))
+                                                    (refs c)))]
+                                  (vswap! state assoc i :done)
+                                  nil)))))]
+      (dotimes [i (count cols)] (visit i)))))
+
+(defn- fill-generated
+  "Computes the generated columns of row (rowid last) in column order."
+  [tbl row]
+  (if (:has-gen tbl)
+    (reduce (fn [row ci]
+              (let [c (nth (:cols tbl) ci)]
+                (if-let [f (:f (:gen c))]
+                  (assoc row ci (v/apply-affinity (f row) (:aff c)))
+                  row)))
+            row (range (count (:cols tbl))))
+    row))
+
+(defn- ensure-sequence-table [db st]
+  (if (get-in db [:tables "sqlite_sequence"])
+    db
+    (let [tbl {:name "sqlite_sequence" :cols [{:name "name" :type nil :aff :blob} {:name "seq" :type nil :aff :blob}]
+               :ipk nil :strict false :checks [] :rows (sorted-map) :pk-cols [] :fks []
+               :temp (:temp st) :db (:db st) :sql "CREATE TABLE sqlite_sequence(name,seq)"}
+          [db tbl] (sch/register db tbl true)]
+      (assoc-in db [:tables "sqlite_sequence"] tbl))))
+
+(defn- sequence-value [db tbl]
+  (let [sq (get-in db [:tables "sqlite_sequence"])]
+    (or (some (fn [[_ r]] (when (= (first r) (:name tbl)) (let [x (second r)] (if (instance? Long x) x (long (or (v/apply-affinity x :integer) 0)))))) (:rows sq)) 0)))
+
+(defn- bump-sequence [db tbl rid]
+  (let [sq (get-in db [:tables "sqlite_sequence"])]
+    (if-not sq db
+      (let [hit (some (fn [[k r]] (when (= (first r) (:name tbl)) k)) (:rows sq))]
+        (cond
+          hit (let [cur (second (get (:rows sq) hit))]
+                (if (and (instance? Long cur) (>= (long cur) (long rid))) db
+                    (assoc-in db [:tables "sqlite_sequence" :rows hit] [(:name tbl) rid hit])))
+          :else (let [k (if (empty? (:rows sq)) 1 (inc (long (key (first (rseq (:rows sq)))))))]
+                  (assoc-in db [:tables "sqlite_sequence" :rows k] [(:name tbl) rid k])))))))
+
 (defn- create-table [db sql st]
   (let [name (:name st) lname (lc name)]
     (cond
@@ -113,13 +180,24 @@
                            {:name (:name d) :type t :aff aff
                             :strict-type (when strict (strict-types (str/upper-case t)))
                             :notnull (some #(= :notnull (:c %)) cons)
+                            :notnull-conflict (:conflict (first (filter #(= :notnull (:c %)) cons)))
                             :default (:e (last (filter #(= :default (:c %)) cons)))
                             :default-text (when-let [de (:e (last (filter #(= :default (:c %)) cons)))]
                                             (when (:ps de) (subs sql (:ps de) (:pe de))))
                             :coll (when-let [c (:coll (last (filter #(= :collate (:c %)) cons)))] (e/check-coll c))
                             :pk (first (filter #(= :pk (:c %)) cons))
-                            :unique (filter #(= :unique (:c %)) cons)}))
+                            :unique (filter #(= :unique (:c %)) cons)
+                            :gen (when-let [g (last (filter #(= :generated (:c %)) cons))]
+                                   {:e (:e g) :stored (:stored g)})
+                            :hidden-kind (when-let [g (last (filter #(= :generated (:c %)) cons))]
+                                           (if (:stored g) 3 2))}))
                        defs)
+            _ (doseq [c cols :when (:gen c)]
+                (when (:default c) (err "cannot use DEFAULT on a generated column"))
+                (when (:pk c) (err "generated columns cannot be part of the PRIMARY KEY")))
+            _ (when (and (seq cols) (every? :gen cols)) (err "must have at least one non-generated column"))
+            _ (doseq [c cols :when (:gen c)]
+                (check-gen-expr (:e (:gen c))))
             col-pks (keep-indexed (fn [i c] (when (:pk c) i)) cols)
             tpks (filter #(= :pk (:c %)) (:tcons st))
             _ (when (> (+ (count col-pks) (count tpks)) 1)
@@ -131,6 +209,8 @@
                           (seq tpks) (mapv (fn [ic]
                                              (when-not (= :col (:op (:e ic)))
                                                (err "expressions prohibited in PRIMARY KEY and UNIQUE constraints"))
+                                             (when (:gen (nth cols (col-idx (:name (:e ic)))))
+                                               (err "generated columns cannot be part of the PRIMARY KEY"))
                                              {:i (col-idx (:name (:e ic))) :desc (:desc ic) :coll (:coll ic)})
                                            (:cols (first tpks)))
                           :else nil)
@@ -148,27 +228,36 @@
                            {:e (:e k) :name (:name k) :text (subs sql (:ps (:e k)) (:pe (:e k)))})))
             fks (vec (concat (for [d defs, k (:cons d) :when (= :fk (:c k))] (dissoc k :c))
                              (for [k (:tcons st) :when (= :fk (:c k))] (dissoc k :c))))
+            autoinc (boolean (some (fn [d] (some #(and (= :pk (:c %)) (:auto %)) (:cons d))) defs))
+            _ (when (and autoinc (not ipk)) (err "AUTOINCREMENT is only allowed on an INTEGER PRIMARY KEY"))
             tbl {:name name :cols cols :ipk ipk :strict strict :checks [] :rows (sorted-map)
-                 :pk-cols (mapv :i pk-cols) :fks fks
+                 :pk-cols (mapv :i pk-cols) :fks fks :autoinc autoinc
+                 :pk-conflict (or (when ipk (:conflict (:pk (nth cols ipk)))) (:conflict (first tpks)))
                  :without-rowid (:without-rowid st) :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "TABLE")}
             [db tbl] (sch/register db tbl true)
             db (assoc-in db [:tables lname] tbl)
+            db (if autoinc (ensure-sequence-table db st) db)
             ;; compile checks against the table
             tbl (assoc tbl :checks (mapv (fn [ck] (assoc ck :f (:rowf (compile-row-expr db sql tbl (:e ck) :check)))) checks))
+            tbl (if (some :gen cols)
+                  (do (check-gen-loops cols)
+                      (assoc tbl :has-gen true
+                             :cols (mapv (fn [c] (if (:gen c) (assoc-in c [:gen :f] (:rowf (compile-row-expr db sql tbl (:e (:gen c))))) c)) cols)))
+                  tbl)
             db (assoc-in db [:tables lname] tbl)
             ;; autoindexes: PK (non-ipk) and UNIQUE in declaration order
             uniq-defs (concat
                        (for [[i c] (map-indexed vector cols)
-                             :let [items (concat (when (and (:pk c) (not= i ipk)) [[:pk]])
-                                                 (map (fn [_] [:u]) (:unique c)))]
+                             :let [items (concat (when (and (:pk c) (not= i ipk)) [[:pk (:conflict (:pk c))]])
+                                                 (map (fn [u] [:u (:conflict u)]) (:unique c)))]
                              it items]
-                         (with-meta [{:e {:op :col :name (:name c)} :coll nil :desc false}] {:pk (= it [:pk])}))
+                         (with-meta [{:e {:op :col :name (:name c)} :coll nil :desc false}] {:pk (= (first it) :pk) :conflict (second it)}))
                        (for [k (:tcons st) :when (or (= :unique (:c k)) (and (= :pk (:c k)) (nil? ipk)))]
-                         (with-meta (:cols k) {:pk (= :pk (:c k))})))
+                         (with-meta (:cols k) {:pk (= :pk (:c k)) :conflict (:conflict k)})))
             db (reduce (fn [db [n icols]]
                          (let [tbl (get-in db [:tables lname])
                                idx (assoc (build-index db sql tbl (str "sqlite_autoindex_" (sch/display-name name {:db (:db st)}) "_" n) true icols nil true)
-                                          :pk-auto (:pk (meta icols)))]
+                                          :pk-auto (:pk (meta icols)) :conflict (:conflict (meta icols)))]
                            ;; skip duplicate identical unique constraints
                            (if (some #(and (:auto %) (= (mapv (juxt :col :coll) (:cols %)) (mapv (juxt :col :coll) (:cols idx))))
                                      (table-indexes db lname))
@@ -232,19 +321,28 @@
             c (e/cx ctx d)]
         ((:f c) (object-array 1))))))
 
+(defn- fail-with
+  "Raises a constraint error under conflict action act (FAIL / ROLLBACK carry their semantics in ex-data)."
+  [act msg]
+  (if (#{:fail :rollback} act)
+    (throw (ex-info msg {:sql-error msg :conflict act}))
+    (err msg)))
+
 (defn- check-notnull
   "NOT NULL constraints. Returns the row (possibly with REPLACE defaults) or nil for IGNORE."
   [db sql tbl row on-conflict]
   (reduce (fn [row ci]
             (let [c (nth (:cols tbl) ci)]
               (if (and (:notnull c) (nil? (nth row ci)) (not= ci (:ipk tbl)))
-                (case on-conflict
-                  :ignore (reduced nil)
-                  :replace (let [d (when (:default c) (v/apply-affinity (default-value db sql tbl ci) (:aff c)))]
-                             (if (nil? d)
-                               (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c)))
-                               (assoc row ci d)))
-                  (err (str "NOT NULL constraint failed: " (:name tbl) "." (:name c))))
+                (let [act (or on-conflict (:notnull-conflict c) :abort)
+                      msg (str "NOT NULL constraint failed: " (:name tbl) "." (:name c))]
+                  (case act
+                    :ignore (reduced nil)
+                    :replace (let [d (when (:default c) (v/apply-affinity (default-value db sql tbl ci) (:aff c)))]
+                               (if (nil? d)
+                                 (err msg)
+                                 (assoc row ci d)))
+                    (fail-with act msg)))
                 row)))
           row (range (count (:cols tbl)))))
 
@@ -262,7 +360,7 @@
     (if bad
       (if (= on-conflict :ignore)
         nil
-        (err (str "CHECK constraint failed: " (or (:name bad) (:text bad)))))
+        (fail-with on-conflict (str "CHECK constraint failed: " (or (:name bad) (:text bad)))))
       row)))
 
 (defn- check-row
@@ -286,17 +384,18 @@
    (resolve-uniques db tbl rid row self on-conflict upsert-target? nil false))
   ([db tbl rid row self on-conflict upsert-target? mid-check delay-ipk]
    (let [idxs (filter :unique (table-indexes db (:name tbl)))]
-     (letfn [(handle [tbl conf msg what]
-               (cond
-                 (upsert-target? what) [:upsert what]
-                 (= on-conflict :ignore) :ignore
-                 (= on-conflict :replace) (update tbl :rows dissoc conf)
-                 :else (err msg)))
+     (letfn [(handle [tbl conf msg what cact]
+               (let [act (or on-conflict cact :abort)]
+                 (cond
+                   (upsert-target? what) [:upsert what]
+                   (= act :ignore) :ignore
+                   (= act :replace) (update tbl :rows dissoc conf)
+                   :else (fail-with act msg))))
              (rowid-step [tbl]
                (if (and (not= rid self) (contains? (:rows tbl) rid))
                  (handle tbl rid (str "UNIQUE constraint failed: " (:name tbl) "."
                                       (if (:ipk tbl) (:name (nth (:cols tbl) (:ipk tbl))) "rowid"))
-                         :rowid)
+                         :rowid (when (:ipk tbl) (:pk-conflict tbl)))
                  tbl))
              (index-steps [tbl]
                (loop [tbl tbl idxs idxs]
@@ -305,7 +404,7 @@
                    (let [idx (first idxs)
                          conf (find-conflict tbl idx row self)]
                      (if conf
-                       (let [r (handle tbl conf (unique-msg* tbl idx) idx)]
+                       (let [r (handle tbl conf (unique-msg* tbl idx) idx (:conflict idx))]
                          (if (map? r) (recur r (rest idxs)) r))
                        (recur tbl (rest idxs)))))))]
        (let [r (if delay-ipk tbl (rowid-step tbl))]
@@ -361,21 +460,73 @@
                        (set (map (comp lc :name) (:cols what))))
         :else false))))
 
+(defn- fail-partial
+  "Runs (f) for one row; an error under conflict action FAIL keeps the rows done so far."
+  [db changes tkey tbl f]
+  (try (f)
+       (catch clojure.lang.ExceptionInfo ex
+         (if (= :fail (:conflict (ex-data ex)))
+           (throw (ex-info (ex-message ex) (assoc (ex-data ex) :partial-db (assoc (if (:view tbl) (update db :tables dissoc tkey) db) :changes changes))))
+           (throw ex)))))
+
+(defn- try-fire
+  "Runs triggers for a row event; ::ignore when a program raised IGNORE."
+  [db trigs tbl old new]
+  (try (trg/fire db trigs tbl old new)
+       (catch clojure.lang.ExceptionInfo ex (if (trg/ignore? ex) ::ignore (throw ex)))))
+
+(defn- dml-target
+  "[tkey tbl] of the table a DML statement targets; a view becomes a temporary table of its rows
+  (INSTEAD OF triggers then stand in for the writes)."
+  [db sql st event]
+  (let [tname (:table st) l (lc tname)]
+    (if-let [tbl (get-in db [:tables l])]
+      (do (when (:virtual tbl) (err (str "table " tname " may not be modified")))
+          [l tbl])
+      (if-let [view (get-in db [:views l])]
+        (do (when-not (trg/any-for? db l event)
+              (err (str "cannot modify " tname " because it is a view")))
+            (let [ctx (new-ctx db sql)
+                  sub (e/compile-select (assoc ctx :sql (or (:src view) sql)) (:select view))
+                  rows (e/run-select-rows sub (object-array (+ 2 @(:slots ctx))))
+                  cols (or (:cols view) (:names sub))]
+              [(str "\u0000v:" l)
+               {:name (:name view) :view true :vkey l
+                :cols (mapv (fn [n] {:name n :type nil :aff :blob}) cols)
+                :ipk nil :strict false :checks []
+                :rows (into (sorted-map) (map-indexed (fn [i r] [(long (inc i)) (conj (vec r) (long (inc i)))]) rows))}]))
+        (err (str "no such table: " (cond (:schema st) (str (:schema st) ".") e/*in-trigger* "main.") tname))))))
+
+(defn- with-target [db tkey tbl] (if (:view tbl) (assoc-in db [:tables tkey] tbl) db))
+(defn- end-target [db tkey tbl] (if (:view tbl) (update db :tables dissoc tkey) db))
+
+(defn- after-update
+  "AFTER UPDATE triggers for a row an upsert updated; returns [db changes]."
+  [db tbl old new tkey changed-cis changes]
+  (let [cols (map #(lc (:name (nth (:cols tbl) %))) changed-cis)
+        trigs (trg/matching db (:vkey tbl tkey) :after :update cols)
+        r (if (seq trigs) (try-fire db trigs tbl old new) db)]
+    (if (= r ::ignore) [db changes] [r (inc changes)])))
+
 (defn- exec-insert [db sql st emit prepared!]
   (let [tname (:table st)
-        tbl (or (get-in db [:tables (lc tname)])
-                (err (str "no such table: " tname)))
+        [tkey tbl] (dml-target db sql st :insert)
+        db (with-target db tkey tbl)
+        vw (:view tbl)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
+        ngen (count (filter :gen (:cols tbl)))
         targets (if (:default st) [] (if (:cols st)
                   (mapv (fn [c] (let [i (.indexOf ^java.util.List lnames (lc c))]
+                                  (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                                    (err (str "cannot INSERT into generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                   (cond (>= i 0) i
                                         (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                                         :else (err (str "table " (:name tbl) " has no column named " c)))))
                         (:cols st))
-                  (vec (range ncols))))
+                  (vec (remove #(:gen (nth (:cols tbl) %)) (range ncols)))))
         ctx (new-ctx db sql)
-        on-conflict (or (:or st) :abort)
+        on-conflict (:or st)
         ;; source rows
         rows (cond
                (:default st) [[]]
@@ -384,13 +535,13 @@
                               (when (not= (count r) (count targets))
                                 (if (:cols st)
                                   (err (str (count r) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " ncols " columns but " (count r) " values were supplied")))))
+                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count r) " values were supplied")))))
                             (mapv (fn [r] (mapv #(:f (e/cx ctx %)) r)) rs))
                (:select st) (let [sub (e/compile-select ctx (:select st))]
                               (when (not= (count (:names sub)) (count targets))
                                 (if (:cols st)
                                   (err (str (count (:names sub)) " values for " (count targets) " columns"))
-                                  (err (str "table " (:name tbl) " has " ncols " columns but " (count (:names sub)) " values were supplied"))))
+                                  (err (str "table " (:name tbl) " has " (- ncols ngen) " columns but " (count (:names sub)) " values were supplied"))))
                               sub))
         upserts (:upsert st)
         ;; upsert compile: scope has the table (existing row) and "excluded"
@@ -407,6 +558,8 @@
                                        :sets-c (when (= :update (:do u))
                                                  (vec (for [[cols ex] (:sets u), c cols]
                                                         [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                                                           (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                                                             (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                                                            (if (neg? i) (err (str "no such column: " c)) i))
                                                          (:f (e/cx uctx ex))])))
                                        :where-c (when (:where u) (:f (e/cx uctx (:where u))))
@@ -419,12 +572,11 @@
         _ (prepared! (:names ret))
         src-rows (if (map? rows) (e/run-select-rows rows env) rows)
         ret-rows (java.util.ArrayList.)]
-    (loop [db db rs (seq src-rows) changes 0]
-      (if (empty? rs)
-        (do (doseq [r ret-rows] (emit r))
-            (assoc db :changes changes))
-        (let [tbl (get-in db [:tables (lc tname)])
-              r (first rs)
+    (let [[db changes]
+          (reduce
+           (fn [[db changes] r]
+        (fail-partial db changes tkey tbl (fn []
+        (let [tbl (get-in db [:tables tkey])
               vals (if (map? rows) r (mapv #(% env) r))
               row (vec (repeat (inc ncols) nil))
               ;; defaults first
@@ -439,14 +591,25 @@
               ipk (:ipk tbl)
               rid-val (if ipk (nth row ipk) @rid-given)
               rid (if (nil? rid-val)
-                    (next-rowid tbl)
+                    (if (:autoinc tbl)
+                      (let [m (long (if (empty? (:rows tbl)) 0 (key (first (rseq (:rows tbl))))))
+                            sv (long (sequence-value db tbl))
+                            mx (max m sv)]
+                        (if (= mx Long/MAX_VALUE) (err "database or disk is full") (inc mx)))
+                      (next-rowid tbl))
                     (let [x (v/apply-affinity rid-val :integer)]
                       (if (instance? Long x) x (err "datatype mismatch"))))
               row (if ipk (assoc row ipk rid) row)
               raw-row row
               row (reduce (fn [row ci] (if (= ci ipk) row (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
                           row (range ncols))
-              row (check-notnull db sql tbl row on-conflict)
+              row (fill-generated tbl (assoc row ncols rid))
+              bts (trg/matching db (:vkey tbl tkey) :before :insert nil)
+              bres (if (seq bts) (try-fire db bts tbl nil (assoc row ncols rid)) db)
+              ignored (= bres ::ignore)
+              db (if ignored db bres)
+              tbl (get-in db [:tables tkey])
+              row (when-not ignored (check-notnull db sql tbl row on-conflict))
               has-checks (seq (:checks tbl))
               row (when row (if has-checks (check-checks tbl (check-strict tbl row) on-conflict) row))
               m-up (fn [what] (boolean (some #((:match %) what) up-compiled)))
@@ -454,14 +617,14 @@
               delay-ipk (boolean (and first-up (:target first-up) (not ((:match first-up) :rowid))))
               ipk-hit (when (and row (seq up-compiled) (not delay-ipk) (contains? (:rows tbl) rid) (m-up :rowid)) :rowid)]
           (if (nil? row)
-            (recur db (rest rs) changes)
+            [db changes]
             (let [[tbl2 res] (if ipk-hit
                                [tbl [:upsert ipk-hit]]
                                (resolve-uniques db tbl rid row nil on-conflict m-up
                                                 (fn [] (when-not has-checks (check-strict tbl row)))
                                                 delay-ipk))]
               (cond
-                (= res :ignore) (recur db (rest rs) changes)
+                (= res :ignore) [db changes]
                 (vector? res)
                 ;; upsert
                 (let [conf (second res)
@@ -469,7 +632,7 @@
                       crid (if (= conf :rowid) rid (find-conflict tbl conf row nil))
                       existing (get-in tbl [:rows crid])]
                   (if (= :nothing (:do up))
-                    (recur db (rest rs) changes)
+                    [db changes]
                     (do
                       (aset env (long (:slot tsrc)) existing)
                       (aset env (long (:slot xsrc))
@@ -480,12 +643,13 @@
                                              raw-row (range ncols)))
                                    ncols rid))
                       (if (and (:where-c up) (let [w ((:where-c up) env)] (or (nil? w) (not (v/bool-value w)))))
-                        (recur db (rest rs) changes)
+                        [db changes]
                         (let [nrow (reduce (fn [r [ci f]] (assoc r ci (f env))) existing (:sets-c up))
                               nrid (if ipk (let [x (v/apply-affinity (nth nrow ipk) :integer)]
                                              (if (instance? Long x) x (err "datatype mismatch")))
                                        crid)
                               nrow (if ipk (assoc nrow ipk nrid) nrow)
+                              nrow (fill-generated tbl (assoc nrow ncols nrid))
                               nrow (reduce (fn [r ci] (if (= ci ipk) r (assoc r ci (apply-col-affinity tbl ci (nth r ci)))))
                                            nrow (map first (:sets-c up)))
                               [nrow _] (check-row db sql tbl nrow :abort)
@@ -494,20 +658,33 @@
                           (when ret
                             (aset env (long (:slot ret)) (assoc nrow ncols nrid))
                             (.add ret-rows (mapv #(% env) (:fs ret))))
-                          (recur (assoc-in db [:tables (lc tname)] tblu) (rest rs) (inc changes)))))))
+                          (let [db3 (assoc-in db [:tables tkey] tblu)]
+                            (after-update db3 tbl existing (assoc nrow ncols nrid) tkey (map first (:sets-c up)) changes)))))))
                 :else
                 (let [tbl3 (put-row tbl2 rid row)
-                      db2 (assoc-in db [:tables (lc tname)] tbl3)]
+                      db2 (assoc-in db [:tables tkey] tbl3)
+                      db2 (if (:autoinc tbl) (bump-sequence db2 tbl rid) db2)
+                      db2 (assoc db2 :last-rowid rid)]
                   (when ret
                     (aset env (long (:slot ret)) (assoc row ncols rid))
                     (.add ret-rows (mapv #(% env) (:fs ret))))
-                  (recur (assoc db2 :last-rowid rid) (rest rs) (inc changes)))))))))))
+                  (let [r (if (seq (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil))
+                            (try-fire db2 (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :insert nil) tbl3 nil (assoc row ncols rid))
+                            db2)]
+                    (if (= r ::ignore) [db2 changes] [r (if vw changes (inc changes))]))))))))))
+           [db 0] src-rows)]
+      (doseq [r ret-rows] (emit r))
+      (assoc (end-target db tkey tbl) :changes changes))))
+
+
 
 ;; ====================================================================== UPDATE / DELETE
 
 (defn- exec-update [db sql st emit prepared!]
   (let [tname (:table st)
-        tbl (or (get-in db [:tables (lc tname)]) (err (str "no such table: " tname)))
+        [tkey tbl] (dml-target db sql st :update)
+        vw (:view tbl)
+        db (with-target db tkey tbl)
         ncols (count (:cols tbl))
         lnames (mapv (comp lc :name) (:cols tbl))
         ctx (new-ctx db sql)
@@ -520,6 +697,8 @@
                         :let [f (:f (e/cx sctx ex))]
                         c cols]
                     [(let [i (.indexOf ^java.util.List lnames (lc c))]
+                       (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
+                         (err (str "cannot UPDATE generated column \"" (:name (nth (:cols tbl) i)) "\"")))
                        (cond (>= i 0) i
                              (#{"rowid" "oid" "_rowid_"} (lc c)) (or (:ipk tbl) -1)
                              :else (err (str "no such column: " c))))
@@ -527,7 +706,7 @@
         where-f (when (:where st) (e/condf (e/cx sctx (:where st))))
         where-pre (when (:where st) (e/where-precheck sctx (:where st)))
         ret (compile-returning ctx src (:returning st))
-        on-conflict (or (:or st) :abort)
+        on-conflict (:or st)
         env (object-array (+ 2 @(:slots ctx)))
         slot (long (:slot src))
         _ (prepared! (:names ret))
@@ -536,50 +715,64 @@
                                (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
                              (if (and where-pre (not (where-pre env))) [] (:rows tbl))))
         ret-rows (java.util.ArrayList.)]
-    (loop [db db ts targets changes 0]
-      (if (empty? ts)
-        (do (doseq [r ret-rows] (emit r)) (assoc db :changes changes))
-        (let [[rid _] (first ts)
-              tbl (get-in db [:tables (lc tname)])
-              old (get-in tbl [:rows rid])]
-          (if (nil? old)
-            (recur db (rest ts) changes)
-            (let [_ (aset env slot old)
-                  newvals (mapv (fn [[ci f]] [ci (f env)]) sets)
-                  row (reduce (fn [row [ci val]] (if (= ci -1) row (assoc row ci val))) old newvals)
-                  rid-new (let [rv (some (fn [[ci val]] (when (= ci -1) val)) newvals)
-                                rv (if (:ipk tbl) (nth row (:ipk tbl)) (if (some #(= -1 (first %)) newvals) rv rid))]
-                            (if (nil? rv)
-                              (if (:ipk tbl) (next-rowid tbl) (err "datatype mismatch"))
-                              (let [x (v/apply-affinity rv :integer)]
-                                (if (instance? Long x) x (err "datatype mismatch")))))
-                  row (if (:ipk tbl) (assoc row (:ipk tbl) rid-new) row)
-                  changed (set (map first newvals))
-                  row (reduce (fn [row ci] (if (or (= ci (:ipk tbl)) (not (changed ci))) row
-                                               (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
-                              row (range ncols))
-                  has-checks (seq (:checks tbl))
-                  moved (not= rid-new rid)
-                  ;; with a new rowid the type check follows the rowid check; otherwise it precedes CHECK
-                  early-type (and has-checks (not moved))
-                  row (check-notnull db sql tbl row on-conflict)
-                  row (when row (if has-checks (check-checks tbl (if early-type (check-strict tbl row) row) on-conflict) row))]
-              (if (nil? row)
-                (recur db (rest ts) changes)
-                (let [[tbl2 res] (resolve-uniques db tbl rid-new row rid on-conflict (constantly false)
-                                                  (fn [] (when-not early-type (check-strict tbl row))) false)]
-                  (if (= res :ignore)
-                    (recur db (rest ts) changes)
-                    (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)
-                          db2 (assoc-in db [:tables (lc tname)] tbl3)]
-                      (when ret
-                        (aset env slot (assoc row ncols rid-new))
-                        (.add ret-rows (mapv #(% env) (:fs ret))))
-                      (recur db2 (rest ts) (inc changes)))))))))))))
+    (let [set-names (mapv (fn [[ci _]] (if (neg? ci) "rowid" (lc (:name (nth (:cols tbl) ci))))) sets)
+          [db changes]
+          (reduce
+           (fn [[db changes] [rid _]]
+             (fail-partial db changes tkey tbl (fn []
+             (let [tbl (get-in db [:tables tkey])
+                   old (get-in tbl [:rows rid])]
+               (if (nil? old)
+                 [db changes]
+                 (let [_ (aset env slot old)
+                       newvals (mapv (fn [[ci f]] [ci (f env)]) sets)
+                       row (reduce (fn [row [ci val]] (if (= ci -1) row (assoc row ci val))) old newvals)
+                       rid-new (let [rv (some (fn [[ci val]] (when (= ci -1) val)) newvals)
+                                     rv (if (:ipk tbl) (nth row (:ipk tbl)) (if (some #(= -1 (first %)) newvals) rv rid))]
+                                 (if (nil? rv)
+                                   (if (:ipk tbl) (next-rowid tbl) (err "datatype mismatch"))
+                                   (let [x (v/apply-affinity rv :integer)]
+                                     (if (instance? Long x) x (err "datatype mismatch")))))
+                       row (if (:ipk tbl) (assoc row (:ipk tbl) rid-new) row)
+                       row (fill-generated tbl (assoc row ncols rid-new))
+                       changed (set (map first newvals))
+                       row (reduce (fn [row ci] (if (or (= ci (:ipk tbl)) (not (changed ci))) row
+                                                    (assoc row ci (apply-col-affinity tbl ci (nth row ci)))))
+                                   row (range ncols))
+                       has-checks (seq (:checks tbl))
+                       moved (not= rid-new rid)
+                       ;; with a new rowid the type check follows the rowid check; otherwise it precedes CHECK
+                       early-type (and has-checks (not moved))
+                       bts (trg/matching db (:vkey tbl tkey) :before :update set-names)
+                       bres (if (seq bts) (try-fire db bts tbl old (assoc row ncols rid-new)) db)
+                       ignored (= bres ::ignore)
+                       db (if ignored db bres)
+                       tbl (get-in db [:tables tkey])
+                       row (when-not ignored (check-notnull db sql tbl row on-conflict))
+                       row (when row (if has-checks (check-checks tbl (if early-type (check-strict tbl row) row) on-conflict) row))]
+                   (if (nil? row)
+                     [db changes]
+                     (let [[tbl2 res] (resolve-uniques db tbl rid-new row rid on-conflict (constantly false)
+                                                       (fn [] (when-not early-type (check-strict tbl row))) false)]
+                       (if (= res :ignore)
+                         [db changes]
+                         (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)
+                               db2 (assoc-in db [:tables tkey] tbl3)
+                               ats (trg/matching db2 (:vkey tbl tkey) (if vw :instead :after) :update set-names)]
+                           (when ret
+                             (aset env slot (assoc row ncols rid-new))
+                             (.add ret-rows (mapv #(% env) (:fs ret))))
+                           (let [r (if (seq ats) (try-fire db2 ats tbl3 old (assoc row ncols rid-new)) db2)]
+                             (if (= r ::ignore) [db2 changes] [r (if vw changes (inc changes))]))))))))))))
+           [db 0] targets)]
+      (doseq [r ret-rows] (emit r))
+      (assoc (end-target db tkey tbl) :changes changes))))
 
 (defn- exec-delete [db sql st emit prepared!]
   (let [tname (:table st)
-        tbl (or (get-in db [:tables (lc tname)]) (err (str "no such table: " tname)))
+        [tkey tbl] (dml-target db sql st :delete)
+        vw (:view tbl)
+        db (with-target db tkey tbl)
         ctx (new-ctx db sql)
         src (table-source ctx tbl (:alias st))
         _ (when (and (:indexed-by st) (not= :none (:indexed-by st)))
@@ -600,11 +793,53 @@
       (doseq [[_ row] doomed]
         (aset env slot row)
         (emit (mapv #(% env) (:fs ret)))))
-    (-> db
-        (assoc-in [:tables (lc tname) :rows] (apply dissoc (:rows tbl) (map first doomed)))
-        (assoc :changes (count doomed)))))
+    (if (and (not vw) (not (trg/any-for? db tkey :delete)))
+      (-> db
+          (assoc-in [:tables tkey :rows] (apply dissoc (:rows tbl) (map first doomed)))
+          (assoc :changes (count doomed)))
+      (let [[db changes]
+            (reduce
+             (fn [[db changes] [rid _]]
+               (let [tbl (get-in db [:tables tkey])
+                     old (get-in tbl [:rows rid])]
+                 (if (nil? old)
+                   [db changes]
+                   (let [bts (trg/matching db (:vkey tbl tkey) :before :delete nil)
+                         bres (if (seq bts) (try-fire db bts tbl old nil) db)]
+                     (if (= bres ::ignore)
+                       [db changes]
+                       (let [db (if (contains? (get-in bres [:tables tkey :rows]) rid)
+                                  (update-in bres [:tables tkey :rows] dissoc rid)
+                                  bres)
+                             ats (trg/matching db (:vkey tbl tkey) (if vw :instead :after) :delete nil)
+                             r (if (seq ats) (try-fire db ats (get-in db [:tables tkey]) old nil) db)]
+                         (if (= r ::ignore) [db changes] [r (if vw changes (inc changes))])))))))
+             [db 0] doomed)]
+        (assoc (end-target db tkey tbl) :changes changes)))))
 
 ;; ====================================================================== other DDL
+
+(defn- create-trigger [db sql st]
+  (let [name (:name st) ln (lc name) tl (lc (:table st))
+        tbl (get-in db [:tables tl]) view (get-in db [:views tl])]
+    (cond
+      (get-in db [:triggers ln]) (if (:if-not-exists st) ::empty (err (str "trigger " name " already exists")))
+      (and (nil? tbl) (nil? view)) (err (str "no such table: " (or (:table-schema st) "main") "." (:table st)))
+      (and view (not= :instead (:timing st)))
+      (err (str "cannot create " (if (= :before (:timing st)) "BEFORE" "AFTER") " trigger on view: " (:table st)))
+      (and tbl (= :instead (:timing st))) (err (str "cannot create INSTEAD OF trigger on table: " (:table st)))
+      (and tbl (or (:virtual tbl) (str/starts-with? tl "sqlite_"))) (err "cannot create trigger on system table")
+      :else
+      (let [trig (-> (trg/make-trigger st sql)
+                     (assoc :table tl :table-name (:name (or tbl view)) :temp (boolean (or (:temp st) (:temp tbl) (:temp view)))
+                            :sql (sch/stmt-sql sql st "TRIGGER")))
+            [db trig] (sch/register db trig false)]
+        (assoc-in db [:triggers ln] trig)))))
+
+(defn- parse-trigger-text [old ns]
+  (let [st (p/next-statement (p/parse-statements ns))]
+    (-> (trg/make-trigger st ns)
+        (assoc :table (:table old) :table-name (:table-name old) :temp (:temp old) :mseq (:mseq old) :sql ns))))
 
 (defn- create-index [db sql st]
   (let [name (:name st) lname (lc name)
@@ -629,6 +864,12 @@
                     (err (unique-msg* tbl idx))))))))
         (add-index db idx)))))
 
+(defn- drop-seq-row [db tname]
+  (if-let [t (get-in db [:tables "sqlite_sequence"])]
+    (assoc-in db [:tables "sqlite_sequence" :rows]
+              (into (sorted-map) (remove (fn [[_ r]] (= (first r) tname)) (:rows t))))
+    db))
+
 (defn- exec-drop [db st]
   (let [lname (lc (:name st))]
     (case (:what st)
@@ -638,7 +879,8 @@
                  (-> db
                      (update :tables dissoc lname)
                      (update :indexes (fn [m] (into {} (remove (fn [[_ i]] (= (:table i) lname)) m))))
-                     (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))))
+                     (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m))))
+                     (drop-seq-row (:name t))))
                (if (:if-exists st) db (err (str "no such table: " (:name st)))))
       :index (if-let [i (get-in db [:indexes lname])]
                (if (:auto i)
@@ -646,9 +888,12 @@
                  (-> db (sch/free-page (sch/schema-of i) (:rootpage i)) (update :indexes dissoc lname)))
                (if (:if-exists st) db (err (str "no such index: " (:name st)))))
       :view (if (get-in db [:views lname])
-              (update db :views dissoc lname)
+              (-> db (update :views dissoc lname)
+                  (update :triggers (fn [m] (into {} (remove (fn [[_ g]] (= (:table g) lname)) m)))))
               (if (:if-exists st) db (err (str "no such view: " (:name st)))))
-      :trigger (if (:if-exists st) db (err (str "no such trigger: " (:name st)))))))
+      :trigger (if (get-in db [:triggers lname])
+                 (update db :triggers dissoc lname)
+                 (if (:if-exists st) ::empty (err (str "no such trigger: " (:name st))))))))
 
 (defn- index-stat
   "sqlite_stat1 stat text for index idx of tbl, or nil when the index is empty."
@@ -777,7 +1022,9 @@
                         db (sch/free-page db (sch/schema-of cur) (:rootpage cur))]
                     (assoc-in db [objs-key key] (assoc cur :mseq (:mseq o) :rootpage (:rootpage o)))))
         db1 (restore db1 :tables tname old)
-        db1 (assoc-in db1 [:tables tname :rows] (into (sorted-map) (map (fn [[rid r]] [rid (row-fn r)]) (:rows old))))
+        db1 (let [nt (get-in db1 [:tables tname])]
+              (assoc-in db1 [:tables tname :rows]
+                        (into (sorted-map) (map (fn [[rid r]] [rid (fill-generated nt (row-fn r))]) (:rows old)))))
         db1 (reduce (fn [db [k i]]
                       (if-let [o (by-name (lc (:name i)))] (restore db :indexes k o) db))
                     db1 (filter (fn [[_ i]] (= (:table i) tname)) (:indexes db1)))]
@@ -854,6 +1101,9 @@
             cons (:cons d)
             _ (when (some #(= :pk (:c %)) cons) (err "Cannot add a PRIMARY KEY column"))
             _ (when (some #(= :unique (:c %)) cons) (err "Cannot add a UNIQUE column"))
+            _ (when (some #(and (= :generated (:c %)) (:stored %)) cons)
+                (.append out "# raise(ABORT,'cannot add a STORED column')\n")
+                (err "cannot add a STORED column"))
             dflt (:e (first (filter #(= :default (:c %)) cons)))
             notnull (some #(= :notnull (:c %)) cons)
             has-check (some #(= :check (:c %)) cons)
@@ -912,9 +1162,14 @@
           (when (or (some #(= (:col %) i) (:cols ix))
                     (and (:where-ast ix) (some #(and (map? %) (= :col (:op %)) (= (lc (:name %)) (lc (:name c)))) (tree-seq coll? seq (:where-ast ix)))))
             (err (str "error in index " (:name ix) " after drop column: no such column: " (:name c)))))
-        (rebuild-table db tname new-sql
-                       (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
-                       (fn [ix] (:sql ix)))))))
+        (try
+          (rebuild-table db tname new-sql
+                         (fn [r] (let [rid (peek r)] (conj (into (subvec r 0 i) (subvec r (inc i) (dec (count r)))) rid)))
+                         (fn [ix] (:sql ix)))
+          (catch clojure.lang.ExceptionInfo ex
+            (if-let [m (:sql-error (ex-data ex))]
+              (err (str "error in table " (:name tbl) " after drop column: " m))
+              (throw ex))))))))
 
 ;; ====================================================================== driver
 
@@ -1056,10 +1311,23 @@
     (let [db2 (case (:kind st)
                 :create-table (create-table db sql st)
                 :create-index (create-index db sql st)
+                :create-trigger (create-trigger db sql st)
                 :create-view (let [ln (lc (:name st))]
                                (cond (or (get-in db [:views ln]) (get-in db [:tables ln]))
                                      (if (:if-not-exists st) db (err (str (if (get-in db [:views ln]) "view " "table ") (:name st) " already exists")))
-                                     :else (do (e/compile-select (new-ctx db sql) (:select st))
+                                     :else (do (when (some #(and (map? %) (:var %)) (tree-seq coll? seq (:select st)))
+                                                 (err "parameters are not allowed in views"))
+                                               (when-not (or (:temp st) (:db st))
+                                                 (let [att (set (sch/attached-names db))
+                                                       refs (atom nil)]
+                                                   (clojure.walk/postwalk (fn [x] (when (and (map? x) (contains? x :indexed-by) (:table x)
+                                                                                             (string? (:table x)))
+                                                                                    (let [k (lc (:table x))
+                                                                                          dbn (some (fn [a] (when (str/starts-with? k (str a ".")) a)) att)]
+                                                                                      (when dbn (reset! refs dbn))))
+                                                                            x)
+                                                                          (:select st))
+                                                   (when @refs (err (str "view " (:name st) " cannot reference objects in database " @refs)))))
                                                (let [[db v] (sch/register db {:name (:name st) :cols (:cols st) :select (:select st) :src sql
                                                                               :temp (:temp st) :db (:db st) :sql (sch/stmt-sql sql st "VIEW")} false)]
                                                  (assoc-in db [:views ln] v)))))
@@ -1083,6 +1351,8 @@
                     (emit-line out (str "changes: " (:changes db2))))
                   db2))))))
 
+(reset! trg/exec-fn (fn [db sql st out] (binding [*prepared* (volatile! false)] (exec-statement db sql st out))))
+
 (defn run-line
   "Runs one input line; returns [db' output]."
   [db ^String line]
@@ -1102,8 +1372,12 @@
                 r (try (binding [*prepared* prep] (exec-statement db line st out))
                        (catch clojure.lang.ExceptionInfo ex
                          (if-let [m (:sql-error (ex-data ex))]
-                           (do (emit-line out (str "error: " m))
-                               (if @prep [::stop (assoc db :changes 0)] ::stop))
+                           (let [d (ex-data ex)]
+                             (emit-line out (str "error: " m))
+                             (cond (:partial-db d) [::stop (:partial-db d)]
+                                   (and (= :rollback (:conflict d)) (:tx db)) [::stop (assoc (dissoc (restore db (:snap (:tx db))) :tx) :changes 0)]
+                                   @prep [::stop (assoc db :changes 0)]
+                                   :else ::stop))
                            (throw ex)))
                        (catch StackOverflowError _
                          (emit-line out "error: parser stack overflow") ::stop))]
