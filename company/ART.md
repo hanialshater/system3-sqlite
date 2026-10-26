@@ -22,7 +22,7 @@ reduced motion). This file keeps what is particular to SQLite in Clojure. The ci
 
 ## The logo
 
-`company/logo.svg`: a feather whose barbs are nested parentheses: a light engine, written in a Lisp. Original: not SQLite's feather and not Clojure's mark.
+`company/logo.svg`: three rows of a table held in a pair of parentheses, the middle row being read: a database engine, written in a Lisp. Original: no feather (the city's art judge, round 7, read the earlier feather of parentheses as too close to SQLite's feather, which the city's ART.md forbids), no lambda, and not Clojure's or SQLite's mark.
 
 ## Its HQ pages and products
 

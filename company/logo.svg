@@ -1,18 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-labelledby="t">
-  <title id="t">SQLite in Clojure: a feather of nested parentheses</title>
-  <!-- the vane -->
-  <path d="M52 6 C30 10 14 26 12 50 C26 50 46 38 52 6 Z" fill="#d9f2e6" stroke="#1f2328" stroke-width="2.4" stroke-linejoin="round"/>
-  <!-- barbs: parentheses nested along the shaft, left side "(" and right side ")" -->
-  <g fill="none" stroke-linecap="round" stroke-width="2.6">
-    <path d="M42 13 q-9 3 -10 10" stroke="#1d8f6a"/>
-    <path d="M36 19 q-9 3 -10 10" stroke="#2fb38a"/>
-    <path d="M30 26 q-8 3 -9 10" stroke="#1d8f6a"/>
-    <path d="M25 33 q-6 3 -7 9" stroke="#2fb38a"/>
-    <path d="M47 16 q-1 8 -9 11" stroke="#3b6fd8"/>
-    <path d="M43 24 q-1 8 -9 10" stroke="#5a8cff"/>
-    <path d="M38 31 q-1 7 -8 9" stroke="#3b6fd8"/>
-    <path d="M32 38 q-1 6 -7 8" stroke="#5a8cff"/>
-  </g>
-  <!-- the shaft -->
-  <path d="M52 6 C42 22 28 38 8 58" fill="none" stroke="#1f2328" stroke-width="3" stroke-linecap="round"/>
+  <title id="t">SQLite in Clojure: three rows of a table held in a pair of parentheses</title>
+  <!-- the parentheses: the Lisp that holds the table -->
+  <path d="M15 8 C5 18 5 46 15 56" fill="none" stroke="#1f2328" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M15 8 C5 18 5 46 15 56" fill="none" stroke="#c9a46a" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M49 8 C59 18 59 46 49 56" fill="none" stroke="#1f2328" stroke-width="6.5" stroke-linecap="round"/>
+  <path d="M49 8 C59 18 59 46 49 56" fill="none" stroke="#c9a46a" stroke-width="3.2" stroke-linecap="round"/>
+  <!-- three rows, the middle one read (highlighted) -->
+  <rect x="19" y="15" width="26" height="9" rx="2.5" fill="#d9f2e6" stroke="#1f2328" stroke-width="2.2"/>
+  <rect x="19" y="27.5" width="26" height="9" rx="2.5" fill="#2fb38a" stroke="#1f2328" stroke-width="2.2"/>
+  <rect x="19" y="40" width="26" height="9" rx="2.5" fill="#d9f2e6" stroke="#1f2328" stroke-width="2.2"/>
+  <!-- the column lines -->
+  <path d="M28 16 V23 M36 16 V23 M28 41 V48 M36 41 V48" stroke="#1f2328" stroke-width="1.6"/>
+  <path d="M28 28.5 V35.5 M36 28.5 V35.5" stroke="#ffffff" stroke-width="1.6"/>
 </svg>
