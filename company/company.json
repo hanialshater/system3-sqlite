@@ -1,6 +1,7 @@
 {
  "id": "sqlite",
  "name": "SQLite in Clojure",
+ "logo": "logo.svg",
  "owner": "founder",
  "archetype": "dynamic workflow",
  "mission": "A SQLite-compatible database engine in Clojure, judged by SQLite's own test files: every statement in them gives the result SQLite gives.",
