@@ -1,0 +1,39 @@
+// copied from system3-city pages/wbr @ c6ef9bf; this is the company's copy: change it freely
+// The weekly business review (a city page template): one issue a week, from the dashboard contract's `wbr`
+// ({ records, current, recordedThisWeek }): the week's metrics against their targets and last week, releases, spend
+// against the budget and the stop rule, milestones moved, top issues, asks waiting on the owner and principles-audit
+// changes. Recorded weeks are dated records (Meta's `wbr.mjs record`, or a company's own WBR ritual records); this
+// week's issue is live until it is recorded. Reads only ctx.dashboard and ctx.company; view state in globalThis.__hqWbr.
+export function render(ctx) {
+  const { dashboard, esc, company } = ctx, w = dashboard?.wbr;
+  if (!w || (!w.current && !(w.records ?? []).length)) return `<h1>WBR</h1><div class="empty">No weekly business review yet (the dashboard's wbr: this week's live issue and the recorded weeks).</div>`;
+  const list = [...(w.current && !w.recordedThisWeek ? [{ ...w.current, live: true }] : []), ...(w.records ?? [])];
+  const G = (globalThis.__hqWbr ??= {}), key = company?.id ?? "hq", ui = (G[key] ??= { i: 0 });
+  if (ui.i >= list.length) ui.i = 0;
+  G.pick = (i) => { ui.i = i; const el = globalThis.document?.getElementById("wbr-root"); if (el) el.innerHTML = draw(); };
+  const repo = /^([\w.-]+\/[\w.-]+)/.exec(String(company?.repo ?? ""))?.[1];
+  const link = (p) => (repo && p ? `<a href="https://github.com/${esc(repo)}/blob/main/${esc(p)}" target="_blank" rel="noopener">${esc(p)} ↗</a>` : `<code>${esc(p ?? "")}</code>`);
+  const n = (x) => (x == null ? "—" : typeof x === "number" ? x.toLocaleString(undefined, { maximumFractionDigits: 2 }) : esc(x));
+  const delta = (m) => { if (m.value == null || m.last == null) return `<span class="k">—</span>`; const d = m.value - m.last; if (!d) return `<span class="k">=</span>`; const good = m.direction === "at most" ? d < 0 : d > 0; return `<span class="${good ? "up" : "down"}">${d > 0 ? "+" : ""}${n(d)}</span>`; };
+  const sec = (t, body) => `<h3 class="dh">${t}</h3>${body}`;
+  const issue = (x) => {
+    if (x.source === "ritual record") return `<div class="card banner">The WBR ritual's record for ${esc(x.week)}: ${link(x.record)}${(x.also ?? []).length ? ` <span class="k">(and ${x.also.length} more that week)</span>` : ""}</div>
+      ${sec("Operating snapshot", x.metrics.length ? `<div class="tscroll"><table><tr><th>metric</th><th>value</th></tr>${x.metrics.map((m) => `<tr><td>${esc(m.label)}</td><td>${n(m.value)}</td></tr>`).join("")}</table></div>` : `<div class="k">none in the record</div>`)}
+      ${sec(`Anomalies and owners <span class="k">${x.anomalies.length}</span>`, x.anomalies.length ? `<ul>${x.anomalies.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>` : `<div class="k">none</div>`)}
+      ${sec(`Decisions asked of the founder <span class="k">${x.decisions.length}</span>`, x.decisions.length ? `<ol>${x.decisions.map((a) => `<li>${esc(a)}</li>`).join("")}</ol>` : `<div class="k">none</div>`)}
+      <div class="k" style="margin-top:8px">${x.objections} objection${x.objections === 1 ? "" : "s"} carried into the week</div>`;
+    const s = x.spend ?? {}, unit = s.unit === "tokens" ? " tok" : "", money = (v) => (v == null ? "—" : s.unit === "tokens" ? `${n(v)}${unit}` : `$${n(v)}`);
+    const over = s.approved != null && s.spent != null && s.spent > s.approved;
+    return `${x.live ? `<div class="card banner">This week's issue is <b>live</b> until it is recorded (it compares with ${x.prevWeek ? esc(x.prevWeek) : "no earlier record"}).</div>` : `<div class="k" style="margin-bottom:8px">recorded ${esc(String(x.at ?? "").slice(0, 10))}</div>`}
+      <div class="row" style="margin-bottom:12px"><div class="card stat"><div class="k">spent</div><div class="v ${over ? "down" : ""}">${money(s.spent)}</div><div class="k">${s.approved != null ? `of ${money(s.approved)} approved${s.left != null ? ` · ${money(s.left)} left on capped lines` : ""}` : "no approved total"}${s.thisWeek != null ? ` · ${money(s.thisWeek)} this week` : ""}</div></div><div class="card stat"><div class="k">releases this week</div><div class="v">${(x.releases ?? []).length}</div></div><div class="card stat"><div class="k">waiting on the owner</div><div class="v">${x.asks?.waiting ?? 0}</div></div>${x.issues ? `<div class="card stat"><div class="k">open issues</div><div class="v">${n(x.issues.open)}</div><div class="k">of ${n(x.issues.total)}</div></div>` : ""}</div>
+      ${s.stopRule || s.costTarget ? `<div class="k" style="margin:-4px 0 10px">stop rule: ${esc(s.stopRule ?? "")}${s.costTarget?.usd != null ? ` · cost target $${n(s.costTarget.usd)} per ${esc(s.costTarget.unit ?? "item")}` : ""}${over ? ` · <b class="down">over the approved total</b>` : ""}</div>` : ""}
+      ${sec("Metrics", (x.metrics ?? []).length ? `<div class="tscroll"><table><tr><th>metric</th><th>this week</th><th>target</th><th>last week</th><th>change</th></tr>${x.metrics.map((m) => `<tr><td>${esc(m.label)}</td><td><b>${n(m.value)}</b></td><td>${n(m.target)}</td><td>${n(m.last)}</td><td>${delta(m)}</td></tr>`).join("")}</table></div>${(x.unmeasured ?? []).length ? `<div class="k">unmeasured: ${x.unmeasured.map(esc).join(" · ")}</div>` : ""}` : `<div class="k">no metrics</div>`)}
+      ${sec("Releases", (x.releases ?? []).length ? `<ul>${x.releases.map((r) => `<li><span class="k">${esc(r.date)}</span> ${esc(r.title)} <span class="k">· ${r.approvedBy ? `approved by ${esc(r.approvedBy)}` : "<b>no approval recorded</b>"}</span></li>`).join("")}</ul>` : `<div class="k">none this week</div>`)}
+      ${sec("Milestones moved", x.milestones?.moved == null ? `<div class="k">the first issue: no earlier week to compare with</div>` : x.milestones.moved.length ? `<ul>${x.milestones.moved.map((m) => `<li><b>${esc(m.id)}</b> ${esc(m.title)} <span class="k">${esc(m.from)} → ${esc(m.to)}</span></li>`).join("")}</ul>` : `<div class="k">none moved</div>`)}
+      ${x.issues ? sec("Top issues", x.issues.top.length ? `<ul>${x.issues.top.map((i) => `<li><code>${esc(i.id)}</code> ${esc(i.title.length > 140 ? i.title.slice(0, 139) + "…" : i.title)} <span class="k">· ${esc(i.state)}${i.priority ? ` · P${i.priority}` : ""}${i.owner ? ` · ${esc(i.owner)}` : ""}</span></li>`).join("")}</ul>` : `<div class="k">no open issues</div>`) : ""}
+      ${sec("Waiting on the owner", (x.asks?.top ?? []).length ? `<ul>${x.asks.top.map((a) => `<li><b>${esc(a.id)}</b> ${esc(a.title)}${a.since ? ` <span class="k">· since ${esc(a.since)}</span>` : ""}</li>`).join("")}</ul>` : `<div class="k">nothing</div>`)}
+      ${x.principles ? sec("Principles audit", `<div>${n(x.principles.followed)} of ${n(x.principles.total)} followed · ${n(x.principles.gaps)} gap${x.principles.gaps === 1 ? "" : "s"}${x.principles.gapIds?.length ? ` (${x.principles.gapIds.map(esc).join(", ")})` : ""}</div><div class="k">${x.principlesChanged ? `${x.principlesChanged.opened.length ? `opened: ${x.principlesChanged.opened.map(esc).join(", ")}` : "no gap opened"} · ${x.principlesChanged.closed.length ? `closed: ${x.principlesChanged.closed.map(esc).join(", ")}` : "no gap closed"}` : "no earlier week to compare with"}</div>`) : ""}`;
+  };
+  const draw = () => { const x = list[ui.i]; return `<div class="filters">${list.map((y, i) => `<button class="pill${i === ui.i ? " on" : ""}" onclick="globalThis.__hqWbr.pick(${i})">${esc(y.week)}${y.live ? " · live" : ""}</button>`).join("")}</div><h2 style="margin:4px 0 10px">${esc(x.week)} <span class="k">${esc(x.from ?? x.date ?? "")}${x.to ? ` to ${esc(x.to)}` : ""}</span></h2>${issue(x)}`; };
+  return `<h1>WBR</h1><div class="sub1">the weekly business review: one issue a week, each kept as a dated record · ${list.length} issue${list.length > 1 ? "s" : ""}</div><div id="wbr-root">${draw()}</div>`;
+}

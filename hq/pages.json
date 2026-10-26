@@ -16,5 +16,23 @@
   "title": "Release log",
   "file": "releases.js",
   "copiedFrom": "system3-city pages/releases @ baee396"
+ },
+ {
+  "id": "goals",
+  "title": "Goals",
+  "file": "goals.js",
+  "copiedFrom": "system3-city pages/goals @ c6ef9bf"
+ },
+ {
+  "id": "wbr",
+  "title": "WBR",
+  "file": "wbr.js",
+  "copiedFrom": "system3-city pages/wbr @ c6ef9bf"
+ },
+ {
+  "id": "issues",
+  "title": "Issues",
+  "file": "issues.js",
+  "copiedFrom": "system3-city pages/issues @ c6ef9bf"
  }
 ]
