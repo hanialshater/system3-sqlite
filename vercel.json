@@ -4,5 +4,5 @@
  "installCommand": "true",
  "buildCommand": "true",
  "outputDirectory": "site/dist",
- "ignoreCommand": "if printf %s \"$VERCEL_GIT_COMMIT_MESSAGE\" | grep -qF \"[deploy]\"; then exit 1; fi; exit 0"
+ "ignoreCommand": "a=\"${VERCEL_GIT_COMMIT_AUTHOR_LOGIN:-}\"; s=\"$(printf %s \"$VERCEL_GIT_COMMIT_MESSAGE\" | head -n 1)\"; echo \"deploy gate: author ${a:-none}\"; if [ \"$a\" = \"hanialshater\" ] && printf %s \"$s\" | grep -qF \"[deploy]\"; then exit 1; fi; exit 0"
 }
