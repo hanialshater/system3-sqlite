@@ -783,17 +783,26 @@
         :else (err (str "no such table: " (:table e))))))
     :subq
     (let [sub (compile-select ctx (:select e))
-          _ (when (not= 1 (count (:names sub)))
-              (err (str "sub-select returns " (count (:names sub)) " columns - expected 1")))
-          cache (when-not (:correlated sub) (volatile! ::none))]
+          ;; A synthesized UPDATE FROM projection can carry a whole SET tuple.
+          ;; Keeping it in one expression evaluates even a volatile RHS only once.
+          width (:assignment-width e)
+          _ (when (not= (or width 1) (count (:names sub)))
+              (err (if width
+                     (str width " columns assigned " (count (:names sub)) " values")
+                     (str "sub-select returns " (count (:names sub)) " columns - expected 1"))))
+          cache (when-not (:correlated sub) (volatile! ::none))
+          run (fn [env]
+                (let [row (first (run-select-rows sub env 1))]
+                  (if width (or row (vec (repeat width nil))) (first row))))]
       (mk (fn [env]
             (if cache
               (let [c @cache]
                 (if (= c ::none)
-                  (vreset! cache (first (first (run-select-rows sub env 1))))
+                  (vreset! cache (run env))
                   c))
-              (first (first (run-select-rows sub env 1)))))
-          :aff (first (:affs sub)) :coll (first (:colls sub)) :ecoll (first (:ecolls sub))))
+              (run env)))
+          :aff (when-not width (first (:affs sub)))
+          :coll (when-not width (first (:colls sub))) :ecoll (when-not width (first (:ecolls sub)))))
     :exists
     (let [sub (compile-select ctx (:select e))
           cache (when-not (:correlated sub) (volatile! nil))]
@@ -1848,6 +1857,8 @@
      :affs (or (:src-affs sub) (:affs sub)) :colls (:colls sub) :rowid? false :ncols (count cols) :hidden #{} :sub sub}))
 
 (defn- make-source [ctx item]
+  ;; :resolved-table is used by DML's synthetic target scan: its table has already
+  ;; been selected, so a WITH name must not redirect it to a CTE.
   (cond
     (:tvf item)
     (let [lname (lc (:tvf item))
@@ -1861,7 +1872,7 @@
        :affs (vec (take (count cols) (concat (:affs ent) (repeat nil)))) :colls (vec (repeat (count cols) nil))
        :slot slot :rowid? false :ncols (count cols) :hidden (set (map lc (:hidden ent)))
        :tvf ent :tvf-args (:args item)})
-    (and (:table item) (nil? (:schema item)) (get (:ctes ctx) (lc (:table item))))
+    (and (:table item) (not (:resolved-table item)) (nil? (:schema item)) (get (:ctes ctx) (lc (:table item))))
     (let [lname (lc (:table item))
           cte (get (:ctes ctx) lname)]
       (if (:rec-ref item)
@@ -1877,7 +1888,7 @@
                    :slot (new-slot! ctx))))))
     (:table item)
     (let [name (:table item)
-          tbl (table-of ctx name (:schema item))
+          tbl (or (:resolved-table item) (table-of ctx name (:schema item)))
           view (when-not tbl (let [v (view-of ctx name) sc (lc (:schema item))]
                                (when (and v (or (nil? sc) (and (= sc "temp") (:temp v)) (and (= sc "main") (not (:temp v))) (not (#{"temp" "main"} sc)))) v)))]
       (cond

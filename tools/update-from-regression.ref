@@ -1,0 +1,105 @@
+changes: 0
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+# id|a|b|c|d
+1|13|23|99|0
+2|35|45|99|0
+~~~
+changes: 2
+# id|a|b|c|d
+1|NULL|NULL|99|0
+2|NULL|NULL|99|0
+~~~
+error: 2 columns assigned 3 values
+~~~
+changes: 2
+# id|a|b|c|d
+1|11|12|11|12
+2|11|12|11|12
+~~~
+changes: 2
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a
+102
+~~~
+changes: 1
+changes: 1
+changes: 1
+# a
+9
+~~~
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+changes: 2
+changes: 0
+# id|a|b
+1|14|21
+# olda|newa|oldb|newb
+10|13|20|20
+10|14|20|20
+~~~
+changes: 0
+changes: 3
+changes: 3
+changes: 1
+changes: 1
+changes: 2
+changes: 2
+# id|x|y
+1|11|21
+2|NULL|22
+3|103|203
+~~~
+changes: 1
+changes: 3
+# id|x|y
+1|11|21
+2|NULL|22
+3|13|NULL
+~~~
+changes: 2
+# id|x|y
+1|11|21
+2|NULL|22
+3|13|NULL
+~~~
+changes: 2
+changes: 2
+changes: 2
+# id|same_value
+1|1
+2|1
+~~~
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+changes: 2
+# id|v
+1|100
+2|200
+~~~
+changes: 2
+changes: 1
+changes: 1
+changes: 1
+changes: 1
+# a
+3
+# a
+9
+~~~
+changes: 2
+# id|a|b|c|d
+1|21|22|21|22
+2|21|22|21|22
+~~~
