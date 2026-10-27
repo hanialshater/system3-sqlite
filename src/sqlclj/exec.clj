@@ -955,10 +955,10 @@
                                        (do (when (not= (count cols) (count (:items ex)))
                                              (err (str (count cols) " columns assigned " (count (:items ex)) " values")))
                                            (map (fn [c e] [c e nil]) cols (:items ex)))
-                                       (= :subq (:op ex)) (map-indexed (fn [k c] [c ex k]) cols)
+                                       (= :subq (:op ex)) (map-indexed (fn [k c] [c ex k (count cols)]) cols)
                                        :else (err (str (count cols) " columns assigned 1 values"))))
                                (:sets st)))
-        sets (vec (for [[c ex k] set-items]
+        sets (vec (for [[c ex k width] set-items]
                     [(let [_ (when (and (not from) (nil? k)) (e/cx sctx ex))
                            i (.indexOf ^java.util.List lnames (lc c))]
                        (when (and (>= i 0) (:gen (nth (:cols tbl) i)))
@@ -970,8 +970,8 @@
                        (if (nil? k)
                          (:f (e/cx sctx ex))
                          (let [sub (e/compile-select sctx (:select ex))]
-                           (when (not= (count (:names sub)) (count (filter #(= ex (second %)) set-items)))
-                             (err (str (count (filter #(= ex (second %)) set-items)) " columns assigned " (count (:names sub)) " values")))
+                           (when (not= (count (:names sub)) width)
+                             (err (str width " columns assigned " (count (:names sub)) " values")))
                            (fn [env] (let [r (first (e/run-select-rows sub env))] (when r (nth r k)))))))]))
         where-f (when (and (:where st) (not from)) (e/condf (e/cx sctx (:where st))))
         where-pre (when (and (:where st) (not from)) (e/where-precheck sctx (:where st)))
@@ -985,14 +985,28 @@
                   old (vec (repeat n 0))
                   new (reduce (fn [r [i]] (if (and (>= i 0) (< i n)) (assoc r i 1) r)) old sets)]
               (fk/locate-all! db tbl old new)))
-        join-count (volatile! nil)
+        from-items (when from
+                     (vec (keep-indexed
+                           (fn [i [_ ex k width]]
+                             (when (or (nil? k) (zero? k))
+                               {:e (if (nil? k) ex
+                                       (assoc ex :assignment-width width))
+                                :alias (str "c" i)}))
+                           set-items)))
         from-sub (when from
                    (let [sctx2 (new-ctx db sql)
                          cols (into [{:e {:op :col :table (or (:alias st) tname) :name "\u0000rowid"} :alias "rid"}]
-                                   (map-indexed (fn [i [_ ex k]] {:e (if k {:op :lit :v nil} ex) :alias (str "c" i)}) set-items))
+                                    from-items)
+                         ;; The target is outside the FROM join group. Otherwise a RIGHT
+                         ;; join NULLs its rowid, and NATURAL/USING can consume target columns.
+                         grouped? (some #(or (:using %) (#{:natural :natural-left :natural-right :natural-full :right :full} (:join %))) from)
+                         sources (if grouped? [{:nested from :join :cross-comma}]
+                                     (map-indexed (fn [i it] (if (zero? i) (assoc it :join :cross-comma) it)) from))
                          sel {:body {:type :core :cols cols
-                                     :from (into [{:table (if vw tkey tname) :schema (:schema st) :alias (or (:alias st) tname)}]
-                                                 (map-indexed (fn [i it] (if (zero? i) (assoc it :join :cross-comma) it)) from))
+                                     ;; DML already resolved the target (including its schema).
+                                     ;; Use that table directly, leaving CTE resolution to FROM.
+                                     :from (into [{:table (if vw tkey tname) :resolved-table tbl :schema (:schema st) :alias (or (:alias st) tname)}]
+                                                 sources)
                                      :where (:where st)}}]
                      [sctx2 (e/compile-select sctx2 sel)]))
         _ (trg/validate-for! db (:vkey tbl tkey) tbl :update
@@ -1001,11 +1015,15 @@
         targets (if from
                   (let [[sctx2 sub] from-sub
                         rows (e/run-select-rows sub (object-array (+ 2 @(:slots sctx2))))]
-                    (let [rows (vec rows)
-                          ;; one update per target row (the last join row wins), changes count every join row
-                          last-by-rid (reduce (fn [m r] (assoc m (first r) (vec (rest r)))) (sorted-map) rows)]
-                      (vreset! join-count (count rows))
-                      (mapv (fn [[rid pre]] [rid pre]) last-by-rid)))
+                    (let [rows (mapv (fn [r]
+                                       [(first r)
+                                        (vec (mapcat (fn [item value]
+                                                       (if (:assignment-width (:e item)) value [value]))
+                                                     from-items (rest r)))]) rows)]
+                      ;; View INSTEAD OF triggers fire for every joined row. A real
+                      ;; table is updated once per rowid, with its last match's values.
+                      (if vw rows
+                          (vec (reduce (fn [m [rid pre]] (assoc m rid pre)) (sorted-map) rows)))))
                   (vec (filter (fn [[rid row]]
                                  (aset env slot row)
                                  (or (nil? where-f) (let [w (where-f env)] (and (not (nil? w)) (v/bool-value w)))))
@@ -1054,7 +1072,9 @@
                                                        (fn [] (when-not early-type (check-strict tbl row))) false)]
                        (if (= res :ignore)
                          [db changes]
-                         (let [tbl3 (put-row (update tbl2 :rows dissoc rid) rid-new row)
+                         ;; A view's materialized rows are a read snapshot. Only its
+                         ;; INSTEAD OF program writes; repeated matches keep the same OLD.
+                         (let [tbl3 (if vw tbl2 (put-row (update tbl2 :rows dissoc rid) rid-new row))
                                db2 (assoc-in db [:tables tkey] tbl3)
                                db2 (if fkt
                                      (do (fk-note! db2 tbl tkey old (assoc row ncols rid-new))

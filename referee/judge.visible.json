@@ -1,0 +1,8 @@
+{
+ "note": "Visible corpus only, for agents' environments (Codex cloud, a fresh clone). It has no hidden paths and must never gain one: full mode is the steward's, on the steward's runner. Paths are relative to the repository root; run the judge from there. codex-setup.sh copies this to judge.json.",
+ "clj": "tools/clj.sh",
+ "visCorpus": "spec/b12/corpus",
+ "tmp": ".w/referee-tmp",
+ "prologue": false,
+ "macro": true
+}
