@@ -17,6 +17,20 @@ const opt = Object.fromEntries(process.argv.slice(3).filter((a) => a.startsWith(
 const cfg = JSON.parse(fs.readFileSync(path.join(HERE, "judge.json"), "utf8"));
 const DIR = path.resolve(opt.dir ?? ".");
 if (!["fast", "full", "score"].includes(mode)) { console.error("usage: judge.mjs fast|full --dir=<tree>"); process.exit(2); }
+// Hidden paths come only from the evaluation steward's runner (Codex hardening M1, 2026-10-27; system3-meta
+// docs/decisions/2026-10-27-founder-codex.md). A maker's judge.json holds none. full reads hidCorpus from the file
+// REFEREE_HIDDEN names, which exists only on that runner, and refuses to run without it.
+for (const k of ["hidCorpus"]) if (k in cfg) { console.error(`judge.json holds a hidden path (${k}): remove it; full takes hidden paths from REFEREE_HIDDEN on the steward's runner`); delete cfg[k]; }
+if (mode === "full") {
+  const hf = process.env.REFEREE_HIDDEN;
+  if (!hf || !fs.existsSync(hf)) { console.error("judge.mjs full runs only on the evaluation steward's runner: set REFEREE_HIDDEN to its hidden-paths file (referee/README.md)"); process.exit(2); }
+  const hid = JSON.parse(fs.readFileSync(hf, "utf8"));
+  for (const k of ["hidCorpus"]) {
+    if (!hid[k] || !path.isAbsolute(hid[k])) { console.error(`REFEREE_HIDDEN: ${k} must be an absolute path`); process.exit(2); }
+    if (!path.relative(DIR, hid[k]).startsWith("..")) { console.error(`REFEREE_HIDDEN: ${k} is inside the tree under judgement`); process.exit(2); }
+    cfg[k] = hid[k];
+  }
+}
 export const SCRIPT_SEC = 20, START_SEC = 60;
 const say = (s) => console.log(`B12 ${s}`);
 const r4 = (x) => Math.round(x * 10000) / 10000;

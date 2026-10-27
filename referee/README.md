@@ -11,6 +11,9 @@ conversion (`docs/B12.md`).
   `full` mode runs it on a clean copy of the tree's HEAD, with `spec/` removed and no SQLite binary reachable (shims
   refuse `sqlite3` and the rest). A land counts only if the hidden score does not fall.
 - **Setup**: copy `judge.example.json` to `judge.json` (ignored by git) and fill in the paths.
+- **`full` runs only on the evaluation steward's runner.** It reads `hidCorpus` from the JSON file that the
+  `REFEREE_HIDDEN` environment variable names (`{"hidCorpus": "/abs/path"}`), and refuses to run without it or with a
+  hidden path inside the tree it judges. A maker's `judge.json` holds no hidden path (Codex hardening M1, 2026-10-27).
 
 Reproduced on 2026-10-25 in this repository: `fast` gives a 96.66% mean over the 221 visible files, the same as B13's
 final scoring.
