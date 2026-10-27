@@ -1,7 +1,7 @@
 # Handover: pilot Codex 1
 
 Branch `codex/pilot-1`, cut from main at `d8676fd` (2026-10-27). The rules are in `AGENTS.md`; read it first. The
-founder's steps to run this are at the end ("How to run").
+founder's steps are at the end: "Codex cloud" (the phone or the web) and "How to run" (a local machine).
 
 ## The task
 
@@ -36,9 +36,11 @@ and say what is left.
 - One script by hand: `./run.sh spec/b12/corpus/upfrom4-000.sql` prints the engine's output; the expected output is
   `spec/b12/corpus/upfrom4-000.ref` (one block per statement, separated by `~~~`).
 
-The referee needs `referee/judge.json` (not in git; the founder writes it, see step 5 below) and the three Clojure jars
-in `lib/` (fetched by the founder before you start). If either is missing, stop and say so in your report: do not
-fetch anything.
+The referee needs `referee/judge.json` and the three Clojure jars in `lib/` (both ignored by git). The environment's
+setup makes them: `codex-setup.sh` in Codex cloud, or the founder's local steps below. If either is missing, run
+`bash codex-setup.sh` if you can: with the jars already in `lib/` it uses no network and only writes
+`referee/judge.json` from the visible-only `referee/judge.visible.json`; without the jars it would need the network, so
+do not run it then. If either is still missing, stop and say so in your report: do not fetch anything.
 
 ## Where things are
 
@@ -53,7 +55,7 @@ fetch anything.
 
 ## What not to touch
 
-- `referee/` (the referee's owner's), `spec/` (the test data), `deps.edn`, `lib/`, `vercel.json`, `site/`, `hq/`,
+- `referee/` (the referee's owner's; `referee/judge.json` is written only by `codex-setup.sh` or the founder), `codex-setup.sh`, `spec/` (the test data), `deps.edn`, `lib/`, `vercel.json`, `site/`, `hq/`,
   `company/` and `.github/` if present.
 - `docs/pilot-codex-1.md` (do not read it either), `CLAUDE.md`, `AGENTS.md`.
 - Anything outside this folder, any hidden or held-out data, and the network (see `AGENTS.md`).
@@ -71,6 +73,26 @@ fetch anything.
 - What I changed, file by file, and why it follows SQLite's behaviour:
 - What is left, and what I would try next:
 - Anything I was refused or asked approval for (command and reason), and anything in the rules I could not follow:
+
+## Codex cloud (for the founder, from the phone or the web)
+
+Codex cloud runs the task in OpenAI's container. Its setup script has the internet; the agent does not. The steps are
+from the proposal's search summaries of OpenAI's Codex cloud pages, **unverified** against the live screens.
+
+1. In Codex (chatgpt.com/codex), open **Settings → Environments** and edit the environment for
+   `hanialshater/system3-sqlite` (or create one for it).
+2. **Setup script:** `bash codex-setup.sh`. It fetches the jars, writes `referee/judge.json` from the visible-only
+   config (no hidden path) and fails unless the visible score is 0.9666.
+3. **Internet access:** on for the setup script only; **agent internet access: off**.
+4. No secrets and no environment variables: leave them empty.
+5. Start the task in that environment on the branch **`codex/pilot-1`**, with the prompt "Read HANDOVER.md and
+   AGENTS.md and do the task". Note the time.
+6. When it finishes (or at 90 minutes, or at the usage limit: stop the task), push its result to the branch
+   `codex/pilot-1`, or open a pull request **into `codex/pilot-1`, never into main**, and do not merge it. Tell the
+   coordinator, with the start and end times and how many messages you sent after the first prompt.
+
+If the setup log says `java` or `node` is missing, the container image lacks them (**unverified** that the default
+image has a JDK): tell the coordinator rather than changing the script.
 
 ## How to run (for the founder)
 
