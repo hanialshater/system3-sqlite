@@ -72,6 +72,63 @@ do not run it then. If either is still missing, stop and say so in your report: 
 - What is left, and what I would try next: the founder must prepare the visible-only referee configuration and the three jars as described below. Then start a fresh pilot in the required isolated environment and run the baseline before making changes. All three requested fixes remain.
 - Anything I was refused or asked approval for (command and reason), and anything in the rules I could not follow: no approvals requested and no sandbox rejection. Before discovering this branch's `AGENTS.md`, repository discovery listed the workspace and inspected other checkouts' remotes and status, read cloud runtime/network configuration outside this clone, and used GitHub tools to locate and verify the branch. A `git fetch origin` attempt failed because the proxy at port 8080 was unavailable. The local branch matched GitHub's `b643358d8d7ac775d6b53462b7262f0bb49457dc`, so no remote updates were needed. Before learning the prohibition, I read `docs/pilot-codex-1.md`, including its predictions. These setup actions conflict with the pilot's isolation, no-network, and predictions-blinding requirements; this session should not be treated as a compliant pilot measurement. After reading `AGENTS.md`, work stayed inside this clone and no further network calls were made. No hidden or held-out test data was accessed. Usage readings are unavailable in this interface.
 
+## Run 2
+
+- Started: readiness check 2026-10-27T09:04:50Z; setup and implementation started
+  2026-10-27T09:09:30Z. Implementation verification finished 2026-10-27T09:21:55Z
+  (12 minutes 25 seconds from the implementation start). Report and PR preparation followed.
+- Stopped because the requested implementation and visible verification are complete.
+- Visible score before: **0.9666 (96.66%)**, 8,844/9,028 statements, confirmed by
+  `bash codex-setup.sh` before the first engine change.
+- Visible score after: **0.9691 (96.91%)**, 8,856/9,028 statements across 221 files;
+  565/625 scripts pass completely. Command: `node referee/judge.mjs fast --dir=.`
+- Target file results, each verified with `fast --only=<file>`:
+
+  | File | Before | After |
+  | --- | --- | --- |
+  | upfrom1 | 20/22 (90.91%) | 22/22 (100.00%) |
+  | upfrom2 | 57/63 (90.48%) | 63/63 (100.00%) |
+  | upfrom4 | 7/11 (63.64%) | 11/11 (100.00%) |
+
+- Other file rates changed: **none**. An independent visible-only batch saved each
+  script's output before and after. Comparing all 9,028 statement blocks found
+  exactly the 12 fixes above, zero formerly passing statements failing, and no
+  other output differences. Scratch evidence is in ignored `work/run2/`.
+- Changes by file:
+  - `src/sqlclj/engine.clj`: let DML supply its already resolved target table, so
+    a same-named CTE cannot replace the target scan. An internal assignment-width
+    annotation evaluates a tuple subquery once and preserves arity checks, empty
+    result NULLs, correlation, and the existing uncorrelated subquery cache.
+  - `src/sqlclj/exec.clj`: retain each tuple assignment's own width, project and
+    unpack its values, and separate right/full/natural/USING FROM joins from the
+    update target. Preserve all joined rows for view INSTEAD OF triggers, while
+    ordinary table updates still use one last match per rowid. A materialized view
+    remains an immutable OLD-row snapshot; its trigger performs the actual writes.
+  - `tools/update-from-regression.sql` and `.ref`: 14 additional cases, compared
+    against `spec/b12/sqlrun`, covering correlated and empty tuple subqueries,
+    arity errors, repeated assignments, volatile RHS evaluation, CTEs, temp/main
+    shadowing, attached databases, outer/natural/USING joins, and duplicate view
+    trigger OLD/NEW values. All outputs match the reference. The reference is used
+    only for development comparisons; the engine does not call it.
+  - `docs/run2-update-from.md`: implementation predictions, checks, and lessons.
+- What remains: the steward's independent hidden evaluation. This run used only
+  the visible corpus and local development probes; no hidden or held-out paths
+  were accessed. No implementation task remains from this handover.
+- Setup and intervention record: the first setup attempt could not reach the
+  workspace proxy. Re-running the unchanged setup script with command-scoped
+  network access succeeded, as authorized by the founder's setup instructions.
+  Coding and verification then used local files only. There were **0 user
+  interventions or interactive approvals during implementation**. Two user
+  follow-ups occurred between the earlier readiness check and implementation
+  start, including the request to pull. PR publication is separately authorized
+  by the founder's instructions and targets `codex/pilot-1`.
+- Evaluation limitation: this work continues the Run 1 chat and retains the
+  predictions exposure already recorded above. It is not a fresh blinded pilot.
+  GitHub app scope and agent network configuration were not independently
+  verified. Usage readings are unavailable in this interface. No deployment,
+  new dependency, referee change, or corpus change was made. Run 1's report is
+  preserved verbatim.
+
 ## Codex cloud (for the founder, from the phone or the web)
 
 Codex cloud runs the task in OpenAI's container. Its setup script has the internet; the agent does not. The steps are
