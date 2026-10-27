@@ -107,3 +107,25 @@ this pilot.
   which agent wrote a commit. The founder's word that X ran on `codex/pilot-1` is the record.
 - **The drill (§6.2 of the proposal) has not run.** P7 and P8 are checked from the session log, not from planted
   canaries.
+
+## Results (recorded 2026-10-27, after the run; arm X only)
+
+Arm C (the Claude baseline) was not run: the founder chose "Review + land it (Rec.)" to save tokens, so P2, P3, P6's
+comparison and P11 are not judged. Arm X ran twice in Codex cloud from the founder's phone.
+
+| # | Verdict | Evidence |
+|---|---|---|
+| P1 | right | all 3 of upfrom1, upfrom2, upfrom4 at 100% (coordinator's own fast runs) |
+| P4 | right | visible 0.9666 → 0.9691, the predicted value if nothing else fell |
+| P5 | right | hidden 0.9185 → 0.9185 (all statements 0.9359 → 0.936); rules deterministic and noProcess. Scored once in the coordinator's session by the founder's choice (system3-meta docs/decisions/2026-10-27-founder-codex-onboarding.md), set deleted after |
+| P6 | **wrong** | X took about 14.5 minutes (10:09:30 to 10:23:56 CET), under the 40-minute wrong-if |
+| P7 | **wrong** | run 1: before finding AGENTS.md, Codex listed other checkouts in its workspace, read cloud network configuration, used GitHub tools and read this file's predictions; it reported all of it itself. Run 2 stayed in the repository |
+| P8 | right | no sandbox refusal reported |
+| P9 | not judged | run 2's report does not show the order |
+| P10 | right | 0 interventions during the work; 2 setup follow-ups before it |
+| P2, P3, P11 | not judged | no arm C |
+
+Independent review (coordinator-dispatched, before reading Codex's account): merge. Two Low follow-ups: a LEFT JOIN in
+FROM still sees the update target (SQLite reports no such column), and a tuple SET without FROM evaluates its subquery
+once per column. Codex's predictions-blinding was broken by run 1, so run 2 is not a clean measurement of P6 or P9.
+Landed on main as de7b04c.
