@@ -1,8 +1,7 @@
 {
- "note": "Copy to judge.json (not committed) and fill in absolute paths. clj: a script that runs `clojure.main` with the engine's classpath (tools/clj.sh). visCorpus: the visible corpus (spec/b12/corpus). hidCorpus: the hidden corpus, held by the referee's owner outside this repository. tmp: a scratch folder.",
+ "note": "Copy to judge.json (not committed) and fill in absolute paths. clj: a script that runs `clojure.main` with the engine's classpath (tools/clj.sh). visCorpus: the visible corpus (spec/b12/corpus). tmp: a scratch folder. No hidden path belongs here: full mode reads hidCorpus from the file REFEREE_HIDDEN names, which exists only on the evaluation steward's runner (see README.md).",
  "clj": "/abs/path/to/system3-sqlite/tools/clj.sh",
  "visCorpus": "/abs/path/to/system3-sqlite/spec/b12/corpus",
- "hidCorpus": "/abs/path/held/by/the/referee/hidden/corpus",
  "tmp": "/tmp/sqlite-referee",
  "prologue": false,
  "macro": true
